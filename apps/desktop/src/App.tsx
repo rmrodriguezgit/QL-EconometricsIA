@@ -1,7 +1,8 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { ReactFlow, Background, Controls, Handle, Position, addEdge, applyNodeChanges, applyEdgeChanges, type Node, type NodeProps, type Connection } from '@xyflow/react';
-import { ArrowDownToLine, ArrowUpFromLine, Play, Plus, Search, FlaskConical, Database, ChartScatter, ChartNoAxesCombined, Sigma, BookOpen, ChevronRight, CircleCheck, RotateCcw, Undo2, Trash2, Network, CircleAlert, Braces, LoaderCircle } from 'lucide-react';
+import { ArrowDownToLine, ArrowUpFromLine, Play, Plus, Search, FlaskConical, Database, ChartScatter, ChartNoAxesCombined, Sigma, BookOpen, ChevronRight, CircleCheck, RotateCcw, Undo2, Trash2, Unplug, Network, CircleAlert, Braces, LoaderCircle } from 'lucide-react';
 import ModelEquation from './ModelEquation';
+import IndicatorPicker from './IndicatorPicker';
 import { catalog, download, parseProject, rpc, starter, version, type Kind, type Project, type Run, type NodeResult } from './model';
 
 const icons = { simulate: FlaskConical, csv: Database, worldbank: Database, describe: Sigma, scatter: ChartScatter, ols: ChartNoAxesCombined };
@@ -47,6 +48,7 @@ export default function App() {
   const [project, setProject] = useState<Project>(starter);
   const [history, setHistory] = useState<Project[]>([]);
   const [selectedId, setSelectedId] = useState('model');
+  const [selectedEdgeId, setSelectedEdgeId] = useState('');
   const [run, setRun] = useState<Run | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -57,6 +59,10 @@ export default function App() {
   const fileRef = useRef<HTMLInputElement>(null);
   const selected = project.nodes.find(n => n.id === selectedId);
   const item = selected && catalog[selected.type];
+  const selectedEdge = project.edges.find(edge => edge.id === selectedEdgeId);
+  const connections = selected ? project.edges.filter(edge => edge.source === selected.id || edge.target === selected.id) : [];
+  const nodeLabel = (id: string) => { const node = project.nodes.find(node => node.id === id); return node ? catalog[node.type].label : id; };
+  const disconnect = (id: string) => { update({ ...project, edges: project.edges.filter(edge => edge.id !== id) }); setSelectedEdgeId(''); };
   const equationNode = selected?.type === 'ols' ? selected : project.nodes.find(node => node.type === 'ols');
   const update = useCallback((next: Project, remember = true) => {
     if (busy) return;
@@ -64,7 +70,7 @@ export default function App() {
     setProject(next); setRun(null); setError(''); setNotice('');
   }, [project, busy]);
   const nodes: CanvasNode[] = useMemo(() => project.nodes.map((node, index) => ({ id: node.id, type: 'econometric', position: node.position, selected: selectedId === node.id, data: { kind: node.type, state: run?.nodes[node.id], index } })), [project, selectedId, run]);
-  const edges = useMemo(() => project.edges.map(edge => ({ ...edge, sourceHandle: edge.source_port, targetHandle: edge.target_port, type: 'smoothstep', animated: busy, style: { stroke: '#73a795', strokeWidth: 1.6 } })), [project.edges, busy]);
+  const edges = useMemo(() => project.edges.map(edge => ({ ...edge, sourceHandle: edge.source_port, targetHandle: edge.target_port, type: 'smoothstep', animated: busy, selected: edge.id === selectedEdgeId, style: { stroke: edge.id === selectedEdgeId ? '#b77748' : '#73a795', strokeWidth: edge.id === selectedEdgeId ? 2.8 : 1.6 } })), [project.edges, busy, selectedEdgeId]);
   const addNode = (kind: Kind) => {
     const id = crypto.randomUUID();
     update({ ...project, nodes: [...project.nodes, { id, type: kind, node_version: '1.0.0', parameters: { ...catalog[kind].defaults }, position: { x: 90 + project.nodes.length * 35, y: 80 + project.nodes.length * 40 } }] }); setSelectedId(id);
@@ -125,8 +131,8 @@ export default function App() {
           <button className="run-button" disabled={busy} onClick={execute}>{busy ? <LoaderCircle className="spin" size={15} /> : <Play size={14} fill="currentColor" />}{busy ? 'Calculando…' : 'Ejecutar flujo'}</button>
         </div></div>
         <input ref={fileRef} type="file" accept=".json" hidden onChange={e => { void openProject(e.target.files?.[0]); e.target.value = ''; }} />
-        <div className="canvas-area"><div className="canvas-breadcrumb"><Network size={13} /> Espacio de trabajo <ChevronRight size={12} /> <strong>{project.title || 'Sin título'}</strong></div><ReactFlow<CanvasNode> nodes={nodes} edges={edges} nodeTypes={nodeTypes} onConnect={connect} nodesDraggable={!busy} nodesConnectable={!busy} elementsSelectable={!busy}
-          onNodeClick={(_, node) => setSelectedId(node.id)} onPaneClick={() => setSelectedId('')}
+        <div className="canvas-area">{selectedEdge && <div className="edge-actions"><span>{nodeLabel(selectedEdge.source)} → {nodeLabel(selectedEdge.target)}</span><button disabled={busy} onClick={() => disconnect(selectedEdge.id)}><Unplug size={13} />Desconectar</button></div>}<div className="canvas-breadcrumb"><Network size={13} /> Espacio de trabajo <ChevronRight size={12} /> <strong>{project.title || 'Sin título'}</strong></div><ReactFlow<CanvasNode> nodes={nodes} edges={edges} nodeTypes={nodeTypes} onConnect={connect} nodesDraggable={!busy} nodesConnectable={!busy} elementsSelectable={!busy}
+          onNodeClick={(_, node) => { setSelectedId(node.id); setSelectedEdgeId(''); }} onEdgeClick={(_, edge) => { setSelectedEdgeId(edge.id); setSelectedId(''); }} onPaneClick={() => { setSelectedId(''); setSelectedEdgeId(''); }}
           onNodeDragStart={() => setHistory(h => [...h.slice(-29), project])}
           onNodesChange={changes => { if (busy) return; const changed = applyNodeChanges(changes, nodes); if (changes.some(c => c.type === 'position')) setProject(p => ({ ...p, nodes: p.nodes.map(n => ({ ...n, position: changed.find(c => c.id === n.id)?.position ?? n.position })) })); const removed = changes.filter(c => c.type === 'remove').map(c => c.id); if (removed.length) update({ ...project, nodes: project.nodes.filter(n => !removed.includes(n.id)), edges: project.edges.filter(e => !removed.includes(e.source) && !removed.includes(e.target)) }); }}
           onEdgesChange={changes => { if (busy) return; if (changes.some(c => c.type === 'remove')) { const changed = applyEdgeChanges(changes, edges); update({ ...project, edges: project.edges.filter(e => changed.some(c => c.id === e.id)) }); } }}
@@ -139,9 +145,10 @@ export default function App() {
         </section>
       </section>
       <aside className="inspector"><div className="section-heading"><h2>Inspector</h2><span><Braces size={15} /></span></div>{selected && item ? <><div className="inspector-title"><span className={`node-icon ${item.color}`}>{(() => { const Icon = icons[selected.type]; return <Icon size={20} />; })()}</span><div><h3>{item.label}</h3><p>Configuración del nodo</p></div></div><div className="inspector-divider" /><h4>PARÁMETROS</h4>
-          {Object.entries(selected.parameters).filter(([key]) => key !== 'content').map(([key, value]) => <label className="field" key={`${selected.id}-${key}`}><span>{{ n: 'Observaciones', seed: 'Semilla aleatoria', intercept: 'Intercepto (β₀)', slope: 'Pendiente (β₁)', noise: 'Desviación del ruido', x: 'Variable explicativa (x)', y: 'Variable respuesta (y)', covariance: 'Errores estándar', delimiter: 'Separador CSV', country: 'País (ISO 3)', indicator: 'Código de indicador', start: 'Año inicial', end: 'Año final' }[key] ?? key}</span>{key === 'covariance' ? <select disabled={busy} value={value} onChange={e => setParameter(key, e.target.value)}><option value="HC3">Robustos · HC3</option><option value="nonrobust">Clásicos</option></select> : key === 'delimiter' ? <select disabled={busy} value={value} onChange={e => setParameter(key, e.target.value)}><option value=",">Coma (,)</option><option value=";">Punto y coma (;)</option><option value={'\t'}>Tabulación</option></select> : <input disabled={busy} type={typeof value === 'number' ? 'number' : 'text'} step="any" value={Number.isNaN(value) ? '' : value} onChange={e => setParameter(key, typeof value === 'number' ? e.target.valueAsNumber : e.target.value)} />}</label>)}
+          {Object.entries(selected.parameters).filter(([key]) => key !== 'content' && key !== 'source').map(([key, value]) => key === 'indicator' && selected.type === 'worldbank' ? <IndicatorPicker key={`${selected.id}-indicator`} value={String(value)} source={Number(selected.parameters.source ?? 2)} disabled={busy} onChange={(indicator, source) => update({ ...project, nodes: project.nodes.map(node => node.id === selected.id ? { ...node, parameters: { ...node.parameters, indicator, source } } : node) })} /> : <label className="field" key={`${selected.id}-${key}`}><span>{{ n: 'Observaciones', seed: 'Semilla aleatoria', intercept: 'Intercepto (β₀)', slope: 'Pendiente (β₁)', noise: 'Desviación del ruido', x: 'Variable explicativa (x)', y: 'Variable respuesta (y)', covariance: 'Errores estándar', delimiter: 'Separador CSV', country: 'País (ISO 3)', indicator: 'Código de indicador', start: 'Año inicial', end: 'Año final' }[key] ?? key}</span>{key === 'covariance' ? <select disabled={busy} value={value} onChange={e => setParameter(key, e.target.value)}><option value="HC3">Robustos · HC3</option><option value="nonrobust">Clásicos</option></select> : key === 'delimiter' ? <select disabled={busy} value={value} onChange={e => setParameter(key, e.target.value)}><option value=",">Coma (,)</option><option value=";">Punto y coma (;)</option><option value={'\t'}>Tabulación</option></select> : <input disabled={busy} type={typeof value === 'number' ? 'number' : 'text'} step="any" value={Number.isNaN(value) ? '' : value} onChange={e => setParameter(key, typeof value === 'number' ? e.target.valueAsNumber : e.target.value)} />}</label>)}
           {selected.type === 'csv' && <label className="csv-upload"><ArrowUpFromLine size={18} />Seleccionar CSV<input disabled={busy} type="file" accept=".csv,.tsv,text/csv" onChange={async e => { const file = e.target.files?.[0]; if (!file) return; if (file.size > 2_000_000) { setError('El CSV supera 2 MB.'); return; } setParameter('content', await file.text()); }} /><small>{selected.parameters.content ? 'Archivo cargado en el proyecto' : 'Datos guardados dentro del proyecto local'}</small></label>}
           {!Object.keys(selected.parameters).length && <p className="subtle">Este nodo usa las columnas numéricas de la fuente conectada.</p>}
+          <section className="node-connections"><h4>CONEXIONES</h4>{connections.length ? connections.map(edge => <div className="connection-row" key={edge.id}><span>{nodeLabel(edge.source)}<span> → </span>{nodeLabel(edge.target)}</span><button type="button" disabled={busy} title={`Desconectar ${nodeLabel(edge.source)} de ${nodeLabel(edge.target)}`} aria-label={`Desconectar ${nodeLabel(edge.source)} de ${nodeLabel(edge.target)}`} onClick={() => disconnect(edge.id)}><Unplug size={14} /></button></div>) : <p>Este nodo no tiene conexiones.</p>}<small>Desconecta un enlace sin eliminar los módulos. Puedes usar Deshacer para recuperarlo.</small></section>
           <div className="learning-card"><div><BookOpen size={15} /><strong>Detrás del nodo</strong></div>{selected.type === 'ols' && <div className="formula">y = β₀ + β₁x + ε</div>}<p>{item.explanation}</p><span>Referencias {item.references}</span></div>
           {selectedResult?.error && <div role="alert" className="node-error"><strong>{selectedResult.error.code}</strong><p>{selectedResult.error.message}</p></div>}
           {selectedResult?.result && <details className="node-details"><summary>Ver resultado del nodo</summary><pre>{JSON.stringify(selectedResult.result, null, 2)}</pre></details>}

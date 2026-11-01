@@ -19,6 +19,9 @@ def dispatch(request):
         elif method == 'project.validate':
             validate_project(params.get('project'))
             result = {'valid': True}
+        elif method == 'worldbank.indicators':
+            from .worldbank_catalog import search_indicators
+            result = search_indicators(params)
         elif method == 'run.start':
             result = execute(params.get('project'))
         else:

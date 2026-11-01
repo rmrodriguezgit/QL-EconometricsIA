@@ -1,4 +1,4 @@
-# Desarrollo de la alpha 0.2.0
+# Desarrollo de la alpha 0.2.1
 
 Fecha: 2026-11-01. Primer corte funcional de P1 con un adelanto OLS de P2. No equivale al cierre de ninguna fase curricular.
 
@@ -19,11 +19,13 @@ Ingreso uniforme entre 20 y 150; consumo = 12 + 0.72 × ingreso + ruido normal d
 
 El botón **Ecuación** abre una ventana accesible con modelo poblacional, recta ajustada y definición de símbolos. Con varios nodos OLS usa el seleccionado; en otro caso, el primero del proyecto. Se cierra con Escape, botón de cierre o clic en el fondo. Antes de ejecutar muestra la forma simbólica.
 
-El usuario puede añadir fuentes y nodos, conectarlos, editar parámetros y ejecutar. OLS y dispersión permiten escribir los nombres de las columnas. Los resultados se invalidan al modificar parámetros o conexiones; mover nodos no cambia el cálculo. Los resultados mostrados de cada tipo corresponden al primer nodo exitoso de ese tipo; el inspector permite revisar todos los demás. No se permite conectar salidas OLS con otros nodos todavía.
+El usuario puede añadir fuentes y nodos, conectarlos, editar parámetros y ejecutar. OLS y dispersión permiten escribir los nombres de las columnas. La sección Conexiones del inspector permite desconectar cada enlace. Al seleccionar una línea aparece un botón Desconectar en el canvas; también se conserva la eliminación con el teclado. Deshacer recupera el enlace. Desconectar no elimina nodos.
+
+Los resultados se invalidan al modificar parámetros o conexiones; mover nodos no cambia el cálculo. Los resultados mostrados de cada tipo corresponden al primer nodo exitoso de ese tipo; el inspector permite revisar todos los demás. No se permite conectar salidas OLS con otros nodos todavía.
 
 ## Contrato de ejecución real
 
-Protocolo 1.0.0, esquema de proyecto 1.0.0 y versión de nodo 1.0.0. Métodos: engine.health, nodes.list, project.validate y run.start. JSON-RPC 2.0 delimitado por salto de línea, con id obligatorio; no se implementan notificaciones. El motor no evalúa expresiones de usuario. Rechaza versiones, referencias y puertos inválidos y entradas sin conectar antes de ejecutar.
+Protocolo 1.0.0, esquema de proyecto 1.0.0 y versión de nodo 1.0.0. Métodos: engine.health, nodes.list, project.validate, run.start y worldbank.indicators. JSON-RPC 2.0 delimitado por salto de línea, con id obligatorio; no se implementan notificaciones. El motor no evalúa expresiones de usuario. Rechaza versiones, referencias y puertos inválidos y entradas sin conectar antes de ejecutar.
 
 Ejecución secuencial, sin progreso incremental, caché del DAG ni cancelación interactiva. Un nodo fallido marca sus descendientes skipped y conserva ramas independientes. El transporte mata la ejecución después de 60 segundos. Cada llamada inicia un proceso: la optimización a sidecar persistente queda pendiente.
 
@@ -31,7 +33,7 @@ Límites actuales: 100 nodos, 400 conexiones, fuentes de hasta 10.000 filas y 50
 
 ## Banco Mundial
 
-wbdata 1.1.0 usa el argumento `date`, comprobado contra su firma instalada. Se permite un país ISO 3 y un indicador anual por nodo; la columna numérica se llama `valor` y el año `periodo`. Orden cronológico ascendente. La consulta registra país, código, período y fecha, además del hash del snapshot. Las unidades aún necesitan consulta al catálogo externo; no se inventan ni se consideran verificadas en la interfaz.
+wbdata 1.1.0 usa el argumento `date`, comprobado contra su firma instalada. Se permite un país ISO 3 y un indicador anual por nodo; la fuente se registra y envía explícitamente a wbdata (2 por defecto para proyectos previos); la columna numérica se llama `valor` y el año `periodo`. Orden cronológico ascendente. La consulta registra país, código, período y fecha, además del hash del snapshot. Las unidades aún necesitan consulta al catálogo externo; no se inventan ni se consideran verificadas en la interfaz.
 
 La caché de wbdata se guarda en `.cache/wbdata/` en desarrollo, excluida de Git. Se usa una sesión con timeout de conexión/lectura de 5/12 segundos; el transporte impone 60 segundos totales. La biblioteca gestiona paginación y reintentos de conexión. No hay prueba de red obligatoria en CI. Se realizó una consulta real de MEX/NY.GDP.PCAP.KD para 2020-2023; no se versionan esos datos.
 
@@ -52,3 +54,13 @@ Instalar Rust y los prerrequisitos oficiales de [Tauri](https://v2.tauri.app/sta
 La configuración de release añade `binaries/quantlabs-engine` mediante tauri.release.conf.json; no hay binario empaquetado. El entry point `scripts/engine_entry.py` queda preparado para PyInstaller, cuya adopción y lock todavía están pendientes. Faltan Cargo.lock, pruebas nativas por target, empaquetado científico, firma y notarización. No hay instaladores disponibles.
 
 Fuentes técnicas consultadas: [React Flow](https://reactflow.dev/learn), [Tauri: comandos](https://v2.tauri.app/develop/calling-rust/), [statsmodels OLS](https://www.statsmodels.org/stable/generated/statsmodels.regression.linear_model.OLS.html) y [wbdata](https://wbdata.readthedocs.io/en/stable/), 2026-11-01.
+
+## Catálogo de indicadores (0.2.1)
+
+El campo Código de indicador abre un desplegable con búsqueda por nombre, código o fuente. La búsqueda ignora mayúsculas y acentos; los resultados se muestran en páginas de 100 entradas. Se puede navegar con teclado y seleccionar indicadores conservando su fuente. La API devuelve 29.544 filas en la consulta inicial; al deduplicar por fuente/código se obtuvieron 29.533 entradas. No se limita a una selección manual de indicadores populares.
+
+El motor descarga todas las páginas de https://api.worldbank.org/v2/es/indicator, valida que el número total coincida y guarda `indicators-es-v1.json` junto a la caché de wbdata. Vigencia: 24 horas. La escritura es atómica; un fallo parcial nunca sustituye un catálogo válido. Si falla la actualización, se usa la copia anterior y se indica en pantalla. La primera carga necesita conexión. Los metadatos y la caché no se incorporan al repositorio.
+
+`worldbank.indicators` recibe query, page y refresh (opcional), y devuelve items, total, catalog_total, page, pages, retrieved_at y stale. Los códigos y las fuentes distintos se preservan incluso cuando comparten nombre. Seleccionar una entrada actualiza indicador y fuente en una sola operación reversible. La aparición en catálogo no garantiza observaciones para el país/período, ni compatibilidad con la frecuencia anual de esta alpha.
+
+Referencia oficial: [consultas de indicadores](https://datahelpdesk.worldbank.org/knowledgebase/articles/898599-indicator-api-queries), consultada el 2026-11-01.

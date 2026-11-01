@@ -4,7 +4,7 @@ export type ProjectNode = { id: string; type: Kind; node_version: '1.0.0'; param
 export type Project = { schema_version: '1.0.0'; app_version: string; title: string; nodes: ProjectNode[]; edges: { id: string; source: string; target: string; source_port: string; target_port: string }[] };
 export type NodeResult = { status: 'succeeded' | 'failed' | 'skipped'; result?: Record<string, unknown>; error?: { code: string; message: string }; message?: string };
 export type Run = { run_id: string; status: string; nodes: Record<string, NodeResult>; manifest: { graph_sha256: string; [key: string]: unknown } };
-export const version = '0.2.0';
+export const version = '0.2.1';
 export const catalog: Record<Kind, { label: string; detail: string; category: string; color: string; references: string; explanation: string; defaults: Parameters }> = {
   simulate: { label: 'Datos simulados', detail: 'Una muestra que puedes reproducir', category: 'Fuentes de datos', color: 'green', references: 'B18 · B29', explanation: 'Consumo = intercepto + pendiente × ingreso + ruido normal. Cambia la semilla para obtener otra muestra o consérvala para repetir el experimento.', defaults: { n: 120, seed: 42, intercept: 12, slope: 0.72, noise: 9 } },
   csv: { label: 'Archivo CSV', detail: 'Tus datos, desde un archivo local', category: 'Fuentes de datos', color: 'green', references: 'B16', explanation: 'Importa hasta 10.000 filas y 50 columnas. Los datos faltantes permanecen explícitos; declara sus unidades antes de interpretar.', defaults: { content: '', delimiter: ',' } },

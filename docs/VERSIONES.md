@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.2.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. La compilación nativa sigue pendiente. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.2.1**. Alpha local con dependencias frontend/Python instaladas y lockfiles. La compilación nativa sigue pendiente. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -80,3 +80,9 @@ Fuentes técnicas consultadas: [Tauri](https://v2.tauri.app/develop/sidecar/) y 
 - ADR-006: primer gráfico de dispersión SVG integrado, sin Plotly/Zustand todavía. Estado React y guardado JSON; las bibliotecas propuestas se adoptarán cuando una necesidad concreta lo justifique.
 - ADR-007: snapshots JSON con 15 decimales y errores por nodo; Parquet, SQLite, caché del DAG, progreso y cancelación permanecen pendientes.
 - ADR-008: implementación inicial de OLS simple para verificar el circuito datos-modelo-resultado; no cerrar C09 ni P2 antes de inferencia, lecciones y auditoría bibliográfica.
+
+## Entrega 0.2.1
+
+Sin dependencias nuevas. Se sincronizaron VERSION, pyproject.toml/uv.lock, package.json/package-lock.json, versión de interfaz y configuración Tauri en 0.2.1. Protocolo, esquema de proyecto y versiones de nodo siguen en 1.0.0; `source` es un parámetro opcional del nodo World Bank, con valor por defecto 2 para proyectos anteriores.
+
+Catálogo consultado el 2026-11-01: 29.544 filas de metadatos, reducidas a 29.533 pares únicos de fuente/código. Este conteo es una observación, no una constante de aplicación. Fuente: https://api.worldbank.org/v2/es/indicator. Nombres en español cuando los entrega el proveedor; la consulta puede no tener observaciones para ciertos países, años o frecuencias.

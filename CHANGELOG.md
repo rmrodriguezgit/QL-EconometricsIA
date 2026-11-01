@@ -1,5 +1,13 @@
 # Historial de cambios
 
+## 0.2.1 - 2026-11-01
+
+- Selector desplegable de indicadores del Banco Mundial con nombres, códigos, fuente, búsqueda sin distinción de acentos y paginación.
+- Catálogo completo de la API en español con caché de 24 horas, validación de todas sus páginas y copia anterior como respaldo ante fallo de red.
+- Consultas de datos con fuente explícita y códigos que distinguen mayúsculas/minúsculas, compatibles con la selección del catálogo.
+- Desconexión individual de enlaces desde el inspector o desde su línea seleccionada, sin eliminar módulos y con Deshacer.
+- Pruebas de catálogo, paginación, integridad de caché, fallo de red y propagación de la fuente a wbdata.
+
 ## 0.2.0 - 2026-11-01
 
 - Alpha local React/React Flow con canvas, inspector, búsqueda de nodos, conexiones, deshacer y panel de resultados.

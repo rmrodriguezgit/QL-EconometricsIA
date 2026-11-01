@@ -8,6 +8,7 @@ import io
 import json
 import math
 import platform
+import re
 from pathlib import Path
 import subprocess
 import uuid
@@ -187,15 +188,16 @@ def world_bank(parameters):
     client.fetcher.session = BoundedSession()
     country = parameters.get('country', 'MEX')
     indicator = parameters.get('indicator', 'NY.GDP.PCAP.KD')
+    source_id = number(parameters, 'source', 2, 1, 100000, True)
     start = number(parameters, 'start', 2000, 1960, datetime.now().year, True)
     end = number(parameters, 'end', 2023, start, datetime.now().year, True)
     if not isinstance(country, str) or len(country) != 3 or not country.isalpha():
         fail('Usa un código de país de tres letras, por ejemplo MEX.', 'INVALID_PARAMETERS')
-    if not isinstance(indicator, str) or not 1 <= len(indicator) <= 100 or any(c not in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._' for c in indicator):
+    if not isinstance(indicator, str) or not re.fullmatch(r'[A-Za-z0-9_.-]{1,200}', indicator):
         fail('Código de indicador no válido.', 'INVALID_PARAMETERS')
     try:
         frame = client.get_dataframe({indicator: 'valor'}, country=country.upper(),
-                                   date=(str(start), str(end)), parse_dates=False).reset_index()
+                                   date=(str(start), str(end)), source=source_id, parse_dates=False).reset_index()
     except Exception as exc:
         raise EngineError('DATA_UNAVAILABLE', 'Banco Mundial no respondió. Revisa la conexión y los códigos o usa datos simulados.') from exc
     if frame.empty or 'date' not in frame.columns:
@@ -204,7 +206,7 @@ def world_bank(parameters):
     frame['periodo'] = pd.to_numeric(frame['periodo'], errors='raise')
     frame = frame.sort_values('periodo').reset_index(drop=True)
     return frame, {'provider': 'World Bank', 'country': country.upper(), 'indicator': indicator,
-                   'start': start, 'end': end, 'units': 'consultar metadatos del indicador; no inferidas'}
+                   'source_id': source_id, 'start': start, 'end': end, 'units': 'consultar metadatos del indicador; no inferidas'}
 
 
 def numeric(frame, columns):

@@ -2,7 +2,7 @@
 
 Laboratorio educativo de econometría con programación visual mediante nodos y motor analítico Python. Objetivo de escritorio: macOS y Windows. [Repositorio](https://github.com/rmrodriguezgit/Quantlabs-Econometrics).
 
-**Versión 0.2.0 · 2026-11-01 · Alpha funcional en modo de desarrollo local. Integración Tauri preparada, sin compilar todavía.**
+**Versión 0.2.1 · 2026-11-01 · Alpha funcional en modo de desarrollo local. Integración Tauri preparada, sin compilar todavía.**
 
 ## Arrancar
 
@@ -18,8 +18,8 @@ Abre [el laboratorio local](http://127.0.0.1:1420) y pulsa **Ejecutar flujo**. E
 
 ## Ya funciona
 
-- Canvas editable con conexiones, seis tipos de nodo, eliminación, zoom y deshacer.
-- Datos sintéticos con semilla, CSV local y consulta anual de un indicador/país del Banco Mundial.
+- Canvas editable con conexiones, seis tipos de nodo, eliminación, zoom y deshacer. Desconecta enlaces desde el inspector o seleccionando su línea y pulsando **Desconectar**.
+- Datos sintéticos con semilla, CSV local y consulta anual de un indicador/país del Banco Mundial. Lista desplegable con búsqueda en el catálogo completo de indicadores y selección automática de su fuente.
 - Descriptivos, dispersión y regresión OLS simple con covarianza clásica o HC3.
 - Ventana **Ecuación** con fórmula poblacional y recta ajustada con los coeficientes calculados.
 - Tabla de coeficientes, errores estándar, p-valores, R² y muestra efectiva.

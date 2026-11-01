@@ -1,0 +1,362 @@
+[
+  {
+    "id": "B01",
+    "file": "1. Introduction to Econometrics _ Econometrics and Data Science_ Apply Data Science Techniques to Model Complex Problems and Implement Solutions for Economic Problems.pdf",
+    "title": "1. Introduction to Econometrics",
+    "book": "Econometrics and Data Science_ Apply Data Science Techniques to Model Complex Problems and Implement Solutions for Economic Problems",
+    "sha256": "83f3cf5fd6b5e12fa5967baacab744fb97bb14e0bb683cb867ba3a443d88685d",
+    "bytes": 1037422,
+    "pages": 14,
+    "doi": "https://doi.org/10.1007/978-1-4842-7434-7_1"
+  },
+  {
+    "id": "B02",
+    "file": "10. Economic Causal Analysis Applying Structural Equation Modeling _ Econometrics and Data Science_ Apply Data Science Techniques to Model Complex Problems and Implement Solutions for Economic Problems.pdf",
+    "title": "10. Economic Causal Analysis Applying Structural Equation Modeling",
+    "book": "Econometrics and Data Science_ Apply Data Science Techniques to Model Complex Problems and Implement Solutions for Economic Problems",
+    "sha256": "b3e1971fc7951f4f359fdb45aba0a6b14e7b8a02b7b3cb302e19c76817a01e45",
+    "bytes": 4544878,
+    "pages": 20,
+    "doi": "https://doi.org/10.1007/978-1-4842-7434-7_10"
+  },
+  {
+    "id": "B03",
+    "file": "2. Univariate Consumption Study Applying Regression _ Econometrics and Data Science_ Apply Data Science Techniques to Model Complex Problems and Implement Solutions for Economic Problems.pdf",
+    "title": "2. Univariate Consumption Study Applying Regression",
+    "book": "Econometrics and Data Science_ Apply Data Science Techniques to Model Complex Problems and Implement Solutions for Economic Problems",
+    "sha256": "faf79da3f29560d0403f3108268a20ece386e84c26232b9e9d6a2f03fd8ca060",
+    "bytes": 3774625,
+    "pages": 20,
+    "doi": "https://doi.org/10.1007/978-1-4842-7434-7_2"
+  },
+  {
+    "id": "B04",
+    "file": "3. Multivariate Consumption Study Applying Regression _ Econometrics and Data Science_ Apply Data Science Techniques to Model Complex Problems and Implement Solutions for Economic Problems.pdf",
+    "title": "3. Multivariate Consumption Study Applying Regression",
+    "book": "Econometrics and Data Science_ Apply Data Science Techniques to Model Complex Problems and Implement Solutions for Economic Problems",
+    "sha256": "f79a46c0a38435451449f5b971b6ae716ccdf8eb84302b339e433bdfa6f22d77",
+    "bytes": 6884426,
+    "pages": 31,
+    "doi": "https://doi.org/10.1007/978-1-4842-7434-7_3"
+  },
+  {
+    "id": "B05",
+    "file": "4. Forecasting Growth _ Econometrics and Data Science_ Apply Data Science Techniques to Model Complex Problems and Implement Solutions for Economic Problems.pdf",
+    "title": "4. Forecasting Growth",
+    "book": "Econometrics and Data Science_ Apply Data Science Techniques to Model Complex Problems and Implement Solutions for Economic Problems",
+    "sha256": "10e4bbf87aa23ed50fa577412691daaa584bdd2f46dafbe1f6192fba343cf747",
+    "bytes": 2211820,
+    "pages": 17,
+    "doi": "https://doi.org/10.1007/978-1-4842-7434-7_4"
+  },
+  {
+    "id": "B06",
+    "file": "5. Classifying Economic Data Applying Logistic Regression _ Econometrics and Data Science_ Apply Data Science Techniques to Model Complex Problems and Implement Solutions for Economic Problems.pdf",
+    "title": "5. Classifying Economic Data Applying Logistic Regression",
+    "book": "Econometrics and Data Science_ Apply Data Science Techniques to Model Complex Problems and Implement Solutions for Economic Problems",
+    "sha256": "3fbeca8c2e161a70655eae1991acbe732205993120444b95b6d280e8fbda8fd8",
+    "bytes": 6426366,
+    "pages": 28,
+    "doi": "https://doi.org/10.1007/978-1-4842-7434-7_5"
+  },
+  {
+    "id": "B07",
+    "file": "6. Finding Hidden Patterns in World Economy and Growth _ Econometrics and Data Science_ Apply Data Science Techniques to Model Complex Problems and Implement Solutions for Economic Problems.pdf",
+    "title": "6. Finding Hidden Patterns in World Economy and Growth",
+    "book": "Econometrics and Data Science_ Apply Data Science Techniques to Model Complex Problems and Implement Solutions for Economic Problems",
+    "sha256": "3d61f68ebd6352ccb9d5a53c3297f683d0f806dd148bdf0336d40c7bab4220d8",
+    "bytes": 4087515,
+    "pages": 14,
+    "doi": "https://doi.org/10.1007/978-1-4842-7434-7_6"
+  },
+  {
+    "id": "B08",
+    "file": "7. Clustering GNI Per Capita on a Continental Level _ Econometrics and Data Science_ Apply Data Science Techniques to Model Complex Problems and Implement Solutions for Economic Problems.pdf",
+    "title": "7. Clustering GNI Per Capita on a Continental Level",
+    "book": "Econometrics and Data Science_ Apply Data Science Techniques to Model Complex Problems and Implement Solutions for Economic Problems",
+    "sha256": "c5df01730ab06f4e50d3b1db3af8ece7cb2dbdd03f52d5e7f26d17cdd42949bd",
+    "bytes": 2338535,
+    "pages": 18,
+    "doi": "https://doi.org/10.1007/978-1-4842-7434-7_7"
+  },
+  {
+    "id": "B09",
+    "file": "8. Solving Economic Problems Applying Artificial Neural Networks _ Econometrics and Data Science_ Apply Data Science Techniques to Model Complex Problems and Implement Solutions for Economic Problems.pdf",
+    "title": "8. Solving Economic Problems Applying Artificial Neural Networks",
+    "book": "Econometrics and Data Science_ Apply Data Science Techniques to Model Complex Problems and Implement Solutions for Economic Problems",
+    "sha256": "ee1f83e5720fe257d642a19f3a7cc802e78486faa9725ade7d5292ff25df3c95",
+    "bytes": 4905820,
+    "pages": 22,
+    "doi": "https://doi.org/10.1007/978-1-4842-7434-7_8"
+  },
+  {
+    "id": "B10",
+    "file": "9. Inflation Simulation _ Econometrics and Data Science_ Apply Data Science Techniques to Model Complex Problems and Implement Solutions for Economic Problems.pdf",
+    "title": "9. Inflation Simulation",
+    "book": "Econometrics and Data Science_ Apply Data Science Techniques to Model Complex Problems and Implement Solutions for Economic Problems",
+    "sha256": "b4de8fbe2646aebb426d4efeceacea8f1b22fa2349addb72448d997cec1a190a",
+    "bytes": 2199313,
+    "pages": 11,
+    "doi": "https://doi.org/10.1007/978-1-4842-7434-7_9"
+  },
+  {
+    "id": "B11",
+    "file": "CHAPTER 12_ Factor Analysis and Principal Components Analysis _ The Basics of Financial Econometrics_ Tools, Concepts, and Asset Management Applications.pdf",
+    "title": "CHAPTER 12_ Factor Analysis and Principal Components Analysis",
+    "book": "The Basics of Financial Econometrics_ Tools, Concepts, and Asset Management Applications",
+    "sha256": "efe95eef3a62bd138dd56b63afca39a4a17ad0528637774a175e5916ac70fb17",
+    "bytes": 3709822,
+    "pages": 52,
+    "doi": null
+  },
+  {
+    "id": "B12",
+    "file": "CHAPTER 13_ Model Estimation _ The Basics of Financial Econometrics_ Tools, Concepts, and Asset Management Applications.pdf",
+    "title": "CHAPTER 13_ Model Estimation",
+    "book": "The Basics of Financial Econometrics_ Tools, Concepts, and Asset Management Applications",
+    "sha256": "551c72fb1449ac436b4edbae33e2722c50fd86219cb6236ef18fc8c382b0fd03",
+    "bytes": 1182804,
+    "pages": 44,
+    "doi": null
+  },
+  {
+    "id": "B13",
+    "file": "CHAPTER 14_ Model Selection _ The Basics of Financial Econometrics_ Tools, Concepts, and Asset Management Applications.pdf",
+    "title": "CHAPTER 14_ Model Selection",
+    "book": "The Basics of Financial Econometrics_ Tools, Concepts, and Asset Management Applications",
+    "sha256": "a5895be2135d793885205deb69c5274ba6a368ba8662763246ded6fa64c23ac5",
+    "bytes": 256084,
+    "pages": 25,
+    "doi": null
+  },
+  {
+    "id": "B14",
+    "file": "Chapter 10_ Multiple Regression _ Essential Statistics, Regression, and Econometrics.pdf",
+    "title": "Chapter 10_ Multiple Regression",
+    "book": "Essential Statistics, Regression, and Econometrics",
+    "sha256": "3966fa46edaf382efbd230047c930f762b20d7294c0b80f876f19db0acd10530",
+    "bytes": 1620226,
+    "pages": 83,
+    "doi": null
+  },
+  {
+    "id": "B15",
+    "file": "Chapter 11_ Modeling (Optional) _ Essential Statistics, Regression, and Econometrics.pdf",
+    "title": "Chapter 11_ Modeling (Optional)",
+    "book": "Essential Statistics, Regression, and Econometrics",
+    "sha256": "c37b17b8a67d74a9d9d00c257c4eb15e416610d6346f936d3ee7c5439a76f5fc",
+    "bytes": 2096183,
+    "pages": 66,
+    "doi": null
+  },
+  {
+    "id": "B16",
+    "file": "Chapter 1_ Data, Data, Data _ Essential Statistics, Regression, and Econometrics.pdf",
+    "title": "Chapter 1_ Data, Data, Data",
+    "book": "Essential Statistics, Regression, and Econometrics",
+    "sha256": "50efda62ced8690804aecd986d8e627d02026995398758ae6440a08239cb4224",
+    "bytes": 1294609,
+    "pages": 56,
+    "doi": null
+  },
+  {
+    "id": "B17",
+    "file": "Chapter 2_ Displaying Data _ Essential Statistics, Regression, and Econometrics.pdf",
+    "title": "Chapter 2_ Displaying Data",
+    "book": "Essential Statistics, Regression, and Econometrics",
+    "sha256": "edc2736437d6e6b550ab5b4735f3fbf8cc728d44dc3eba9c77f5509d26c1f74a",
+    "bytes": 2805890,
+    "pages": 96,
+    "doi": null
+  },
+  {
+    "id": "B18",
+    "file": "Chapter 3_ Descriptive Statistics _ Essential Statistics, Regression, and Econometrics.pdf",
+    "title": "Chapter 3_ Descriptive Statistics",
+    "book": "Essential Statistics, Regression, and Econometrics",
+    "sha256": "9ee5549251c035b7637a831bd067e97be22b0f43dd6f1e82abfc1c1d326b730d",
+    "bytes": 1829840,
+    "pages": 63,
+    "doi": null
+  },
+  {
+    "id": "B19",
+    "file": "Chapter 4_ Probability _ Essential Statistics, Regression, and Econometrics.pdf",
+    "title": "Chapter 4_ Probability",
+    "book": "Essential Statistics, Regression, and Econometrics",
+    "sha256": "fb820e52a0ba723b8ad403ac26e225a560ddf7b28e7943aa546139dcd63b18b7",
+    "bytes": 1745437,
+    "pages": 75,
+    "doi": null
+  },
+  {
+    "id": "B20",
+    "file": "Chapter 5_ Sampling _ Essential Statistics, Regression, and Econometrics.pdf",
+    "title": "Chapter 5_ Sampling",
+    "book": "Essential Statistics, Regression, and Econometrics",
+    "sha256": "d7088e17a67f8e4ca778dead7084ff42afafbdb909a962fd0ec8078164f1fc65",
+    "bytes": 462191,
+    "pages": 43,
+    "doi": null
+  },
+  {
+    "id": "B21",
+    "file": "Chapter 6_ Estimation _ Essential Statistics, Regression, and Econometrics.pdf",
+    "title": "Chapter 6_ Estimation",
+    "book": "Essential Statistics, Regression, and Econometrics",
+    "sha256": "24f2255e0a14d9146845cb03fe0b7612f28dc5b68dea9ba2e572e13d33bf921d",
+    "bytes": 1471691,
+    "pages": 51,
+    "doi": null
+  },
+  {
+    "id": "B22",
+    "file": "Chapter 7_ Hypothesis Testing _ Essential Statistics, Regression, and Econometrics.pdf",
+    "title": "Chapter 7_ Hypothesis Testing",
+    "book": "Essential Statistics, Regression, and Econometrics",
+    "sha256": "f0ee9e6a177afa9fba352cea9690cb250b094799ea19d00018fca33da5c3f889",
+    "bytes": 1090286,
+    "pages": 56,
+    "doi": null
+  },
+  {
+    "id": "B23",
+    "file": "Chapter 8_ Simple Regression _ Essential Statistics, Regression, and Econometrics.pdf",
+    "title": "Chapter 8_ Simple Regression",
+    "book": "Essential Statistics, Regression, and Econometrics",
+    "sha256": "97f3e62a91f7bfe641cf1dc8778b02609e1171e2eda17c0340d6ecd839a83322",
+    "bytes": 2701326,
+    "pages": 101,
+    "doi": null
+  },
+  {
+    "id": "B24",
+    "file": "Chapter 9_ The Art of Regression Analysis _ Essential Statistics, Regression, and Econometrics.pdf",
+    "title": "Chapter 9_ The Art of Regression Analysis",
+    "book": "Essential Statistics, Regression, and Econometrics",
+    "sha256": "dbbfacd832a80ce0a357b50e2d46d8c81e77461a41108c2e8256c57c05dd8908",
+    "bytes": 2135849,
+    "pages": 83,
+    "doi": null
+  },
+  {
+    "id": "B25",
+    "file": "Wiley_CHAPTER 10_ Cointegration _ The Basics of Financial Econometrics_ Tools, Concepts, and Asset Management Applications.pdf",
+    "title": "CHAPTER 10_ Cointegration",
+    "book": "The Basics of Financial Econometrics_ Tools, Concepts, and Asset Management Applications",
+    "sha256": "bc97315b1c315222b080817c54739bf71c2019a9d2d313c5e53977e09e1587dd",
+    "bytes": 1872475,
+    "pages": 37,
+    "doi": null
+  },
+  {
+    "id": "B26",
+    "file": "Wiley_CHAPTER 11_ Autoregressive Heteroscedasticity Model and Its Variants _ The Basics of Financial Econometrics_ Tools, Concepts, and Asset Management Applications.pdf",
+    "title": "CHAPTER 11_ Autoregressive Heteroscedasticity Model and Its Variants",
+    "book": "The Basics of Financial Econometrics_ Tools, Concepts, and Asset Management Applications",
+    "sha256": "8420158dfee69cad29ded0ee9d7eb282d67a1ea1fc4756cdb031b6f3bce5b7e8",
+    "bytes": 2249460,
+    "pages": 37,
+    "doi": null
+  },
+  {
+    "id": "B27",
+    "file": "Wiley_CHAPTER 15_ Formulating and Implementing Investment Strategies Using Financial Econometrics _ The Basics of Financial Econometrics_ Tools, Concepts, and Asset Management Applications.pdf",
+    "title": "CHAPTER 15_ Formulating and Implementing Investment Strategies Using Financial Econometrics",
+    "book": "The Basics of Financial Econometrics_ Tools, Concepts, and Asset Management Applications",
+    "sha256": "7409cdc350e020ff22589c8af959f1593ce00567f921fcf1bfa5e9fb59c30ef0",
+    "bytes": 805254,
+    "pages": 27,
+    "doi": null
+  },
+  {
+    "id": "B28",
+    "file": "Wiley_CHAPTER 1_ Introduction _ The Basics of Financial Econometrics_ Tools, Concepts, and Asset Management Applications.pdf",
+    "title": "CHAPTER 1_ Introduction",
+    "book": "The Basics of Financial Econometrics_ Tools, Concepts, and Asset Management Applications",
+    "sha256": "b231ce8ae45c91ca8f5ac175ca7241853af9fc17fc0f3b7b4cce34fdc880ec3d",
+    "bytes": 291009,
+    "pages": 22,
+    "doi": null
+  },
+  {
+    "id": "B29",
+    "file": "Wiley_CHAPTER 2_ Simple Linear Regression _ The Basics of Financial Econometrics_ Tools, Concepts, and Asset Management Applications.pdf",
+    "title": "CHAPTER 2_ Simple Linear Regression",
+    "book": "The Basics of Financial Econometrics_ Tools, Concepts, and Asset Management Applications",
+    "sha256": "a05c3c33193f44c4c683c14335bc1278df73d31b9d36bea6138769fcd7a53eb9",
+    "bytes": 2989885,
+    "pages": 48,
+    "doi": null
+  },
+  {
+    "id": "B30",
+    "file": "Wiley_CHAPTER 3_ Multiple Linear Regression _ The Basics of Financial Econometrics_ Tools, Concepts, and Asset Management Applications.pdf",
+    "title": "CHAPTER 3_ Multiple Linear Regression",
+    "book": "The Basics of Financial Econometrics_ Tools, Concepts, and Asset Management Applications",
+    "sha256": "e96fc951a8df8816c7949152b8077c5c3a20fc18c941b073a8db49b786d737ce",
+    "bytes": 5839231,
+    "pages": 70,
+    "doi": null
+  },
+  {
+    "id": "B31",
+    "file": "Wiley_CHAPTER 4_ Building and Testing a Multiple Linear Regression Model _ The Basics of Financial Econometrics_ Tools, Concepts, and Asset Management Applications.pdf",
+    "title": "CHAPTER 4_ Building and Testing a Multiple Linear Regression Model",
+    "book": "The Basics of Financial Econometrics_ Tools, Concepts, and Asset Management Applications",
+    "sha256": "1e54c24b26507724e132c2f53b9b49e4a9e2407d507d0cc44971b19d70182fd5",
+    "bytes": 1659410,
+    "pages": 38,
+    "doi": null
+  },
+  {
+    "id": "B32",
+    "file": "Wiley_CHAPTER 5_ Introduction to Time Series Analysis _ The Basics of Financial Econometrics_ Tools, Concepts, and Asset Management Applications.pdf",
+    "title": "CHAPTER 5_ Introduction to Time Series Analysis",
+    "book": "The Basics of Financial Econometrics_ Tools, Concepts, and Asset Management Applications",
+    "sha256": "270b8f1ab0743ea2cbfda0b5e9bac736b9d0f25af3956e372441b2a2ddd0c900",
+    "bytes": 1133182,
+    "pages": 20,
+    "doi": null
+  },
+  {
+    "id": "B33",
+    "file": "Wiley_CHAPTER 6_ Regression Models with Categorical Variables _ The Basics of Financial Econometrics_ Tools, Concepts, and Asset Management Applications.pdf",
+    "title": "CHAPTER 6_ Regression Models with Categorical Variables",
+    "book": "The Basics of Financial Econometrics_ Tools, Concepts, and Asset Management Applications",
+    "sha256": "e1ab680c781a03c1fdccda828f2142eb809d5e9750d623f1d076aca751415722",
+    "bytes": 4828520,
+    "pages": 46,
+    "doi": null
+  },
+  {
+    "id": "B34",
+    "file": "Wiley_CHAPTER 7_ Quantile Regressions _ The Basics of Financial Econometrics_ Tools, Concepts, and Asset Management Applications.pdf",
+    "title": "CHAPTER 7_ Quantile Regressions",
+    "book": "The Basics of Financial Econometrics_ Tools, Concepts, and Asset Management Applications",
+    "sha256": "9ca94324211a74fa902cbacdffea613e168943540af4c6c95841c4ab625b9fa0",
+    "bytes": 1018072,
+    "pages": 23,
+    "doi": null
+  },
+  {
+    "id": "B35",
+    "file": "Wiley_CHAPTER 8_ Robust Regressions _ The Basics of Financial Econometrics_ Tools, Concepts, and Asset Management Applications.pdf",
+    "title": "CHAPTER 8_ Robust Regressions",
+    "book": "The Basics of Financial Econometrics_ Tools, Concepts, and Asset Management Applications",
+    "sha256": "bb4871ccc6ac7b2730d33f8df3f2295477a831d0eaec2798e2f6eb2deafca469",
+    "bytes": 1690630,
+    "pages": 22,
+    "doi": null
+  },
+  {
+    "id": "B36",
+    "file": "Wiley_CHAPTER 9_ Autoregressive Moving Average Models _ The Basics of Financial Econometrics_ Tools, Concepts, and Asset Management Applications.pdf",
+    "title": "CHAPTER 9_ Autoregressive Moving Average Models",
+    "book": "The Basics of Financial Econometrics_ Tools, Concepts, and Asset Management Applications",
+    "sha256": "d94c0ea1dd0a566334ce273d611c776cec8604e6b67d80c28cb8a9cbd44f7d25",
+    "bytes": 1616715,
+    "pages": 29,
+    "doi": null
+  }
+]

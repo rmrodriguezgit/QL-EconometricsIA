@@ -17,3 +17,8 @@ data/
 runs/
 *.pem
 *.key
+
+.cache/
+*.tsbuildinfo
+.toolchains/
+apps/desktop/src-tauri/binaries/

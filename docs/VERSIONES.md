@@ -1,19 +1,44 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.1.0**. Diseño inicial, sin dependencias de aplicación instaladas ni lockfiles. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.2.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. La compilación nativa sigue pendiente. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
 | Componente | Valor observado | Uso |
 |---|---|---|
 | Git | 2.53.0 | Inicialización, commits y push |
-| Python | 3.15.0 | Herramientas documentales de biblioteca estándar |
+| Python del sistema | 3.15.0 | Disponible; no es el motor científico |
+| Python del entorno .venv | 3.12.12 | Motor y pruebas científicas |
 | Node.js | v22.22.3 | Disponible; frontend no instalado |
 | Rust | No disponible en PATH | Pendiente para compilar Tauri |
 | pdftotext | Disponible en /opt/homebrew/bin | Extracción local de los 36 PDF |
 | Sistema | macOS, zsh | Host de preparación, sin validar builds destino |
 
-## Stack propuesto, pendiente de bloqueo exacto
+## Stack adoptado en 0.2.0
+
+Locks: `apps/desktop/package-lock.json` y `uv.lock`. Instalación reproducible con npm ci y uv sync --frozen. Licencias obtenidas de metadatos instalados; se debe revisar el conjunto transitivo antes de distribuir binarios.
+
+| Componente | Versión exacta | Licencia / estado |
+|---|---|---|
+| React / React DOM | 19.3.1 | MIT |
+| @xyflow/react | 12.12.0 | MIT |
+| @tauri-apps/api / CLI | 2.12.4 | MIT OR Apache-2.0 |
+| lucide-react | 1.66.0 | ISC |
+| TypeScript | 7.0.2 | Apache-2.0 |
+| Vite | 8.3.5 | MIT |
+| @vitejs/plugin-react | 6.1.2 | MIT |
+| NumPy | 2.5.4 | BSD-3-Clause y licencias de componentes vendorizados |
+| pandas | 3.1.0 | BSD-3-Clause |
+| statsmodels | 0.15.0 | BSD-3-Clause |
+| wbdata | 1.1.0 | GPL-2.0+; revisar obligaciones al distribuir la aplicación |
+| Tauri Rust / tauri-build | 2.12.5 / 2.7.4 | Fijados en Cargo.toml, no instalados ni compilados |
+| serde_json | 1.0.145 | Fijado en Cargo.toml, sin Cargo.lock todavía |
+
+Dependencias de tipos: @types/react 19.3.0, @types/react-dom 19.3.0 y @types/node 26.6.6. Versiones transitivas exactas en sus lockfiles.
+
+## Diseño inicial y componentes pendientes
+
+La siguiente tabla conserva la propuesta inicial de 0.1.0. Los componentes ya adoptados se rigen por la tabla anterior; las alternativas restantes no se han instalado.
 
 | Componente | Objetivo | Estado de versión exacta |
 |---|---|---|
@@ -48,3 +73,10 @@ Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del p
 | ADR-004 | 2026-11-01 | Commits y push al cerrar unidades de trabajo | Script invocable y regla persistente en AGENTS.md |
 
 Fuentes técnicas consultadas: [Tauri](https://v2.tauri.app/develop/sidecar/) y [React Flow](https://reactflow.dev/), 2026-11-01. No se afirma haber verificado patches de paquetes todavía no adoptados.
+
+## Decisiones de implementación 0.2.0
+
+- ADR-005: puente HTTP limitado a loopback durante desarrollo, mientras Tauri se valida. El puente lanza el mismo protocolo stdio; el build estático no incluye servidor.
+- ADR-006: primer gráfico de dispersión SVG integrado, sin Plotly/Zustand todavía. Estado React y guardado JSON; las bibliotecas propuestas se adoptarán cuando una necesidad concreta lo justifique.
+- ADR-007: snapshots JSON con 15 decimales y errores por nodo; Parquet, SQLite, caché del DAG, progreso y cancelación permanecen pendientes.
+- ADR-008: implementación inicial de OLS simple para verificar el circuito datos-modelo-resultado; no cerrar C09 ni P2 antes de inferencia, lecciones y auditoría bibliográfica.

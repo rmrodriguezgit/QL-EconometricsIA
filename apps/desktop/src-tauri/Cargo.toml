@@ -1,0 +1,13 @@
+[package]
+name = "quantlabs-desktop"
+version = "0.2.0"
+description = "Quantlabs Econometrics"
+edition = "2021"
+rust-version = "1.88"
+
+[build-dependencies]
+tauri-build = { version = "=2.7.4", features = [] }
+
+[dependencies]
+tauri = { version = "=2.12.5", features = [] }
+serde_json = "=1.0.145"

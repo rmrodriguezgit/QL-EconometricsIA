@@ -1,10 +1,10 @@
 # Arquitectura de Quantlabs-Econometrics
 
-Versión de diseño: 0.1.0. Fecha: 2026-11-01. Estado: propuesta de implementación.
+Versión de diseño: 0.1.0. Fecha: 2026-11-01. Estado: diseño objetivo. Para el alcance real de la alpha 0.2.0, consultar [DESARROLLO.md](DESARROLLO.md).
 
 ## Objetivo y límites
 
-Aprender estadística y econometría construyendo flujos visuales reproducibles, desde datos hasta inferencia y reportes. Destinos: macOS ARM64 y x86_64 y Windows x86_64. Windows ARM64 se evaluará después. Ejecución local y ejemplos sintéticos sin conexión; la descarga de datos necesita red. La primera entrega no incluye ejecutables ni un backend operativo.
+Aprender estadística y econometría construyendo flujos visuales reproducibles, desde datos hasta inferencia y reportes. Destinos: macOS ARM64 y x86_64 y Windows x86_64. Windows ARM64 se evaluará después. Ejecución local y ejemplos sintéticos sin conexión; la descarga de datos necesita red. La entrega inicial 0.1.0 fue documental. La alpha 0.2.0 añade motor e interfaz local; aún no incluye instaladores.
 
 ## Decisiones
 

@@ -6,9 +6,9 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED_REMOTE = 'https://github.com/rmrodriguezgit/Quantlabs-Econometrics.git'
-FILES = {'README.md', 'AGENTS.md', 'CHANGELOG.md', 'VERSION', '.gitignore'}
-DIRECTORIES = {'docs', 'scripts', 'tests', '.github'}
-SUFFIXES = {'.md', '.json', '.py', '.yml', '.yaml', '.toml', '.txt'}
+FILES = {'README.md', 'AGENTS.md', 'CHANGELOG.md', 'VERSION', '.gitignore', 'pyproject.toml', 'uv.lock'}
+DIRECTORIES = {'docs', 'scripts', 'tests', '.github', 'apps', 'engine', 'packages', 'examples'}
+SUFFIXES = {'.md', '.json', '.py', '.yml', '.yaml', '.toml', '.txt', '.ts', '.tsx', '.css', '.html', '.rs', '.lock'}
 
 
 def permitted(name):
@@ -19,7 +19,7 @@ def permitted(name):
         return False
     if any(part.startswith('.') and part != '.github' for part in path.parts):
         return False
-    if any(part in {'__pycache__', 'node_modules', 'data', 'runs'} for part in path.parts):
+    if any(part in {'__pycache__', 'node_modules', 'data', 'runs', 'dist', 'target', 'binaries'} for part in path.parts):
         return False
     return path.suffix.lower() in SUFFIXES
 
@@ -45,6 +45,12 @@ def sync(message, root=ROOT, remote=EXPECTED_REMOTE):
     subprocess.run([sys.executable, 'scripts/check_docs.py'], cwd=root, check=True)
     subprocess.run([sys.executable, '-m', 'unittest', 'discover', '-s', 'tests', '-v'],
                    cwd=root, check=True)
+    if (root / 'apps/desktop/package.json').exists():
+        import shutil
+        npm = shutil.which('npm.cmd' if sys.platform == 'win32' else 'npm')
+        if not npm:
+            raise ValueError('Instala Node.js y ejecuta npm ci en apps/desktop')
+        subprocess.run([npm, 'run', 'build', '--prefix', 'apps/desktop'], cwd=root, check=True)
     candidates = git('ls-files', '--cached', '--others', '--exclude-standard', '-z', root=root)
     paths = sorted({name for name in candidates.split('\0') if name and permitted(name)})
     if paths:

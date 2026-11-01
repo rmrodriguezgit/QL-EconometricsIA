@@ -1,6 +1,6 @@
 # Matriz de cobertura curricular
 
-Versión: 0.1.0 · 2026-11-01. **Todas las filas están en estado diseñado; ninguna implementada.** P1-P6 corresponden al roadmap. Los nombres de nodo son contratos propuestos.
+Versión: 0.2.0 · 2026-11-01. **No hay módulos completos. Hay implementaciones parciales en C01-C04 y C09; el resto permanece diseñado.** P1-P6 corresponden al roadmap. Los nombres de nodo son contratos propuestos.
 
 | Módulo | Temas que deben conservarse | Nodos / herramientas | Referencias | Fase | Evidencia mínima de aceptación |
 |---|---|---|---|---|---|
@@ -40,3 +40,15 @@ Panel FE/RE, errores agrupados, Hausman, panel dinámico, diferencias en diferen
 ## Protocolo para cerrar un tema
 
 Revisar las secciones completas del capítulo; desglosar cualquier subtema omitido; documentar ecuación y supuestos; implementar nodo y lección original; añadir un ejemplo reproducible y una prueba científica; registrar errores y limitaciones; actualizar estado por fila, versiones y changelog. La verificación automática garantiza que todos los capítulos tengan una fila asociada, no que todo su contenido esté implementado.
+
+## Avance implementado en 0.2.0
+
+| Módulo | Implementado y probado | Pendiente para cerrar |
+|---|---|---|
+| C01 | Canvas, experimento guiado de ingreso/consumo e inspector con supuestos | Lección completa, evaluación y revisión de secciones |
+| C02 | CSV, simulación y consulta World Bank con procedencia y faltantes | Deflactación, per cápita, panel, Excel y edición de unidades |
+| C03 | Dispersión con ejes y recta OLS cuando coincide la muestra | Barras, histograma, series y ejercicios de sesgos visuales |
+| C04 | Media, mediana, desviación muestral, extremos y recuentos | Caja, crecimiento, media geométrica y correlación |
+| C09 | OLS simple, IC 95 %, p-valores, R², residuos, covarianza clásica/HC3 | Lecciones, supuestos ampliados, intervalos de predicción y revisión completa del capítulo |
+
+La base de cada implementación se vincula a las referencias de su fila. La revisión fina de capítulos y ejercicios sigue pendiente; no se declara completada por haber implementado el nodo.

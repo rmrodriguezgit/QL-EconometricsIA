@@ -1,6 +1,6 @@
 # Plan por versiones
 
-Fecha: 2026-11-01. No se asignan fechas de entrega sin estimación y validación del equipo.
+Fecha: 2026-11-01. Estado: P0 completada; P1 en curso; P2 con adelanto OLS simple. La entrega 0.2.0 inicia P1, pero no acredita todavía sus condiciones de cierre. No se asignan fechas de entrega sin estimación y validación del equipo.
 
 | Fase | Versión objetivo | Entregable | Condición de cierre |
 |---|---|---|---|

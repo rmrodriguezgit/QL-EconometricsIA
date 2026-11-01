@@ -36,7 +36,9 @@ class ScopeTests(unittest.TestCase):
     def test_private_files_excluded(self):
         for name in ['bibliografía/book.pdf', 'bibliografía.zip', '.env',
                      'docs/book.pdf', 'docs/token.key', 'scripts/__pycache__/a.pyc',
-                     'docs/.env.txt', 'data/private.csv']:
+                     'docs/.env.txt', 'data/private.csv', 'apps/desktop/node_modules/pkg/index.ts',
+                     'apps/desktop/dist/index.html', 'apps/desktop/src-tauri/target/build.rs',
+                     'apps/desktop/src-tauri/binaries/engine.lock']:
             self.assertFalse(sync.permitted(name), name)
         self.assertTrue(sync.permitted('docs/ARQUITECTURA.md'))
         self.assertTrue(sync.permitted('.github/workflows/docs.yml'))
@@ -60,7 +62,7 @@ class ScopeTests(unittest.TestCase):
         responses = ['main', sync.EXPECTED_REMOTE, '', 'author', 'author@example.test',
                      'README.md', '', 'README.md', '', 'abc123']
         with patch.object(sync, 'git', side_effect=responses) as git, \
-             patch.object(sync.subprocess, 'run', side_effect=[None, None,
+             patch.object(sync.subprocess, 'run', side_effect=[None, None, None,
                          subprocess.CalledProcessError(1, ['git', 'push'])]):
             with self.assertRaises(subprocess.CalledProcessError):
                 sync.sync('docs: change')

@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.0.0",
+  "app_version": "0.2.0",
+  "title": "Ingreso y consumo",
+  "nodes": [
+    {
+      "id": "data",
+      "type": "simulate",
+      "node_version": "1.0.0",
+      "parameters": {
+        "n": 120,
+        "seed": 42,
+        "intercept": 12,
+        "slope": 0.72,
+        "noise": 9
+      },
+      "position": {
+        "x": 30,
+        "y": 150
+      }
+    },
+    {
+      "id": "summary",
+      "type": "describe",
+      "node_version": "1.0.0",
+      "parameters": {},
+      "position": {
+        "x": 350,
+        "y": 15
+      }
+    },
+    {
+      "id": "model",
+      "type": "ols",
+      "node_version": "1.0.0",
+      "parameters": {
+        "x": "ingreso",
+        "y": "consumo",
+        "covariance": "HC3"
+      },
+      "position": {
+        "x": 350,
+        "y": 160
+      }
+    },
+    {
+      "id": "chart",
+      "type": "scatter",
+      "node_version": "1.0.0",
+      "parameters": {
+        "x": "ingreso",
+        "y": "consumo"
+      },
+      "position": {
+        "x": 350,
+        "y": 305
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "data-summary",
+      "source": "data",
+      "target": "summary",
+      "source_port": "data",
+      "target_port": "data"
+    },
+    {
+      "id": "data-model",
+      "source": "data",
+      "target": "model",
+      "source_port": "data",
+      "target_port": "data"
+    },
+    {
+      "id": "data-chart",
+      "source": "data",
+      "target": "chart",
+      "source_port": "data",
+      "target_port": "data"
+    }
+  ]
+}

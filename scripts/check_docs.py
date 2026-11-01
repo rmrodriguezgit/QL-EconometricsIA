@@ -6,7 +6,7 @@ import re
 ROOT = Path(__file__).resolve().parents[1]
 REQUIRED = ['README.md', 'AGENTS.md', 'CHANGELOG.md', 'VERSION',
             'docs/ARQUITECTURA.md', 'docs/BIBLIOGRAFIA.md', 'docs/COBERTURA.md',
-            'docs/ROADMAP.md', 'docs/VERSIONES.md', 'docs/VERSIONADO.md']
+            'docs/ROADMAP.md', 'docs/VERSIONES.md', 'docs/VERSIONADO.md', 'docs/DESARROLLO.md']
 
 
 def check(root=ROOT):

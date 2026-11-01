@@ -11,12 +11,12 @@ La identidad de autor, si no existe configuración previa, se configura solo en 
 ## Cierre automático de cada unidad
 
 ```sh
-python3 scripts/sync.py --message "docs: actualizar cobertura"
+uv run python scripts/sync.py --message "docs: actualizar cobertura"
 ```
 
-El script verifica la rama y el remoto, rechaza cambios ajenos ya staged, ejecuta el comprobador documental y pruebas de automatización, agrega solo archivos permitidos, crea commit si procede y siempre intenta push. El código distinto de cero indica fallo. No crea commits vacíos; si el push anterior falló, se puede repetir sin duplicar commits. Exige identidad Git configurada y autenticación disponible.
+El script verifica la rama y el remoto, rechaza cambios ajenos ya staged, ejecuta el comprobador documental, pruebas científicas/de automatización y build frontend, agrega solo archivos permitidos, crea commit si procede y siempre intenta push. El código distinto de cero indica fallo. No crea commits vacíos; si el push anterior falló, se puede repetir sin duplicar commits. Exige identidad Git configurada y autenticación disponible.
 
-Rutas iniciales permitidas: README.md, AGENTS.md, CHANGELOG.md, VERSION, .gitignore, docs/, scripts/, tests/ y .github/. Al incorporar código se amplía explícitamente la lista en sync.py. Los PDF, ZIP y datos privados siguen excluidos incluso dentro de estas rutas. El script es invocable; AGENTS.md indica a los agentes ejecutarlo al terminar. No se ha instalado un monitor, hook ni scheduler.
+Rutas permitidas: README.md, AGENTS.md, CHANGELOG.md, VERSION, .gitignore, pyproject.toml, uv.lock, docs/, scripts/, tests/, .github/, apps/, engine/, packages/ y examples/. La lista de extensiones excluye binarios; node_modules, dist, target, binaries, datos y cachés quedan fuera. Los PDF, ZIP y datos privados siguen excluidos incluso dentro de estas rutas. El script es invocable; AGENTS.md indica a los agentes ejecutarlo al terminar. No se ha instalado un monitor, hook ni scheduler.
 
 ## Conflictos y recuperación
 
@@ -28,4 +28,4 @@ Rutas iniciales permitidas: README.md, AGENTS.md, CHANGELOG.md, VERSION, .gitign
 
 ## Automatización en GitHub
 
-`.github/workflows/docs.yml` ejecuta validación documental y pruebas en macOS/Windows con Python 3.12 ante push y pull request. No modifica archivos ni crea commits recursivos. Su ejecución remota debe comprobarse después del push; una prueba local no prueba que CI haya terminado.
+`.github/workflows/docs.yml` instala uv.lock y package-lock.json y ejecuta validación documental, pruebas científicas y build frontend en macOS/Windows con Python 3.12/Node 22 ante push y pull request. No modifica archivos ni crea commits recursivos. Su ejecución remota debe comprobarse después del push; una prueba local no prueba que CI haya terminado.

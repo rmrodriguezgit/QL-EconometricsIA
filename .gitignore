@@ -22,3 +22,5 @@ runs/
 *.tsbuildinfo
 .toolchains/
 apps/desktop/src-tauri/binaries/
+
+.quantlabs/

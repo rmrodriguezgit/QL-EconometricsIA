@@ -1,6 +1,6 @@
 # Matriz de cobertura curricular
 
-Versión: 0.2.1 · 2026-11-01. **No hay módulos completos. Hay implementaciones parciales en C01-C04 y C09; el resto permanece diseñado.** P1-P6 corresponden al roadmap. Los nombres de nodo son contratos propuestos.
+Versión: 0.3.0 · 2026-11-01. **No hay módulos completos. Los 28 módulos tienen ahora un experimento introductorio ejecutable; los subtemas no ejercitados siguen pendientes. Los nodos estándar adicionales mantienen su alcance parcial.** P1-P6 corresponden al roadmap. Los nombres de nodo son contratos propuestos.
 
 | Módulo | Temas que deben conservarse | Nodos / herramientas | Referencias | Fase | Evidencia mínima de aceptación |
 |---|---|---|---|---|---|
@@ -52,3 +52,7 @@ Revisar las secciones completas del capítulo; desglosar cualquier subtema omiti
 | C09 | OLS simple, IC 95 %, p-valores, R², residuos, covarianza clásica/HC3 | Lecciones, supuestos ampliados, intervalos de predicción y revisión completa del capítulo |
 
 La base de cada implementación se vincula a las referencias de su fila. La revisión fina de capítulos y ejercicios sigue pendiente; no se declara completada por haber implementado el nodo.
+
+## Experimentos disponibles en 0.3.0
+
+Cada ID C01-C28 tiene una ficha y un JSON ejecutable en [EJEMPLOS.md](EJEMPLOS.md). Las fichas conservan todos los temas de la matriz como guía de ampliación y referencias B01-B36. Se probaron los 28 proyectos, pero su ejecución correcta no equivale a completar cada sección de la bibliografía. Los límites concretos se muestran en los reportes y en [AUDITORIA.md](AUDITORIA.md).

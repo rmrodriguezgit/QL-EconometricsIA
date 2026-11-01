@@ -23,7 +23,7 @@ class DocumentationTests(unittest.TestCase):
     def test_missing_reference_detected(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)
-            for name in [*check_docs.REQUIRED, 'docs/bibliografia.json']:
+            for name in [*check_docs.REQUIRED, 'docs/bibliografia.json', 'examples/catalog.json', *[str(p.relative_to(ROOT)) for p in (ROOT / 'examples/projects').glob('*.json')]]:
                 dest = root / name
                 dest.parent.mkdir(parents=True, exist_ok=True)
                 dest.write_bytes((ROOT / name).read_bytes())

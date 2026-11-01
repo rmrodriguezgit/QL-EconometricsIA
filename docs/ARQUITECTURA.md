@@ -1,6 +1,6 @@
 # Arquitectura de Quantlabs-Econometrics
 
-Versión de diseño: 0.1.0. Fecha: 2026-11-01. Estado: diseño objetivo. Para el alcance real de la alpha 0.2.0, consultar [DESARROLLO.md](DESARROLLO.md).
+Versión de diseño: 0.1.0. Fecha: 2026-11-01. Estado: diseño objetivo. Para el alcance real de la alpha 0.3.0, consultar [DESARROLLO.md](DESARROLLO.md).
 
 ## Objetivo y límites
 
@@ -109,3 +109,7 @@ CI actual verifica solo documentación y automatización en macOS/Windows. La fa
 Consultadas el 2026-11-01: [Tauri: sidecars](https://v2.tauri.app/develop/sidecar/) y [React Flow](https://reactflow.dev/). Estas fuentes respaldan integración y paquete, no un benchmark de rendimiento ni versiones exactas del stack completo.
 
 Pendientes: patches y lockfiles, biblioteca SEM/HMM/IV-GMM, motor GARCH multivariado, restricciones mínimas de OS, firma y distribución de actualizaciones. Cada decisión debe fijar versión, licencia, pruebas y motivo en VERSIONES.md antes de adoptarse.
+
+## Implementación incremental 0.3.0
+
+El administrador usa archivos JSON administrados y papelera local antes de introducir SQLite. La identidad de fuente acompaña los resultados para impedir mezclar un gráfico con la estimación de otro dataset. El tipo experiment añade recetas autónomas registradas para los 28 módulos; su catálogo está separado del registro de nodos y no permite ejecutar código arbitrario. Ver DESARROLLO.md y AUDITORIA.md para contratos, límites y estado real.

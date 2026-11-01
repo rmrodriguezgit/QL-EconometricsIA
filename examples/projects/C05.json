@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0.0",
+  "app_version": "0.3.0",
+  "title": "C05 · Bayes y el teorema del límite central",
+  "nodes": [
+    {
+      "id": "experiment",
+      "type": "experiment",
+      "node_version": "1.0.0",
+      "parameters": {
+        "topic": "C05",
+        "seed": 42,
+        "n": 300
+      },
+      "position": {
+        "x": 150,
+        "y": 100
+      }
+    }
+  ],
+  "edges": []
+}

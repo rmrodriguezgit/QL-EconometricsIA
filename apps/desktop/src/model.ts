@@ -1,11 +1,12 @@
-export type Kind = 'simulate' | 'csv' | 'worldbank' | 'describe' | 'scatter' | 'ols';
+export type Kind = 'simulate' | 'csv' | 'worldbank' | 'describe' | 'scatter' | 'ols' | 'experiment';
 export type Parameters = Record<string, string | number>;
 export type ProjectNode = { id: string; type: Kind; node_version: '1.0.0'; parameters: Parameters; position: { x: number; y: number } };
 export type Project = { schema_version: '1.0.0'; app_version: string; title: string; nodes: ProjectNode[]; edges: { id: string; source: string; target: string; source_port: string; target_port: string }[] };
 export type NodeResult = { status: 'succeeded' | 'failed' | 'skipped'; result?: Record<string, unknown>; error?: { code: string; message: string }; message?: string };
 export type Run = { run_id: string; status: string; nodes: Record<string, NodeResult>; manifest: { graph_sha256: string; [key: string]: unknown } };
-export const version = '0.2.1';
+export const version = '0.3.0';
 export const catalog: Record<Kind, { label: string; detail: string; category: string; color: string; references: string; explanation: string; defaults: Parameters }> = {
+  experiment: { label: 'Experimento guiado', detail: 'Un laboratorio para cada tema', category: 'Experimentos', color: 'purple', references: 'Catálogo C01–C28', explanation: 'Ejecuta un experimento reproducible del catálogo. Cada tema incluye interpretación, bibliografía y límites; los modelos no cubiertos permanecen explícitos.', defaults: { topic: 'C01', seed: 42, n: 300 } },
   simulate: { label: 'Datos simulados', detail: 'Una muestra que puedes reproducir', category: 'Fuentes de datos', color: 'green', references: 'B18 · B29', explanation: 'Consumo = intercepto + pendiente × ingreso + ruido normal. Cambia la semilla para obtener otra muestra o consérvala para repetir el experimento.', defaults: { n: 120, seed: 42, intercept: 12, slope: 0.72, noise: 9 } },
   csv: { label: 'Archivo CSV', detail: 'Tus datos, desde un archivo local', category: 'Fuentes de datos', color: 'green', references: 'B16', explanation: 'Importa hasta 10.000 filas y 50 columnas. Los datos faltantes permanecen explícitos; declara sus unidades antes de interpretar.', defaults: { content: '', delimiter: ',' } },
   worldbank: { label: 'Banco Mundial', detail: 'Indicadores económicos por país', category: 'Fuentes de datos', color: 'green', references: 'B01', explanation: 'Consulta un indicador anual por país. Requiere conexión. La ejecución registra consulta, fecha y huella de los datos; revisa las unidades del indicador.', defaults: { country: 'MEX', indicator: 'NY.GDP.PCAP.KD', start: 2000, end: 2023 } },
@@ -23,7 +24,8 @@ export function starter(): Project {
 }
 export function parseProject(text: string): Project {
   if (new TextEncoder().encode(text).length > 3_000_000) throw new Error('El proyecto supera 3 MB.');
-  const value = JSON.parse(text);
+  let value;
+  try { value = JSON.parse(text); } catch (reason) { throw new Error(`JSON inválido: ${reason instanceof Error ? reason.message : String(reason)}`); }
   if (!value || value.schema_version !== '1.0.0' || typeof value.title !== 'string' || value.title.length > 120 || !Array.isArray(value.nodes) || !Array.isArray(value.edges) || value.nodes.length > 100 || value.edges.length > 400) throw new Error('Formato o versión de proyecto no compatible.');
   for (const node of value.nodes) {
     if (!node || typeof node.id !== 'string' || !Object.hasOwn(catalog, node.type) || node.node_version !== '1.0.0' || !node.parameters || Array.isArray(node.parameters) || typeof node.parameters !== 'object' || !Object.values(node.parameters).every(v => typeof v === 'string' || (typeof v === 'number' && Number.isFinite(v))) || !Number.isFinite(node.position?.x) || !Number.isFinite(node.position?.y)) throw new Error('El proyecto contiene un nodo inválido.');

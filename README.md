@@ -2,7 +2,7 @@
 
 Laboratorio educativo de econometría con programación visual mediante nodos y motor analítico Python. Objetivo de escritorio: macOS y Windows. [Repositorio](https://github.com/rmrodriguezgit/Quantlabs-Econometrics).
 
-**Versión 0.2.1 · 2026-11-01 · Alpha funcional en modo de desarrollo local. Integración Tauri preparada, sin compilar todavía.**
+**Versión 0.3.0 · 2026-11-01 · Alpha funcional en modo de desarrollo local. Integración Tauri preparada, sin compilar todavía.**
 
 ## Arrancar
 
@@ -18,21 +18,25 @@ Abre [el laboratorio local](http://127.0.0.1:1420) y pulsa **Ejecutar flujo**. E
 
 ## Ya funciona
 
-- Canvas editable con conexiones, seis tipos de nodo, eliminación, zoom y deshacer. Desconecta enlaces desde el inspector o seleccionando su línea y pulsando **Desconectar**.
+- **Archivos y ejemplos**: catálogo de 28 experimentos, uno por módulo, con objetivos, subtemas y referencias a los 36 capítulos.
+- **Mis proyectos**: guardar, abrir, editar JSON, validar, ejecutar, duplicar y exportar. Borrar mueve a una papelera restaurable.
+- **Auditoría** dentro del administrador: comprueba catálogo, referencias, almacenamiento e integridad y muestra los pendientes.
+
+- Canvas editable con conexiones, siete tipos de nodo, eliminación, zoom y deshacer. Desconecta enlaces desde el inspector o seleccionando su línea y pulsando **Desconectar**.
 - Datos sintéticos con semilla, CSV local y consulta anual de un indicador/país del Banco Mundial. Lista desplegable con búsqueda en el catálogo completo de indicadores y selección automática de su fuente.
 - Descriptivos, dispersión y regresión OLS simple con covarianza clásica o HC3.
 - Ventana **Ecuación** con fórmula poblacional y recta ajustada con los coeficientes calculados.
 - Tabla de coeficientes, errores estándar, p-valores, R² y muestra efectiva.
-- Guardar y abrir proyectos JSON; exportar resultados, snapshots de datos y manifiesto con versiones y huellas.
+- Guardar y abrir borradores/proyectos JSON; exportar resultados, snapshots de datos y manifiesto con versiones y huellas.
 - Validación de grafo y tipos; errores por nodo y omisión de ramas dependientes.
 
 El ejemplo [ingreso-consumo.json](examples/ingreso-consumo.json) se incluye al abrir. Los cálculos se ejecutan en Python; no hay resultados simulados por la interfaz. El nodo de datos sintéticos sí genera una muestra artificial identificada como tal.
 
 ## Límites de esta alpha
 
-P1 sigue abierta. Faltan instaladores nativos, Excel, más indicadores simultáneos, unidades editables, limpieza/transformaciones, almacenamiento Parquet/SQLite, caché del DAG, cancelación y lecciones completas. OLS es una primera implementación de P2; no completa su módulo curricular. Hay 36 capítulos inventariados y 28 módulos planificados. La cobertura bibliográfica es una guía de implementación, no una lista de funciones disponibles.
+Las fases curriculares siguen abiertas. Hay un experimento introductorio ejecutable para cada uno de los 28 módulos; esto no completa todos sus subtemas. Los ejemplos avanzados son recetas registradas en un nodo autónomo, no bloques independientes de todos los estimadores. Faltan instaladores nativos, Excel, panel, GARCH multivariado, GMM general, almacenamiento Parquet/SQLite, caché del DAG, cancelación y lecciones completas. Consulta la auditoría para distinguir lo corregido de lo pendiente.
 
-Los proyectos guardados incluyen el contenido de CSV importados. Los resultados exportados incluyen datos de la ejecución; se guardan solo al solicitarlos. No existe autoguardado ni recuperación después de cerrar la pestaña: descarga el proyecto antes de salir. Los PDF, ZIP, datasets y cachés no se publican en Git.
+Los proyectos guardados incluyen el contenido de CSV importados. Los resultados exportados incluyen datos de la ejecución; se guardan solo al solicitarlos. El botón Guardar incorpora el proyecto a **Mis proyectos**, en `.quantlabs/projects/` local (excluida de Git). No existe autoguardado: guarda antes de salir. El editor JSON avisa al descartar cambios y el canvas avisa al cerrar con cambios pendientes. Los proyectos guardados pueden reabrirse; la papelera permite recuperar los borrados. Los PDF, ZIP, datasets y cachés no se publican en Git.
 
 ## Verificar y publicar cambios
 
@@ -49,6 +53,8 @@ El último comando valida documentación, pruebas y frontend, incorpora rutas pe
 
 | Archivo | Contenido |
 |---|---|
+| [Catálogo de ejemplos](docs/EJEMPLOS.md) | Los 28 experimentos y sus archivos JSON |
+| [Auditoría](docs/AUDITORIA.md) | Hallazgos, correcciones y pendientes verificables |
 | [Desarrollo](docs/DESARROLLO.md) | Ejecución, protocolo, pruebas y límites actuales |
 | [Arquitectura](docs/ARQUITECTURA.md) | Diseño de capas, IPC, DAG, datos y distribución |
 | [Bibliografía](docs/BIBLIOGRAFIA.md) | Inventario verificable de 36 capítulos |

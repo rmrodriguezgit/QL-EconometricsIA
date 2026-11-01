@@ -92,6 +92,8 @@ class EngineTests(unittest.TestCase):
         self.assertEqual(dispatch({**request, 'method': 'bad'})['error']['code'], -32601)
         self.assertEqual(dispatch({**request, 'params': []})['error']['code'], -32602)
         self.assertEqual(dispatch([])['error']['code'], -32600)
+        self.assertEqual(dispatch({**request, 'id': {}})['error']['code'], -32600)
+        self.assertEqual(dispatch({**request, 'method': []})['error']['code'], -32600)
 
     def test_stdio_multiple_requests_and_malformed_json(self):
         requests = 'broken\n' + json.dumps({'jsonrpc': '2.0', 'id': 7, 'method': 'engine.health'}) + '\n'

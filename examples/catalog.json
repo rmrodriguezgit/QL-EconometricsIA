@@ -1,0 +1,405 @@
+{
+  "version": "1.0.0",
+  "examples": [
+    {
+      "id": "C01",
+      "title": "Del proceso generador a la estimación",
+      "topics": "Econometría, teoría, DGP, especificación, estimación y contraste",
+      "references": [
+        "B01",
+        "B28"
+      ],
+      "phase": "P1",
+      "status": "executable",
+      "objective": "Explorar del proceso generador a la estimación con datos sintéticos y una semilla reproducible.",
+      "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando econometría, teoría, dgp, especificación, estimación y contraste.",
+      "acceptance": "Estudiante distingue datos, supuestos e inferencia",
+      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+    },
+    {
+      "id": "C02",
+      "title": "Nominal, real y per cápita",
+      "topics": "Medición, categorías, corte transversal, tiempo, panel, índices, deflactación y per cápita",
+      "references": [
+        "B16"
+      ],
+      "phase": "P1",
+      "status": "executable",
+      "objective": "Explorar nominal, real y per cápita con datos sintéticos y una semilla reproducible.",
+      "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando medición, categorías, corte transversal, tiempo, panel, índices, deflactación y per cápita.",
+      "acceptance": "Unidades y claves verificadas; ejemplo nominal/real",
+      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+    },
+    {
+      "id": "C03",
+      "title": "Visualizar sin ocultar observaciones",
+      "topics": "Barras, histogramas, dispersión, series, ejes y sesgos visuales",
+      "references": [
+        "B17"
+      ],
+      "phase": "P1",
+      "status": "executable",
+      "objective": "Explorar visualizar sin ocultar observaciones con datos sintéticos y una semilla reproducible.",
+      "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando barras, histogramas, dispersión, series, ejes y sesgos visuales.",
+      "acceptance": "Gráficos y tablas concordantes con unidades visibles",
+      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+    },
+    {
+      "id": "C04",
+      "title": "Describir antes de explicar",
+      "topics": "Media, mediana, varianza, desviación, caja, crecimiento, media geométrica y correlación",
+      "references": [
+        "B18"
+      ],
+      "phase": "P1",
+      "status": "executable",
+      "objective": "Explorar describir antes de explicar con datos sintéticos y una semilla reproducible.",
+      "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando media, mediana, varianza, desviación, caja, crecimiento, media geométrica y correlación.",
+      "acceptance": "Resultado conocido y dominio de crecimiento validado",
+      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+    },
+    {
+      "id": "C05",
+      "title": "Bayes y el teorema del límite central",
+      "topics": "Probabilidad, condicional, independencia, Bayes, esperanza, normal, estandarización y TCL",
+      "references": [
+        "B19"
+      ],
+      "phase": "P2",
+      "status": "executable",
+      "objective": "Explorar bayes y el teorema del límite central con datos sintéticos y una semilla reproducible.",
+      "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando probabilidad, condicional, independencia, bayes, esperanza, normal, estandarización y tcl.",
+      "acceptance": "Simulación con semilla y explicación de probabilidades",
+      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+    },
+    {
+      "id": "C06",
+      "title": "Muestreo aleatorio y sesgo de selección",
+      "topics": "Población, muestra aleatoria, selección, supervivencia, observación, experimento y confusión",
+      "references": [
+        "B20"
+      ],
+      "phase": "P2",
+      "status": "executable",
+      "objective": "Explorar muestreo aleatorio y sesgo de selección con datos sintéticos y una semilla reproducible.",
+      "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando población, muestra aleatoria, selección, supervivencia, observación, experimento y confusión.",
+      "acceptance": "Ejemplo de sesgo y muestreo reproducible",
+      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+    },
+    {
+      "id": "C07",
+      "title": "La incertidumbre de una media",
+      "topics": "Sesgo/varianza de estimadores, distribución muestral, intervalos t, nivel, tamaño y corrección finita",
+      "references": [
+        "B21"
+      ],
+      "phase": "P2",
+      "status": "executable",
+      "objective": "Explorar la incertidumbre de una media con datos sintéticos y una semilla reproducible.",
+      "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando sesgo/varianza de estimadores, distribución muestral, intervalos t, nivel, tamaño y corrección finita.",
+      "acceptance": "Intervalos correctos sobre muestra conocida",
+      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+    },
+    {
+      "id": "C08",
+      "title": "Pruebas de hipótesis con pares",
+      "topics": "H0/H1, p-valores, significancia, pares, efecto práctico y minería de datos",
+      "references": [
+        "B22"
+      ],
+      "phase": "P2",
+      "status": "executable",
+      "objective": "Explorar pruebas de hipótesis con pares con datos sintéticos y una semilla reproducible.",
+      "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando h0/h1, p-valores, significancia, pares, efecto práctico y minería de datos.",
+      "acceptance": "Interpretación correcta y registro de contrastes múltiples",
+      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+    },
+    {
+      "id": "C09",
+      "title": "Ingreso y consumo: OLS simple",
+      "topics": "OLS simple, residuos, supuestos, R², intervalos de coeficientes y predicción, consumo",
+      "references": [
+        "B03",
+        "B23",
+        "B29"
+      ],
+      "phase": "P2",
+      "status": "executable",
+      "objective": "Explorar ingreso y consumo: ols simple con datos sintéticos y una semilla reproducible.",
+      "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando ols simple, residuos, supuestos, r², intervalos de coeficientes y predicción, consumo.",
+      "acceptance": "Coincidencia con statsmodels y muestra documentada",
+      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+    },
+    {
+      "id": "C10",
+      "title": "Regresión múltiple y multicolinealidad",
+      "topics": "OLS múltiple, matriz de diseño, t/F, covarianza, correlación, controles, multicolinealidad",
+      "references": [
+        "B04",
+        "B14",
+        "B30"
+      ],
+      "phase": "P2",
+      "status": "executable",
+      "objective": "Explorar regresión múltiple y multicolinealidad con datos sintéticos y una semilla reproducible.",
+      "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando ols múltiple, matriz de diseño, t/f, covarianza, correlación, controles, multicolinealidad.",
+      "acceptance": "Detectar rango deficiente y reproducir t/F",
+      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+    },
+    {
+      "id": "C11",
+      "title": "Diagnosticar heterocedasticidad",
+      "topics": "Selección de variables, stepwise, especificación, heterocedasticidad, autocorrelación, influencia y atípicos",
+      "references": [
+        "B24",
+        "B31"
+      ],
+      "phase": "P2",
+      "status": "executable",
+      "objective": "Explorar diagnosticar heterocedasticidad con datos sintéticos y una semilla reproducible.",
+      "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando selección de variables, stepwise, especificación, heterocedasticidad, autocorrelación, influencia y atípicos.",
+      "acceptance": "No confundir inferencia robusta con estimación robusta",
+      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+    },
+    {
+      "id": "C12",
+      "title": "Clasificar con logit y probit",
+      "topics": "Dummies, interacciones, cambio estructural, Chow, probabilidad lineal, logit y probit",
+      "references": [
+        "B06",
+        "B33"
+      ],
+      "phase": "P3",
+      "status": "executable",
+      "objective": "Explorar clasificar con logit y probit con datos sintéticos y una semilla reproducible.",
+      "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando dummies, interacciones, cambio estructural, chow, probabilidad lineal, logit y probit.",
+      "acceptance": "Evitar dummy trap, mostrar efectos marginales y clasificación",
+      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+    },
+    {
+      "id": "C13",
+      "title": "Elasticidades de Cobb-Douglas",
+      "topics": "Formas lineales, polinomios, potencia, logaritmos, elasticidad, Cobb-Douglas, crecimiento y causalidad",
+      "references": [
+        "B15"
+      ],
+      "phase": "P3",
+      "status": "executable",
+      "objective": "Explorar elasticidades de cobb-douglas con datos sintéticos y una semilla reproducible.",
+      "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando formas lineales, polinomios, potencia, logaritmos, elasticidad, cobb-douglas, crecimiento y causalidad.",
+      "acceptance": "Transformaciones válidas y coeficientes interpretados",
+      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+    },
+    {
+      "id": "C14",
+      "title": "AR(1) frente a un paseo aleatorio",
+      "topics": "Tendencia, ciclo, estacionalidad, ecuaciones en diferencias, random walk, ruido y rezagos",
+      "references": [
+        "B32"
+      ],
+      "phase": "P3",
+      "status": "executable",
+      "objective": "Explorar ar(1) frente a un paseo aleatorio con datos sintéticos y una semilla reproducible.",
+      "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando tendencia, ciclo, estacionalidad, ecuaciones en diferencias, random walk, ruido y rezagos.",
+      "acceptance": "Rezagos no cruzan países y respetan años ausentes",
+      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+    },
+    {
+      "id": "C15",
+      "title": "Pronosticar con una prueba temporal",
+      "topics": "AR/MA/ARMA/ARIMA/SARIMA, ACF/PACF, estacionariedad, ADF/KPSS, suavizado aditivo, forecast y VAR",
+      "references": [
+        "B05",
+        "B36"
+      ],
+      "phase": "P3",
+      "status": "executable",
+      "objective": "Explorar pronosticar con una prueba temporal con datos sintéticos y una semilla reproducible.",
+      "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando ar/ma/arma/arima/sarima, acf/pacf, estacionariedad, adf/kpss, suavizado aditivo, forecast y var.",
+      "acceptance": "Evaluación temporal, intervalos y residuos sin fuga de información",
+      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+    },
+    {
+      "id": "C16",
+      "title": "Cointegración y corrección de errores",
+      "topics": "Regresión espuria, integración, Engle-Granger, Johansen, rango y corrección de errores",
+      "references": [
+        "B25"
+      ],
+      "phase": "P4",
+      "status": "executable",
+      "objective": "Explorar cointegración y corrección de errores con datos sintéticos y una semilla reproducible.",
+      "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando regresión espuria, integración, engle-granger, johansen, rango y corrección de errores.",
+      "acceptance": "Orden de integración y términos deterministas explícitos",
+      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+    },
+    {
+      "id": "C17",
+      "title": "La volatilidad cambia: GARCH(1,1)",
+      "topics": "Homocedasticidad, ARCH/GARCH, asimetría, EGARCH, volatilidad y ARCH multivariado",
+      "references": [
+        "B26"
+      ],
+      "phase": "P4",
+      "status": "executable",
+      "objective": "Explorar la volatilidad cambia: garch(1,1) con datos sintéticos y una semilla reproducible.",
+      "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando homocedasticidad, arch/garch, asimetría, egarch, volatilidad y arch multivariado.",
+      "acceptance": "Convergencia, restricciones y residuos estandarizados; motor multivariado validado aparte",
+      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+    },
+    {
+      "id": "C18",
+      "title": "Más allá de la media: cuantiles",
+      "topics": "Cuantiles, asimetría, colas, diferencias entre coeficientes y regresión temporal/transversal",
+      "references": [
+        "B34"
+      ],
+      "phase": "P4",
+      "status": "executable",
+      "objective": "Explorar más allá de la media: cuantiles con datos sintéticos y una semilla reproducible.",
+      "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando cuantiles, asimetría, colas, diferencias entre coeficientes y regresión temporal/transversal.",
+      "acceptance": "Cobertura de varios cuantiles y contraste válido",
+      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+    },
+    {
+      "id": "C19",
+      "title": "Regresión robusta con valores atípicos",
+      "topics": "Robustez a atípicos, estimadores robustos e influencia",
+      "references": [
+        "B35"
+      ],
+      "phase": "P4",
+      "status": "executable",
+      "objective": "Explorar regresión robusta con valores atípicos con datos sintéticos y una semilla reproducible.",
+      "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando robustez a atípicos, estimadores robustos e influencia.",
+      "acceptance": "Contaminación sintética y distinción respecto de HC/HAC",
+      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+    },
+    {
+      "id": "C20",
+      "title": "PCA y factores: dos reducciones distintas",
+      "topics": "Factores, cargas, puntuaciones, modelos factoriales y componentes principales",
+      "references": [
+        "B11"
+      ],
+      "phase": "P5",
+      "status": "executable",
+      "objective": "Explorar pca y factores: dos reducciones distintas con datos sintéticos y una semilla reproducible.",
+      "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando factores, cargas, puntuaciones, modelos factoriales y componentes principales.",
+      "acceptance": "Estandarización, varianza explicada y diferencia PCA/factores",
+      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+    },
+    {
+      "id": "C21",
+      "title": "Endogeneidad y variables instrumentales",
+      "topics": "Propiedades, OLS/WLS/GLS, máxima verosimilitud, IV/2SLS, momentos y GMM",
+      "references": [
+        "B12"
+      ],
+      "phase": "P4",
+      "status": "executable",
+      "objective": "Explorar endogeneidad y variables instrumentales con datos sintéticos y una semilla reproducible.",
+      "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando propiedades, ols/wls/gls, máxima verosimilitud, iv/2sls, momentos y gmm.",
+      "acceptance": "Identificación, instrumentos y condiciones de momentos documentadas",
+      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+    },
+    {
+      "id": "C22",
+      "title": "Complejidad, AIC, BIC y prueba externa",
+      "topics": "Complejidad, penalización, sobreajuste, validación, AIC/BIC/R² ajustado, model averaging y riesgo",
+      "references": [
+        "B13"
+      ],
+      "phase": "P4",
+      "status": "executable",
+      "objective": "Explorar complejidad, aic, bic y prueba externa con datos sintéticos y una semilla reproducible.",
+      "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando complejidad, penalización, sobreajuste, validación, aic/bic/r² ajustado, model averaging y riesgo.",
+      "acceptance": "Misma muestra al comparar y separación de ajuste/evaluación",
+      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+    },
+    {
+      "id": "C23",
+      "title": "Backtest temporal con costos",
+      "topics": "Estrategias, justificación ex ante, muestra sin supervivencia, sobreajuste, costos y backtest",
+      "references": [
+        "B27"
+      ],
+      "phase": "P6",
+      "status": "executable",
+      "objective": "Explorar backtest temporal con costos con datos sintéticos y una semilla reproducible.",
+      "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando estrategias, justificación ex ante, muestra sin supervivencia, sobreajuste, costos y backtest.",
+      "acceptance": "Separación temporal, costos y disponibilidad histórica",
+      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+    },
+    {
+      "id": "C24",
+      "title": "Regímenes ocultos y mezclas gaussianas",
+      "topics": "Regímenes ocultos, Markov, transiciones y mezclas gaussianas",
+      "references": [
+        "B07"
+      ],
+      "phase": "P5",
+      "status": "executable",
+      "objective": "Explorar regímenes ocultos y mezclas gaussianas con datos sintéticos y una semilla reproducible.",
+      "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando regímenes ocultos, markov, transiciones y mezclas gaussianas.",
+      "acceptance": "Distinguir dependencia temporal de mezcla independiente",
+      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+    },
+    {
+      "id": "C25",
+      "title": "Grupos con k-means",
+      "topics": "K-means, distancias, escalado, centroides, elección de k e INB por continente",
+      "references": [
+        "B08"
+      ],
+      "phase": "P5",
+      "status": "executable",
+      "objective": "Explorar grupos con k-means con datos sintéticos y una semilla reproducible.",
+      "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando k-means, distancias, escalado, centroides, elección de k e inb por continente.",
+      "acceptance": "Semilla, evaluación y escalado dentro del entrenamiento cuando aplique",
+      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+    },
+    {
+      "id": "C26",
+      "title": "Red neuronal frente a un baseline lineal",
+      "topics": "Redes neuronales, activación, pesos, capas, entrenamiento y generalización",
+      "references": [
+        "B09"
+      ],
+      "phase": "P5",
+      "status": "executable",
+      "objective": "Explorar red neuronal frente a un baseline lineal con datos sintéticos y una semilla reproducible.",
+      "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando redes neuronales, activación, pesos, capas, entrenamiento y generalización.",
+      "acceptance": "Baseline, particiones y convergencia documentadas",
+      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+    },
+    {
+      "id": "C27",
+      "title": "Escenarios de inflación por Monte Carlo",
+      "topics": "Monte Carlo, inflación, escenarios, incertidumbre y distribuciones",
+      "references": [
+        "B10"
+      ],
+      "phase": "P5",
+      "status": "executable",
+      "objective": "Explorar escenarios de inflación por monte carlo con datos sintéticos y una semilla reproducible.",
+      "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando monte carlo, inflación, escenarios, incertidumbre y distribuciones.",
+      "acceptance": "Semilla, supuestos y error Monte Carlo visibles",
+      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+    },
+    {
+      "id": "C28",
+      "title": "Medición latente y trayectorias SEM",
+      "topics": "SEM, covarianza, correlación, variables latentes, trayectorias e identificación causal",
+      "references": [
+        "B02"
+      ],
+      "phase": "P6",
+      "status": "executable",
+      "objective": "Explorar medición latente y trayectorias sem con datos sintéticos y una semilla reproducible.",
+      "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando sem, covarianza, correlación, variables latentes, trayectorias e identificación causal.",
+      "acceptance": "Identificación y supuestos; ajuste no se interpreta como prueba causal",
+      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+    }
+  ]
+}

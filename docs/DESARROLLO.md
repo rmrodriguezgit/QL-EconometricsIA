@@ -1,4 +1,4 @@
-# Desarrollo de la alpha 0.2.1
+# Desarrollo de la alpha 0.3.0
 
 Fecha: 2026-11-01. Primer corte funcional de P1 con un adelanto OLS de P2. No equivale al cierre de ninguna fase curricular.
 
@@ -25,7 +25,7 @@ Los resultados se invalidan al modificar parámetros o conexiones; mover nodos n
 
 ## Contrato de ejecución real
 
-Protocolo 1.0.0, esquema de proyecto 1.0.0 y versión de nodo 1.0.0. Métodos: engine.health, nodes.list, project.validate, run.start y worldbank.indicators. JSON-RPC 2.0 delimitado por salto de línea, con id obligatorio; no se implementan notificaciones. El motor no evalúa expresiones de usuario. Rechaza versiones, referencias y puertos inválidos y entradas sin conectar antes de ejecutar.
+Protocolo 1.0.0, esquema de proyecto 1.0.0 y versión de nodo 1.0.0. Métodos: engine.health, nodes.list, project.validate, run.start, worldbank.indicators, examples.list/read, projects.list/read/save/delete/restore y system.audit. JSON-RPC 2.0 delimitado por salto de línea, con id obligatorio; no se implementan notificaciones. El motor no evalúa expresiones de usuario. Rechaza versiones, referencias y puertos inválidos y entradas sin conectar antes de ejecutar.
 
 Ejecución secuencial, sin progreso incremental, caché del DAG ni cancelación interactiva. Un nodo fallido marca sus descendientes skipped y conserva ramas independientes. El transporte mata la ejecución después de 60 segundos. Cada llamada inicia un proceso: la optimización a sidecar persistente queda pendiente.
 
@@ -39,9 +39,9 @@ La caché de wbdata se guarda en `.cache/wbdata/` en desarrollo, excluida de Git
 
 ## Resultados y persistencia
 
-El proyecto descargado incluye grafo, posiciones, parámetros, versión y CSV embebido cuando exista. Los resultados se recalculan al abrir. El archivo exportado de resultados contiene snapshots de todas las fuentes, coeficientes, inferencia, residuos y manifiesto. Las tablas fuente se serializan a JSON con 15 decimales; el hash identifica esa representación. Parquet de precisión nativa queda pendiente.
+El proyecto guardado o exportado incluye grafo, posiciones, parámetros, versión y CSV embebido cuando exista. El administrador guarda una envoltura con UUID, título, fechas, revisión SHA-256 y documento del proyecto en .quantlabs/projects/files; delete lo mueve a trash y restore lo recupera. Los resultados se recalculan al abrir. El archivo exportado de resultados contiene snapshots de todas las fuentes, coeficientes, inferencia, residuos y manifiesto. Las tablas fuente se serializan a JSON con 15 decimales; el hash identifica esa representación. Parquet de precisión nativa queda pendiente.
 
-La huella de grafo representa nodos/parámetros y conexiones; excluye posiciones y título. Cada manifiesto registra versión, dependencias, semilla, plataforma, commit, fechas UTC y fuentes. No incluye todavía identidad del BLAS ni un almacenamiento consultable de ejecuciones. No hay autoguardado ni migración desde esquemas anteriores; versiones desconocidas se rechazan.
+La huella de grafo representa nodos/parámetros y conexiones; excluye posiciones y título. Cada manifiesto registra versión, dependencias, semilla, plataforma, commit, fechas UTC y fuentes. No incluye todavía identidad del BLAS ni un almacenamiento consultable de ejecuciones. No hay autoguardado; hay advertencia de cambios pendientes. Los proyectos 1.0.0 anteriores siguen admitidos con parámetros por defecto. No hay migración desde otros esquemas; versiones desconocidas se rechazan.
 
 ## Validación
 
@@ -64,3 +64,15 @@ El motor descarga todas las páginas de https://api.worldbank.org/v2/es/indicato
 `worldbank.indicators` recibe query, page y refresh (opcional), y devuelve items, total, catalog_total, page, pages, retrieved_at y stale. Los códigos y las fuentes distintos se preservan incluso cuando comparten nombre. Seleccionar una entrada actualiza indicador y fuente en una sola operación reversible. La aparición en catálogo no garantiza observaciones para el país/período, ni compatibilidad con la frecuencia anual de esta alpha.
 
 Referencia oficial: [consultas de indicadores](https://datahelpdesk.worldbank.org/knowledgebase/articles/898599-indicator-api-queries), consultada el 2026-11-01.
+
+## Administrador local y recetas 0.3.0
+
+**Archivos y ejemplos** abre una ventana de administración con catálogo, archivos propios, papelera, editor JSON y auditoría. El botón Guardar del canvas guarda en el administrador; la descarga JSON permanece como Exportar JSON dentro del editor. La selección del archivo activo conserva su revisión para impedir sobrescribir ediciones de otra sesión. Guardar copia crea un UUID nuevo, sin modificar el original. Editar title en JSON permite renombrar al guardar.
+
+Las operaciones no aceptan rutas arbitrarias: solo UUID canónicos, dentro del espacio local. Los archivos dañados aparecen como no legibles y se conservan. La escritura usa temporal, fsync y os.replace, y un bloqueo entre procesos serializa mutaciones. Las revisiones obsoletas producen FILE_CONFLICT. Borrar es recuperable y no expone una operación de purga permanente. El directorio queda excluido de Git. Un JSON externo inválido puede cargarse en el editor para corregirlo, pero no se aplica al canvas ni se guarda en la biblioteca hasta superar la validación.
+
+`project.validate` acepta draft=true para guardar y aplicar estructuras incompletas, incluido un canvas vacío. La ejecución conserva sus requisitos estrictos. El esquema JSON describe documentos de edición; tener un documento válido no garantiza que todos sus puertos estén conectados.
+
+Los 28 ejemplos usan un nodo experiment con topic C01-C28, n y seed. Se ejecuta una función registrada, nunca eval/exec de texto de usuario. El reporte muestra métricas, tablas, series, advertencias, interpretación y alcance. El catálogo se puede buscar por título, temas, ID y referencia bibliográfica. Las recetas avanzadas no exponen aún todas sus opciones como nodos del canvas.
+
+`system.audit` valida los 28 documentos, cuenta referencias, prueba escritura con un archivo temporal y comprueba archivos guardados/papelera. Informa pendientes de currículo, ejecución y empaquetado. No ejecuta los 28 modelos al abrir la auditoría ni afirma una certificación de seguridad.

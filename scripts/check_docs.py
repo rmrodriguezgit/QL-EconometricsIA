@@ -6,7 +6,7 @@ import re
 ROOT = Path(__file__).resolve().parents[1]
 REQUIRED = ['README.md', 'AGENTS.md', 'CHANGELOG.md', 'VERSION',
             'docs/ARQUITECTURA.md', 'docs/BIBLIOGRAFIA.md', 'docs/COBERTURA.md',
-            'docs/ROADMAP.md', 'docs/VERSIONES.md', 'docs/VERSIONADO.md', 'docs/DESARROLLO.md']
+            'docs/ROADMAP.md', 'docs/VERSIONES.md', 'docs/VERSIONADO.md', 'docs/DESARROLLO.md', 'docs/EJEMPLOS.md', 'docs/AUDITORIA.md']
 
 
 def check(root=ROOT):
@@ -44,6 +44,14 @@ def check(root=ROOT):
                 continue
             if not ((root / name).parent / target.split('#')[0]).exists():
                 raise ValueError(f'Broken link in {name}: {target}')
+    examples = json.loads((root / 'examples/catalog.json').read_text())['examples']
+    if {item['id'] for item in examples} != {f'C{i:02}' for i in range(1, 29)} or len(examples) != 28:
+        raise ValueError('Expected one example per curricular module')
+    if {ref for item in examples for ref in item['references']} != set(ids):
+        raise ValueError('Examples must reference every chapter')
+    for item in examples:
+        if not (root / 'examples/projects' / f"{item['id']}.json").is_file():
+            raise ValueError(f"Missing example file: {item['id']}")
     print(f'OK: version {version}; {len(ids)} references covered; local links valid.')
 
 

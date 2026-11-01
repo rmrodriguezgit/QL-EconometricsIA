@@ -18,7 +18,7 @@ import pandas as pd
 import statsmodels.api as sm
 
 ROOT = Path(__file__).resolve().parents[2]
-VERSION = (ROOT / 'VERSION').read_text().strip() if (ROOT / 'VERSION').exists() else '0.2.0'
+VERSION = (ROOT / 'VERSION').read_text().strip() if (ROOT / 'VERSION').exists() else '0.3.0'
 SCHEMA = '1.0.0'
 
 class EngineError(ValueError):
@@ -29,6 +29,7 @@ class EngineError(ValueError):
 
 # port name -> scientific type; each input currently has arity exactly one.
 NODES = {
+    'experiment': {'label': 'Experimento guiado', 'inputs': {}, 'outputs': {}, 'references': ['B01', 'B28']},
     'simulate': {'label': 'Datos simulados', 'inputs': {}, 'outputs': {'data': 'Dataset'}, 'references': ['B18', 'B29']},
     'csv': {'label': 'Archivo CSV', 'inputs': {}, 'outputs': {'data': 'Dataset'}, 'references': ['B16']},
     'worldbank': {'label': 'Banco Mundial', 'inputs': {}, 'outputs': {'data': 'Dataset'}, 'references': ['B01']},
@@ -62,13 +63,13 @@ def fail(message, code='INVALID_GRAPH', node_id=None):
     raise EngineError(code, message, node_id)
 
 
-def validate_project(project):
+def validate_project(project, require_connected=True):
     if not isinstance(project, dict) or project.get('schema_version') != SCHEMA:
         fail('El esquema del proyecto debe ser 1.0.0; no se puede abrir una versión desconocida.')
     if not isinstance(project.get('title'), str) or len(project['title']) > 120 or not isinstance(project.get('app_version'), str):
         fail('El proyecto necesita título y versión de aplicación válidos.')
     nodes, edges = project.get('nodes'), project.get('edges')
-    if not isinstance(nodes, list) or not 1 <= len(nodes) <= 100:
+    if not isinstance(nodes, list) or not (1 if require_connected else 0) <= len(nodes) <= 100:
         fail('El proyecto necesita entre 1 y 100 nodos.')
     if not isinstance(edges, list) or len(edges) > 400:
         fail('Se permiten hasta 400 conexiones.')
@@ -93,11 +94,15 @@ def validate_project(project):
     children = {key: [] for key in ids}
     indegree = {key: 0 for key in ids}
     incoming = {key: {} for key in ids}
+    edge_ids = set()
     for edge in edges:
         if not isinstance(edge, dict):
             fail('Conexión inválida.')
         if any(not isinstance(edge.get(k), str) for k in ['id', 'source', 'target', 'source_port', 'target_port']):
             fail('Una conexión necesita identificadores y puertos válidos.')
+        if edge['id'] in edge_ids:
+            fail('Hay identificadores de conexión duplicados.')
+        edge_ids.add(edge['id'])
         source, target = edge.get('source'), edge.get('target')
         if not isinstance(source, str) or not isinstance(target, str) or source not in ids or target not in ids:
             fail('Una conexión apunta a un nodo inexistente.')
@@ -124,7 +129,7 @@ def validate_project(project):
         fail('El flujo contiene un ciclo.')
     for key, node in ids.items():
         missing = set(NODES[node['type']]['inputs']) - set(incoming[key])
-        if missing:
+        if missing and require_connected:
             fail('Conecta la entrada de datos antes de ejecutar.', node_id=key)
     return ids, ordered, incoming
 
@@ -283,7 +288,10 @@ def execute(project):
             continue
         try:
             kind, params = node['type'], node['parameters']
-            if kind in ['simulate', 'csv', 'worldbank']:
+            if kind == 'experiment':
+                from .experiments import run_experiment
+                result = run_experiment(params)
+            elif kind in ['simulate', 'csv', 'worldbank']:
                 frame, source = {'simulate': simulate, 'csv': csv_data, 'worldbank': world_bank}[kind](params)
                 if len(frame.columns) > 50 or len(frame) > 10000:
                     fail('Se excedió el límite de filas o columnas.', 'INVALID_PARAMETERS')
@@ -297,6 +305,7 @@ def execute(project):
             else:
                 frame = raw[incoming[key]['data']]
                 result = {'describe': describe, 'scatter': scatter, 'ols': ols}[kind](frame, params)
+                result['input_source_id'] = incoming[key]['data']
             results[key] = {'status': 'succeeded', 'result': finite_json(result)}
         except EngineError as exc:
             results[key] = {'status': 'failed', 'error': {'code': exc.code, 'message': str(exc)}}
@@ -311,5 +320,5 @@ def execute(project):
             'protocol_version': '1.0.0', 'started_at': started,
             'finished_at': datetime.now(timezone.utc).isoformat(), 'graph_sha256': digest({'schema_version': project['schema_version'], 'nodes': [{k: node[k] for k in ['id', 'type', 'node_version', 'parameters']} for node in project['nodes']], 'edges': project['edges']}),
             'python': platform.python_version(), 'platform': platform.platform(),
-            'dependencies': {name: package_version(name) for name in ['numpy', 'pandas', 'statsmodels', 'wbdata']},
+            'dependencies': {name: package_version(name) for name in ['numpy', 'pandas', 'scipy', 'statsmodels', 'wbdata', 'arch', 'scikit-learn', 'hmmlearn', 'semopy']},
             'git_commit': commit, 'sources': sources}}

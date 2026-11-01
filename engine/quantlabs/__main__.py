@@ -5,7 +5,7 @@ from .core import EngineError, NODES, SCHEMA, VERSION, canonical, execute, valid
 
 
 def dispatch(request):
-    if not isinstance(request, dict) or request.get('jsonrpc') != '2.0' or 'id' not in request:
+    if not isinstance(request, dict) or request.get('jsonrpc') != '2.0' or 'id' not in request or isinstance(request.get('id'), bool) or not isinstance(request.get('id'), (str, int, type(None))) or not isinstance(request.get('method'), str):
         return {'jsonrpc': '2.0', 'id': None, 'error': {'code': -32600, 'message': 'Solicitud JSON-RPC inválida.'}}
     request_id = request['id']
     method, params = request.get('method'), request.get('params', {})
@@ -14,14 +14,23 @@ def dispatch(request):
             raise EngineError('INVALID_PARAMETERS', 'params debe ser un objeto.')
         if method == 'engine.health':
             result = {'version': VERSION, 'schema_version': SCHEMA, 'protocol_version': '1.0.0'}
+        elif method == 'system.audit':
+            from .audit import system_audit
+            result = system_audit()
         elif method == 'nodes.list':
             result = NODES
         elif method == 'project.validate':
-            validate_project(params.get('project'))
+            draft = params.get('draft', False)
+            if not isinstance(draft, bool):
+                raise EngineError('INVALID_PARAMETERS', 'draft debe ser booleano.')
+            validate_project(params.get('project'), require_connected=not draft)
             result = {'valid': True}
         elif method == 'worldbank.indicators':
             from .worldbank_catalog import search_indicators
             result = search_indicators(params)
+        elif method in ['projects.list', 'projects.read', 'projects.save', 'projects.delete', 'projects.restore', 'examples.list', 'examples.read']:
+            from .projects import dispatch_files
+            result = dispatch_files(method, params)
         elif method == 'run.start':
             result = execute(params.get('project'))
         else:

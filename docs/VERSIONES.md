@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.2.1**. Alpha local con dependencias frontend/Python instaladas y lockfiles. La compilación nativa sigue pendiente. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.3.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. La compilación nativa sigue pendiente. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -86,3 +86,15 @@ Fuentes técnicas consultadas: [Tauri](https://v2.tauri.app/develop/sidecar/) y 
 Sin dependencias nuevas. Se sincronizaron VERSION, pyproject.toml/uv.lock, package.json/package-lock.json, versión de interfaz y configuración Tauri en 0.2.1. Protocolo, esquema de proyecto y versiones de nodo siguen en 1.0.0; `source` es un parámetro opcional del nodo World Bank, con valor por defecto 2 para proyectos anteriores.
 
 Catálogo consultado el 2026-11-01: 29.544 filas de metadatos, reducidas a 29.533 pares únicos de fuente/código. Este conteo es una observación, no una constante de aplicación. Fuente: https://api.worldbank.org/v2/es/indicator. Nombres en español cuando los entrega el proveedor; la consulta puede no tener observaciones para ciertos países, años o frecuencias.
+
+## Entrega 0.3.0
+
+Se adoptan arch 8.0.0 (NCSA), scikit-learn 1.9.1 (BSD-3-Clause), hmmlearn 0.3.3 y semopy 2.3.11. Los metadatos instalados de las dos últimas no declaran una licencia; queda pendiente cotejar sus archivos de licencia antes de distribuir binarios. Todas están fijadas exactamente en pyproject.toml y uv.lock. Las versiones transitivas, incluido scipy, permanecen en el lock; la ejecución registra sus versiones reales. No se adopta una licencia global del proyecto automáticamente.
+
+VERSION, pyproject.toml/uv.lock, package.json/package-lock.json, interfaz y configuración Tauri pasan a 0.3.0. Esquema de proyecto/protocolo/nodos: 1.0.0. Se añade el tipo experiment y métodos de proyectos/ejemplos/auditoría. Los proyectos previos se conservan compatibles; las aplicaciones antiguas rechazan el nuevo tipo de nodo.
+
+ADR-009: archivos JSON locales con papelera y revisión esperada para el administrador inicial, sin esperar a SQLite. Las mutaciones se serializan con bloqueo del sistema operativo y escrituras atómicas.
+
+ADR-010: catálogo de experimentos registrados C01-C28, ejecutables con n/semilla y tablas/interpretaciones. Su alcance introductorio no cierra módulos. El código científico no procede del JSON del usuario.
+
+ADR-011: el borrador permite cero nodos o entradas incompletas; ejecutar exige un grafo listo. La interfaz muestra esa diferencia y conserva archivos inválidos sin intentar repararlos de forma destructiva.

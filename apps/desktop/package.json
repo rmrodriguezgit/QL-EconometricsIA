@@ -1,6 +1,6 @@
 {
   "name": "quantlabs-desktop",
-  "version": "0.5.5",
+  "version": "0.6.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -10,7 +10,7 @@
     "tauri": "tauri",
     "desktop": "npm run build && electron .",
     "desktop:dev": "electron . --dev",
-    "test:desktop": "node --test electron/runtime.test.cjs && node --experimental-strip-types --test electron/variables.test.ts electron/countries.test.ts"
+    "test:desktop": "node --test electron/runtime.test.cjs && node --experimental-strip-types --test electron/variables.test.ts electron/countries.test.ts electron/flowUi.test.ts"
   },
   "dependencies": {
     "@tauri-apps/api": "2.12.4",

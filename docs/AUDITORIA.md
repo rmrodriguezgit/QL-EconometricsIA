@@ -62,3 +62,7 @@ Electron incorporado con renderer aislado, origen/frame IPC validado, límites d
 ## Revisión de selección 0.5.3
 
 Se revisaron los campos x/y, column, columns, features, instruments, nominal, index, value, population, returns, signal, before, after y error. Los nombres nuevos de salida y parámetros numéricos conservan su edición habitual. Los selectores dependen de columnas numéricas efectivas por puerto; sin esquema se ofrece cargar la fuente. Selecciones que dejan de existir se señalan, sin remapear arbitrariamente. Continúa pendiente unión multiserie de Banco Mundial.
+
+## Revisión de continuidad 0.6.0
+
+Se corrige la sustitución visual de regresión por Histograma: tarjetas con ojo y pestaña Regresión. Retención se limita a firmas idénticas de nodo y ancestros; hay pruebas que rechazan conservar resultados tras cambio de indicador o especificación. Todas las recomendaciones se verifican contra tipos de puertos y distinguen compatibilidad técnica de validez de supuestos científicos. Los módulos y subtemas pendientes siguen sin declararse completos.

@@ -2,7 +2,7 @@
 
 Laboratorio educativo de econometría con programación visual mediante nodos y motor analítico Python. Objetivo de escritorio: macOS y Windows. [Repositorio](https://github.com/rmrodriguezgit/Quantlabs-Econometrics).
 
-**Versión 0.5.5 · 2026-11-01 · Alpha local con escritorio Electron y estudio oscuro. Instaladores independientes y actualización automática pendientes.**
+**Versión 0.6.0 · 2026-11-01 · Alpha local con escritorio Electron y estudio oscuro. Instaladores independientes y actualización automática pendientes.**
 
 ## Arrancar
 
@@ -84,3 +84,5 @@ En OLS y Dispersión se eligen variables en listas con las columnas numéricas d
 **Países favoritos (0.5.4):** en Banco Mundial pulsa País o economía para abrir el catálogo con búsqueda. Marca ★ para guardar favoritos en este equipo y mostrarlos al principio en todos los proyectos. El catálogo incluye 217 países/economías y 79 agregados opcionales; se puede consultar sin conexión.
 
 **Histograma:** conectar una fuente a data, elegir Variable (por ejemplo valor), ajustar Intervalos y ejecutar. Seleccionar el nodo abre Resultados con barras, frecuencias y faltantes. Los resultados de otros modelos y transformaciones también se presentan al seleccionar su nodo.
+
+**Resultados y continuación del flujo (0.6.0):** el ojo de cada nodo muestra u oculta su salida en Resultados. Regresión tiene una pestaña propia; añadir un nodo conserva cálculos cuyas entradas y especificación no cambian. Al situarse o pulsar sobre una salida aparecen herramientas compatibles; elegir una la añade conectada y señala las otras entradas que faltan.

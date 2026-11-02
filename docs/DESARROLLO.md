@@ -124,3 +124,11 @@ Actualizar metadatos con `.venv/bin/python scripts/update_countries.py`; valida 
 ## Histograma y salidas por nodo (0.5.5)
 
 La entrada data debe contener la columna numérica seleccionada. El motor excluye faltantes y calcula los intervalos con numpy.histogram (último intervalo incluye límite derecho). Devuelve los mismos límites/frecuencias para barras y tabla; no recalcula bins en el frontend. Seleccionar Histograma abre Resultados en un proyecto libre o guiado. Modelos y transformaciones adicionales usan NodeOutput al seleccionarlos.
+
+## Salidas visibles y recomendaciones (0.6.0)
+
+Resultados agrupa tarjetas visibles; OLS, Dispersión e Histograma aparecen inicialmente. El ojo de cada nodo alterna la tarjeta sin modificar el grafo ni recalcular. Seleccionar un nodo muestra su tarjeta. La pestaña Regresión y un acceso permanente permiten recuperar la tabla y dispersión con recta compatible. Visibilidad es estado de la sesión de interfaz y vuelve al valor inicial al recargar.
+
+Las recomendaciones se abren con hover, foco o clic en los puntos de salida. Solo proponen herramientas con entrada del mismo tipo del registro compartido. Se priorizan descriptivos/gráficos/modelos para Dataset, diagnóstico/evaluación para modelos y aplicación para Transformer. Elegir crea un nodo nuevo y una conexión; no completa arbitrariamente las otras entradas. Salidas sin consumidor compatible ofrecen ver/exportar resultado. Arrastrar conexiones sigue disponible.
+
+Al editar, se comparan firmas de cada nodo y todos sus ancestros (tipos, parámetros, versiones y puertos; excluyen posiciones). Solo se conservan resultados con firmas idénticas. Manifest mantiene run_id y graph_sha256 originales y añade pending_node_ids y results_retained_for_unchanged_nodes; no presenta una ejecución completa del grafo editado. Cambiar indicador, datos, regresores o enlaces invalida sus dependientes. Ejecutar completo sustituye estos resultados por un manifiesto nuevo.

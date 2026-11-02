@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.5.5**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.6.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -132,3 +132,7 @@ Sin dependencias nuevas. Metadatos y lockfiles en 0.5.4. Catálogo público de p
 ## Entrega 0.5.5
 
 Sin dependencias nuevas. Metadatos y lockfiles sincronizados en 0.5.5. Histograma añade metadatos aditivos de intervalos/frecuencias para representación SVG local; esquema/protocolo siguen 1.0.0.
+
+## Entrega 0.6.0
+
+Sin dependencias nuevas; aplicación y lockfiles en 0.6.0. Contratos/protocolo/nodos siguen 1.0.0. Retención de resultados y recomendaciones son funciones de interfaz probadas sobre firmas de ancestros y tipos del registro.

@@ -62,3 +62,8 @@ La aplicación y sus instaladores están pendientes de implementación. Los camb
 
 - Botón visible Nuevo proyecto en la barra principal, con protección de cambios sin guardar.
 - Canvas vacío con instrucciones y acceso directo a datos simulados; ejecutar permanece deshabilitado sin nodos.
+
+## 0.5.2 · 2026-11-01
+
+- Corrección de caché wbdata compartida dañada: cada proceso usa una caché temporal aislada, incluso durante la importación del paquete. Conserva cachés anteriores y catálogo JSON.
+- Dispersión muestra las columnas disponibles ante un error y ofrece configurar periodo/valor al conectarse con Banco Mundial.

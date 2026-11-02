@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.5.1**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.5.2**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -116,3 +116,7 @@ ADR-007: adoptar Electron como ruta de escritorio activa a petición del usuario
 ## Entrega 0.5.1
 
 Sin dependencias nuevas. Versiones de aplicación y lockfiles sincronizadas en 0.5.1. Inicio de proyecto vacío accesible desde la barra principal.
+
+## Entrega 0.5.2
+
+Sin dependencias nuevas; metadatos y lockfiles sincronizados en 0.5.2. wbdata 1.1.0 conserva su versión y usa shelve temporal por proceso. No se modifica el catálogo JSON persistente ni se borran cachés anteriores.

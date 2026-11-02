@@ -96,3 +96,7 @@ La interfaz impide ciclos, tipos incompatibles y conexiones duplicadas al dibuja
 ## Electron y estudio 0.5.0
 
 La ruta recomendada de escritorio usa `npm run desktop --prefix apps/desktop`; para HMR arrancar Vite y `npm run desktop:dev --prefix apps/desktop`. El build estático se comunica con Python por IPC nativo. Ejecutar `npm run test:desktop --prefix apps/desktop` para ciclo de vida y validación del puente. [Guía Electron](ELECTRON.md).
+
+## Consulta World Bank y Dispersión (0.5.2)
+
+Las salidas son periodo y valor: usar esos ejes o el botón del inspector. Una caché shelve compartida produjo SystemError al importar wbdata; wb_client.client aísla importación y cliente en una carpeta temporal exclusiva del proceso. El catálogo de indicadores conserva su almacenamiento JSON y los archivos anteriores no se borran. Los datos se vuelven a descargar por proceso; los resultados exportados conservan su procedencia.

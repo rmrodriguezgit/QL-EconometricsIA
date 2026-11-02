@@ -18,7 +18,7 @@ import pandas as pd
 import statsmodels.api as sm
 
 ROOT = Path(__file__).resolve().parents[2]
-VERSION = (ROOT / 'VERSION').read_text().strip() if (ROOT / 'VERSION').exists() else '0.5.1'
+VERSION = (ROOT / 'VERSION').read_text().strip() if (ROOT / 'VERSION').exists() else '0.5.2'
 SCHEMA = '1.0.0'
 
 class EngineError(ValueError):
@@ -189,7 +189,7 @@ def csv_data(parameters):
 
 
 def world_bank(parameters):
-    import wbdata
+    from .wb_client import client as isolated_worldbank_client
     from requests import Session
 
     class BoundedSession(Session):
@@ -199,7 +199,7 @@ def world_bank(parameters):
             response.raise_for_status()
             return response
 
-    client = wbdata.Client()
+    client = isolated_worldbank_client()
     # wbdata 1.1.0 accepts a session but does not forward it to Fetcher.
     client.fetcher.session = BoundedSession()
     country = parameters.get('country', 'MEX')
@@ -227,7 +227,7 @@ def world_bank(parameters):
 
 def numeric(frame, columns):
     if not columns or any(not isinstance(col, str) or col not in frame.columns for col in columns):
-        fail('Selecciona columnas existentes en los datos.', 'INVALID_PARAMETERS')
+        fail(f'Selecciona columnas existentes en los datos. Disponibles: {", ".join(map(str, frame.columns))}.', 'INVALID_PARAMETERS')
     values = frame[columns]
     if any(not pd.api.types.is_numeric_dtype(values[col]) for col in columns):
         fail('Las columnas seleccionadas deben ser numéricas.', 'INVALID_PARAMETERS')

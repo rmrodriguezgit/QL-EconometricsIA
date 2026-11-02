@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.7.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.7.1**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -140,3 +140,7 @@ Sin dependencias nuevas; aplicación y lockfiles en 0.6.0. Contratos/protocolo/n
 ## Entrega 0.7.0
 
 Nueva dependencia **wooldridge==0.5.0**, consultada e instalada desde PyPI el 2026-11-02. uv.lock fija integridad y resolución; resto de dependencias sin cambios. Metadatos de aplicación y lockfiles en 0.7.0; esquema/protocolo/nodos siguen 1.0.0 con nuevo tipo wooldridge. Catálogo generado de la instalación: 115 conjuntos, con fuente/versión/hora exactas y solo metadatos. [Guía](WOOLDRIDGE.md).
+
+## Entrega 0.7.1
+
+Sin dependencias nuevas. Aplicación y lockfiles sincronizados en 0.7.1. Protocolo/esquema/nodos siguen 1.0.0. Ejemplo OLS múltiple verificado con statsmodels sobre wage1.

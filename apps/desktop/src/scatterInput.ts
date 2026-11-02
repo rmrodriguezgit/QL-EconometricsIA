@@ -21,3 +21,8 @@ export function initialScatterAxes(type:string,parameters:Record<string,string|n
 export const singleColumnKeys=new Set(['x','y','column','value','nominal','index','population','returns','signal','before','after','error']);
 export const multipleColumnKeys=new Set(['columns','features','instruments']);
 export const isColumnParameter=(key:string)=>singleColumnKeys.has(key)||multipleColumnKeys.has(key);
+
+export function toggleColumns(value:string,column:string,checked:boolean,available:string[]){
+ const selected=value.split(',').map(name=>name.trim()).filter(name=>available.includes(name));
+ return [...new Set(checked?[...selected,column]:selected.filter(name=>name!==column))].filter(name=>available.includes(name)).join(',');
+}

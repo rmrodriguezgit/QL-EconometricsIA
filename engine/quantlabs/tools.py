@@ -27,8 +27,13 @@ class Scaler:
 def columns(frame, value):
     if not isinstance(value,str): raise EngineError('INVALID_PARAMETERS','Escribe columnas separadas por coma.')
     names=[name.strip() for name in value.split(',') if name.strip()]
-    if not names or len(set(names))!=len(names) or any(name not in frame for name in names):
-        raise EngineError('INVALID_PARAMETERS','Las columnas deben existir y no repetirse.')
+    if not names:
+        raise EngineError('INVALID_PARAMETERS','Selecciona al menos una variable en las casillas del inspector.')
+    missing=[name for name in names if name not in frame]
+    repeated=sorted({name for name in names if names.count(name)>1})
+    if missing or repeated:
+        detail=(' No existen: '+', '.join(missing)+'.' if missing else '')+(' Repetidas: '+', '.join(repeated)+'.' if repeated else '')
+        raise EngineError('INVALID_PARAMETERS',detail.strip()+' Selecciona las variables de la tabla conectada en el inspector.')
     if any(not pd.api.types.is_numeric_dtype(frame[name]) for name in names):
         raise EngineError('INVALID_PARAMETERS','Las columnas elegidas deben ser numéricas.')
     if np.isinf(frame[names].to_numpy(dtype=float)).any(): raise EngineError('INVALID_PARAMETERS','No se admiten valores infinitos.')

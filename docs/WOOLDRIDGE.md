@@ -33,3 +33,9 @@ Las columnas mixtas de algunos conjuntos se conservan como texto, sin conversió
 Pruebas sin red cargan los 115 conjuntos y contrastan dimensiones/esquema contra el catálogo. OLS sobre wage1 se compara con statsmodels; se comprueba cambio a card/hprice1, copia independiente, rechazo de rutas y exportación acotada de conjuntos grandes.
 
 Fuentes: [paquete Python y uso de data()](https://github.com/spring-haru/wooldridge), [versión en PyPI](https://pypi.org/project/wooldridge/0.5.0/).
+
+## Ejemplo OLS múltiple (0.7.1)
+
+Conectar data de Wooldridge (wage1) a data de OLS múltiple. Pulsar Usar ejemplo wage1 en el inspector o elegir respuesta wage y marcar educ, exper, tenure; covarianza HC3. Ejecutar y mostrar la salida con el ojo del nodo. El proyecto examples/wooldridge-wage1-multiple-ols.json también se puede importar. La respuesta no se puede seleccionar como regresor. Las casillas descartan nombres iniciales x/z inexistentes al elegir columnas nuevas, y eliminan repeticiones.
+
+No escribir toda la fórmula en una casilla: respuesta y regresores son campos separados. El intercepto lo añade el motor. Es una asociación salarial condicionada a esas variables; no demuestra causalidad.

@@ -14,3 +14,6 @@ test('registro de campos incluye regresores, instrumentos y transformaciones',()
 test('cambiar conjunto Wooldridge invalida esquema y selección disponible de sus consumidores',()=>{const p=project();p.nodes[0].type='wooldridge';p.nodes[0].parameters={dataset:'wage1'};const first=scatterInput(p,'model')!.key;p.nodes[0].parameters.dataset='card';assert.notEqual(scatterInput(p,'model')!.key,first);});
 
 test('las opciones de variables Wooldridge se renuevan al cambiar el conjunto',()=>{const p=project();p.nodes[0].type='wooldridge';p.nodes[0].parameters={dataset:'wage1'};assert.ok(knownSourceColumns(p.nodes[0]).includes('wage'));assert.equal(knownSourceColumns(p.nodes[0]).includes('nearc4'),false);p.nodes[0].parameters.dataset='card';assert.ok(knownSourceColumns(p.nodes[0]).includes('nearc4'));p.nodes[0].parameters.dataset='hprice1';assert.equal(knownSourceColumns(p.nodes[0]).includes('wage'),false);assert.ok(knownSourceColumns(p.nodes[0]).includes('price'));});
+
+import {toggleColumns} from '../src/scatterInput.ts';
+test('seleccionar un regresor retira valores anteriores inválidos y duplicados',()=>{assert.equal(toggleColumns('x,z,educ,educ','exper',true,['wage','educ','exper','tenure']),'educ,exper');assert.equal(toggleColumns('educ,exper,exper','exper',false,['educ','exper']),'educ');});

@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0.0",
+  "app_version": "0.7.1",
+  "title": "Wooldridge · wage1 · OLS múltiple",
+  "nodes": [
+    {
+      "id": "datos",
+      "type": "wooldridge",
+      "node_version": "1.0.0",
+      "parameters": {
+        "dataset": "wage1"
+      },
+      "position": {
+        "x": 30,
+        "y": 120
+      }
+    },
+    {
+      "id": "modelo",
+      "type": "multiple_ols",
+      "node_version": "1.0.0",
+      "parameters": {
+        "features": "educ,exper,tenure",
+        "y": "wage",
+        "covariance": "HC3"
+      },
+      "position": {
+        "x": 350,
+        "y": 120
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "datos-modelo",
+      "source": "datos",
+      "source_port": "data",
+      "target": "modelo",
+      "target_port": "data"
+    }
+  ]
+}

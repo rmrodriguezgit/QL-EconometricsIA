@@ -44,3 +44,14 @@ class WooldridgeTests(unittest.TestCase):
   p['nodes'][0]['parameters']['dataset']='hprice1';changed=execute(p)
   self.assertEqual(changed['nodes']['model']['status'],'failed')
   self.assertNotIn('wage',changed['nodes']['data']['result']['numeric_columns'])
+
+ def test_multiple_ols_example_matches_statsmodels_and_has_valid_regressors(self):
+  p=json.loads((ROOT/'examples/wooldridge-wage1-multiple-ols.json').read_text())
+  result=execute(p)
+  self.assertEqual(result['status'],'succeeded',result['nodes'])
+  frame=load_wooldridge('wage1')[['wage','educ','exper','tenure']].dropna()
+  expected=sm.OLS(frame.wage,sm.add_constant(frame[['educ','exper','tenure']])).fit(cov_type='HC3')
+  rows=result['nodes']['modelo']['result']['tables'][0]['rows']
+  self.assertEqual([row[0] for row in rows],['const','educ','exper','tenure'])
+  np.testing.assert_allclose([row[1] for row in rows],expected.params,rtol=1e-10)
+  self.assertEqual(result['nodes']['modelo']['result']['n'],526)

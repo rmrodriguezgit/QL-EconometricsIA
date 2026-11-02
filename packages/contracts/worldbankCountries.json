@@ -1,0 +1,2080 @@
+{
+  "catalog_version": 1,
+  "language": "es",
+  "source_url": "https://api.worldbank.org/v2/es/country",
+  "retrieved_at": "2026-11-02T02:06:59.202402+00:00",
+  "items": [
+    {
+      "id": "ABW",
+      "iso2": "AW",
+      "name": "Aruba",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "AFE",
+      "iso2": "ZH",
+      "name": "",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "AFG",
+      "iso2": "AF",
+      "name": "Afganistán",
+      "region": "Oriente Medio, Norte de África, Afganistán y Pakistán",
+      "aggregate": false
+    },
+    {
+      "id": "AFR",
+      "iso2": "A9",
+      "name": "",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "AFW",
+      "iso2": "ZI",
+      "name": "",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "AGO",
+      "iso2": "AO",
+      "name": "Angola",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "ALB",
+      "iso2": "AL",
+      "name": "Albania",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "AND",
+      "iso2": "AD",
+      "name": "Andorra",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "ARB",
+      "iso2": "1A",
+      "name": "El mundo árabe",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "ARE",
+      "iso2": "AE",
+      "name": "Emiratos Árabes Unidos",
+      "region": "Oriente Medio, Norte de África, Afganistán y Pakistán",
+      "aggregate": false
+    },
+    {
+      "id": "ARG",
+      "iso2": "AR",
+      "name": "Argentina",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "ARM",
+      "iso2": "AM",
+      "name": "Armenia",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "ASM",
+      "iso2": "AS",
+      "name": "Samoa Americana",
+      "region": "Asia oriental y el Pacífico ",
+      "aggregate": false
+    },
+    {
+      "id": "ATG",
+      "iso2": "AG",
+      "name": "Antigua y Barbuda",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "AUS",
+      "iso2": "AU",
+      "name": "Australia",
+      "region": "Asia oriental y el Pacífico ",
+      "aggregate": false
+    },
+    {
+      "id": "AUT",
+      "iso2": "AT",
+      "name": "Austria",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "AZE",
+      "iso2": "AZ",
+      "name": "Azerbaiyán",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "BDI",
+      "iso2": "BI",
+      "name": "Burundi",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "BEA",
+      "iso2": "B4",
+      "name": "",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "BEC",
+      "iso2": "B7",
+      "name": "",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "BEL",
+      "iso2": "BE",
+      "name": "Bélgica",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "BEN",
+      "iso2": "BJ",
+      "name": "Benin",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "BFA",
+      "iso2": "BF",
+      "name": "Burkina Faso",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "BGD",
+      "iso2": "BD",
+      "name": "Bangladesh",
+      "region": "Asia meridional",
+      "aggregate": false
+    },
+    {
+      "id": "BGR",
+      "iso2": "BG",
+      "name": "Bulgaria",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "BHI",
+      "iso2": "B1",
+      "name": "",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "BHR",
+      "iso2": "BH",
+      "name": "Bahrein",
+      "region": "Oriente Medio, Norte de África, Afganistán y Pakistán",
+      "aggregate": false
+    },
+    {
+      "id": "BHS",
+      "iso2": "BS",
+      "name": "Bahamas",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "BIH",
+      "iso2": "BA",
+      "name": "Bosnia y Herzegovina",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "BLA",
+      "iso2": "B2",
+      "name": "",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "BLR",
+      "iso2": "BY",
+      "name": "Belarús",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "BLZ",
+      "iso2": "BZ",
+      "name": "Belice",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "BMN",
+      "iso2": "B3",
+      "name": "",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "BMU",
+      "iso2": "BM",
+      "name": "Bermudas",
+      "region": "América del Norte",
+      "aggregate": false
+    },
+    {
+      "id": "BOL",
+      "iso2": "BO",
+      "name": "Bolivia",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "BRA",
+      "iso2": "BR",
+      "name": "Brasil",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "BRB",
+      "iso2": "BB",
+      "name": "Barbados",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "BRN",
+      "iso2": "BN",
+      "name": "Brunei Darussalam",
+      "region": "Asia oriental y el Pacífico ",
+      "aggregate": false
+    },
+    {
+      "id": "BSS",
+      "iso2": "B6",
+      "name": "",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "BTN",
+      "iso2": "BT",
+      "name": "Bhután",
+      "region": "Asia meridional",
+      "aggregate": false
+    },
+    {
+      "id": "BWA",
+      "iso2": "BW",
+      "name": "Botswana",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "CAA",
+      "iso2": "C9",
+      "name": "",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "CAF",
+      "iso2": "CF",
+      "name": "República Centroafricana",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "CAN",
+      "iso2": "CA",
+      "name": "Canadá",
+      "region": "América del Norte",
+      "aggregate": false
+    },
+    {
+      "id": "CEA",
+      "iso2": "C4",
+      "name": "",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "CEB",
+      "iso2": "B8",
+      "name": "Europa Central y del Báltico\r\n",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "CEU",
+      "iso2": "C5",
+      "name": "",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "CHE",
+      "iso2": "CH",
+      "name": "Suiza",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "CHI",
+      "iso2": "JG",
+      "name": "Islas del Canal",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "CHL",
+      "iso2": "CL",
+      "name": "Chile",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "CHN",
+      "iso2": "CN",
+      "name": "China",
+      "region": "Asia oriental y el Pacífico ",
+      "aggregate": false
+    },
+    {
+      "id": "CIV",
+      "iso2": "CI",
+      "name": "Côte d'Ivoire",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "CLA",
+      "iso2": "C6",
+      "name": "",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "CME",
+      "iso2": "C7",
+      "name": "",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "CMR",
+      "iso2": "CM",
+      "name": "Camerún",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "COD",
+      "iso2": "CD",
+      "name": "Congo, República Democrática del",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "COG",
+      "iso2": "CG",
+      "name": "Congo, República del",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "COL",
+      "iso2": "CO",
+      "name": "Colombia",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "COM",
+      "iso2": "KM",
+      "name": "Comoras",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "CPV",
+      "iso2": "CV",
+      "name": "Cabo Verde",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "CRI",
+      "iso2": "CR",
+      "name": "Costa Rica",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "CSA",
+      "iso2": "C8",
+      "name": "",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "CSS",
+      "iso2": "S3",
+      "name": "Estados pequeos del Caribe",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "CUB",
+      "iso2": "CU",
+      "name": "Cuba",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "CUW",
+      "iso2": "CW",
+      "name": "Curacao",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "CYM",
+      "iso2": "KY",
+      "name": "Islas Caimán",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "CYP",
+      "iso2": "CY",
+      "name": "Chipre",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "CZE",
+      "iso2": "CZ",
+      "name": "República Checa",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "DEA",
+      "iso2": "D4",
+      "name": "",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "DEC",
+      "iso2": "D7",
+      "name": "",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "DEU",
+      "iso2": "DE",
+      "name": "Alemania",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "DJI",
+      "iso2": "DJ",
+      "name": "Djibouti",
+      "region": "Oriente Medio, Norte de África, Afganistán y Pakistán",
+      "aggregate": false
+    },
+    {
+      "id": "DLA",
+      "iso2": "D2",
+      "name": "",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "DMA",
+      "iso2": "DM",
+      "name": "Dominica",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "DMN",
+      "iso2": "D3",
+      "name": "",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "DNK",
+      "iso2": "DK",
+      "name": "Dinamarca",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "DNS",
+      "iso2": "N6",
+      "name": "",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "DOM",
+      "iso2": "DO",
+      "name": "República Dominicana",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "DSA",
+      "iso2": "D5",
+      "name": "",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "DSF",
+      "iso2": "F6",
+      "name": "",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "DSS",
+      "iso2": "D6",
+      "name": "",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "DZA",
+      "iso2": "DZ",
+      "name": "Argelia",
+      "region": "Oriente Medio, Norte de África, Afganistán y Pakistán",
+      "aggregate": false
+    },
+    {
+      "id": "EAP",
+      "iso2": "4E",
+      "name": "Asia oriental y el Pacífico (excluido altos ingresos)",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "EAR",
+      "iso2": "V2",
+      "name": "inicial del dividendo demográfico",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "EAS",
+      "iso2": "Z4",
+      "name": "Asia oriental y el Pacífico ",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "ECA",
+      "iso2": "7E",
+      "name": "Europa y Asia central (excluido altos ingresos)",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "ECS",
+      "iso2": "Z7",
+      "name": "Europa y Asia central",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "ECU",
+      "iso2": "EC",
+      "name": "Ecuador",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "EGY",
+      "iso2": "EG",
+      "name": "Egipto, República Árabe de",
+      "region": "Oriente Medio, Norte de África, Afganistán y Pakistán",
+      "aggregate": false
+    },
+    {
+      "id": "EMU",
+      "iso2": "XC",
+      "name": "Zona del Euro",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "ERI",
+      "iso2": "ER",
+      "name": "Eritrea",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "ESP",
+      "iso2": "ES",
+      "name": "España",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "EST",
+      "iso2": "EE",
+      "name": "Estonia",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "ETH",
+      "iso2": "ET",
+      "name": "Etiopía",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "EUU",
+      "iso2": "EU",
+      "name": "Unión Europea",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "FCV",
+      "iso2": "F2",
+      "name": "Situaciones de fragilidad, conflicto y violencia (FCV)",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "FIN",
+      "iso2": "FI",
+      "name": "Finlandia",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "FJI",
+      "iso2": "FJ",
+      "name": "Fiji",
+      "region": "Asia oriental y el Pacífico ",
+      "aggregate": false
+    },
+    {
+      "id": "FRA",
+      "iso2": "FR",
+      "name": "Francia",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "FRO",
+      "iso2": "FO",
+      "name": "Islas Feroe",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "FSM",
+      "iso2": "FM",
+      "name": "Micronesia (Estados Federados de)",
+      "region": "Asia oriental y el Pacífico ",
+      "aggregate": false
+    },
+    {
+      "id": "FXS",
+      "iso2": "6F",
+      "name": "",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "GAB",
+      "iso2": "GA",
+      "name": "Gabón",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "GBR",
+      "iso2": "GB",
+      "name": "Reino Unido",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "GEO",
+      "iso2": "GE",
+      "name": "Georgia",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "GHA",
+      "iso2": "GH",
+      "name": "Ghana",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "GIB",
+      "iso2": "GI",
+      "name": "Gibraltar",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "GIN",
+      "iso2": "GN",
+      "name": "Guinea",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "GMB",
+      "iso2": "GM",
+      "name": "Gambia",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "GNB",
+      "iso2": "GW",
+      "name": "Guinea-Bissau",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "GNQ",
+      "iso2": "GQ",
+      "name": "Guinea Ecuatorial",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "GRC",
+      "iso2": "GR",
+      "name": "Grecia",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "GRD",
+      "iso2": "GD",
+      "name": "Granada",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "GRL",
+      "iso2": "GL",
+      "name": "Groenlandia",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "GTM",
+      "iso2": "GT",
+      "name": "Guatemala",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "GUM",
+      "iso2": "GU",
+      "name": "Guam",
+      "region": "Asia oriental y el Pacífico ",
+      "aggregate": false
+    },
+    {
+      "id": "GUY",
+      "iso2": "GY",
+      "name": "Guyana",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "HIC",
+      "iso2": "XD",
+      "name": "Ingreso alto",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "HKG",
+      "iso2": "HK",
+      "name": "Hong Kong, Región Administrativa Especial",
+      "region": "Asia oriental y el Pacífico ",
+      "aggregate": false
+    },
+    {
+      "id": "HND",
+      "iso2": "HN",
+      "name": "Honduras",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "HPC",
+      "iso2": "XE",
+      "name": "Países pobres muy endeudados (PPME)",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "HRV",
+      "iso2": "HR",
+      "name": "Croacia",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "HTI",
+      "iso2": "HT",
+      "name": "Haití",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "HUN",
+      "iso2": "HU",
+      "name": "Hungría",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "IBB",
+      "iso2": "ZB",
+      "name": "",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "IBD",
+      "iso2": "XF",
+      "name": "Sólo BIRF",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "IBT",
+      "iso2": "ZT",
+      "name": "BIRF y la AIF",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "IDA",
+      "iso2": "XG",
+      "name": "total de la AIF",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "IDB",
+      "iso2": "XH",
+      "name": "mezcla de la AIF",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "IDN",
+      "iso2": "ID",
+      "name": "Indonesia",
+      "region": "Asia oriental y el Pacífico ",
+      "aggregate": false
+    },
+    {
+      "id": "IDX",
+      "iso2": "XI",
+      "name": "Sólo AIF",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "IMN",
+      "iso2": "IM",
+      "name": "Isla de Man",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "IND",
+      "iso2": "IN",
+      "name": "India",
+      "region": "Asia meridional",
+      "aggregate": false
+    },
+    {
+      "id": "INX",
+      "iso2": "XY",
+      "name": "No clasificado",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "IRL",
+      "iso2": "IE",
+      "name": "Irlanda",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "IRN",
+      "iso2": "IR",
+      "name": "Irán, República Islámica del",
+      "region": "Oriente Medio, Norte de África, Afganistán y Pakistán",
+      "aggregate": false
+    },
+    {
+      "id": "IRQ",
+      "iso2": "IQ",
+      "name": "Iraq",
+      "region": "Oriente Medio, Norte de África, Afganistán y Pakistán",
+      "aggregate": false
+    },
+    {
+      "id": "ISL",
+      "iso2": "IS",
+      "name": "Islandia",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "ISR",
+      "iso2": "IL",
+      "name": "Israel",
+      "region": "Oriente Medio, Norte de África, Afganistán y Pakistán",
+      "aggregate": false
+    },
+    {
+      "id": "ITA",
+      "iso2": "IT",
+      "name": "Italia",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "JAM",
+      "iso2": "JM",
+      "name": "Jamaica",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "JOR",
+      "iso2": "JO",
+      "name": "Jordania",
+      "region": "Oriente Medio, Norte de África, Afganistán y Pakistán",
+      "aggregate": false
+    },
+    {
+      "id": "JPN",
+      "iso2": "JP",
+      "name": "Japón",
+      "region": "Asia oriental y el Pacífico ",
+      "aggregate": false
+    },
+    {
+      "id": "KAZ",
+      "iso2": "KZ",
+      "name": "Kazajstán",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "KEN",
+      "iso2": "KE",
+      "name": "Kenya",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "KGZ",
+      "iso2": "KG",
+      "name": "Kirguistán",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "KHM",
+      "iso2": "KH",
+      "name": "Camboya",
+      "region": "Asia oriental y el Pacífico ",
+      "aggregate": false
+    },
+    {
+      "id": "KIR",
+      "iso2": "KI",
+      "name": "Kiribati",
+      "region": "Asia oriental y el Pacífico ",
+      "aggregate": false
+    },
+    {
+      "id": "KNA",
+      "iso2": "KN",
+      "name": "Saint Kitts y Nevis",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "KOR",
+      "iso2": "KR",
+      "name": "Corea, República de",
+      "region": "Asia oriental y el Pacífico ",
+      "aggregate": false
+    },
+    {
+      "id": "KWT",
+      "iso2": "KW",
+      "name": "Kuwait",
+      "region": "Oriente Medio, Norte de África, Afganistán y Pakistán",
+      "aggregate": false
+    },
+    {
+      "id": "LAC",
+      "iso2": "XJ",
+      "name": "América Latina y el Caribe (excluido altos ingresos)",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "LAO",
+      "iso2": "LA",
+      "name": "República Democrática Popular Lao",
+      "region": "Asia oriental y el Pacífico ",
+      "aggregate": false
+    },
+    {
+      "id": "LBN",
+      "iso2": "LB",
+      "name": "Líbano",
+      "region": "Oriente Medio, Norte de África, Afganistán y Pakistán",
+      "aggregate": false
+    },
+    {
+      "id": "LBR",
+      "iso2": "LR",
+      "name": "Liberia",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "LBY",
+      "iso2": "LY",
+      "name": "Libia",
+      "region": "Oriente Medio, Norte de África, Afganistán y Pakistán",
+      "aggregate": false
+    },
+    {
+      "id": "LCA",
+      "iso2": "LC",
+      "name": "Santa Lucía",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "LCN",
+      "iso2": "ZJ",
+      "name": "América Latina y el Caribe ",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "LDC",
+      "iso2": "XL",
+      "name": "Países menos desarrollados: clasificación de las Naciones Unidas",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "LIC",
+      "iso2": "XM",
+      "name": "Países de ingreso bajo",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "LIE",
+      "iso2": "LI",
+      "name": "Liechtenstein",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "LKA",
+      "iso2": "LK",
+      "name": "Sri Lanka",
+      "region": "Asia meridional",
+      "aggregate": false
+    },
+    {
+      "id": "LMC",
+      "iso2": "XN",
+      "name": "Países de ingreso mediano bajo",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "LMY",
+      "iso2": "XO",
+      "name": "Ingreso mediano y bajo",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "LSO",
+      "iso2": "LS",
+      "name": "Lesotho",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "LTE",
+      "iso2": "V3",
+      "name": "avanzada del dividendo demográfico",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "LTU",
+      "iso2": "LT",
+      "name": "Lituania",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "LUX",
+      "iso2": "LU",
+      "name": "Luxemburgo",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "LVA",
+      "iso2": "LV",
+      "name": "Letonia",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "MAC",
+      "iso2": "MO",
+      "name": "Región Administrativa Especial de Macao, China",
+      "region": "Asia oriental y el Pacífico ",
+      "aggregate": false
+    },
+    {
+      "id": "MAF",
+      "iso2": "MF",
+      "name": "Isla de San Martín (parte francesa)",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "MAR",
+      "iso2": "MA",
+      "name": "Marruecos",
+      "region": "Oriente Medio, Norte de África, Afganistán y Pakistán",
+      "aggregate": false
+    },
+    {
+      "id": "MCO",
+      "iso2": "MC",
+      "name": "Mónaco",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "MDA",
+      "iso2": "MD",
+      "name": "República de Moldova",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "MDE",
+      "iso2": "M1",
+      "name": "",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "MDG",
+      "iso2": "MG",
+      "name": "Madagascar",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "MDV",
+      "iso2": "MV",
+      "name": "Maldivas",
+      "region": "Asia meridional",
+      "aggregate": false
+    },
+    {
+      "id": "MEA",
+      "iso2": "ZQ",
+      "name": "Oriente Medio, Norte de África, Afganistán y Pakistán",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "MEX",
+      "iso2": "MX",
+      "name": "México",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "MHL",
+      "iso2": "MH",
+      "name": "Islas Marshall",
+      "region": "Asia oriental y el Pacífico ",
+      "aggregate": false
+    },
+    {
+      "id": "MIC",
+      "iso2": "XP",
+      "name": " Ingreso mediano",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "MKD",
+      "iso2": "MK",
+      "name": "Macedonia del Norte",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "MLI",
+      "iso2": "ML",
+      "name": "Malí",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "MLT",
+      "iso2": "MT",
+      "name": "Malta",
+      "region": "Oriente Medio, Norte de África, Afganistán y Pakistán",
+      "aggregate": false
+    },
+    {
+      "id": "MMR",
+      "iso2": "MM",
+      "name": "Myanmar",
+      "region": "Asia oriental y el Pacífico ",
+      "aggregate": false
+    },
+    {
+      "id": "MNA",
+      "iso2": "XQ",
+      "name": "Oriente Medio y Norte de África (excluido altos ingresos)",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "MNE",
+      "iso2": "ME",
+      "name": "Montenegro",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "MNG",
+      "iso2": "MN",
+      "name": "Mongolia",
+      "region": "Asia oriental y el Pacífico ",
+      "aggregate": false
+    },
+    {
+      "id": "MNP",
+      "iso2": "MP",
+      "name": "Mariana",
+      "region": "Asia oriental y el Pacífico ",
+      "aggregate": false
+    },
+    {
+      "id": "MOZ",
+      "iso2": "MZ",
+      "name": "Mozambique",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "MRT",
+      "iso2": "MR",
+      "name": "Mauritania",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "MUS",
+      "iso2": "MU",
+      "name": "Mauricio",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "MWI",
+      "iso2": "MW",
+      "name": "Malawi",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "MYS",
+      "iso2": "MY",
+      "name": "Malasia",
+      "region": "Asia oriental y el Pacífico ",
+      "aggregate": false
+    },
+    {
+      "id": "NAC",
+      "iso2": "XU",
+      "name": "América del Norte",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "NAF",
+      "iso2": "M2",
+      "name": "",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "NAM",
+      "iso2": "NA",
+      "name": "Namibia",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "NCL",
+      "iso2": "NC",
+      "name": "Nueva Caledonia",
+      "region": "Asia oriental y el Pacífico ",
+      "aggregate": false
+    },
+    {
+      "id": "NER",
+      "iso2": "NE",
+      "name": "Níger",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "NGA",
+      "iso2": "NG",
+      "name": "Nigeria",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "NIC",
+      "iso2": "NI",
+      "name": "Nicaragua",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "NLD",
+      "iso2": "NL",
+      "name": "Países Bajos",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "NOR",
+      "iso2": "NO",
+      "name": "Noruega",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "NPL",
+      "iso2": "NP",
+      "name": "Nepal",
+      "region": "Asia meridional",
+      "aggregate": false
+    },
+    {
+      "id": "NRS",
+      "iso2": "6X",
+      "name": "",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "NRU",
+      "iso2": "NR",
+      "name": "Naoero",
+      "region": "Asia oriental y el Pacífico ",
+      "aggregate": false
+    },
+    {
+      "id": "NXS",
+      "iso2": "6N",
+      "name": "",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "NZL",
+      "iso2": "NZ",
+      "name": "Nueva Zelandia",
+      "region": "Asia oriental y el Pacífico ",
+      "aggregate": false
+    },
+    {
+      "id": "OED",
+      "iso2": "OE",
+      "name": "Miembros OCDE",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "OMN",
+      "iso2": "OM",
+      "name": "Omán",
+      "region": "Oriente Medio, Norte de África, Afganistán y Pakistán",
+      "aggregate": false
+    },
+    {
+      "id": "OSS",
+      "iso2": "S4",
+      "name": "Otros Estados pequeos",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "PAK",
+      "iso2": "PK",
+      "name": "Pakistán",
+      "region": "Oriente Medio, Norte de África, Afganistán y Pakistán",
+      "aggregate": false
+    },
+    {
+      "id": "PAN",
+      "iso2": "PA",
+      "name": "Panamá",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "PER",
+      "iso2": "PE",
+      "name": "Perú",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "PHL",
+      "iso2": "PH",
+      "name": "Filipinas",
+      "region": "Asia oriental y el Pacífico ",
+      "aggregate": false
+    },
+    {
+      "id": "PLW",
+      "iso2": "PW",
+      "name": "Palau",
+      "region": "Asia oriental y el Pacífico ",
+      "aggregate": false
+    },
+    {
+      "id": "PNG",
+      "iso2": "PG",
+      "name": "Papua Nueva Guinea",
+      "region": "Asia oriental y el Pacífico ",
+      "aggregate": false
+    },
+    {
+      "id": "POL",
+      "iso2": "PL",
+      "name": "Polonia",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "PRE",
+      "iso2": "V1",
+      "name": "previa al dividendo demográfico",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "PRI",
+      "iso2": "PR",
+      "name": "Puerto Rico (US)",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "PRK",
+      "iso2": "KP",
+      "name": "Corea, República Popular Democrática de",
+      "region": "Asia oriental y el Pacífico ",
+      "aggregate": false
+    },
+    {
+      "id": "PRT",
+      "iso2": "PT",
+      "name": "Portugal",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "PRY",
+      "iso2": "PY",
+      "name": "Paraguay",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "PSE",
+      "iso2": "PS",
+      "name": "Ribera Occidental y Gaza",
+      "region": "Oriente Medio, Norte de África, Afganistán y Pakistán",
+      "aggregate": false
+    },
+    {
+      "id": "PSS",
+      "iso2": "S2",
+      "name": "Estados pequeos de las Islas del Pacfico",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "PST",
+      "iso2": "V4",
+      "name": "posterior al dividendo demográfico",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "PYF",
+      "iso2": "PF",
+      "name": "Polinesia Francesa",
+      "region": "Asia oriental y el Pacífico ",
+      "aggregate": false
+    },
+    {
+      "id": "QAT",
+      "iso2": "QA",
+      "name": "Qatar",
+      "region": "Oriente Medio, Norte de África, Afganistán y Pakistán",
+      "aggregate": false
+    },
+    {
+      "id": "ROU",
+      "iso2": "RO",
+      "name": "Rumania",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "RRS",
+      "iso2": "R6",
+      "name": "",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "RUS",
+      "iso2": "RU",
+      "name": "Federación de Rusia",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "RWA",
+      "iso2": "RW",
+      "name": "Rwanda",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "SAS",
+      "iso2": "8S",
+      "name": "Asia meridional",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "SAU",
+      "iso2": "SA",
+      "name": "Arabia Saudita",
+      "region": "Oriente Medio, Norte de África, Afganistán y Pakistán",
+      "aggregate": false
+    },
+    {
+      "id": "SDN",
+      "iso2": "SD",
+      "name": "Sudán",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "SEN",
+      "iso2": "SN",
+      "name": "Senegal",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "SGP",
+      "iso2": "SG",
+      "name": "Singapur",
+      "region": "Asia oriental y el Pacífico ",
+      "aggregate": false
+    },
+    {
+      "id": "SLB",
+      "iso2": "SB",
+      "name": "Islas Salomón",
+      "region": "Asia oriental y el Pacífico ",
+      "aggregate": false
+    },
+    {
+      "id": "SLE",
+      "iso2": "SL",
+      "name": "Sierra Leona",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "SLV",
+      "iso2": "SV",
+      "name": "El Salvador",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "SMR",
+      "iso2": "SM",
+      "name": "San Marino",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "SOM",
+      "iso2": "SO",
+      "name": "República Federal de Somalia",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "SRB",
+      "iso2": "RS",
+      "name": "Serbia",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "SSA",
+      "iso2": "ZF",
+      "name": "África al sur del Sahara (excluido altos ingresos)",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "SSD",
+      "iso2": "SS",
+      "name": "Sudán del Sur",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "SSF",
+      "iso2": "ZG",
+      "name": "África al sur del Sahara",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "SST",
+      "iso2": "S1",
+      "name": "Pequeños Estados",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "STP",
+      "iso2": "ST",
+      "name": "Santo Tomé y Príncipe",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "SUR",
+      "iso2": "SR",
+      "name": "Suriname",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "SVK",
+      "iso2": "SK",
+      "name": "República Eslovaca",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "SVN",
+      "iso2": "SI",
+      "name": "Eslovenia",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "SWE",
+      "iso2": "SE",
+      "name": "Suecia",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "SWZ",
+      "iso2": "SZ",
+      "name": "Eswatini",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "SXM",
+      "iso2": "SX",
+      "name": "Sint Maarten (Dutch part)",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "SXZ",
+      "iso2": "A4",
+      "name": "",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "SYC",
+      "iso2": "SC",
+      "name": "Seychelles",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "SYR",
+      "iso2": "SY",
+      "name": "República Árabe Siria",
+      "region": "Oriente Medio, Norte de África, Afganistán y Pakistán",
+      "aggregate": false
+    },
+    {
+      "id": "TCA",
+      "iso2": "TC",
+      "name": "Islas Turcas y Caicos",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "TCD",
+      "iso2": "TD",
+      "name": "Chad",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "TEA",
+      "iso2": "T4",
+      "name": "Asia oriental y el Pacífico (BIRF y la AIF)",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "TEC",
+      "iso2": "T7",
+      "name": "Europa y Asia central (BIRF y la AIF)",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "TGO",
+      "iso2": "TG",
+      "name": "Togo",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "THA",
+      "iso2": "TH",
+      "name": "Tailandia",
+      "region": "Asia oriental y el Pacífico ",
+      "aggregate": false
+    },
+    {
+      "id": "TJK",
+      "iso2": "TJ",
+      "name": "Tayikistán",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "TKM",
+      "iso2": "TM",
+      "name": "Turkmenistán",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "TLA",
+      "iso2": "T2",
+      "name": "América Latina y el Caribe (BIRF y la AIF)",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "TLS",
+      "iso2": "TL",
+      "name": "Timor-Leste",
+      "region": "Asia oriental y el Pacífico ",
+      "aggregate": false
+    },
+    {
+      "id": "TMN",
+      "iso2": "T3",
+      "name": "Oriente Medio y Norte de África (BIRF y la AIF)",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "TON",
+      "iso2": "TO",
+      "name": "Tonga",
+      "region": "Asia oriental y el Pacífico ",
+      "aggregate": false
+    },
+    {
+      "id": "TSA",
+      "iso2": "T5",
+      "name": "Asia meridional (BIRF y la AIF)",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "TSS",
+      "iso2": "T6",
+      "name": "África al sur del Sahara (BIRF y la AIF)",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "TTO",
+      "iso2": "TT",
+      "name": "Trinidad y Tobago",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "TUN",
+      "iso2": "TN",
+      "name": "Túnez",
+      "region": "Oriente Medio, Norte de África, Afganistán y Pakistán",
+      "aggregate": false
+    },
+    {
+      "id": "TUR",
+      "iso2": "TR",
+      "name": "Turquía",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "TUV",
+      "iso2": "TV",
+      "name": "Tuvalu",
+      "region": "Asia oriental y el Pacífico ",
+      "aggregate": false
+    },
+    {
+      "id": "TZA",
+      "iso2": "TZ",
+      "name": "Tanzanía",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "UGA",
+      "iso2": "UG",
+      "name": "Uganda",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "UKR",
+      "iso2": "UA",
+      "name": "Ucrania",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "UMC",
+      "iso2": "XT",
+      "name": "Ingreso mediano alto",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "URY",
+      "iso2": "UY",
+      "name": "Uruguay",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "USA",
+      "iso2": "US",
+      "name": "Estados Unidos",
+      "region": "América del Norte",
+      "aggregate": false
+    },
+    {
+      "id": "UZB",
+      "iso2": "UZ",
+      "name": "Uzbekistán",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "VCT",
+      "iso2": "VC",
+      "name": "San Vicente y las Granadinas",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "VEN",
+      "iso2": "VE",
+      "name": "Venezuela",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "VGB",
+      "iso2": "VG",
+      "name": "Islas Vírgenes Británicas",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "VIR",
+      "iso2": "VI",
+      "name": "Islas Vírgenes (EE.UU.)",
+      "region": "América Latina y el Caribe ",
+      "aggregate": false
+    },
+    {
+      "id": "VNM",
+      "iso2": "VN",
+      "name": "Viet Nam",
+      "region": "Asia oriental y el Pacífico ",
+      "aggregate": false
+    },
+    {
+      "id": "VUT",
+      "iso2": "VU",
+      "name": "Vanuatu",
+      "region": "Asia oriental y el Pacífico ",
+      "aggregate": false
+    },
+    {
+      "id": "WLD",
+      "iso2": "1W",
+      "name": "Mundo",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "WSM",
+      "iso2": "WS",
+      "name": "Samoa",
+      "region": "Asia oriental y el Pacífico ",
+      "aggregate": false
+    },
+    {
+      "id": "XKX",
+      "iso2": "XK",
+      "name": "Kosovo",
+      "region": "Europa y Asia central",
+      "aggregate": false
+    },
+    {
+      "id": "XZN",
+      "iso2": "A5",
+      "name": "",
+      "region": "Agregados",
+      "aggregate": true
+    },
+    {
+      "id": "YEM",
+      "iso2": "YE",
+      "name": "Yemen, Rep. del",
+      "region": "Oriente Medio, Norte de África, Afganistán y Pakistán",
+      "aggregate": false
+    },
+    {
+      "id": "ZAF",
+      "iso2": "ZA",
+      "name": "Sudáfrica",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "ZMB",
+      "iso2": "ZM",
+      "name": "Zambia",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    },
+    {
+      "id": "ZWE",
+      "iso2": "ZW",
+      "name": "Zimbabwe",
+      "region": "África al sur del Sahara",
+      "aggregate": false
+    }
+  ]
+}

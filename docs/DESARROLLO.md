@@ -110,3 +110,13 @@ Las vistas previas se identifican por fuente/puerto y firma de todos sus ancestr
 La elección de indicador persiste nombre/unidad/fuente como metadatos; código y texto pueden ocupar varias líneas y no usan puntos suspensivos. Los proyectos previos siguen funcionando aunque aún no tengan esos nombres guardados.
 
 El código del indicador es un botón que abre un diálogo modal nativo en la capa superior. Conserva la selección actual, nombres largos y fuente durante la búsqueda; Escape o Cerrar devuelven al inspector, y elegir una opción actualiza el proyecto.
+
+## Catálogo de países y favoritos (0.5.4)
+
+CountryPicker usa packages/contracts/worldbankCountries.json: 296 entradas oficiales, 217 países/economías y 79 regiones/agregados. La búsqueda local ignora acentos y distingue código ISO 3, ISO 2, nombre y región; por defecto se ocultan agregados. Activar la casilla permite verlos.
+
+Las estrellas se guardan en localStorage bajo quantlabs-worldbank-favorite-countries-v1. Se comparten entre proyectos del mismo perfil/origen y se conservan al recargar o reiniciar Electron. Navegador y Electron tienen almacenes separados. No se sincronizan con Git ni entre equipos. Marcar/desmarcar favorito no cambia parámetros, datos ni resultados; elegir otro país sí invalida resultados y requiere recalcular. Las búsquedas filtran también favoritos; los que coinciden se muestran primero.
+
+Preferencias corruptas o códigos desconocidos se descartan. Si falla el almacenamiento se informa y no se promete persistencia. El catálogo funciona sin red; descargar observaciones sigue requiriendo conexión y disponibilidad para país/indicador/período.
+
+Actualizar metadatos con `.venv/bin/python scripts/update_countries.py`; valida páginas, cantidad y códigos antes de reemplazar atómicamente el archivo. Fuente: [API oficial de países en español](https://api.worldbank.org/v2/es/country?format=json&per_page=400). La revisión/hora se registra en el propio catálogo.

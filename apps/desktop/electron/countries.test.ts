@@ -1,0 +1,12 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {countryMatches,parseCountryFavorites,toggleCountryFavorite,type Country} from '../src/countryCatalog.ts';
+import {readFileSync} from 'node:fs';
+const catalog=JSON.parse(readFileSync(new URL('../../../packages/contracts/worldbankCountries.json',import.meta.url),'utf8'));
+const items:Country[]=catalog.items;
+test('catálogo oficial completo con códigos únicos y separación de agregados',()=>{assert.equal(items.length,296);assert.equal(new Set(items.map(row=>row.id)).size,items.length);assert.equal(items.filter(row=>!row.aggregate).length,217);assert.ok(items.find(row=>row.id==='MEX'&&!row.aggregate));assert.ok(items.find(row=>row.id==='WLD'&&row.aggregate));});
+test('buscar nombres sin acentos y códigos ISO 2/3',()=>{assert.ok(countryMatches(items,'mexico',[]).some(row=>row.id==='MEX'));assert.ok(countryMatches(items,'ESP',[]).some(row=>row.id==='ESP'));assert.ok(countryMatches(items,'MX',[]).some(row=>row.id==='MEX'));});
+test('favoritos al principio, sin duplicados y orden alfabético dentro del grupo',()=>{const rows=countryMatches(items,'',['MEX','ESP']);assert.deepEqual(rows.slice(0,2).map(row=>row.id),['ESP','MEX']);assert.equal(rows.length,217);assert.equal(new Set(rows.map(row=>row.id)).size,217);assert.ok(rows.slice(2).every(row=>!['ESP','MEX'].includes(row.id)));});
+test('la búsqueda conserva el filtro aunque haya favoritos',()=>{assert.deepEqual(countryMatches(items,'mexico',['ESP']).map(row=>row.id),['MEX']);assert.equal(countryMatches(items,'sin coincidencias',[]).length,0);});
+test('regiones ocultas por defecto y disponibles explícitamente',()=>{assert.ok(countryMatches(items,'',[]).every(row=>!row.aggregate));assert.equal(countryMatches(items,'',[],true).length,296);});
+test('preferencias inválidas no rompen la lista; desmarcar quita prioridad',()=>{assert.deepEqual(parseCountryFavorites('bad',items),[]);assert.deepEqual(parseCountryFavorites('{"MEX":true}',items),[]);assert.deepEqual(parseCountryFavorites('["MEX","MEX",null,"INVALID"]',items),['MEX']);assert.deepEqual(toggleCountryFavorite(['MEX'],'MEX'),[]);assert.deepEqual(toggleCountryFavorite([],'MEX'),['MEX']);const stored=JSON.stringify(toggleCountryFavorite([],'MEX'));assert.deepEqual(parseCountryFavorites(stored,items),['MEX']);});

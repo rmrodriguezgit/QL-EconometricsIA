@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.5.3**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.5.4**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -124,3 +124,7 @@ Sin dependencias nuevas; metadatos y lockfiles sincronizados en 0.5.2. wbdata 1.
 ## Entrega 0.5.3
 
 Sin dependencias nuevas. Versiones y lockfiles sincronizados en 0.5.3. Node 22.22.3 ejecuta las pruebas TypeScript de selección mediante --experimental-strip-types. Esquema/protocolo siguen 1.0.0: numeric_columns y metadatos de indicador son extensiones aditivas.
+
+## Entrega 0.5.4
+
+Sin dependencias nuevas. Metadatos y lockfiles en 0.5.4. Catálogo público de países revisión 1 descargado del API oficial del Banco Mundial; fuente y hora UTC exacta en packages/contracts/worldbankCountries.json. No contiene observaciones económicas.

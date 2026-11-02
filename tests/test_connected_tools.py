@@ -20,6 +20,16 @@ def node(id,kind,parameters):return {'id':id,'type':kind,'node_version':'1.0.0',
 def edge(source,port,target,target_port):return {'id':f'{source}-{port}-{target}-{target_port}','source':source,'source_port':port,'target':target,'target_port':target_port}
 
 class ConnectedToolsTests(unittest.TestCase):
+    def test_histogram_plot_matches_table_and_excludes_missing_rows(self):
+        from quantlabs.tools import run_tool
+        import pandas as pd
+        result,_=run_tool('histogram',{'data':pd.DataFrame({'valor':[0.,1.,2.,3.,float('nan')]})},{'column':'valor','bins':2})
+        plot=result['histogram']
+        self.assertEqual((plot['n'],plot['missing'],result['n']),(4,1,4))
+        self.assertEqual(sum(row['count'] for row in plot['bins']),4)
+        self.assertEqual([row['count'] for row in plot['bins']],[2,2])
+        self.assertEqual(result['tables'][0]['rows'],[[row['lower'],row['upper'],row['count']] for row in plot['bins']])
+
     def test_output_schema_preserves_numeric_columns_even_with_missing_values(self):
         from quantlabs.tools import frame_result
         import pandas as pd

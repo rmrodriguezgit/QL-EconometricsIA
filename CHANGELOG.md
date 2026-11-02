@@ -81,3 +81,9 @@ La aplicación y sus instaladores están pendientes de implementación. Los camb
 - Catálogo oficial de 217 países/economías y 79 regiones/agregados del Banco Mundial, en español, integrado para consulta sin conexión.
 - Selector flotante con búsqueda por nombre/ISO 2/ISO 3 y estrellas de favoritos. Favoritos persistentes por perfil local y al inicio de la lista; marcar estrella no modifica el país del proyecto.
 - Script de actualización valida páginas, totalidad y unicidad antes de sustituir el catálogo. Pruebas de filtro, orden y recuperación de preferencias.
+
+## 0.5.5 · 2026-11-01
+
+- Histograma visible como barras, con variable, intervalos, frecuencias, observaciones válidas y faltantes; conserva tabla numérica.
+- Seleccionar un nodo abre Resultados. Modelos y transformaciones adicionales muestran su salida en proyectos libres, además de los recorridos guiados.
+- El número de observaciones del nodo Histograma corresponde a los valores utilizados, excluyendo faltantes.

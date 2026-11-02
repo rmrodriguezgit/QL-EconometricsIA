@@ -364,6 +364,8 @@ def analyze(kind,inputs,params):
     elif kind=='histogram':
         name=columns(frame,params.get('column','y'))[0];data=sample(frame,[name],1);counts,bounds=np.histogram(data[name],bins=number(params,'bins',8,2,50,True))
         result=report('La suma de las frecuencias corresponde a la muestra completa de esta variable.',n=len(data),faltantes=len(frame)-len(data))
+        result['n']=len(data)
+        result['histogram']={'column':name,'n':len(data),'missing':len(frame)-len(data),'bins':[{'lower':float(bounds[i]),'upper':float(bounds[i+1]),'count':int(counts[i])} for i in range(len(counts))]}
         result['tables']=[table('Histograma',['Desde','Hasta','Frecuencia'],[[bounds[i],bounds[i+1],int(counts[i])] for i in range(len(counts))])]
     elif kind=='correlation':
         names=columns(frame,params.get('columns','ingreso,consumo'));data=sample(frame,names)

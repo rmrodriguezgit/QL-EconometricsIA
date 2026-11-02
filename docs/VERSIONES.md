@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.5.4**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.5.5**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -128,3 +128,7 @@ Sin dependencias nuevas. Versiones y lockfiles sincronizados en 0.5.3. Node 22.2
 ## Entrega 0.5.4
 
 Sin dependencias nuevas. Metadatos y lockfiles en 0.5.4. Catálogo público de países revisión 1 descargado del API oficial del Banco Mundial; fuente y hora UTC exacta en packages/contracts/worldbankCountries.json. No contiene observaciones económicas.
+
+## Entrega 0.5.5
+
+Sin dependencias nuevas. Metadatos y lockfiles sincronizados en 0.5.5. Histograma añade metadatos aditivos de intervalos/frecuencias para representación SVG local; esquema/protocolo siguen 1.0.0.

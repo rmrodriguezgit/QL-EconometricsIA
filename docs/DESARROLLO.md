@@ -120,3 +120,7 @@ Las estrellas se guardan en localStorage bajo quantlabs-worldbank-favorite-count
 Preferencias corruptas o códigos desconocidos se descartan. Si falla el almacenamiento se informa y no se promete persistencia. El catálogo funciona sin red; descargar observaciones sigue requiriendo conexión y disponibilidad para país/indicador/período.
 
 Actualizar metadatos con `.venv/bin/python scripts/update_countries.py`; valida páginas, cantidad y códigos antes de reemplazar atómicamente el archivo. Fuente: [API oficial de países en español](https://api.worldbank.org/v2/es/country?format=json&per_page=400). La revisión/hora se registra en el propio catálogo.
+
+## Histograma y salidas por nodo (0.5.5)
+
+La entrada data debe contener la columna numérica seleccionada. El motor excluye faltantes y calcula los intervalos con numpy.histogram (último intervalo incluye límite derecho). Devuelve los mismos límites/frecuencias para barras y tabla; no recalcula bins en el frontend. Seleccionar Histograma abre Resultados en un proyecto libre o guiado. Modelos y transformaciones adicionales usan NodeOutput al seleccionarlos.

@@ -1,0 +1,9 @@
+type Bin={lower:number;upper:number;count:number};
+type Histogram={column:string;n:number;missing:number;bins:Bin[]};
+const format=(value:number)=>new Intl.NumberFormat('es-MX',{maximumSignificantDigits:5}).format(value);
+export default function HistogramPlot({data}:{data:Histogram}){
+ if(!data.bins.length)return null;
+ const min=data.bins[0].lower,max=data.bins.at(-1)!.upper,peak=Math.max(1,...data.bins.map(bin=>bin.count));
+ const x=(value:number)=>65+(value-min)/(max-min||1)*500;const y=(count:number)=>192-count/peak*150;
+ return <section className="histogram-plot"><div className="result-title"><h3>Histograma de {data.column}</h3><span>{data.n} observaciones · {data.missing} sin dato · {data.bins.length} intervalos</span></div><svg viewBox="0 0 600 252" role="img" aria-label={`Histograma de ${data.column}: ${data.n} observaciones en ${data.bins.length} intervalos. Las frecuencias exactas aparecen en la tabla.`}>{[0,.5,1].map(fraction=><g key={fraction}><line x1="65" x2="565" y1={y(peak*fraction)} y2={y(peak*fraction)} stroke="#304258"/><text x="55" y={y(peak*fraction)+4} textAnchor="end">{format(peak*fraction)}</text></g>)}{data.bins.map((bin,i)=><rect key={i} x={x(bin.lower)+.75} y={y(bin.count)} width={Math.max(.5,x(bin.upper)-x(bin.lower)-1.5)} height={192-y(bin.count)} fill="#6cc9ac" stroke="#a1e6d0" strokeWidth=".6"><title>{`${format(bin.lower)} ≤ ${data.column} ${i===data.bins.length-1?'≤':'<'} ${format(bin.upper)}: ${bin.count} observaciones`}</title></rect>)}{[0,.25,.5,.75,1].map(fraction=><text key={fraction} x={x(min+(max-min)*fraction)} y="212" textAnchor="middle">{format(min+(max-min)*fraction)}</text>)}<text x="315" y="239" textAnchor="middle">{data.column}</text><text transform="translate(17,114) rotate(-90)" textAnchor="middle">Frecuencia</text></svg><p>La altura cuenta observaciones por intervalo; no representa el valor de la variable en cada año.</p></section>;
+}

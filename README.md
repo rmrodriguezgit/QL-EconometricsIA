@@ -2,7 +2,7 @@
 
 Laboratorio educativo de econometría con programación visual mediante nodos y motor analítico Python. Objetivo de escritorio: macOS y Windows. [Repositorio](https://github.com/rmrodriguezgit/Quantlabs-Econometrics).
 
-**Versión 0.6.0 · 2026-11-01 · Alpha local con escritorio Electron y estudio oscuro. Instaladores independientes y actualización automática pendientes.**
+**Versión 0.7.0 · 2026-11-01 · Alpha local con escritorio Electron y estudio oscuro. Instaladores independientes y actualización automática pendientes.**
 
 ## Arrancar
 
@@ -86,3 +86,5 @@ En OLS y Dispersión se eligen variables en listas con las columnas numéricas d
 **Histograma:** conectar una fuente a data, elegir Variable (por ejemplo valor), ajustar Intervalos y ejecutar. Seleccionar el nodo abre Resultados con barras, frecuencias y faltantes. Los resultados de otros modelos y transformaciones también se presentan al seleccionar su nodo.
 
 **Resultados y continuación del flujo (0.6.0):** el ojo de cada nodo muestra u oculta su salida en Resultados. Regresión tiene una pestaña propia; añadir un nodo conserva cálculos cuyas entradas y especificación no cambian. Al situarse o pulsar sobre una salida aparecen herramientas compatibles; elegir una la añade conectada y señala las otras entradas que faltan.
+
+**Fuente Wooldridge (0.7.0):** añade Wooldridge, busca y elige uno de los 115 conjuntos (wage1, card, etc.). La elección carga los datos y actualiza las variables de las herramientas conectadas. Elegir otro conjunto invalida los modelos dependientes; revisa sus selectores antes de ejecutar. [Guía y límites](docs/WOOLDRIDGE.md).

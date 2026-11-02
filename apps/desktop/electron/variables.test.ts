@@ -1,3 +1,4 @@
+import {knownSourceColumns} from '../src/sourceColumns.ts';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {scatterInput,inputSchema,initialScatterAxes,isColumnParameter} from '../src/scatterInput.ts';
@@ -9,3 +10,7 @@ test('cambios aguas arriba y reconexiones invalidan el esquema',()=>{const p=pro
 test('selección inicial World Bank respeta selecciones personalizadas',()=>{assert.deepEqual(initialScatterAxes('worldbank',{x:'ingreso',y:'consumo'}),{x:'periodo',y:'valor'});assert.deepEqual(initialScatterAxes('worldbank',{x:'valor',y:'periodo'}),{x:'valor',y:'periodo'});});
 test('solo se usan esquemas de salidas de datos calculadas correctamente',()=>{const r={nodes:{data:{status:'succeeded',result:{output_previews:{data:{columns:['periodo','valor','pais'],numeric_columns:['periodo','valor'],n:3,preview:[]}}}}}} as unknown as Run;assert.deepEqual(inputSchema(r,'data','data')!.numeric_columns,['periodo','valor']);assert.equal(inputSchema(r,'data','test'),null);r.nodes.data.status='failed';assert.equal(inputSchema(r,'data','data'),null);});
 test('registro de campos incluye regresores, instrumentos y transformaciones',()=>{for(const key of ['x','y','features','instruments','columns','column','nominal','index','population','returns','signal','before','after','error'])assert.ok(isColumnParameter(key));for(const key of ['seed','n','indicator','output','confidence','method'])assert.equal(isColumnParameter(key),false);});
+
+test('cambiar conjunto Wooldridge invalida esquema y selección disponible de sus consumidores',()=>{const p=project();p.nodes[0].type='wooldridge';p.nodes[0].parameters={dataset:'wage1'};const first=scatterInput(p,'model')!.key;p.nodes[0].parameters.dataset='card';assert.notEqual(scatterInput(p,'model')!.key,first);});
+
+test('las opciones de variables Wooldridge se renuevan al cambiar el conjunto',()=>{const p=project();p.nodes[0].type='wooldridge';p.nodes[0].parameters={dataset:'wage1'};assert.ok(knownSourceColumns(p.nodes[0]).includes('wage'));assert.equal(knownSourceColumns(p.nodes[0]).includes('nearc4'),false);p.nodes[0].parameters.dataset='card';assert.ok(knownSourceColumns(p.nodes[0]).includes('nearc4'));p.nodes[0].parameters.dataset='hprice1';assert.equal(knownSourceColumns(p.nodes[0]).includes('wage'),false);assert.ok(knownSourceColumns(p.nodes[0]).includes('price'));});

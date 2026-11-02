@@ -93,3 +93,10 @@ La aplicación y sus instaladores están pendientes de implementación. Los camb
 - Ojo por nodo para mostrar/ocultar su salida. Resultados agrupa las salidas visibles y la regresión conserva acceso propio.
 - Recomendaciones al situarse, enfocar o pulsar una salida, basadas en sus tipos de puerto. Añadir y conectar en un paso; entradas adicionales pendientes explícitas.
 - Conserva cálculos de nodos/ancestros sin cambios al editar ramas independientes. Invalida dependientes al cambiar datos o especificación, marcando pendientes y manteniendo trazabilidad del cálculo original.
+
+## 0.7.0 · 2026-11-02
+
+- Nueva fuente Wooldridge con 115 conjuntos locales, catálogo, búsqueda, tipos y faltantes. wooldridge 0.5.0 fijado en pyproject.toml y uv.lock.
+- Carga copia completa mediante wd.data(name).copy(); al elegir otro conjunto actualiza columnas y retira modelos dependientes anteriores.
+- Capacidad de tablas ampliada a 50.000 filas/100 columnas; conjuntos mayores de 10.000 filas exportan solo 1.000 registros de muestra en JSON, con indicación explícita. Cálculos y huella conservan todas las filas.
+- Presentación de floats Wooldridge con seis decimales sin modificar datos ni redondear cálculos.

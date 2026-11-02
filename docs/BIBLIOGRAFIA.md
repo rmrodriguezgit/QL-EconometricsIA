@@ -54,3 +54,7 @@ Los archivos de origen permanecen en `bibliografía/` local y no se publican. E
 ## Control de cobertura
 
 Cada referencia aparece en [COBERTURA.md](COBERTURA.md). Las fases distinguen temario planificado de funcionalidades verificadas. Para ampliar el currículo, registrar subtemas faltantes antes de cerrar el capítulo. Los capítulos no aportados y el material complementario futuro se identificarán explícitamente.
+
+## Fuente complementaria de datos clásicos
+
+Wooldridge, J. M., *Introductory Econometrics: A Modern Approach*, conjuntos distribuidos por el paquete Python [wooldridge](https://github.com/spring-haru/wooldridge). El paquete 0.5.0 instalado incluye 115 conjuntos. Se incorpora como fuente adicional para ejercicios, sin declarar revisados capítulos nuevos ni sustituir las referencias curriculares anteriores. [Implementación](WOOLDRIDGE.md).

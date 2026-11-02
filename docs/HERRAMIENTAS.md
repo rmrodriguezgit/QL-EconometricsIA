@@ -116,3 +116,7 @@ Los siguientes pendientes se identificaron al construir los flujos. Están tambi
 7. Guarda tu variante y responde la pregunta del reporte.
 
 Los pasos no emplean una caché persistente: recalculan dependencias. La interfaz conserva resultados previos de otros pasos solo si el grafo y las huellas de datos comunes coinciden; el manifiesto registra los IDs de las ejecuciones guiadas acumuladas. Un módulo explicado no equivale a una auditoría completa de todos sus capítulos.
+
+## Fuente adicional 0.7.0
+
+Wooldridge → salida data:Dataset, 115 conjuntos clásicos seleccionables. Añade una herramienta al registro (54 en total); los 28 recorridos anteriores mantienen su cobertura y pendientes. [Guía](WOOLDRIDGE.md).

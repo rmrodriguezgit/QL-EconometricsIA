@@ -321,7 +321,7 @@ wheels = [
 
 [[package]]
 name = "quantlabs-econometrics"
-version = "0.6.0"
+version = "0.7.0"
 source = { virtual = "." }
 dependencies = [
     { name = "arch" },
@@ -332,6 +332,7 @@ dependencies = [
     { name = "semopy" },
     { name = "statsmodels" },
     { name = "wbdata" },
+    { name = "wooldridge" },
 ]
 
 [package.metadata]
@@ -344,6 +345,7 @@ requires-dist = [
     { name = "semopy", specifier = "==2.3.11" },
     { name = "statsmodels", specifier = "==0.15.0" },
     { name = "wbdata", specifier = "==1.1.0" },
+    { name = "wooldridge", specifier = "==0.5.0" },
 ]
 
 [[package]]
@@ -562,6 +564,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/9d/c5/30989742d8a4ce4582a113cef02802403ed01fd4190a1e3ceea4fde32ad4/wbdata-1.1.0.tar.gz", hash = "sha256:bd9bf63c2454fb12c279b730d7ca5b8be970dc662375e8c23d9a5f8e2f395abe", size = 104154, upload-time = "2025-10-05T20:46:17.883Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/76/96/8538b80d6425e53ed68553688ca1a615e0b1f789015f55c370b337aaada5/wbdata-1.1.0-py3-none-any.whl", hash = "sha256:84e770be4560d1a5e6a22e7c4b5c8f5ab653e4d330d5729c2460004876d125c7", size = 18469, upload-time = "2025-10-05T20:46:16.576Z" },
+]
+
+[[package]]
+name = "wooldridge"
+version = "0.5.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pandas" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/c1/50/b5402e55b36107557e7c836673ba0956103dc1886b1cc411f53d26186655/wooldridge-0.5.0.tar.gz", hash = "sha256:8875639fddc8fb1d1b93b34d5872864d8db03e1e80cade9146e6d0d5725e7b4d", size = 5446490, upload-time = "2025-11-16T13:47:24.471Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/68/7b/ef00b71eaae90f32032a5e4dde3ccd98b0a6698df6391b2166c5cd2ee9f9/wooldridge-0.5.0-py3-none-any.whl", hash = "sha256:bd45afcd423cfa6288f48c9e4bc4b85e0cf4baf0462ee40c56c909b6a9b03724", size = 5487254, upload-time = "2025-11-16T13:47:23.171Z" },
 ]
 
 [[package]]

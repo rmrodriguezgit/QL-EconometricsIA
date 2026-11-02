@@ -1,6 +1,6 @@
 [project]
 name = "quantlabs-econometrics"
-version = "0.6.0"
+version = "0.7.0"
 description = "Motor reproducible de econometría visual"
 requires-python = ">=3.12,<3.13"
 dependencies = [
@@ -12,6 +12,7 @@ dependencies = [
     "semopy==2.3.11",
     "statsmodels==0.15.0",
     "wbdata==1.1.0",
+    "wooldridge==0.5.0",
 ]
 
 [tool.uv]

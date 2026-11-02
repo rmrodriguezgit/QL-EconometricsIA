@@ -173,7 +173,8 @@
             "factor_analysis",
             "sem",
             "report",
-            "acf"
+            "acf",
+            "wooldridge"
           ]
         },
         "node_version": {

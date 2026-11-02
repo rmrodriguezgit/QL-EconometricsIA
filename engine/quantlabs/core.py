@@ -18,7 +18,7 @@ import pandas as pd
 import statsmodels.api as sm
 
 ROOT = Path(__file__).resolve().parents[2]
-VERSION = (ROOT / 'VERSION').read_text().strip() if (ROOT / 'VERSION').exists() else '0.6.0'
+VERSION = (ROOT / 'VERSION').read_text().strip() if (ROOT / 'VERSION').exists() else '0.7.0'
 SCHEMA = '1.0.0'
 
 class EngineError(ValueError):
@@ -324,8 +324,9 @@ def execute(project, target_node=None):
             if kind == 'experiment':
                 from .experiments import run_experiment
                 result = run_experiment(params)
-            elif kind in ['simulate', 'csv', 'worldbank']:
-                frame, source = {'simulate': simulate, 'csv': csv_data, 'worldbank': world_bank}[kind](params)
+            elif kind in ['simulate', 'csv', 'worldbank', 'wooldridge']:
+                from .wooldridge_source import wooldridge_data
+                frame, source = {'simulate': simulate, 'csv': csv_data, 'worldbank': world_bank, 'wooldridge':wooldridge_data}[kind](params)
                 result = frame_result(frame,'Datos de origen; revisa unidades y faltantes.')
                 source.update({'retrieved_at': datetime.now(timezone.utc).isoformat(), 'data_sha256': result['data_sha256'], 'n': len(frame)})
                 sources[key] = source
@@ -346,7 +347,7 @@ def execute(project, target_node=None):
             previews = {}
             for port, artifact in outputs.items():
                 if isinstance(artifact, pd.DataFrame):
-                    if len(artifact)>10000 or len(artifact.columns)>50: fail('Se excedió el límite de filas o columnas.', 'INVALID_PARAMETERS')
+                    if len(artifact)>50000 or len(artifact.columns)>100: fail('Se excedió el límite de filas o columnas.', 'INVALID_PARAMETERS')
                     preview = frame_result(artifact,'Tabla de salida del paso.')
                     previews[port] = {field: preview[field] for field in ['columns','numeric_columns','n','preview','data_sha256']}
                     source_key = key if port == 'data' else key+':'+port
@@ -368,5 +369,5 @@ def execute(project, target_node=None):
             'protocol_version': '1.0.0', 'target_node':target_node, 'execution_order':[key for key in ordered if key in active], 'started_at': started,
             'finished_at': datetime.now(timezone.utc).isoformat(), 'graph_sha256': digest({'schema_version': project['schema_version'], 'nodes': [{k: node[k] for k in ['id', 'type', 'node_version', 'parameters']} for node in project['nodes']], 'edges': project['edges']}),
             'python': platform.python_version(), 'platform': platform.platform(),
-            'dependencies': {name: package_version(name) for name in ['numpy', 'pandas', 'scipy', 'statsmodels', 'wbdata', 'arch', 'scikit-learn', 'hmmlearn', 'semopy']},
+            'dependencies': {name: package_version(name) for name in ['numpy', 'pandas', 'scipy', 'statsmodels', 'wbdata', 'arch', 'scikit-learn', 'hmmlearn', 'semopy', 'wooldridge']},
             'git_commit': commit, 'sources': sources}}

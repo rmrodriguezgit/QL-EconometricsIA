@@ -62,7 +62,7 @@ def regression_report(model,text='Coeficientes de la muestra conectada; una asoc
 
 def frame_result(frame,note):
     records=json.loads(frame.to_json(orient='records',double_precision=15))
-    return {'kind':'dataset','columns':frame.columns.tolist(),'numeric_columns':frame.select_dtypes(include='number').columns.tolist(),'n':len(frame),'preview':records[:8],'records':records,'note':note,'data_sha256':digest(records)}
+    return {'kind':'dataset','columns':frame.columns.tolist(),'numeric_columns':frame.select_dtypes(include='number').columns.tolist(),'n':len(frame),'preview':records[:8],'records':records if len(records)<=10000 else records[:1000],'records_complete':len(records)<=10000,'column_types':{str(col):str(frame[col].dtype) for col in frame},'note':note+(' La tabla tiene más de 10.000 filas: el JSON incluye solo las primeras 1.000; el cálculo y la huella usan todas.' if len(records)>10000 else ''),'data_sha256':digest(records)}
 
 
 def synthetic(params):

@@ -1305,5 +1305,23 @@
       "B32",
       "B36"
     ]
+  },
+  "wooldridge": {
+    "label": "Wooldridge",
+    "detail": "Carga conjuntos clásicos como wage1 y card sin conexión",
+    "category": "Fuentes de datos",
+    "color": "green",
+    "inputs": {},
+    "outputs": {
+      "data": "Dataset"
+    },
+    "defaults": {
+      "dataset": "wage1"
+    },
+    "explanation": "Carga una copia del conjunto elegido del paquete wooldridge instalado. Conserva faltantes y tipos; después elige las columnas en las herramientas conectadas.",
+    "references": [
+      "B01",
+      "B03"
+    ]
   }
 }

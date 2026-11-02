@@ -57,3 +57,8 @@ La aplicación y sus instaladores están pendientes de implementación. Los camb
 - Consulta de GitHub Releases con estado explícito cuando no existen versiones publicadas; distribución firmada y actualización automática siguen pendientes.
 - Recta OLS amarilla brillante, mayor grosor, leyenda y cuadrícula atenuada.
 - Pruebas Node de ciclo de vida y validación IPC integradas en sync.py.
+
+## 0.5.1 · 2026-11-01
+
+- Botón visible Nuevo proyecto en la barra principal, con protección de cambios sin guardar.
+- Canvas vacío con instrucciones y acceso directo a datos simulados; ejecutar permanece deshabilitado sin nodos.

@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.5.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.5.1**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -112,3 +112,7 @@ ADR-014: ejecutar un paso recalcula su clausura de dependencias, no los nodos po
 ## Entrega 0.5.0
 
 ADR-007: adoptar Electron como ruta de escritorio activa a petición del usuario, con estudio oscuro siguiendo Quantlabs-Blueprints. Electron **45.2.1**, obtenido del registro npm oficial e instalado con versión exacta el 2026-11-01; package-lock.json registra dependencias e integridades. React, Vite, TypeScript y bibliotecas científicas conservan sus versiones. VERSION, paquetes, lockfiles, frontend y metadatos Tauri pasan a 0.5.0; protocolo/esquema/nodos siguen 1.0.0. Detalles, fuentes y límites: [ELECTRON.md](ELECTRON.md).
+
+## Entrega 0.5.1
+
+Sin dependencias nuevas. Versiones de aplicación y lockfiles sincronizadas en 0.5.1. Inicio de proyecto vacío accesible desde la barra principal.

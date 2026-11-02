@@ -47,3 +47,7 @@ Pendiente: Python redistribuible por plataforma, empaquetador/instaladores, firm
 ## Verificación
 
 Pruebas Node del motor real: lista permitida, tamaño máximo, respuesta JSON, liberación del proceso, cancelación y comparación de versiones. Se incorporan al script de sincronización. Compilación TypeScript/Vite y pruebas Python siguen siendo obligatorias. Prueba manual de la ventana macOS: cálculo OLS, recarga, aviso de Releases y salida completa. No se declara verificado Windows ni un instalador firmado.
+
+## Empezar de cero (0.5.1)
+
+Pulsar **Nuevo proyecto**, escribir el nombre y añadir datos simulados, CSV o World Bank. El canvas explica los pasos. El proyecto anterior guardado se conserva en Mis proyectos; los cambios sin guardar requieren confirmar antes de cambiar de flujo. Ejecutar se habilita al añadir el primer nodo.

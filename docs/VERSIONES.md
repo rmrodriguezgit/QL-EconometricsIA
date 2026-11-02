@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.4.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. La compilación nativa sigue pendiente. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.5.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -108,3 +108,7 @@ ADR-012: el contrato compartido packages/contracts/nodeCatalog.json define herra
 ADR-013: cada ejemplo usa un grafo con generador, transformaciones/estimadores y reporte independientes. experiment se conserva para abrir archivos 0.3.0, pero ningún ejemplo del catálogo lo utiliza.
 
 ADR-014: ejecutar un paso recalcula su clausura de dependencias, no los nodos posteriores. No se introduce una caché persistente ni se declara soporte de cancelación. La interfaz solo acumula resultados de pasos con grafo y huellas comunes iguales.
+
+## Entrega 0.5.0
+
+ADR-007: adoptar Electron como ruta de escritorio activa a petición del usuario, con estudio oscuro siguiendo Quantlabs-Blueprints. Electron **45.2.1**, obtenido del registro npm oficial e instalado con versión exacta el 2026-11-01; package-lock.json registra dependencias e integridades. React, Vite, TypeScript y bibliotecas científicas conservan sus versiones. VERSION, paquetes, lockfiles, frontend y metadatos Tauri pasan a 0.5.0; protocolo/esquema/nodos siguen 1.0.0. Detalles, fuentes y límites: [ELECTRON.md](ELECTRON.md).

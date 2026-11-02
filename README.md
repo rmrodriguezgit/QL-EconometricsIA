@@ -2,7 +2,7 @@
 
 Laboratorio educativo de econometría con programación visual mediante nodos y motor analítico Python. Objetivo de escritorio: macOS y Windows. [Repositorio](https://github.com/rmrodriguezgit/Quantlabs-Econometrics).
 
-**Versión 0.4.0 · 2026-11-01 · Alpha funcional en modo de desarrollo local. Integración Tauri preparada, sin compilar todavía.**
+**Versión 0.5.0 · 2026-11-01 · Alpha local con escritorio Electron y estudio oscuro. Instaladores independientes y actualización automática pendientes.**
 
 ## Arrancar
 
@@ -70,3 +70,7 @@ El último comando valida documentación, pruebas y frontend, incorpora rutas pe
 | [Versiones](docs/VERSIONES.md) | Versiones observadas, adoptadas y pendientes |
 | [Versionado](docs/VERSIONADO.md) | Commits, push y recuperación |
 | [Cambios](CHANGELOG.md) | Historial de entregas |
+
+## Escritorio Electron (0.5.0)
+
+Ejecutar `npm run desktop --prefix apps/desktop` después de `uv sync` y `npm ci --prefix apps/desktop`. Incluye recargar, reiniciar, salir por completo y consultar GitHub Releases; el motor Python no queda residente. Interfaz inspirada en Quantlabs-Blueprints y recta OLS amarilla brillante. Instrucciones y límites: [ELECTRON.md](docs/ELECTRON.md).

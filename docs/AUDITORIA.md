@@ -54,3 +54,7 @@ Fuentes de implementación científica consultadas el 2026-11-01: [arch](https:/
 | A19 | Podían tratarse años ausentes como filas adyacentes | Rechazo explícito de calendario irregular y de compresión de faltantes temporales | Fixture de períodos 2000, 2001, 2003, 2004 rechazado al crear rezagos |
 
 La lista de lo que falta ahora proviene de reconstruir cada recorrido con puertos reales. Se publica por módulo en HERRAMIENTAS.md y en cada guía. No se afirma soporte de métodos pendientes, como GARCH multivariado o GMM de momentos general; la herramienta gmm existente significa mezcla gaussiana y lo indica expresamente.
+
+## Revisión 0.5.0
+
+Electron incorporado con renderer aislado, origen/frame IPC validado, límites de procesos y terminación explícita. Las fuentes remotas fueron retiradas. Recta de regresión contrastada sobre estudio oscuro. Continúan pendientes instaladores, Python redistribuible, firma y actualización automática; consultar Releases no acredita esas capacidades. [Detalle](ELECTRON.md).

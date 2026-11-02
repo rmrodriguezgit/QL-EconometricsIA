@@ -92,3 +92,7 @@ Los estimadores consumen siempre las tablas conectadas. No regeneran datos segú
 Las herramientas temporales revisan período numérico regular cuando existe la columna periodo; no comprimen faltantes internos al estimar series. Frecuencias, fechas y paneles generales requieren herramientas adicionales, que se explicitan en los pendientes. No se imputan ni eliminan períodos para hacer pasar una estimación.
 
 La interfaz impide ciclos, tipos incompatibles y conexiones duplicadas al dibujar. El backend vuelve a comprobarlos. Los errores numéricos esperables se presentan como ESTIMATION_ERROR. Los formatos de nodo/proyecto anteriores siguen admitidos.
+
+## Electron y estudio 0.5.0
+
+La ruta recomendada de escritorio usa `npm run desktop --prefix apps/desktop`; para HMR arrancar Vite y `npm run desktop:dev --prefix apps/desktop`. El build estático se comunica con Python por IPC nativo. Ejecutar `npm run test:desktop --prefix apps/desktop` para ciclo de vida y validación del puente. [Guía Electron](ELECTRON.md).

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ReactFlow, Background, Controls, Handle, Position, addEdge, applyNodeChanges, applyEdgeChanges, type Node, type NodeProps, type Connection, type ReactFlowInstance } from '@xyflow/react';
 import { ArrowDownToLine, ArrowUpFromLine, FolderOpen, Play, Plus, Search, FlaskConical, Database, ChartScatter, ChartNoAxesCombined, Sigma, BookOpen, ChevronRight, CircleCheck, RotateCcw, Undo2, Trash2, Unplug, Network, CircleAlert, Braces, LoaderCircle } from 'lucide-react';
+import DesktopControls from './DesktopControls';
 import ModelEquation from './ModelEquation';
 import IndicatorPicker from './IndicatorPicker';
 import ProjectManager, { type SavedProject } from './ProjectManager';
@@ -33,7 +34,8 @@ function EconometricNode({ data, selected }: NodeProps<CanvasNode>) {
 const nodeTypes = { econometric: EconometricNode };
 
 export default function App() {
-  const [project, setProject] = useState<Project>(starter);
+  const [project, setProject] = useState<Project>(()=>{try {const saved=sessionStorage.getItem('quantlabs-draft');return saved?parseProject(saved):starter();}catch{return starter();}});
+  useEffect(()=>{try{sessionStorage.setItem('quantlabs-draft',JSON.stringify(project));}catch{/* El canvas continúa disponible si se agota el almacenamiento. */}},[project]);
   const [history, setHistory] = useState<Project[]>([]);
   const [selectedId, setSelectedId] = useState('model');
   const [selectedEdgeId, setSelectedEdgeId] = useState('');
@@ -140,10 +142,10 @@ export default function App() {
   const visible = Object.entries(catalog).filter(([, value]) => `${value.label} ${value.detail}`.toLocaleLowerCase().includes(query.toLocaleLowerCase()));
   return <div className="app-shell">
     <header className="app-header">
-      <div className="brand"><span className="brand-mark"><Network size={21} /></span><span>Quantlabs<span className="brand-light"> / Econometrics</span></span><span className="alpha-tag">ALPHA</span></div>
-      <div className="header-actions"><span className="local-badge"><span className="tiny-dot" />Laboratorio local</span><span className="header-version">v{version}</span></div>
+      <div className="brand"><span className="brand-mark"><Network size={21} /></span><span>Quantlabs<span className="brand-light"> / Econometrics</span></span><span className="alpha-tag">STUDIO</span></div>
+      <div className="header-actions"><DesktopControls/><span className="local-badge"><span className="tiny-dot" />{window.quantlabsDesktop?'Electron · local':'Navegador · local'}</span><span className="header-version">v{version}</span></div>
     </header>
-    <div className="workbench-heading"><div><div className="eyebrow">TU ESPACIO DE EXPLORACIÓN</div><h1>Las ideas se conectan.<br className="mobile-break" /> Los datos, también.</h1><p>Construye un flujo. Haz una pregunta. Entiende el resultado.</p></div><div className="lesson-pill"><BookOpen size={17} /><div><strong>Primer experimento</strong><span>Ingreso, consumo y regresión</span></div><ChevronRight size={16} /></div></div>
+    <div className="studio-context"><span><BookOpen size={14}/> LABORATORIO DE ECONOMETRÍA <span className="studio-separator">/</span> {project.lesson?.module??'INICIO'}</span><button onClick={()=>setManagerOpen(true)}><FolderOpen size={14}/>28 ejemplos · aprender paso a paso<ChevronRight size={13}/></button></div>
     <main className="workbench">
       <aside className="library"><div className="section-heading"><h2>Biblioteca de nodos</h2><span>{Object.keys(catalog).length}</span></div><p className="subtle">Añade una pieza a tu análisis.</p><div className="search"><Search size={15} /><input aria-label="Buscar nodos" placeholder="Buscar un nodo…" value={query} onChange={e => setQuery(e.target.value)} /></div>
         <div className="library-nodes">{['Fuentes de datos', 'Transformaciones', 'Exploración', 'Modelos', 'Diagnósticos', 'Salidas', 'Experimentos'].map(group => <section className="node-group" key={group}><h3>{group}</h3>{visible.filter(([, value]) => value.category === group).map(([kind, value]) => { const Icon = icons[kind as Kind]; return <button disabled={busy} className="library-node" key={kind} onClick={() => addNode(kind as Kind)} title={`Añadir ${value.label}`}><span className={`node-icon ${value.color}`}><Icon size={17} /></span><span><strong>{value.label}</strong><small>{kind === 'simulate' ? 'Empieza sin descargar datos' : kind === 'worldbank' ? 'Requiere conexión' : kind === 'ols' ? 'Mínimos cuadrados ordinarios' : kind === 'csv' ? 'Hasta 2 MB · CSV' : 'Explora tus observaciones'}</small></span><Plus size={14} /></button>; })}</section>)}</div>
@@ -165,7 +167,7 @@ export default function App() {
           onNodeDragStart={() => setHistory(h => [...h.slice(-29), project])}
           onNodesChange={changes => { if (busy) return; const changed = applyNodeChanges(changes, nodes); if (changes.some(c => c.type === 'position')) setProject(p => ({ ...p, nodes: p.nodes.map(n => ({ ...n, position: changed.find(c => c.id === n.id)?.position ?? n.position })) })); const removed = changes.filter(c => c.type === 'remove').map(c => c.id); if (removed.length) update({ ...project, nodes: project.nodes.filter(n => !removed.includes(n.id)), edges: project.edges.filter(e => !removed.includes(e.source) && !removed.includes(e.target)) }); }}
           onEdgesChange={changes => { if (busy) return; if (changes.some(c => c.type === 'remove')) { const changed = applyEdgeChanges(changes, edges); update({ ...project, edges: project.edges.filter(e => changed.some(c => c.id === e.id)) }); } }}
-          fitView fitViewOptions={{ padding: .25, maxZoom: 1 }} minZoom={.1} maxZoom={1.6} deleteKeyCode={['Backspace', 'Delete']}><Background gap={22} size={1} color="#cdd8d0" /><Controls showInteractive={false} /></ReactFlow>
+          fitView fitViewOptions={{ padding: .25, maxZoom: 1 }} minZoom={.1} maxZoom={1.6} deleteKeyCode={['Backspace', 'Delete']}><Background gap={22} size={1} color="#283548" /><Controls showInteractive={false} /></ReactFlow>
           <div className="canvas-footer"><span>{project.nodes.length} nodos <span>·</span> {project.edges.length} conexiones</span><button disabled={busy} onClick={() => { update(starter()); setSelectedId('model'); }}><RotateCcw size={12} /> Restaurar ejemplo</button></div>
         </div>
         <section className="results"><div className="results-header"><div className="result-tabs">{['Resultados', 'Descriptivos', 'Trazabilidad'].map(name => <button key={name} className={tab === name ? 'active' : ''} onClick={() => setTab(name)}>{name}</button>)}</div>{run && <button className="text-button" onClick={() => download('quantlabs-resultados.json', run)}><ArrowDownToLine size={13} /> Exportar</button>}</div>
@@ -183,6 +185,6 @@ export default function App() {
           {selectedResult?.result && <details className="node-details"><summary>Ver resultado del nodo</summary><pre>{JSON.stringify(selectedResult.result, null, 2)}</pre></details>}
           <button className="delete-node" disabled={busy} onClick={() => { update({ ...project, nodes: project.nodes.filter(n => n.id !== selected.id), edges: project.edges.filter(e => e.source !== selected.id && e.target !== selected.id) }); setSelectedId(''); }}><Trash2 size={13} />Eliminar nodo</button>
         </> : <div className="inspector-empty"><Network size={28} /><p>Selecciona un nodo para explorar sus parámetros y fundamentos.</p></div>}</aside>
-    </main>{managerOpen && <ProjectManager project={project} active={activeFile} onOpen={(next, file) => { update(next); setActiveFile(file ?? null); setStepIndex(0); setSelectedId(next.nodes[0]?.id ?? ''); setSelectedEdgeId(''); }} onRun={(next, file) => { update(next); setActiveFile(file ?? null); setStepIndex(0); setSelectedId(next.nodes[0]?.id ?? ''); setManagerOpen(false); void execute(next); }} onDeleted={id => setActiveFile(file => file?.id === id ? null : file)} onClose={() => setManagerOpen(false)} />}{equationOpen && <ModelEquation node={equationNode} result={equationNode ? run?.nodes[equationNode.id] : undefined} onClose={() => setEquationOpen(false)} />}<footer className="app-footer"><span><span className="tiny-dot" /> Hecho para aprender, observación a observación.</span><span>Motor Python · ejecución local · versión inicial</span></footer>
+    </main>{managerOpen && <ProjectManager project={project} active={activeFile} onOpen={(next, file) => { update(next); setActiveFile(file ?? null); setStepIndex(0); setSelectedId(next.nodes[0]?.id ?? ''); setSelectedEdgeId(''); }} onRun={(next, file) => { update(next); setActiveFile(file ?? null); setStepIndex(0); setSelectedId(next.nodes[0]?.id ?? ''); setManagerOpen(false); void execute(next); }} onDeleted={id => setActiveFile(file => file?.id === id ? null : file)} onClose={() => setManagerOpen(false)} />}{equationOpen && <ModelEquation node={equationNode} result={equationNode ? run?.nodes[equationNode.id] : undefined} onClose={() => setEquationOpen(false)} />}<footer className="app-footer"><span><span className="tiny-dot" /> 53 herramientas · 28 recorridos · ejecución reproducible</span><span>Motor Python · {window.quantlabsDesktop?'Electron':'Web'} · v{version}</span></footer>
   </div>;
 }

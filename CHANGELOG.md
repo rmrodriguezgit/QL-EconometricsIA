@@ -49,3 +49,11 @@
 - Bibliografía original y datasets privados excluidos de Git.
 
 La aplicación y sus instaladores están pendientes de implementación. Los cambios de publicación se verifican en Git, sin registrar un SHA autorreferente en esta entrega.
+
+## 0.5.0 · 2026-11-01
+
+- Estudio oscuro inspirado en Quantlabs-Blueprints: biblioteca, canvas, inspector y resultados. Fuentes locales; mejor contraste de controles y tablas.
+- Electron 45.2.1 con RPC stdio, procesos Python acotados y cierre completo; recargar, reiniciar y salir. Recuperación del grafo al recargar.
+- Consulta de GitHub Releases con estado explícito cuando no existen versiones publicadas; distribución firmada y actualización automática siguen pendientes.
+- Recta OLS amarilla brillante, mayor grosor, leyenda y cuadrícula atenuada.
+- Pruebas Node de ciclo de vida y validación IPC integradas en sync.py.

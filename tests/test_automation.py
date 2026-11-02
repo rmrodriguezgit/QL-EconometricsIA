@@ -61,9 +61,12 @@ class ScopeTests(unittest.TestCase):
         # Mock validation to avoid recursively running this test suite.
         responses = ['main', sync.EXPECTED_REMOTE, '', 'author', 'author@example.test',
                      'README.md', '', 'README.md', '', 'abc123']
+        def fail_only_push(command, **kwargs):
+            if command[:2] == ['git', 'push']:
+                raise subprocess.CalledProcessError(1, command)
+            return None
         with patch.object(sync, 'git', side_effect=responses) as git, \
-             patch.object(sync.subprocess, 'run', side_effect=[None, None, None,
-                         subprocess.CalledProcessError(1, ['git', 'push'])]):
+             patch.object(sync.subprocess, 'run', side_effect=fail_only_push):
             with self.assertRaises(subprocess.CalledProcessError):
                 sync.sync('docs: change')
             self.assertTrue(any(call.args[:1] == ('commit',) for call in git.call_args_list))

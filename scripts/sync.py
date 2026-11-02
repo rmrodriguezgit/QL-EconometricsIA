@@ -8,7 +8,7 @@ ROOT = Path(__file__).resolve().parents[1]
 EXPECTED_REMOTE = 'https://github.com/rmrodriguezgit/Quantlabs-Econometrics.git'
 FILES = {'README.md', 'AGENTS.md', 'CHANGELOG.md', 'VERSION', '.gitignore', 'pyproject.toml', 'uv.lock'}
 DIRECTORIES = {'docs', 'scripts', 'tests', '.github', 'apps', 'engine', 'packages', 'examples'}
-SUFFIXES = {'.md', '.json', '.py', '.yml', '.yaml', '.toml', '.txt', '.ts', '.tsx', '.css', '.html', '.rs', '.lock'}
+SUFFIXES = {'.md', '.json', '.py', '.yml', '.yaml', '.toml', '.txt', '.ts', '.tsx', '.css', '.html', '.rs', '.lock', '.cjs'}
 
 
 def permitted(name):
@@ -50,6 +50,7 @@ def sync(message, root=ROOT, remote=EXPECTED_REMOTE):
         npm = shutil.which('npm.cmd' if sys.platform == 'win32' else 'npm')
         if not npm:
             raise ValueError('Instala Node.js y ejecuta npm ci en apps/desktop')
+        subprocess.run([npm, 'run', 'test:desktop', '--prefix', 'apps/desktop'], cwd=root, check=True)
         subprocess.run([npm, 'run', 'build', '--prefix', 'apps/desktop'], cwd=root, check=True)
     candidates = git('ls-files', '--cached', '--others', '--exclude-standard', '-z', root=root)
     paths = sorted({name for name in candidates.split('\0') if name and permitted(name)})

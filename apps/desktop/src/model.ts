@@ -7,7 +7,7 @@ export type Lesson = { module: string; title: string; objective: string; referen
 export type Project = { lesson?: Lesson; schema_version: '1.0.0'; app_version: string; title: string; nodes: ProjectNode[]; edges: { id: string; source: string; target: string; source_port: string; target_port: string }[] };
 export type NodeResult = { status: 'succeeded' | 'failed' | 'skipped'; result?: Record<string, unknown>; error?: { code: string; message: string }; message?: string };
 export type Run = { run_id: string; status: string; nodes: Record<string, NodeResult>; manifest: { graph_sha256: string; [key: string]: unknown } };
-export const version = '0.4.0';
+export const version = '0.5.0';
 export type ToolDefinition = { label: string; detail: string; category: string; color: string; references: string; explanation: string; defaults: Parameters; inputs: Record<string,string>; outputs: Record<string,string>; choices?: Record<string,string[]>; choice_labels?: Record<string,Record<string,string>> };
 export const catalog = Object.fromEntries(Object.entries(nodeCatalog).map(([key,value]) => [key,{...value,references:value.references.join(' · ')}])) as unknown as Record<Kind,ToolDefinition>;
 
@@ -41,7 +41,9 @@ export function parseProject(text: string): Project {
 export async function rpc<T>(method: string, params = {}): Promise<T> {
   const request = { jsonrpc: '2.0', id: crypto.randomUUID(), method, params };
   let response;
-  if ('__TAURI_INTERNALS__' in window) {
+  if (window.quantlabsDesktop) {
+    response = await window.quantlabsDesktop.request(request);
+  } else if ('__TAURI_INTERNALS__' in window) {
     const { invoke } = await import('@tauri-apps/api/core');
     response = await invoke('engine_request', { request });
   } else {

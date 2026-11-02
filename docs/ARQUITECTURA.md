@@ -1,6 +1,6 @@
 # Arquitectura de Quantlabs-Econometrics
 
-Versión de diseño: 0.1.0. Fecha: 2026-11-01. Estado: diseño objetivo. Para el alcance real de la alpha 0.4.0, consultar [DESARROLLO.md](DESARROLLO.md).
+Versión de diseño: 0.1.0. Fecha: 2026-11-01. Estado: diseño objetivo. Para el alcance real de la alpha 0.5.0, consultar [DESARROLLO.md](DESARROLLO.md).
 
 ## Objetivo y límites
 
@@ -117,3 +117,7 @@ El administrador usa archivos JSON administrados y papelera local antes de intro
 ## Herramientas conectables 0.4.0
 
 La ejecución transporta artefactos por pares nodo/puerto, incluidos modelos y transformadores. Los 28 módulos de ejemplo ya son grafos de herramientas independientes. La guía es metadato opcional del proyecto; no contiene código científico. El contrato compartido y la validación evitan que la interfaz anuncie puertos que el motor no tiene. La reconstrucción y sus pendientes se documentan en HERRAMIENTAS.md.
+
+## Ruta de escritorio activa en 0.5.0
+
+Electron + React → preload aislado → IPC validado → Python stdio. El estudio carga dist mediante quantlabs://studio; no requiere Rust ni puertos de servidor. El proceso principal administra la terminación de Python al cerrar. Tauri queda como alternativa anterior sin verificar. Empaquetado independiente y autoactualización firmada pendientes: [ELECTRON.md](ELECTRON.md).

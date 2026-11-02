@@ -1,22 +1,165 @@
 {
   "schema_version": "1.0.0",
-  "app_version": "0.3.0",
+  "app_version": "0.4.0",
   "title": "C21 · Endogeneidad y variables instrumentales",
   "nodes": [
     {
-      "id": "experiment",
-      "type": "experiment",
+      "id": "datos",
+      "type": "synthetic",
       "node_version": "1.0.0",
       "parameters": {
-        "topic": "C21",
-        "seed": 42,
-        "n": 300
+        "scenario": "endogenous",
+        "n": 600,
+        "seed": 42
       },
       "position": {
-        "x": 150,
-        "y": 100
+        "x": 0,
+        "y": 80
+      }
+    },
+    {
+      "id": "clasico",
+      "type": "ols",
+      "node_version": "1.0.0",
+      "parameters": {
+        "x": "x",
+        "y": "y",
+        "covariance": "HC3"
+      },
+      "position": {
+        "x": 300,
+        "y": 165
+      }
+    },
+    {
+      "id": "instrumental",
+      "type": "iv2sls",
+      "node_version": "1.0.0",
+      "parameters": {
+        "features": "x",
+        "instruments": "z",
+        "y": "y"
+      },
+      "position": {
+        "x": 600,
+        "y": 80
+      }
+    },
+    {
+      "id": "comparar",
+      "type": "compare_models",
+      "node_version": "1.0.0",
+      "parameters": {
+        "evaluation": "muestra_comun"
+      },
+      "position": {
+        "x": 900,
+        "y": 165
+      }
+    },
+    {
+      "id": "reporte",
+      "type": "report",
+      "node_version": "1.0.0",
+      "parameters": {
+        "note": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando propiedades, ols/wls/gls, máxima verosimilitud, iv/2sls, momentos y gmm."
+      },
+      "position": {
+        "x": 1200,
+        "y": 80
       }
     }
   ],
-  "edges": []
+  "edges": [
+    {
+      "id": "datos-data-clasico-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "clasico",
+      "target_port": "data"
+    },
+    {
+      "id": "datos-data-instrumental-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "instrumental",
+      "target_port": "data"
+    },
+    {
+      "id": "clasico-model-comparar-first",
+      "source": "clasico",
+      "source_port": "model",
+      "target": "comparar",
+      "target_port": "first"
+    },
+    {
+      "id": "instrumental-model-comparar-second",
+      "source": "instrumental",
+      "source_port": "model",
+      "target": "comparar",
+      "target_port": "second"
+    },
+    {
+      "id": "datos-data-comparar-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "comparar",
+      "target_port": "data"
+    },
+    {
+      "id": "comparar-result-reporte-result",
+      "source": "comparar",
+      "source_port": "result",
+      "target": "reporte",
+      "target_port": "result"
+    }
+  ],
+  "lesson": {
+    "module": "C21",
+    "title": "Endogeneidad y variables instrumentales",
+    "objective": "Construir endogeneidad y variables instrumentales conectando herramientas y comprobando cada salida.",
+    "references": [
+      "B12"
+    ],
+    "steps": [
+      {
+        "node_id": "datos",
+        "title": "1. Genera y revisa la tabla",
+        "instruction": "z se genera independientemente de u; en datos reales su validez requiere justificación. Revisa x = 0.9z + 0.7u + ruido; y = 1 + 2x + u.",
+        "expected": "Una tabla visible y exportable; todavía no se ha estimado ningún modelo.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "clasico",
+        "title": "Regresión OLS",
+        "instruction": "Estima y = β₀ + β₁x + ε. HC3 cambia los errores estándar y conserva los coeficientes.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "instrumental",
+        "title": "Variables instrumentales",
+        "instruction": "Estima por 2SLS usando instrumentos explícitos. Su validez requiere argumentos externos al ajuste.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "comparar",
+        "title": "Comparar modelos",
+        "instruction": "Compara modelos sobre datos comunes. AIC/BIC solo se muestran como comparables cuando coinciden sus muestras de ajuste.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "reporte",
+        "title": "Interpreta y documenta",
+        "instruction": "Conecta el resultado elegido al reporte. Explica qué se calculó, con qué datos y qué no puede concluirse.",
+        "expected": "El reporte conserva el resultado de entrada y añade la pregunta de trabajo sin reestimar.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      }
+    ],
+    "missing_tools": [
+      "WLS, GLS, máxima verosimilitud y GMM de momentos general"
+    ]
+  }
 }

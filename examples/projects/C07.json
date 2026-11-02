@@ -1,22 +1,125 @@
 {
   "schema_version": "1.0.0",
-  "app_version": "0.3.0",
+  "app_version": "0.4.0",
   "title": "C07 · La incertidumbre de una media",
   "nodes": [
     {
-      "id": "experiment",
-      "type": "experiment",
+      "id": "datos",
+      "type": "synthetic",
       "node_version": "1.0.0",
       "parameters": {
-        "topic": "C07",
-        "seed": 42,
-        "n": 300
+        "scenario": "normal",
+        "n": 1000,
+        "seed": 42
       },
       "position": {
-        "x": 150,
-        "y": 100
+        "x": 0,
+        "y": 80
+      }
+    },
+    {
+      "id": "muestra",
+      "type": "sample",
+      "node_version": "1.0.0",
+      "parameters": {
+        "n": 100,
+        "method": "aleatorio",
+        "column": "valor",
+        "seed": 42
+      },
+      "position": {
+        "x": 300,
+        "y": 165
+      }
+    },
+    {
+      "id": "intervalo",
+      "type": "mean_ci",
+      "node_version": "1.0.0",
+      "parameters": {
+        "column": "valor",
+        "confidence": 0.95
+      },
+      "position": {
+        "x": 600,
+        "y": 80
+      }
+    },
+    {
+      "id": "reporte",
+      "type": "report",
+      "node_version": "1.0.0",
+      "parameters": {
+        "note": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando sesgo/varianza de estimadores, distribución muestral, intervalos t, nivel, tamaño y corrección finita."
+      },
+      "position": {
+        "x": 900,
+        "y": 165
       }
     }
   ],
-  "edges": []
+  "edges": [
+    {
+      "id": "datos-data-muestra-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "muestra",
+      "target_port": "data"
+    },
+    {
+      "id": "muestra-data-intervalo-data",
+      "source": "muestra",
+      "source_port": "data",
+      "target": "intervalo",
+      "target_port": "data"
+    },
+    {
+      "id": "intervalo-result-reporte-result",
+      "source": "intervalo",
+      "source_port": "result",
+      "target": "reporte",
+      "target_port": "result"
+    }
+  ],
+  "lesson": {
+    "module": "C07",
+    "title": "La incertidumbre de una media",
+    "objective": "Construir la incertidumbre de una media conectando herramientas y comprobando cada salida.",
+    "references": [
+      "B21"
+    ],
+    "steps": [
+      {
+        "node_id": "datos",
+        "title": "1. Genera y revisa la tabla",
+        "instruction": "La media generadora es 10; una muestra no tiene por qué coincidir con ella. Revisa valor ~ Normal(10, 3²).",
+        "expected": "Una tabla visible y exportable; todavía no se ha estimado ningún modelo.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "muestra",
+        "title": "Muestrear",
+        "instruction": "Selecciona filas sin reemplazo. El modo sesgado toma solo el cuartil superior de una columna.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "intervalo",
+        "title": "Intervalo de la media",
+        "instruction": "Calcula un intervalo t para la media y muestra muestra efectiva y error estándar.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "reporte",
+        "title": "Interpreta y documenta",
+        "instruction": "Conecta el resultado elegido al reporte. Explica qué se calculó, con qué datos y qué no puede concluirse.",
+        "expected": "El reporte conserva el resultado de entrada y añade la pregunta de trabajo sin reestimar.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      }
+    ],
+    "missing_tools": [
+      "Cálculo de tamaño de muestra y corrección por población finita"
+    ]
+  }
 }

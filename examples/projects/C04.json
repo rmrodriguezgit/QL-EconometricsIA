@@ -1,22 +1,146 @@
 {
   "schema_version": "1.0.0",
-  "app_version": "0.3.0",
+  "app_version": "0.4.0",
   "title": "C04 · Describir antes de explicar",
   "nodes": [
     {
-      "id": "experiment",
-      "type": "experiment",
+      "id": "datos",
+      "type": "synthetic",
       "node_version": "1.0.0",
       "parameters": {
-        "topic": "C04",
-        "seed": 42,
-        "n": 300
+        "scenario": "positive",
+        "n": 300,
+        "seed": 42
       },
       "position": {
-        "x": 150,
-        "y": 100
+        "x": 0,
+        "y": 80
+      }
+    },
+    {
+      "id": "crecimiento",
+      "type": "growth",
+      "node_version": "1.0.0",
+      "parameters": {
+        "column": "valor",
+        "output": "crecimiento"
+      },
+      "position": {
+        "x": 300,
+        "y": 165
+      }
+    },
+    {
+      "id": "describir",
+      "type": "describe",
+      "node_version": "1.0.0",
+      "parameters": {},
+      "position": {
+        "x": 600,
+        "y": 80
+      }
+    },
+    {
+      "id": "correlacion",
+      "type": "correlation",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "valor,crecimiento"
+      },
+      "position": {
+        "x": 900,
+        "y": 165
+      }
+    },
+    {
+      "id": "reporte",
+      "type": "report",
+      "node_version": "1.0.0",
+      "parameters": {
+        "note": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando media, mediana, varianza, desviación, caja, crecimiento, media geométrica y correlación."
+      },
+      "position": {
+        "x": 1200,
+        "y": 80
       }
     }
   ],
-  "edges": []
+  "edges": [
+    {
+      "id": "datos-data-crecimiento-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "crecimiento",
+      "target_port": "data"
+    },
+    {
+      "id": "crecimiento-data-describir-data",
+      "source": "crecimiento",
+      "source_port": "data",
+      "target": "describir",
+      "target_port": "data"
+    },
+    {
+      "id": "crecimiento-data-correlacion-data",
+      "source": "crecimiento",
+      "source_port": "data",
+      "target": "correlacion",
+      "target_port": "data"
+    },
+    {
+      "id": "correlacion-result-reporte-result",
+      "source": "correlacion",
+      "source_port": "result",
+      "target": "reporte",
+      "target_port": "result"
+    }
+  ],
+  "lesson": {
+    "module": "C04",
+    "title": "Describir antes de explicar",
+    "objective": "Construir describir antes de explicar conectando herramientas y comprobando cada salida.",
+    "references": [
+      "B18"
+    ],
+    "steps": [
+      {
+        "node_id": "datos",
+        "title": "1. Genera y revisa la tabla",
+        "instruction": "Permite comprobar tasas de crecimiento y su observación inicial faltante. Revisa valor[t] = valor[t−1] × (1 + tasa[t]).",
+        "expected": "Una tabla visible y exportable; todavía no se ha estimado ningún modelo.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "crecimiento",
+        "title": "Tasa de crecimiento",
+        "instruction": "Calcula cambio porcentual consecutivo y conserva el primer valor como faltante.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "describir",
+        "title": "Descriptivos",
+        "instruction": "Cuenta observaciones y faltantes, media, mediana y desviación muestral por columna.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "correlacion",
+        "title": "Correlación",
+        "instruction": "Calcula la matriz de correlación y covarianza. No convierte asociación en causalidad.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "reporte",
+        "title": "Interpreta y documenta",
+        "instruction": "Conecta el resultado elegido al reporte. Explica qué se calculó, con qué datos y qué no puede concluirse.",
+        "expected": "El reporte conserva el resultado de entrada y añade la pregunta de trabajo sin reestimar.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      }
+    ],
+    "missing_tools": [
+      "Media geométrica y distribución de la correlación"
+    ]
+  }
 }

@@ -1,22 +1,123 @@
 {
   "schema_version": "1.0.0",
-  "app_version": "0.3.0",
+  "app_version": "0.4.0",
   "title": "C10 · Regresión múltiple y multicolinealidad",
   "nodes": [
     {
-      "id": "experiment",
-      "type": "experiment",
+      "id": "datos",
+      "type": "synthetic",
       "node_version": "1.0.0",
       "parameters": {
-        "topic": "C10",
-        "seed": 42,
-        "n": 300
+        "scenario": "multiple",
+        "n": 300,
+        "seed": 42
       },
       "position": {
-        "x": 150,
-        "y": 100
+        "x": 0,
+        "y": 80
+      }
+    },
+    {
+      "id": "modelo",
+      "type": "multiple_ols",
+      "node_version": "1.0.0",
+      "parameters": {
+        "features": "x,z",
+        "y": "y",
+        "covariance": "nonrobust"
+      },
+      "position": {
+        "x": 300,
+        "y": 165
+      }
+    },
+    {
+      "id": "diagnostico",
+      "type": "diagnostics",
+      "node_version": "1.0.0",
+      "parameters": {},
+      "position": {
+        "x": 600,
+        "y": 80
+      }
+    },
+    {
+      "id": "reporte",
+      "type": "report",
+      "node_version": "1.0.0",
+      "parameters": {
+        "note": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando ols múltiple, matriz de diseño, t/f, covarianza, correlación, controles, multicolinealidad."
+      },
+      "position": {
+        "x": 900,
+        "y": 165
       }
     }
   ],
-  "edges": []
+  "edges": [
+    {
+      "id": "datos-data-modelo-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "modelo",
+      "target_port": "data"
+    },
+    {
+      "id": "modelo-model-diagnostico-model",
+      "source": "modelo",
+      "source_port": "model",
+      "target": "diagnostico",
+      "target_port": "model"
+    },
+    {
+      "id": "diagnostico-result-reporte-result",
+      "source": "diagnostico",
+      "source_port": "result",
+      "target": "reporte",
+      "target_port": "result"
+    }
+  ],
+  "lesson": {
+    "module": "C10",
+    "title": "Regresión múltiple y multicolinealidad",
+    "objective": "Construir regresión múltiple y multicolinealidad conectando herramientas y comprobando cada salida.",
+    "references": [
+      "B04",
+      "B14",
+      "B30"
+    ],
+    "steps": [
+      {
+        "node_id": "datos",
+        "title": "1. Genera y revisa la tabla",
+        "instruction": "La correlación entre x y z permite explorar multicolinealidad. Revisa z = 0.9x + ruido; y = 1 + 0.7x + 0.3z + ε.",
+        "expected": "Una tabla visible y exportable; todavía no se ha estimado ningún modelo.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "modelo",
+        "title": "OLS múltiple",
+        "instruction": "Ajusta una respuesta con varios regresores. Verifica rango y muestra efectiva.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "diagnostico",
+        "title": "Diagnóstico del modelo",
+        "instruction": "Examina el modelo conectado: heterocedasticidad, autocorrelación e influencia; GARCH usa residuos estandarizados.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "reporte",
+        "title": "Interpreta y documenta",
+        "instruction": "Conecta el resultado elegido al reporte. Explica qué se calculó, con qué datos y qué no puede concluirse.",
+        "expected": "El reporte conserva el resultado de entrada y añade la pregunta de trabajo sin reestimar.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      }
+    ],
+    "missing_tools": [
+      "Editor de restricciones t/F y selección de especificación"
+    ]
+  }
 }

@@ -1,0 +1,1309 @@
+{
+  "simulate": {
+    "label": "Datos simulados",
+    "detail": "Genera ingreso y consumo con una semilla reproducible",
+    "category": "Fuentes de datos",
+    "color": "green",
+    "inputs": {},
+    "outputs": {
+      "data": "Dataset"
+    },
+    "defaults": {
+      "n": 120,
+      "seed": 42,
+      "intercept": 12,
+      "slope": 0.72,
+      "noise": 9
+    },
+    "explanation": "Genera ingreso y consumo con una semilla reproducible. Conecta su salida a una herramienta.",
+    "references": [
+      "B18",
+      "B29"
+    ]
+  },
+  "csv": {
+    "label": "Archivo CSV",
+    "detail": "Importa datos locales conservando los faltantes",
+    "category": "Fuentes de datos",
+    "color": "green",
+    "inputs": {},
+    "outputs": {
+      "data": "Dataset"
+    },
+    "defaults": {
+      "content": "",
+      "delimiter": ","
+    },
+    "explanation": "Importa datos locales conservando los faltantes. Declara sus unidades.",
+    "references": [
+      "B16"
+    ]
+  },
+  "worldbank": {
+    "label": "Banco Mundial",
+    "detail": "Consulta una serie anual y conserva código, fuente y procedencia",
+    "category": "Fuentes de datos",
+    "color": "green",
+    "inputs": {},
+    "outputs": {
+      "data": "Dataset"
+    },
+    "defaults": {
+      "country": "MEX",
+      "indicator": "NY.GDP.PCAP.KD",
+      "start": 2000,
+      "end": 2023
+    },
+    "explanation": "Consulta una serie anual y conserva código, fuente y procedencia. Requiere conexión.",
+    "references": [
+      "B01"
+    ]
+  },
+  "describe": {
+    "label": "Descriptivos",
+    "detail": "Cuenta observaciones y faltantes, media, mediana y desviación muestral por colum",
+    "category": "Exploración",
+    "color": "blue",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "summary": "Summary",
+      "result": "Result"
+    },
+    "defaults": {},
+    "explanation": "Cuenta observaciones y faltantes, media, mediana y desviación muestral por columna.",
+    "references": [
+      "B18"
+    ]
+  },
+  "scatter": {
+    "label": "Dispersión",
+    "detail": "Representa pares completos de las variables elegidas",
+    "category": "Exploración",
+    "color": "blue",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "plot": "Plot",
+      "result": "Result"
+    },
+    "defaults": {
+      "x": "ingreso",
+      "y": "consumo"
+    },
+    "explanation": "Representa pares completos de las variables elegidas. Asociación no implica causalidad.",
+    "references": [
+      "B17"
+    ]
+  },
+  "ols": {
+    "label": "Regresión OLS",
+    "detail": "Estima y = β₀ + β₁x + ε",
+    "category": "Modelos",
+    "color": "purple",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "model": "FittedModel",
+      "result": "Result"
+    },
+    "defaults": {
+      "x": "ingreso",
+      "y": "consumo",
+      "covariance": "HC3"
+    },
+    "explanation": "Estima y = β₀ + β₁x + ε. HC3 cambia los errores estándar y conserva los coeficientes.",
+    "references": [
+      "B03",
+      "B23",
+      "B29"
+    ]
+  },
+  "experiment": {
+    "label": "Receta anterior",
+    "detail": "Compatibilidad con proyectos 0",
+    "category": "Experimentos",
+    "color": "purple",
+    "inputs": {},
+    "outputs": {},
+    "defaults": {
+      "topic": "C01",
+      "seed": 42,
+      "n": 300
+    },
+    "explanation": "Compatibilidad con proyectos 0.3.0. Los nuevos ejemplos usan herramientas conectadas paso a paso.",
+    "references": [
+      "B01",
+      "B28"
+    ]
+  },
+  "synthetic": {
+    "label": "Generador de escenarios",
+    "detail": "Genera una tabla sintética; no estima modelos",
+    "category": "Fuentes de datos",
+    "color": "green",
+    "inputs": {},
+    "outputs": {
+      "data": "Dataset"
+    },
+    "defaults": {
+      "scenario": "regression",
+      "n": 300,
+      "seed": 42
+    },
+    "explanation": "Genera una tabla sintética; no estima modelos. Cambia el escenario, tamaño y semilla para construir otros flujos.",
+    "references": [
+      "B01",
+      "B18",
+      "B28"
+    ],
+    "choices": {
+      "scenario": [
+        "regression",
+        "multiple",
+        "hetero",
+        "outliers",
+        "logistic",
+        "prices",
+        "positive",
+        "exponential",
+        "income",
+        "normal",
+        "pairs",
+        "cobb",
+        "ar1",
+        "cointegrated",
+        "garch",
+        "factors",
+        "endogenous",
+        "polynomial",
+        "returns",
+        "regimes",
+        "clusters",
+        "nonlinear",
+        "inflation",
+        "sem"
+      ]
+    },
+    "scenario_info": {
+      "regression": {
+        "title": "Ingreso y consumo lineales",
+        "equation": "consumo = 2 + 0.8 × ingreso + ε",
+        "description": "Ingreso y error normales independientes; unidades artificiales normalizadas, que pueden ser negativas."
+      },
+      "multiple": {
+        "title": "Dos regresores correlacionados",
+        "equation": "z = 0.9x + ruido; y = 1 + 0.7x + 0.3z + ε",
+        "description": "La correlación entre x y z permite explorar multicolinealidad."
+      },
+      "hetero": {
+        "title": "Regresión con varianza cambiante",
+        "equation": "y = 1 + x + (0.2 + 2|x|)ε",
+        "description": "La dispersión del error aumenta con la magnitud de x."
+      },
+      "outliers": {
+        "title": "Regresión con atípicos",
+        "equation": "y = 2 + 0.8x + ε; primeras filas +25",
+        "description": "Se contaminan observaciones para comparar OLS con Huber."
+      },
+      "logistic": {
+        "title": "Respuesta binaria",
+        "equation": "P(clase = 1 | x) = logística(−0.4 + 1.2x)",
+        "description": "La clase es una realización Bernoulli, no una probabilidad observada."
+      },
+      "prices": {
+        "title": "Valores nominales, precios y población",
+        "equation": "real = nominal / índice × 100",
+        "description": "El generador solo produce nominal, índice y población. El ajuste real se calcula en nodos posteriores; períodos artificiales."
+      },
+      "positive": {
+        "title": "Niveles positivos acumulados",
+        "equation": "valor[t] = valor[t−1] × (1 + tasa[t])",
+        "description": "Permite comprobar tasas de crecimiento y su observación inicial faltante."
+      },
+      "exponential": {
+        "title": "Distribución exponencial",
+        "equation": "valor ~ Exponencial(media 1)",
+        "description": "Su asimetría ayuda a distinguir distribución original y medias remuestreadas."
+      },
+      "income": {
+        "title": "Población de ingresos artificiales",
+        "equation": "log(valor) ~ Normal(3, 0.7²)",
+        "description": "Una población asimétrica para contrastar muestras aleatorias y sesgadas."
+      },
+      "normal": {
+        "title": "Población normal conocida",
+        "equation": "valor ~ Normal(10, 3²)",
+        "description": "La media generadora es 10; una muestra no tiene por qué coincidir con ella."
+      },
+      "pairs": {
+        "title": "Medidas emparejadas",
+        "equation": "después = antes + Normal(0.5, 2²)",
+        "description": "Las filas mantienen sus pares; no deben tratarse como muestras independientes."
+      },
+      "cobb": {
+        "title": "Producción Cobb-Douglas",
+        "equation": "producción = 1.5 × capital^0.35 × trabajo^0.6 × exp(ε)",
+        "description": "Capital, trabajo y producción son positivos; sus logaritmos se crean en otro nodo."
+      },
+      "ar1": {
+        "title": "AR(1) y paseo aleatorio",
+        "equation": "y[t] = 0.75y[t−1] + ε[t]; walk[t] = walk[t−1] + u[t]",
+        "description": "Ambos procesos tienen dependencia temporal, pero solo el primero revierte a una media."
+      },
+      "cointegrated": {
+        "title": "Series con equilibrio común",
+        "equation": "x es paseo aleatorio; y = 1.5x + ruido estacionario",
+        "description": "El generador no prueba cointegración. ADF, equilibrio y ECM son herramientas posteriores."
+      },
+      "garch": {
+        "title": "Retornos con volatilidad agrupada",
+        "equation": "σ²[t] = 0.1 + 0.12ε²[t−1] + 0.8σ²[t−1]",
+        "description": "Genera retornos, no una estimación. GARCH y sus residuos se ajustan después."
+      },
+      "factors": {
+        "title": "Seis medidas de dos factores",
+        "equation": "x1…x3 dependen de f1; x4…x6 de f2, más ruido",
+        "description": "No se incluyen los factores reales como columnas de ajuste."
+      },
+      "endogenous": {
+        "title": "Regresor endógeno e instrumento",
+        "equation": "x = 0.9z + 0.7u + ruido; y = 1 + 2x + u",
+        "description": "z se genera independientemente de u; en datos reales su validez requiere justificación."
+      },
+      "polynomial": {
+        "title": "Relación cuadrática",
+        "equation": "y = 1 + x + 0.4x² + ε",
+        "description": "Las potencias se añaden con otra herramienta; el generador no selecciona modelos."
+      },
+      "returns": {
+        "title": "Retornos diarios artificiales",
+        "equation": "retorno ~ Normal(0.0003, 0.012²)",
+        "description": "No hay estrategia en el generador; señal, partición y costos se calculan después."
+      },
+      "regimes": {
+        "title": "Dos estados persistentes",
+        "equation": "P(permanecer) = 0.96; media de emisión −2 o 2",
+        "description": "estado_real sirve como referencia didáctica y no se utiliza como entrada de HMM o mezcla."
+      },
+      "clusters": {
+        "title": "Tres grupos artificiales",
+        "equation": "Centros (−2,−1), (0,2), (2,−1), con ruido",
+        "description": "No se incorporan etiquetas conocidas al ajuste de k-means."
+      },
+      "nonlinear": {
+        "title": "Respuesta no lineal",
+        "equation": "y = sin(x) + ruido; x uniforme entre −3 y 3",
+        "description": "La partición ocurre antes de aprender escalas, red y baseline."
+      },
+      "inflation": {
+        "title": "Trayectorias de cinco tasas",
+        "equation": "r1…r5 ~ Normal(0.03, 0.015²)",
+        "description": "Cada fila es una trayectoria independiente; aún no contiene un precio capitalizado."
+      },
+      "sem": {
+        "title": "Indicadores de un factor latente",
+        "equation": "x1 = f + ruido; x2 = 0.8f + ruido; x3 = 1.2f + ruido; y = 0.7f + ruido",
+        "description": "El factor real no aparece como columna observada; la plantilla SEM fija su escala."
+      }
+    },
+    "choice_labels": {
+      "scenario": {
+        "regression": "Ingreso y consumo lineales",
+        "multiple": "Dos regresores correlacionados",
+        "hetero": "Regresión con varianza cambiante",
+        "outliers": "Regresión con atípicos",
+        "logistic": "Respuesta binaria",
+        "prices": "Valores nominales, precios y población",
+        "positive": "Niveles positivos acumulados",
+        "exponential": "Distribución exponencial",
+        "income": "Población de ingresos artificiales",
+        "normal": "Población normal conocida",
+        "pairs": "Medidas emparejadas",
+        "cobb": "Producción Cobb-Douglas",
+        "ar1": "AR(1) y paseo aleatorio",
+        "cointegrated": "Series con equilibrio común",
+        "garch": "Retornos con volatilidad agrupada",
+        "factors": "Seis medidas de dos factores",
+        "endogenous": "Regresor endógeno e instrumento",
+        "polynomial": "Relación cuadrática",
+        "returns": "Retornos diarios artificiales",
+        "regimes": "Dos estados persistentes",
+        "clusters": "Tres grupos artificiales",
+        "nonlinear": "Respuesta no lineal",
+        "inflation": "Trayectorias de cinco tasas",
+        "sem": "Indicadores de un factor latente"
+      }
+    }
+  },
+  "log": {
+    "label": "Logaritmo",
+    "detail": "Añade columnas log_ con logaritmos naturales",
+    "category": "Transformaciones",
+    "color": "blue",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "data": "Dataset"
+    },
+    "defaults": {
+      "columns": "capital,trabajo,produccion"
+    },
+    "explanation": "Añade columnas log_ con logaritmos naturales. Rechaza valores no positivos.",
+    "references": [
+      "B15"
+    ]
+  },
+  "deflate": {
+    "label": "Deflactar",
+    "detail": "Divide el valor nominal por un índice de precios, con base explícita",
+    "category": "Transformaciones",
+    "color": "blue",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "data": "Dataset"
+    },
+    "defaults": {
+      "nominal": "nominal",
+      "index": "indice",
+      "base": 100,
+      "output": "real"
+    },
+    "explanation": "Divide el valor nominal por un índice de precios, con base explícita.",
+    "references": [
+      "B16"
+    ]
+  },
+  "per_capita": {
+    "label": "Por habitante",
+    "detail": "Divide por la población del mismo período",
+    "category": "Transformaciones",
+    "color": "blue",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "data": "Dataset"
+    },
+    "defaults": {
+      "value": "real",
+      "population": "poblacion",
+      "output": "real_per_capita"
+    },
+    "explanation": "Divide por la población del mismo período. Rechaza denominadores no positivos.",
+    "references": [
+      "B16"
+    ]
+  },
+  "growth": {
+    "label": "Tasa de crecimiento",
+    "detail": "Calcula cambio porcentual consecutivo y conserva el primer valor como faltante",
+    "category": "Transformaciones",
+    "color": "blue",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "data": "Dataset"
+    },
+    "defaults": {
+      "column": "valor",
+      "output": "crecimiento"
+    },
+    "explanation": "Calcula cambio porcentual consecutivo y conserva el primer valor como faltante.",
+    "references": [
+      "B18"
+    ]
+  },
+  "lag": {
+    "label": "Rezago",
+    "detail": "Desplaza una serie hacia el pasado",
+    "category": "Transformaciones",
+    "color": "blue",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "data": "Dataset"
+    },
+    "defaults": {
+      "column": "y",
+      "periods": 1
+    },
+    "explanation": "Desplaza una serie hacia el pasado. No rellena las observaciones perdidas.",
+    "references": [
+      "B32"
+    ]
+  },
+  "difference": {
+    "label": "Diferencia",
+    "detail": "Calcula diferencias de una serie ordenada",
+    "category": "Transformaciones",
+    "color": "blue",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "data": "Dataset"
+    },
+    "defaults": {
+      "column": "walk",
+      "periods": 1
+    },
+    "explanation": "Calcula diferencias de una serie ordenada. Conserva los faltantes iniciales.",
+    "references": [
+      "B32"
+    ]
+  },
+  "polynomial": {
+    "label": "Potencias",
+    "detail": "Añade potencias sin ajustar parámetros",
+    "category": "Transformaciones",
+    "color": "blue",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "data": "Dataset"
+    },
+    "defaults": {
+      "column": "x",
+      "degree": 3
+    },
+    "explanation": "Añade potencias sin ajustar parámetros. Es una transformación determinista anterior a la partición.",
+    "references": [
+      "B15"
+    ]
+  },
+  "compound": {
+    "label": "Capitalización",
+    "detail": "Capitaliza tasas por trayectoria",
+    "category": "Transformaciones",
+    "color": "blue",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "data": "Dataset"
+    },
+    "defaults": {
+      "columns": "r1,r2,r3,r4,r5",
+      "initial": 100,
+      "output": "precio"
+    },
+    "explanation": "Capitaliza tasas por trayectoria. Cada fila conserva su resultado para analizar escenarios.",
+    "references": [
+      "B10"
+    ]
+  },
+  "signal": {
+    "label": "Señal de momentum",
+    "detail": "Usa únicamente rendimientos anteriores para decidir una posición",
+    "category": "Transformaciones",
+    "color": "blue",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "data": "Dataset"
+    },
+    "defaults": {
+      "column": "retorno",
+      "lookback": 5,
+      "output": "senal"
+    },
+    "explanation": "Usa únicamente rendimientos anteriores para decidir una posición. Incluye un rezago para evitar mirar el futuro.",
+    "references": [
+      "B27"
+    ]
+  },
+  "standardize": {
+    "label": "Estandarizar",
+    "detail": "Aprende media y desviación solo de su entrada",
+    "category": "Transformaciones",
+    "color": "blue",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "data": "Dataset",
+      "transformer": "Transformer"
+    },
+    "defaults": {
+      "columns": "x"
+    },
+    "explanation": "Aprende media y desviación solo de su entrada. Conecta entrenamiento aquí y aplica el transformador a prueba por separado.",
+    "references": [
+      "B08",
+      "B11"
+    ]
+  },
+  "apply_scaler": {
+    "label": "Aplicar escalador",
+    "detail": "Transforma nuevos datos con un escalador ya ajustado",
+    "category": "Transformaciones",
+    "color": "blue",
+    "inputs": {
+      "data": "Dataset",
+      "transformer": "Transformer"
+    },
+    "outputs": {
+      "data": "Dataset"
+    },
+    "defaults": {},
+    "explanation": "Transforma nuevos datos con un escalador ya ajustado. No vuelve a aprender sus parámetros.",
+    "references": [
+      "B08",
+      "B09"
+    ]
+  },
+  "split": {
+    "label": "Separar entrenamiento/prueba",
+    "detail": "Separa tablas antes de ajustar modelos o escaladores",
+    "category": "Transformaciones",
+    "color": "blue",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "train": "Dataset",
+      "test": "Dataset"
+    },
+    "defaults": {
+      "fraction": 0.75,
+      "method": "temporal",
+      "seed": 42
+    },
+    "explanation": "Separa tablas antes de ajustar modelos o escaladores. Temporal conserva orden; aleatorio usa semilla.",
+    "references": [
+      "B05",
+      "B13"
+    ],
+    "choices": {
+      "method": [
+        "temporal",
+        "aleatorio"
+      ]
+    }
+  },
+  "sample": {
+    "label": "Muestrear",
+    "detail": "Selecciona filas sin reemplazo",
+    "category": "Transformaciones",
+    "color": "blue",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "data": "Dataset"
+    },
+    "defaults": {
+      "n": 100,
+      "method": "aleatorio",
+      "column": "valor",
+      "seed": 42
+    },
+    "explanation": "Selecciona filas sin reemplazo. El modo sesgado toma solo el cuartil superior de una columna.",
+    "references": [
+      "B20"
+    ],
+    "choices": {
+      "method": [
+        "aleatorio",
+        "sesgado"
+      ]
+    }
+  },
+  "histogram": {
+    "label": "Histograma",
+    "detail": "Construye intervalos y cuenta filas",
+    "category": "Exploración",
+    "color": "blue",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "result": "Result"
+    },
+    "defaults": {
+      "column": "y",
+      "bins": 8
+    },
+    "explanation": "Construye intervalos y cuenta filas. La suma de frecuencias debe coincidir con la muestra observada.",
+    "references": [
+      "B17"
+    ]
+  },
+  "correlation": {
+    "label": "Correlación",
+    "detail": "Calcula la matriz de correlación y covarianza",
+    "category": "Exploración",
+    "color": "blue",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "result": "Result"
+    },
+    "defaults": {
+      "columns": "ingreso,consumo"
+    },
+    "explanation": "Calcula la matriz de correlación y covarianza. No convierte asociación en causalidad.",
+    "references": [
+      "B18"
+    ]
+  },
+  "probability": {
+    "label": "Bayes y TCL",
+    "detail": "Combina probabilidades mediante Bayes y remuestrea la tabla conectada para obser",
+    "category": "Exploración",
+    "color": "blue",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "result": "Result"
+    },
+    "defaults": {
+      "column": "valor",
+      "prior": 0.01,
+      "sensitivity": 0.95,
+      "false_positive": 0.05,
+      "sample_size": 30,
+      "replications": 2000,
+      "seed": 42
+    },
+    "explanation": "Combina probabilidades mediante Bayes y remuestrea la tabla conectada para observar medias muestrales.",
+    "references": [
+      "B19"
+    ]
+  },
+  "sampling_audit": {
+    "label": "Comparar muestras",
+    "detail": "Compara las medias de la población y de dos muestras conectadas",
+    "category": "Diagnósticos",
+    "color": "purple",
+    "inputs": {
+      "population": "Dataset",
+      "sample": "Dataset",
+      "biased": "Dataset"
+    },
+    "outputs": {
+      "result": "Result"
+    },
+    "defaults": {
+      "column": "valor"
+    },
+    "explanation": "Compara las medias de la población y de dos muestras conectadas. No genera datos nuevos.",
+    "references": [
+      "B20"
+    ]
+  },
+  "mean_ci": {
+    "label": "Intervalo de la media",
+    "detail": "Calcula un intervalo t para la media y muestra muestra efectiva y error estándar",
+    "category": "Exploración",
+    "color": "blue",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "result": "Result"
+    },
+    "defaults": {
+      "column": "valor",
+      "confidence": 0.95
+    },
+    "explanation": "Calcula un intervalo t para la media y muestra muestra efectiva y error estándar.",
+    "references": [
+      "B21"
+    ]
+  },
+  "paired_test": {
+    "label": "Prueba pareada",
+    "detail": "Contrasta diferencias dentro de cada par",
+    "category": "Diagnósticos",
+    "color": "purple",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "result": "Result"
+    },
+    "defaults": {
+      "before": "antes",
+      "after": "despues"
+    },
+    "explanation": "Contrasta diferencias dentro de cada par. Muestra efecto práctico y p-valor.",
+    "references": [
+      "B22"
+    ]
+  },
+  "unit_root": {
+    "label": "Raíz unitaria",
+    "detail": "Aplica ADF a las series elegidas",
+    "category": "Diagnósticos",
+    "color": "purple",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "result": "Result"
+    },
+    "defaults": {
+      "columns": "x,y"
+    },
+    "explanation": "Aplica ADF a las series elegidas. La especificación y el tamaño de muestra importan.",
+    "references": [
+      "B25",
+      "B36"
+    ]
+  },
+  "monte_carlo": {
+    "label": "Resumen de escenarios",
+    "detail": "Resume trayectorias ya generadas y capitalizadas: percentiles, probabilidad y er",
+    "category": "Exploración",
+    "color": "blue",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "result": "Result"
+    },
+    "defaults": {
+      "column": "precio",
+      "threshold": 120
+    },
+    "explanation": "Resume trayectorias ya generadas y capitalizadas: percentiles, probabilidad y error Monte Carlo.",
+    "references": [
+      "B10"
+    ]
+  },
+  "backtest": {
+    "label": "Evaluar estrategia",
+    "detail": "Aplica una señal previamente construida, descuenta costos por cambios de posició",
+    "category": "Diagnósticos",
+    "color": "purple",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "result": "Result"
+    },
+    "defaults": {
+      "returns": "retorno",
+      "signal": "senal",
+      "cost": 0.0005
+    },
+    "explanation": "Aplica una señal previamente construida, descuenta costos por cambios de posición y compara con mantener el activo.",
+    "references": [
+      "B27"
+    ]
+  },
+  "multiple_ols": {
+    "label": "OLS múltiple",
+    "detail": "Ajusta una respuesta con varios regresores",
+    "category": "Modelos",
+    "color": "purple",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "model": "FittedModel",
+      "result": "Result"
+    },
+    "defaults": {
+      "features": "x,z",
+      "y": "y",
+      "covariance": "nonrobust"
+    },
+    "explanation": "Ajusta una respuesta con varios regresores. Verifica rango y muestra efectiva.",
+    "references": [
+      "B04",
+      "B14",
+      "B30"
+    ]
+  },
+  "logit": {
+    "label": "Logit / probit",
+    "detail": "Ajusta una respuesta binaria",
+    "category": "Modelos",
+    "color": "purple",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "model": "FittedModel",
+      "result": "Result"
+    },
+    "defaults": {
+      "features": "x",
+      "y": "clase",
+      "method": "logit"
+    },
+    "explanation": "Ajusta una respuesta binaria. Evalúa fuera del entrenamiento mediante otra herramienta.",
+    "references": [
+      "B06",
+      "B33"
+    ],
+    "choices": {
+      "method": [
+        "logit",
+        "probit"
+      ]
+    }
+  },
+  "arima": {
+    "label": "ARIMA",
+    "detail": "Ajusta una serie de entrenamiento",
+    "category": "Modelos",
+    "color": "purple",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "model": "FittedModel",
+      "result": "Result"
+    },
+    "defaults": {
+      "column": "y",
+      "p": 1,
+      "d": 0,
+      "q": 0
+    },
+    "explanation": "Ajusta una serie de entrenamiento. El pronóstico y su evaluación usan la tabla de prueba conectada después.",
+    "references": [
+      "B05",
+      "B36"
+    ]
+  },
+  "garch": {
+    "label": "GARCH",
+    "detail": "Estima volatilidad condicional de los datos conectados",
+    "category": "Modelos",
+    "color": "purple",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "model": "FittedModel",
+      "result": "Result"
+    },
+    "defaults": {
+      "column": "retorno",
+      "p": 1,
+      "q": 1
+    },
+    "explanation": "Estima volatilidad condicional de los datos conectados. Comprueba convergencia.",
+    "references": [
+      "B26"
+    ]
+  },
+  "robust": {
+    "label": "Regresión Huber",
+    "detail": "Reduce la influencia de residuos grandes mediante RLM Huber",
+    "category": "Modelos",
+    "color": "purple",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "model": "FittedModel",
+      "result": "Result"
+    },
+    "defaults": {
+      "features": "x",
+      "y": "y"
+    },
+    "explanation": "Reduce la influencia de residuos grandes mediante RLM Huber. No equivale a errores estándar robustos.",
+    "references": [
+      "B35"
+    ]
+  },
+  "iv2sls": {
+    "label": "Variables instrumentales",
+    "detail": "Estima por 2SLS usando instrumentos explícitos",
+    "category": "Modelos",
+    "color": "purple",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "model": "FittedModel",
+      "result": "Result"
+    },
+    "defaults": {
+      "features": "x",
+      "instruments": "z",
+      "y": "y"
+    },
+    "explanation": "Estima por 2SLS usando instrumentos explícitos. Su validez requiere argumentos externos al ajuste.",
+    "references": [
+      "B12"
+    ]
+  },
+  "hmm": {
+    "label": "Regímenes HMM",
+    "detail": "Estima emisiones y transiciones entre estados ocultos a partir de la serie conec",
+    "category": "Modelos",
+    "color": "purple",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "model": "FittedModel",
+      "result": "Result"
+    },
+    "defaults": {
+      "columns": "valor",
+      "states": 2,
+      "seed": 42
+    },
+    "explanation": "Estima emisiones y transiciones entre estados ocultos a partir de la serie conectada.",
+    "references": [
+      "B07"
+    ]
+  },
+  "gmm": {
+    "label": "Mezcla gaussiana",
+    "detail": "Estima una mezcla gaussiana sin transiciones temporales",
+    "category": "Modelos",
+    "color": "purple",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "model": "FittedModel",
+      "result": "Result"
+    },
+    "defaults": {
+      "columns": "valor",
+      "components": 2,
+      "seed": 42
+    },
+    "explanation": "Estima una mezcla gaussiana sin transiciones temporales. No es el método generalizado de momentos.",
+    "references": [
+      "B07"
+    ]
+  },
+  "kmeans": {
+    "label": "Agrupar con k-means",
+    "detail": "Agrupa las filas conectadas por distancia",
+    "category": "Modelos",
+    "color": "purple",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "model": "FittedModel",
+      "result": "Result"
+    },
+    "defaults": {
+      "columns": "x1,x2",
+      "clusters": 3,
+      "seed": 42
+    },
+    "explanation": "Agrupa las filas conectadas por distancia. Debe aplicarse sobre variables con escalas comparables.",
+    "references": [
+      "B08"
+    ]
+  },
+  "mlp": {
+    "label": "Red neuronal",
+    "detail": "Ajusta una red a la tabla de entrenamiento",
+    "category": "Modelos",
+    "color": "purple",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "model": "FittedModel",
+      "result": "Result"
+    },
+    "defaults": {
+      "features": "x",
+      "y": "y",
+      "hidden": 12,
+      "seed": 42
+    },
+    "explanation": "Ajusta una red a la tabla de entrenamiento. La estandarización y la evaluación permanecen como pasos separados.",
+    "references": [
+      "B09"
+    ]
+  },
+  "diagnostics": {
+    "label": "Diagnóstico del modelo",
+    "detail": "Examina el modelo conectado: heterocedasticidad, autocorrelación e influencia; G",
+    "category": "Diagnósticos",
+    "color": "purple",
+    "inputs": {
+      "model": "FittedModel"
+    },
+    "outputs": {
+      "result": "Result"
+    },
+    "defaults": {},
+    "explanation": "Examina el modelo conectado: heterocedasticidad, autocorrelación e influencia; GARCH usa residuos estandarizados.",
+    "references": [
+      "B24",
+      "B26",
+      "B31"
+    ]
+  },
+  "covariance": {
+    "label": "Cambiar covarianza",
+    "detail": "Recalcula inferencia clásica, HC3 o HAC sobre la misma estimación; no cambia sus",
+    "category": "Diagnósticos",
+    "color": "purple",
+    "inputs": {
+      "model": "FittedModel"
+    },
+    "outputs": {
+      "model": "FittedModel",
+      "result": "Result"
+    },
+    "defaults": {
+      "method": "HC3"
+    },
+    "explanation": "Recalcula inferencia clásica, HC3 o HAC sobre la misma estimación; no cambia sus coeficientes.",
+    "references": [
+      "B31"
+    ],
+    "choices": {
+      "method": [
+        "HC3",
+        "HAC",
+        "nonrobust"
+      ]
+    }
+  },
+  "evaluate": {
+    "label": "Evaluar predicciones",
+    "detail": "Predice sobre la tabla conectada y compara con sus observaciones",
+    "category": "Diagnósticos",
+    "color": "purple",
+    "inputs": {
+      "model": "FittedModel",
+      "data": "Dataset"
+    },
+    "outputs": {
+      "result": "Result"
+    },
+    "defaults": {},
+    "explanation": "Predice sobre la tabla conectada y compara con sus observaciones. No reajusta el modelo.",
+    "references": [
+      "B05",
+      "B13"
+    ]
+  },
+  "compare_models": {
+    "label": "Comparar modelos",
+    "detail": "Compara modelos sobre datos comunes",
+    "category": "Diagnósticos",
+    "color": "purple",
+    "inputs": {
+      "first": "FittedModel",
+      "second": "FittedModel",
+      "data": "Dataset"
+    },
+    "outputs": {
+      "result": "Result"
+    },
+    "defaults": {
+      "evaluation": "muestra_comun"
+    },
+    "explanation": "Compara modelos sobre datos comunes. AIC/BIC solo se muestran como comparables cuando coinciden sus muestras de ajuste.",
+    "references": [
+      "B13"
+    ]
+  },
+  "silhouette": {
+    "label": "Calidad de grupos",
+    "detail": "Calcula silueta para los grupos del modelo y la tabla conectada, sin entrenar un",
+    "category": "Diagnósticos",
+    "color": "purple",
+    "inputs": {
+      "model": "FittedModel",
+      "data": "Dataset"
+    },
+    "outputs": {
+      "result": "Result"
+    },
+    "defaults": {},
+    "explanation": "Calcula silueta para los grupos del modelo y la tabla conectada, sin entrenar un modelo nuevo.",
+    "references": [
+      "B08"
+    ]
+  },
+  "cointegration": {
+    "label": "Cointegración",
+    "detail": "Estima la relación de largo plazo y añade su error de equilibrio",
+    "category": "Modelos",
+    "color": "purple",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "data": "Dataset",
+      "result": "Result"
+    },
+    "defaults": {
+      "x": "x",
+      "y": "y"
+    },
+    "explanation": "Estima la relación de largo plazo y añade su error de equilibrio. El contraste Engle-Granger no sustituye revisar integración.",
+    "references": [
+      "B25"
+    ]
+  },
+  "ecm": {
+    "label": "Corrección de errores",
+    "detail": "Relaciona diferencias actuales con el error de equilibrio rezagado",
+    "category": "Modelos",
+    "color": "purple",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "model": "FittedModel",
+      "result": "Result"
+    },
+    "defaults": {
+      "x": "x",
+      "y": "y",
+      "error": "equilibrio"
+    },
+    "explanation": "Relaciona diferencias actuales con el error de equilibrio rezagado. Usa la salida del nodo de cointegración.",
+    "references": [
+      "B25"
+    ]
+  },
+  "quantile": {
+    "label": "Regresión por cuantiles",
+    "detail": "Estima cuantiles de la tabla conectada",
+    "category": "Modelos",
+    "color": "purple",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "result": "Result"
+    },
+    "defaults": {
+      "x": "x",
+      "y": "y",
+      "quantiles": ".25,.5,.75"
+    },
+    "explanation": "Estima cuantiles de la tabla conectada. Muestra incertidumbre y límites de comparación.",
+    "references": [
+      "B34"
+    ]
+  },
+  "pca": {
+    "label": "Componentes principales",
+    "detail": "Descompone las columnas conectadas y muestra varianza explicada y cargas",
+    "category": "Modelos",
+    "color": "purple",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "result": "Result"
+    },
+    "defaults": {
+      "columns": "x1,x2,x3,x4,x5,x6",
+      "components": 2
+    },
+    "explanation": "Descompone las columnas conectadas y muestra varianza explicada y cargas.",
+    "references": [
+      "B11"
+    ]
+  },
+  "factor_analysis": {
+    "label": "Análisis factorial",
+    "detail": "Distingue factores comunes y ruido específico sobre las columnas elegidas",
+    "category": "Modelos",
+    "color": "purple",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "result": "Result"
+    },
+    "defaults": {
+      "columns": "x1,x2,x3,x4,x5,x6",
+      "components": 2,
+      "seed": 42
+    },
+    "explanation": "Distingue factores comunes y ruido específico sobre las columnas elegidas.",
+    "references": [
+      "B11"
+    ]
+  },
+  "sem": {
+    "label": "Ecuaciones estructurales",
+    "detail": "Ajusta una plantilla de medición y trayectoria identificada",
+    "category": "Modelos",
+    "color": "purple",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "result": "Result"
+    },
+    "defaults": {
+      "template": "factor_path"
+    },
+    "explanation": "Ajusta una plantilla de medición y trayectoria identificada. La estructura es explícita y no acepta código arbitrario.",
+    "references": [
+      "B02"
+    ]
+  },
+  "report": {
+    "label": "Interpretar resultados",
+    "detail": "Presenta el resultado conectado y una pregunta de interpretación",
+    "category": "Salidas",
+    "color": "purple",
+    "inputs": {
+      "result": "Result"
+    },
+    "outputs": {
+      "result": "Result"
+    },
+    "defaults": {
+      "note": "Explica el resultado usando la muestra, los supuestos y la incertidumbre."
+    },
+    "explanation": "Presenta el resultado conectado y una pregunta de interpretación. No vuelve a estimar el modelo.",
+    "references": [
+      "B01",
+      "B28"
+    ]
+  },
+  "acf": {
+    "label": "Autocorrelación",
+    "detail": "Inspecciona la dependencia por rezago",
+    "category": "Diagnósticos",
+    "color": "blue",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "result": "Result"
+    },
+    "defaults": {
+      "columns": "y,walk",
+      "lags": 10
+    },
+    "explanation": "Calcula ACF por columna usando el orden temporal de entrada. No confunde autocorrelación con causalidad.",
+    "references": [
+      "B32",
+      "B36"
+    ]
+  }
+}

@@ -1,22 +1,167 @@
 {
   "schema_version": "1.0.0",
-  "app_version": "0.3.0",
+  "app_version": "0.4.0",
   "title": "C06 · Muestreo aleatorio y sesgo de selección",
   "nodes": [
     {
-      "id": "experiment",
-      "type": "experiment",
+      "id": "datos",
+      "type": "synthetic",
       "node_version": "1.0.0",
       "parameters": {
-        "topic": "C06",
-        "seed": 42,
-        "n": 300
+        "scenario": "income",
+        "n": 2000,
+        "seed": 42
       },
       "position": {
-        "x": 150,
-        "y": 100
+        "x": 0,
+        "y": 80
+      }
+    },
+    {
+      "id": "aleatoria",
+      "type": "sample",
+      "node_version": "1.0.0",
+      "parameters": {
+        "n": 100,
+        "method": "aleatorio",
+        "column": "valor",
+        "seed": 42
+      },
+      "position": {
+        "x": 300,
+        "y": 165
+      }
+    },
+    {
+      "id": "sesgada",
+      "type": "sample",
+      "node_version": "1.0.0",
+      "parameters": {
+        "n": 100,
+        "method": "sesgado",
+        "column": "valor",
+        "seed": 42
+      },
+      "position": {
+        "x": 600,
+        "y": 80
+      }
+    },
+    {
+      "id": "comparar",
+      "type": "sampling_audit",
+      "node_version": "1.0.0",
+      "parameters": {
+        "column": "valor"
+      },
+      "position": {
+        "x": 900,
+        "y": 165
+      }
+    },
+    {
+      "id": "reporte",
+      "type": "report",
+      "node_version": "1.0.0",
+      "parameters": {
+        "note": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando población, muestra aleatoria, selección, supervivencia, observación, experimento y confusión."
+      },
+      "position": {
+        "x": 1200,
+        "y": 80
       }
     }
   ],
-  "edges": []
+  "edges": [
+    {
+      "id": "datos-data-aleatoria-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "aleatoria",
+      "target_port": "data"
+    },
+    {
+      "id": "datos-data-sesgada-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "sesgada",
+      "target_port": "data"
+    },
+    {
+      "id": "datos-data-comparar-population",
+      "source": "datos",
+      "source_port": "data",
+      "target": "comparar",
+      "target_port": "population"
+    },
+    {
+      "id": "aleatoria-data-comparar-sample",
+      "source": "aleatoria",
+      "source_port": "data",
+      "target": "comparar",
+      "target_port": "sample"
+    },
+    {
+      "id": "sesgada-data-comparar-biased",
+      "source": "sesgada",
+      "source_port": "data",
+      "target": "comparar",
+      "target_port": "biased"
+    },
+    {
+      "id": "comparar-result-reporte-result",
+      "source": "comparar",
+      "source_port": "result",
+      "target": "reporte",
+      "target_port": "result"
+    }
+  ],
+  "lesson": {
+    "module": "C06",
+    "title": "Muestreo aleatorio y sesgo de selección",
+    "objective": "Construir muestreo aleatorio y sesgo de selección conectando herramientas y comprobando cada salida.",
+    "references": [
+      "B20"
+    ],
+    "steps": [
+      {
+        "node_id": "datos",
+        "title": "1. Genera y revisa la tabla",
+        "instruction": "Una población asimétrica para contrastar muestras aleatorias y sesgadas. Revisa log(valor) ~ Normal(3, 0.7²).",
+        "expected": "Una tabla visible y exportable; todavía no se ha estimado ningún modelo.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "aleatoria",
+        "title": "Muestrear",
+        "instruction": "Selecciona filas sin reemplazo. El modo sesgado toma solo el cuartil superior de una columna.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "sesgada",
+        "title": "Muestrear",
+        "instruction": "Selecciona filas sin reemplazo. El modo sesgado toma solo el cuartil superior de una columna.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "comparar",
+        "title": "Comparar muestras",
+        "instruction": "Compara las medias de la población y de dos muestras conectadas. No genera datos nuevos.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "reporte",
+        "title": "Interpreta y documenta",
+        "instruction": "Conecta el resultado elegido al reporte. Explica qué se calculó, con qué datos y qué no puede concluirse.",
+        "expected": "El reporte conserva el resultado de entrada y añade la pregunta de trabajo sin reestimar.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      }
+    ],
+    "missing_tools": [
+      "Muestreo estratificado y sesgo de supervivencia"
+    ]
+  }
 }

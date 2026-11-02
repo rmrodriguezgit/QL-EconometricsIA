@@ -1,22 +1,145 @@
 {
   "schema_version": "1.0.0",
-  "app_version": "0.3.0",
+  "app_version": "0.4.0",
   "title": "C17 · La volatilidad cambia: GARCH(1,1)",
   "nodes": [
     {
-      "id": "experiment",
-      "type": "experiment",
+      "id": "datos",
+      "type": "synthetic",
       "node_version": "1.0.0",
       "parameters": {
-        "topic": "C17",
-        "seed": 42,
-        "n": 300
+        "scenario": "garch",
+        "n": 600,
+        "seed": 42
       },
       "position": {
-        "x": 150,
-        "y": 100
+        "x": 0,
+        "y": 80
+      }
+    },
+    {
+      "id": "describir",
+      "type": "describe",
+      "node_version": "1.0.0",
+      "parameters": {},
+      "position": {
+        "x": 300,
+        "y": 165
+      }
+    },
+    {
+      "id": "modelo",
+      "type": "garch",
+      "node_version": "1.0.0",
+      "parameters": {
+        "column": "retorno",
+        "p": 1,
+        "q": 1
+      },
+      "position": {
+        "x": 600,
+        "y": 80
+      }
+    },
+    {
+      "id": "diagnostico",
+      "type": "diagnostics",
+      "node_version": "1.0.0",
+      "parameters": {},
+      "position": {
+        "x": 900,
+        "y": 165
+      }
+    },
+    {
+      "id": "reporte",
+      "type": "report",
+      "node_version": "1.0.0",
+      "parameters": {
+        "note": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando homocedasticidad, arch/garch, asimetría, egarch, volatilidad y arch multivariado."
+      },
+      "position": {
+        "x": 1200,
+        "y": 80
       }
     }
   ],
-  "edges": []
+  "edges": [
+    {
+      "id": "datos-data-describir-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "describir",
+      "target_port": "data"
+    },
+    {
+      "id": "datos-data-modelo-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "modelo",
+      "target_port": "data"
+    },
+    {
+      "id": "modelo-model-diagnostico-model",
+      "source": "modelo",
+      "source_port": "model",
+      "target": "diagnostico",
+      "target_port": "model"
+    },
+    {
+      "id": "diagnostico-result-reporte-result",
+      "source": "diagnostico",
+      "source_port": "result",
+      "target": "reporte",
+      "target_port": "result"
+    }
+  ],
+  "lesson": {
+    "module": "C17",
+    "title": "La volatilidad cambia: GARCH(1,1)",
+    "objective": "Construir la volatilidad cambia: garch(1,1) conectando herramientas y comprobando cada salida.",
+    "references": [
+      "B26"
+    ],
+    "steps": [
+      {
+        "node_id": "datos",
+        "title": "1. Genera y revisa la tabla",
+        "instruction": "Genera retornos, no una estimación. GARCH y sus residuos se ajustan después. Revisa σ²[t] = 0.1 + 0.12ε²[t−1] + 0.8σ²[t−1].",
+        "expected": "Una tabla visible y exportable; todavía no se ha estimado ningún modelo.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "describir",
+        "title": "Descriptivos",
+        "instruction": "Cuenta observaciones y faltantes, media, mediana y desviación muestral por columna.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "modelo",
+        "title": "GARCH",
+        "instruction": "Estima volatilidad condicional de los datos conectados. Comprueba convergencia.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "diagnostico",
+        "title": "Diagnóstico del modelo",
+        "instruction": "Examina el modelo conectado: heterocedasticidad, autocorrelación e influencia; GARCH usa residuos estandarizados.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "reporte",
+        "title": "Interpreta y documenta",
+        "instruction": "Conecta el resultado elegido al reporte. Explica qué se calculó, con qué datos y qué no puede concluirse.",
+        "expected": "El reporte conserva el resultado de entrada y añade la pregunta de trabajo sin reestimar.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      }
+    ],
+    "missing_tools": [
+      "EGARCH y volatilidad multivariada"
+    ]
+  }
 }

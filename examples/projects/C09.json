@@ -1,22 +1,123 @@
 {
   "schema_version": "1.0.0",
-  "app_version": "0.3.0",
+  "app_version": "0.4.0",
   "title": "C09 · Ingreso y consumo: OLS simple",
   "nodes": [
     {
-      "id": "experiment",
-      "type": "experiment",
+      "id": "datos",
+      "type": "synthetic",
       "node_version": "1.0.0",
       "parameters": {
-        "topic": "C09",
-        "seed": 42,
-        "n": 300
+        "scenario": "regression",
+        "n": 300,
+        "seed": 42
       },
       "position": {
-        "x": 150,
-        "y": 100
+        "x": 0,
+        "y": 80
+      }
+    },
+    {
+      "id": "describir",
+      "type": "describe",
+      "node_version": "1.0.0",
+      "parameters": {},
+      "position": {
+        "x": 300,
+        "y": 165
+      }
+    },
+    {
+      "id": "modelo",
+      "type": "ols",
+      "node_version": "1.0.0",
+      "parameters": {
+        "x": "ingreso",
+        "y": "consumo",
+        "covariance": "HC3"
+      },
+      "position": {
+        "x": 600,
+        "y": 80
+      }
+    },
+    {
+      "id": "reporte",
+      "type": "report",
+      "node_version": "1.0.0",
+      "parameters": {
+        "note": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando ols simple, residuos, supuestos, r², intervalos de coeficientes y predicción, consumo."
+      },
+      "position": {
+        "x": 900,
+        "y": 165
       }
     }
   ],
-  "edges": []
+  "edges": [
+    {
+      "id": "datos-data-describir-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "describir",
+      "target_port": "data"
+    },
+    {
+      "id": "datos-data-modelo-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "modelo",
+      "target_port": "data"
+    },
+    {
+      "id": "modelo-result-reporte-result",
+      "source": "modelo",
+      "source_port": "result",
+      "target": "reporte",
+      "target_port": "result"
+    }
+  ],
+  "lesson": {
+    "module": "C09",
+    "title": "Ingreso y consumo: OLS simple",
+    "objective": "Construir ingreso y consumo: ols simple conectando herramientas y comprobando cada salida.",
+    "references": [
+      "B03",
+      "B23",
+      "B29"
+    ],
+    "steps": [
+      {
+        "node_id": "datos",
+        "title": "1. Genera y revisa la tabla",
+        "instruction": "Ingreso y error normales independientes; unidades artificiales normalizadas, que pueden ser negativas. Revisa consumo = 2 + 0.8 × ingreso + ε.",
+        "expected": "Una tabla visible y exportable; todavía no se ha estimado ningún modelo.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "describir",
+        "title": "Descriptivos",
+        "instruction": "Cuenta observaciones y faltantes, media, mediana y desviación muestral por columna.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "modelo",
+        "title": "Regresión OLS",
+        "instruction": "Elige ingreso como regresor y consumo como respuesta. Compara coeficientes, errores e incertidumbre con el generador conocido.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "reporte",
+        "title": "Interpreta y documenta",
+        "instruction": "Conecta el resultado elegido al reporte. Explica qué se calculó, con qué datos y qué no puede concluirse.",
+        "expected": "El reporte conserva el resultado de entrada y añade la pregunta de trabajo sin reestimar.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      }
+    ],
+    "missing_tools": [
+      "Intervalos de predicción y contraste manual de hipótesis"
+    ]
+  }
 }

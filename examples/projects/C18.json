@@ -1,22 +1,97 @@
 {
   "schema_version": "1.0.0",
-  "app_version": "0.3.0",
+  "app_version": "0.4.0",
   "title": "C18 · Más allá de la media: cuantiles",
   "nodes": [
     {
-      "id": "experiment",
-      "type": "experiment",
+      "id": "datos",
+      "type": "synthetic",
       "node_version": "1.0.0",
       "parameters": {
-        "topic": "C18",
-        "seed": 42,
-        "n": 300
+        "scenario": "hetero",
+        "n": 500,
+        "seed": 42
       },
       "position": {
-        "x": 150,
-        "y": 100
+        "x": 0,
+        "y": 80
+      }
+    },
+    {
+      "id": "cuantiles",
+      "type": "quantile",
+      "node_version": "1.0.0",
+      "parameters": {
+        "x": "x",
+        "y": "y",
+        "quantiles": ".25,.5,.75"
+      },
+      "position": {
+        "x": 300,
+        "y": 165
+      }
+    },
+    {
+      "id": "reporte",
+      "type": "report",
+      "node_version": "1.0.0",
+      "parameters": {
+        "note": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando cuantiles, asimetría, colas, diferencias entre coeficientes y regresión temporal/transversal."
+      },
+      "position": {
+        "x": 600,
+        "y": 80
       }
     }
   ],
-  "edges": []
+  "edges": [
+    {
+      "id": "datos-data-cuantiles-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "cuantiles",
+      "target_port": "data"
+    },
+    {
+      "id": "cuantiles-result-reporte-result",
+      "source": "cuantiles",
+      "source_port": "result",
+      "target": "reporte",
+      "target_port": "result"
+    }
+  ],
+  "lesson": {
+    "module": "C18",
+    "title": "Más allá de la media: cuantiles",
+    "objective": "Construir más allá de la media: cuantiles conectando herramientas y comprobando cada salida.",
+    "references": [
+      "B34"
+    ],
+    "steps": [
+      {
+        "node_id": "datos",
+        "title": "1. Genera y revisa la tabla",
+        "instruction": "La dispersión del error aumenta con la magnitud de x. Revisa y = 1 + x + (0.2 + 2|x|)ε.",
+        "expected": "Una tabla visible y exportable; todavía no se ha estimado ningún modelo.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "cuantiles",
+        "title": "Regresión por cuantiles",
+        "instruction": "Estima cuantiles de la tabla conectada. Muestra incertidumbre y límites de comparación.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "reporte",
+        "title": "Interpreta y documenta",
+        "instruction": "Conecta el resultado elegido al reporte. Explica qué se calculó, con qué datos y qué no puede concluirse.",
+        "expected": "El reporte conserva el resultado de entrada y añade la pregunta de trabajo sin reestimar.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      }
+    ],
+    "missing_tools": [
+      "Contraste entre coeficientes de distintos cuantiles"
+    ]
+  }
 }

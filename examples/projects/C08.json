@@ -1,22 +1,96 @@
 {
   "schema_version": "1.0.0",
-  "app_version": "0.3.0",
+  "app_version": "0.4.0",
   "title": "C08 · Pruebas de hipótesis con pares",
   "nodes": [
     {
-      "id": "experiment",
-      "type": "experiment",
+      "id": "datos",
+      "type": "synthetic",
       "node_version": "1.0.0",
       "parameters": {
-        "topic": "C08",
-        "seed": 42,
-        "n": 300
+        "scenario": "pairs",
+        "n": 300,
+        "seed": 42
       },
       "position": {
-        "x": 150,
-        "y": 100
+        "x": 0,
+        "y": 80
+      }
+    },
+    {
+      "id": "pares",
+      "type": "paired_test",
+      "node_version": "1.0.0",
+      "parameters": {
+        "before": "antes",
+        "after": "despues"
+      },
+      "position": {
+        "x": 300,
+        "y": 165
+      }
+    },
+    {
+      "id": "reporte",
+      "type": "report",
+      "node_version": "1.0.0",
+      "parameters": {
+        "note": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando h0/h1, p-valores, significancia, pares, efecto práctico y minería de datos."
+      },
+      "position": {
+        "x": 600,
+        "y": 80
       }
     }
   ],
-  "edges": []
+  "edges": [
+    {
+      "id": "datos-data-pares-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "pares",
+      "target_port": "data"
+    },
+    {
+      "id": "pares-result-reporte-result",
+      "source": "pares",
+      "source_port": "result",
+      "target": "reporte",
+      "target_port": "result"
+    }
+  ],
+  "lesson": {
+    "module": "C08",
+    "title": "Pruebas de hipótesis con pares",
+    "objective": "Construir pruebas de hipótesis con pares conectando herramientas y comprobando cada salida.",
+    "references": [
+      "B22"
+    ],
+    "steps": [
+      {
+        "node_id": "datos",
+        "title": "1. Genera y revisa la tabla",
+        "instruction": "Las filas mantienen sus pares; no deben tratarse como muestras independientes. Revisa después = antes + Normal(0.5, 2²).",
+        "expected": "Una tabla visible y exportable; todavía no se ha estimado ningún modelo.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "pares",
+        "title": "Prueba pareada",
+        "instruction": "Contrasta diferencias dentro de cada par. Muestra efecto práctico y p-valor.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "reporte",
+        "title": "Interpreta y documenta",
+        "instruction": "Conecta el resultado elegido al reporte. Explica qué se calculó, con qué datos y qué no puede concluirse.",
+        "expected": "El reporte conserva el resultado de entrada y añade la pregunta de trabajo sin reestimar.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      }
+    ],
+    "missing_tools": [
+      "Contrastes múltiples y control de falsos descubrimientos"
+    ]
+  }
 }

@@ -1,5 +1,15 @@
 # Historial de cambios
 
+## 0.4.0 - 2026-11-01
+
+- Reconstrucción de los 28 ejemplos como grafos conectados sin usar el nodo de receta cerrada: 131 pasos y 49 tipos de herramienta usados.
+- Registro compartido de 53 tipos entre interfaz y motor, con puertos Dataset/FittedModel/Transformer/Result, salidas múltiples y control de conexiones.
+- Transformaciones, entrenamiento/prueba, escalado separado, modelos, diagnósticos, comparación e interpretación como herramientas reutilizables.
+- Guía por nodo con instrucciones, resultado esperado, pregunta, pendientes, navegación e inspección del resultado real.
+- Ejecución hasta un nodo con su subgrafo de dependencias; trazabilidad de ejecuciones guiadas y comprobación de huellas al acumular salidas.
+- Generadores con ecuación visible; parámetros aprendidos de escaladores inspeccionables; controles de calendario irregular y prevención de fuga de información.
+- Inventario de herramientas y pendientes por módulo. Recetas 0.3.0 preservadas solo para compatibilidad.
+
 ## 0.3.0 - 2026-11-01
 
 - Catálogo de 28 experimentos reproducibles, uno por módulo curricular, con objetivos, preguntas, temas, bibliografía y alcance explícito.

@@ -1,22 +1,150 @@
 {
   "schema_version": "1.0.0",
-  "app_version": "0.3.0",
+  "app_version": "0.4.0",
   "title": "C14 · AR(1) frente a un paseo aleatorio",
   "nodes": [
     {
-      "id": "experiment",
-      "type": "experiment",
+      "id": "datos",
+      "type": "synthetic",
       "node_version": "1.0.0",
       "parameters": {
-        "topic": "C14",
-        "seed": 42,
-        "n": 300
+        "scenario": "ar1",
+        "n": 300,
+        "seed": 42
       },
       "position": {
-        "x": 150,
-        "y": 100
+        "x": 0,
+        "y": 80
+      }
+    },
+    {
+      "id": "rezago",
+      "type": "lag",
+      "node_version": "1.0.0",
+      "parameters": {
+        "column": "y",
+        "periods": 1
+      },
+      "position": {
+        "x": 300,
+        "y": 165
+      }
+    },
+    {
+      "id": "diferencia",
+      "type": "difference",
+      "node_version": "1.0.0",
+      "parameters": {
+        "column": "walk",
+        "periods": 1
+      },
+      "position": {
+        "x": 600,
+        "y": 80
+      }
+    },
+    {
+      "id": "acf",
+      "type": "acf",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "y,walk,diff_1_walk",
+        "lags": 10
+      },
+      "position": {
+        "x": 900,
+        "y": 165
+      }
+    },
+    {
+      "id": "reporte",
+      "type": "report",
+      "node_version": "1.0.0",
+      "parameters": {
+        "note": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando tendencia, ciclo, estacionalidad, ecuaciones en diferencias, random walk, ruido y rezagos."
+      },
+      "position": {
+        "x": 1200,
+        "y": 80
       }
     }
   ],
-  "edges": []
+  "edges": [
+    {
+      "id": "datos-data-rezago-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "rezago",
+      "target_port": "data"
+    },
+    {
+      "id": "rezago-data-diferencia-data",
+      "source": "rezago",
+      "source_port": "data",
+      "target": "diferencia",
+      "target_port": "data"
+    },
+    {
+      "id": "diferencia-data-acf-data",
+      "source": "diferencia",
+      "source_port": "data",
+      "target": "acf",
+      "target_port": "data"
+    },
+    {
+      "id": "acf-result-reporte-result",
+      "source": "acf",
+      "source_port": "result",
+      "target": "reporte",
+      "target_port": "result"
+    }
+  ],
+  "lesson": {
+    "module": "C14",
+    "title": "AR(1) frente a un paseo aleatorio",
+    "objective": "Construir ar(1) frente a un paseo aleatorio conectando herramientas y comprobando cada salida.",
+    "references": [
+      "B32"
+    ],
+    "steps": [
+      {
+        "node_id": "datos",
+        "title": "1. Genera y revisa la tabla",
+        "instruction": "Ambos procesos tienen dependencia temporal, pero solo el primero revierte a una media. Revisa y[t] = 0.75y[t−1] + ε[t]; walk[t] = walk[t−1] + u[t].",
+        "expected": "Una tabla visible y exportable; todavía no se ha estimado ningún modelo.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "rezago",
+        "title": "Rezago",
+        "instruction": "Desplaza una serie hacia el pasado. No rellena las observaciones perdidas.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "diferencia",
+        "title": "Diferencia",
+        "instruction": "Calcula diferencias de una serie ordenada. Conserva los faltantes iniciales.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "acf",
+        "title": "Autocorrelación",
+        "instruction": "Calcula ACF por columna usando el orden temporal de entrada. No confunde autocorrelación con causalidad.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "reporte",
+        "title": "Interpreta y documenta",
+        "instruction": "Conecta el resultado elegido al reporte. Explica qué se calculó, con qué datos y qué no puede concluirse.",
+        "expected": "El reporte conserva el resultado de entrada y añade la pregunta de trabajo sin reestimar.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      }
+    ],
+    "missing_tools": [
+      "Estacionalidad, descomposición y rezagos agrupados por país"
+    ]
+  }
 }

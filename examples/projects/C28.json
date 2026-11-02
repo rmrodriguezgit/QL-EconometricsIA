@@ -1,22 +1,121 @@
 {
   "schema_version": "1.0.0",
-  "app_version": "0.3.0",
+  "app_version": "0.4.0",
   "title": "C28 · Medición latente y trayectorias SEM",
   "nodes": [
     {
-      "id": "experiment",
-      "type": "experiment",
+      "id": "datos",
+      "type": "synthetic",
       "node_version": "1.0.0",
       "parameters": {
-        "topic": "C28",
-        "seed": 42,
-        "n": 300
+        "scenario": "sem",
+        "n": 500,
+        "seed": 42
       },
       "position": {
-        "x": 150,
-        "y": 100
+        "x": 0,
+        "y": 80
+      }
+    },
+    {
+      "id": "matrices",
+      "type": "correlation",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "x1,x2,x3,y"
+      },
+      "position": {
+        "x": 300,
+        "y": 165
+      }
+    },
+    {
+      "id": "modelo",
+      "type": "sem",
+      "node_version": "1.0.0",
+      "parameters": {
+        "template": "factor_path"
+      },
+      "position": {
+        "x": 600,
+        "y": 80
+      }
+    },
+    {
+      "id": "reporte",
+      "type": "report",
+      "node_version": "1.0.0",
+      "parameters": {
+        "note": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando sem, covarianza, correlación, variables latentes, trayectorias e identificación causal."
+      },
+      "position": {
+        "x": 900,
+        "y": 165
       }
     }
   ],
-  "edges": []
+  "edges": [
+    {
+      "id": "datos-data-matrices-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "matrices",
+      "target_port": "data"
+    },
+    {
+      "id": "datos-data-modelo-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "modelo",
+      "target_port": "data"
+    },
+    {
+      "id": "modelo-result-reporte-result",
+      "source": "modelo",
+      "source_port": "result",
+      "target": "reporte",
+      "target_port": "result"
+    }
+  ],
+  "lesson": {
+    "module": "C28",
+    "title": "Medición latente y trayectorias SEM",
+    "objective": "Construir medición latente y trayectorias sem conectando herramientas y comprobando cada salida.",
+    "references": [
+      "B02"
+    ],
+    "steps": [
+      {
+        "node_id": "datos",
+        "title": "1. Genera y revisa la tabla",
+        "instruction": "El factor real no aparece como columna observada; la plantilla SEM fija su escala. Revisa x1 = f + ruido; x2 = 0.8f + ruido; x3 = 1.2f + ruido; y = 0.7f + ruido.",
+        "expected": "Una tabla visible y exportable; todavía no se ha estimado ningún modelo.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "matrices",
+        "title": "Correlación",
+        "instruction": "Calcula la matriz de correlación y covarianza. No convierte asociación en causalidad.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "modelo",
+        "title": "Ecuaciones estructurales",
+        "instruction": "Ajusta una plantilla de medición y trayectoria identificada. La estructura es explícita y no acepta código arbitrario.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "reporte",
+        "title": "Interpreta y documenta",
+        "instruction": "Conecta el resultado elegido al reporte. Explica qué se calculó, con qué datos y qué no puede concluirse.",
+        "expected": "El reporte conserva el resultado de entrada y añade la pregunta de trabajo sin reestimar.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      }
+    ],
+    "missing_tools": [
+      "Editor de diagramas SEM y diagnóstico general de identificación"
+    ]
+  }
 }

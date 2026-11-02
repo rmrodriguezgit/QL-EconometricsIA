@@ -1,22 +1,251 @@
 {
   "schema_version": "1.0.0",
-  "app_version": "0.3.0",
+  "app_version": "0.4.0",
   "title": "C26 · Red neuronal frente a un baseline lineal",
   "nodes": [
     {
-      "id": "experiment",
-      "type": "experiment",
+      "id": "datos",
+      "type": "synthetic",
       "node_version": "1.0.0",
       "parameters": {
-        "topic": "C26",
-        "seed": 42,
-        "n": 300
+        "scenario": "nonlinear",
+        "n": 500,
+        "seed": 42
       },
       "position": {
-        "x": 150,
-        "y": 100
+        "x": 0,
+        "y": 80
+      }
+    },
+    {
+      "id": "particion",
+      "type": "split",
+      "node_version": "1.0.0",
+      "parameters": {
+        "fraction": 0.8,
+        "method": "temporal",
+        "seed": 42
+      },
+      "position": {
+        "x": 300,
+        "y": 165
+      }
+    },
+    {
+      "id": "escalar",
+      "type": "standardize",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "x"
+      },
+      "position": {
+        "x": 600,
+        "y": 80
+      }
+    },
+    {
+      "id": "aplicar",
+      "type": "apply_scaler",
+      "node_version": "1.0.0",
+      "parameters": {},
+      "position": {
+        "x": 900,
+        "y": 165
+      }
+    },
+    {
+      "id": "red",
+      "type": "mlp",
+      "node_version": "1.0.0",
+      "parameters": {
+        "features": "x",
+        "y": "y",
+        "hidden": 12,
+        "seed": 42
+      },
+      "position": {
+        "x": 1200,
+        "y": 80
+      }
+    },
+    {
+      "id": "lineal",
+      "type": "ols",
+      "node_version": "1.0.0",
+      "parameters": {
+        "x": "x",
+        "y": "y",
+        "covariance": "HC3"
+      },
+      "position": {
+        "x": 1500,
+        "y": 165
+      }
+    },
+    {
+      "id": "comparar",
+      "type": "compare_models",
+      "node_version": "1.0.0",
+      "parameters": {
+        "evaluation": "prueba reservada; escalador aprendido solo en train"
+      },
+      "position": {
+        "x": 1800,
+        "y": 80
+      }
+    },
+    {
+      "id": "reporte",
+      "type": "report",
+      "node_version": "1.0.0",
+      "parameters": {
+        "note": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando redes neuronales, activación, pesos, capas, entrenamiento y generalización."
+      },
+      "position": {
+        "x": 2100,
+        "y": 165
       }
     }
   ],
-  "edges": []
+  "edges": [
+    {
+      "id": "datos-data-particion-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "particion",
+      "target_port": "data"
+    },
+    {
+      "id": "particion-train-escalar-data",
+      "source": "particion",
+      "source_port": "train",
+      "target": "escalar",
+      "target_port": "data"
+    },
+    {
+      "id": "particion-test-aplicar-data",
+      "source": "particion",
+      "source_port": "test",
+      "target": "aplicar",
+      "target_port": "data"
+    },
+    {
+      "id": "escalar-transformer-aplicar-transformer",
+      "source": "escalar",
+      "source_port": "transformer",
+      "target": "aplicar",
+      "target_port": "transformer"
+    },
+    {
+      "id": "escalar-data-red-data",
+      "source": "escalar",
+      "source_port": "data",
+      "target": "red",
+      "target_port": "data"
+    },
+    {
+      "id": "escalar-data-lineal-data",
+      "source": "escalar",
+      "source_port": "data",
+      "target": "lineal",
+      "target_port": "data"
+    },
+    {
+      "id": "red-model-comparar-first",
+      "source": "red",
+      "source_port": "model",
+      "target": "comparar",
+      "target_port": "first"
+    },
+    {
+      "id": "lineal-model-comparar-second",
+      "source": "lineal",
+      "source_port": "model",
+      "target": "comparar",
+      "target_port": "second"
+    },
+    {
+      "id": "aplicar-data-comparar-data",
+      "source": "aplicar",
+      "source_port": "data",
+      "target": "comparar",
+      "target_port": "data"
+    },
+    {
+      "id": "comparar-result-reporte-result",
+      "source": "comparar",
+      "source_port": "result",
+      "target": "reporte",
+      "target_port": "result"
+    }
+  ],
+  "lesson": {
+    "module": "C26",
+    "title": "Red neuronal frente a un baseline lineal",
+    "objective": "Construir red neuronal frente a un baseline lineal conectando herramientas y comprobando cada salida.",
+    "references": [
+      "B09"
+    ],
+    "steps": [
+      {
+        "node_id": "datos",
+        "title": "1. Genera y revisa la tabla",
+        "instruction": "La partición ocurre antes de aprender escalas, red y baseline. Revisa y = sin(x) + ruido; x uniforme entre −3 y 3.",
+        "expected": "Una tabla visible y exportable; todavía no se ha estimado ningún modelo.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "particion",
+        "title": "Separar entrenamiento/prueba",
+        "instruction": "Separa tablas antes de ajustar modelos o escaladores. Temporal conserva orden; aleatorio usa semilla.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "escalar",
+        "title": "Estandarizar",
+        "instruction": "Aprende media y desviación solo de su entrada. Conecta entrenamiento aquí y aplica el transformador a prueba por separado.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "aplicar",
+        "title": "Aplicar escalador",
+        "instruction": "Transforma nuevos datos con un escalador ya ajustado. No vuelve a aprender sus parámetros.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "red",
+        "title": "Red neuronal",
+        "instruction": "Ajusta una red a la tabla de entrenamiento. La estandarización y la evaluación permanecen como pasos separados.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "lineal",
+        "title": "Regresión OLS",
+        "instruction": "Estima y = β₀ + β₁x + ε. HC3 cambia los errores estándar y conserva los coeficientes.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "comparar",
+        "title": "Comparar modelos",
+        "instruction": "Compara modelos sobre datos comunes. AIC/BIC solo se muestran como comparables cuando coinciden sus muestras de ajuste.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "reporte",
+        "title": "Interpreta y documenta",
+        "instruction": "Conecta el resultado elegido al reporte. Explica qué se calculó, con qué datos y qué no puede concluirse.",
+        "expected": "El reporte conserva el resultado de entrada y añade la pregunta de trabajo sin reestimar.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      }
+    ],
+    "missing_tools": [
+      "Selección de arquitectura sin usar el bloque de prueba"
+    ]
+  }
 }

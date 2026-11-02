@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.3.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. La compilación nativa sigue pendiente. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.4.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. La compilación nativa sigue pendiente. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -98,3 +98,13 @@ ADR-009: archivos JSON locales con papelera y revisión esperada para el adminis
 ADR-010: catálogo de experimentos registrados C01-C28, ejecutables con n/semilla y tablas/interpretaciones. Su alcance introductorio no cierra módulos. El código científico no procede del JSON del usuario.
 
 ADR-011: el borrador permite cero nodos o entradas incompletas; ejecutar exige un grafo listo. La interfaz muestra esa diferencia y conserva archivos inválidos sin intentar repararlos de forma destructiva.
+
+## Entrega 0.4.0
+
+No se añaden dependencias. Las versiones exactas de bibliotecas siguen en uv.lock/package-lock.json. VERSION, pyproject.toml/uv.lock, frontend y Tauri se sincronizan en 0.4.0. El catálogo de ejemplos pasa a revisión 2.0.0; el esquema de proyectos y protocolo siguen en 1.0.0 con extensiones aditivas (lesson, nuevos tipos y target_node). Aplicaciones anteriores rechazan herramientas que desconocen.
+
+ADR-012: el contrato compartido packages/contracts/nodeCatalog.json define herramientas, puertos, parámetros, opciones y explicaciones. Frontend y backend consumen el mismo archivo; la compatibilidad de puertos se valida en ambos extremos.
+
+ADR-013: cada ejemplo usa un grafo con generador, transformaciones/estimadores y reporte independientes. experiment se conserva para abrir archivos 0.3.0, pero ningún ejemplo del catálogo lo utiliza.
+
+ADR-014: ejecutar un paso recalcula su clausura de dependencias, no los nodos posteriores. No se introduce una caché persistente ni se declara soporte de cancelación. La interfaz solo acumula resultados de pasos con grafo y huellas comunes iguales.

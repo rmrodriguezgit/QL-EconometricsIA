@@ -1,22 +1,124 @@
 {
   "schema_version": "1.0.0",
-  "app_version": "0.3.0",
+  "app_version": "0.4.0",
   "title": "C27 · Escenarios de inflación por Monte Carlo",
   "nodes": [
     {
-      "id": "experiment",
-      "type": "experiment",
+      "id": "datos",
+      "type": "synthetic",
       "node_version": "1.0.0",
       "parameters": {
-        "topic": "C27",
-        "seed": 42,
-        "n": 300
+        "scenario": "inflation",
+        "n": 5000,
+        "seed": 42
       },
       "position": {
-        "x": 150,
-        "y": 100
+        "x": 0,
+        "y": 80
+      }
+    },
+    {
+      "id": "capitalizar",
+      "type": "compound",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "r1,r2,r3,r4,r5",
+        "initial": 100,
+        "output": "precio"
+      },
+      "position": {
+        "x": 300,
+        "y": 165
+      }
+    },
+    {
+      "id": "escenarios",
+      "type": "monte_carlo",
+      "node_version": "1.0.0",
+      "parameters": {
+        "column": "precio",
+        "threshold": 120
+      },
+      "position": {
+        "x": 600,
+        "y": 80
+      }
+    },
+    {
+      "id": "reporte",
+      "type": "report",
+      "node_version": "1.0.0",
+      "parameters": {
+        "note": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando monte carlo, inflación, escenarios, incertidumbre y distribuciones."
+      },
+      "position": {
+        "x": 900,
+        "y": 165
       }
     }
   ],
-  "edges": []
+  "edges": [
+    {
+      "id": "datos-data-capitalizar-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "capitalizar",
+      "target_port": "data"
+    },
+    {
+      "id": "capitalizar-data-escenarios-data",
+      "source": "capitalizar",
+      "source_port": "data",
+      "target": "escenarios",
+      "target_port": "data"
+    },
+    {
+      "id": "escenarios-result-reporte-result",
+      "source": "escenarios",
+      "source_port": "result",
+      "target": "reporte",
+      "target_port": "result"
+    }
+  ],
+  "lesson": {
+    "module": "C27",
+    "title": "Escenarios de inflación por Monte Carlo",
+    "objective": "Construir escenarios de inflación por monte carlo conectando herramientas y comprobando cada salida.",
+    "references": [
+      "B10"
+    ],
+    "steps": [
+      {
+        "node_id": "datos",
+        "title": "1. Genera y revisa la tabla",
+        "instruction": "Cada fila es una trayectoria independiente; aún no contiene un precio capitalizado. Revisa r1…r5 ~ Normal(0.03, 0.015²).",
+        "expected": "Una tabla visible y exportable; todavía no se ha estimado ningún modelo.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "capitalizar",
+        "title": "Capitalización",
+        "instruction": "Capitaliza tasas por trayectoria. Cada fila conserva su resultado para analizar escenarios.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "escenarios",
+        "title": "Resumen de escenarios",
+        "instruction": "Resume trayectorias ya generadas y capitalizadas: percentiles, probabilidad y error Monte Carlo.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "reporte",
+        "title": "Interpreta y documenta",
+        "instruction": "Conecta el resultado elegido al reporte. Explica qué se calculó, con qué datos y qué no puede concluirse.",
+        "expected": "El reporte conserva el resultado de entrada y añade la pregunta de trabajo sin reestimar.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      }
+    ],
+    "missing_tools": [
+      "Distribuciones y escenarios editables más allá de la inflación"
+    ]
+  }
 }

@@ -112,10 +112,10 @@ class ExampleCatalogTests(unittest.TestCase):
         for example in example_catalog():
             with self.subTest(topic=example['id']):
                 result=execute(example_get(example['id'])['project'])
-                node=result['nodes']['experiment']
+                node=result['nodes']['reporte']
                 self.assertEqual(node['status'],'succeeded',node.get('error'))
-                self.assertEqual(node['result']['topic'],example['id'])
-                self.assertTrue(node['result']['interpretation'])
+                self.assertEqual(node['result']['tool_type'],'report')
+                self.assertTrue(node['result'].get('interpretation') or node['result'].get('note') or node['result'].get('teaching_note'))
                 json.dumps(result,allow_nan=False)
     def test_known_properties_of_teaching_generators(self):
         from quantlabs.experiments import run_experiment
@@ -129,7 +129,7 @@ class ExampleCatalogTests(unittest.TestCase):
 
     def test_unknown_topic_and_example_are_rejected(self):
         with self.assertRaises(EngineError): example_get('../C01')
-        project=example_get('C01')['project'];project['nodes'][0]['parameters']['topic']='C99'
-        self.assertEqual(execute(project)['nodes']['experiment']['status'],'failed')
+        project=example_get('C01')['project'];project['nodes'][0]['parameters']['scenario']='C99'
+        self.assertEqual(execute(project)['nodes']['datos']['status'],'failed')
 
 if __name__ == '__main__': unittest.main()

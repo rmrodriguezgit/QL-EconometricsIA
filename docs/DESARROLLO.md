@@ -1,4 +1,4 @@
-# Desarrollo de la alpha 0.3.0
+# Desarrollo de la alpha 0.4.0
 
 Fecha: 2026-11-01. Primer corte funcional de P1 con un adelanto OLS de P2. No equivale al cierre de ninguna fase curricular.
 
@@ -76,3 +76,19 @@ Las operaciones no aceptan rutas arbitrarias: solo UUID canónicos, dentro del e
 Los 28 ejemplos usan un nodo experiment con topic C01-C28, n y seed. Se ejecuta una función registrada, nunca eval/exec de texto de usuario. El reporte muestra métricas, tablas, series, advertencias, interpretación y alcance. El catálogo se puede buscar por título, temas, ID y referencia bibliográfica. Las recetas avanzadas no exponen aún todas sus opciones como nodos del canvas.
 
 `system.audit` valida los 28 documentos, cuenta referencias, prueba escritura con un archivo temporal y comprueba archivos guardados/papelera. Informa pendientes de currículo, ejecución y empaquetado. No ejecuta los 28 modelos al abrir la auditoría ni afirma una certificación de seguridad.
+
+## Herramientas y ejecución guiada 0.4.0
+
+El registro compartido [nodeCatalog.json](../packages/contracts/nodeCatalog.json) contiene 53 tipos, puertos, parámetros por defecto, categorías, referencias y opciones. 49 se usan en los ejemplos; simulate, csv y worldbank también pueden actuar como fuentes alternativas y experiment permanece para compatibilidad. Se incluyen 131 pasos explicativos en los 28 proyectos.
+
+Los puertos no se reducen a data: split devuelve train/test, standardize devuelve data/transformer, los estimadores devuelven model/result y report recibe result. Los objetos ajustados son artefactos privados del proceso; la respuesta JSON contiene sus resultados numéricos, no objetos Python serializados. Cada tabla de salida tiene vista previa y huella registrada.
+
+`run.start` acepta target_node opcional. Sin él ejecuta todo el DAG válido. Con él valida la estructura completa y ejecuta únicamente el nodo y sus ancestros; las entradas faltantes de ramas ajenas no bloquean ese paso. No omite ciclos o estructuras inválidas. El manifiesto incluye target_node y execution_order.
+
+La guía selecciona y enfoca cada nodo, muestra Qué debes observar y permite ejecutar hasta él. El resultado visible corresponde al nodo seleccionado. Los pasos recalculan dependencias. Al acumular resultados, el frontend comprueba igualdad de grafo y huellas compartidas y registra guided_runs; si cambia un dato común, no conserva resultados incompatibles. Editar el proyecto invalida el estado de cálculo.
+
+Los estimadores consumen siempre las tablas conectadas. No regeneran datos según un ID de tema. Los generadores sí simulan escenarios registrados y muestran su ecuación y supuestos. La red neuronal recibe datos ya escalados por otra herramienta; el escalador de prueba no vuelve a ajustarse. El evaluador recibe un modelo y la tabla de prueba y no hace fit.
+
+Las herramientas temporales revisan período numérico regular cuando existe la columna periodo; no comprimen faltantes internos al estimar series. Frecuencias, fechas y paneles generales requieren herramientas adicionales, que se explicitan en los pendientes. No se imputan ni eliminan períodos para hacer pasar una estimación.
+
+La interfaz impide ciclos, tipos incompatibles y conexiones duplicadas al dibujar. El backend vuelve a comprobarlos. Los errores numéricos esperables se presentan como ESTIMATION_ERROR. Los formatos de nodo/proyecto anteriores siguen admitidos.

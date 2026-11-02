@@ -1,22 +1,157 @@
 {
   "schema_version": "1.0.0",
-  "app_version": "0.3.0",
+  "app_version": "0.4.0",
   "title": "C12 · Clasificar con logit y probit",
   "nodes": [
     {
-      "id": "experiment",
-      "type": "experiment",
+      "id": "datos",
+      "type": "synthetic",
       "node_version": "1.0.0",
       "parameters": {
-        "topic": "C12",
-        "seed": 42,
-        "n": 300
+        "scenario": "logistic",
+        "n": 500,
+        "seed": 42
       },
       "position": {
-        "x": 150,
-        "y": 100
+        "x": 0,
+        "y": 80
+      }
+    },
+    {
+      "id": "particion",
+      "type": "split",
+      "node_version": "1.0.0",
+      "parameters": {
+        "fraction": 0.75,
+        "method": "aleatorio",
+        "seed": 42
+      },
+      "position": {
+        "x": 300,
+        "y": 165
+      }
+    },
+    {
+      "id": "modelo",
+      "type": "logit",
+      "node_version": "1.0.0",
+      "parameters": {
+        "features": "x",
+        "y": "clase",
+        "method": "logit"
+      },
+      "position": {
+        "x": 600,
+        "y": 80
+      }
+    },
+    {
+      "id": "evaluar",
+      "type": "evaluate",
+      "node_version": "1.0.0",
+      "parameters": {},
+      "position": {
+        "x": 900,
+        "y": 165
+      }
+    },
+    {
+      "id": "reporte",
+      "type": "report",
+      "node_version": "1.0.0",
+      "parameters": {
+        "note": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando dummies, interacciones, cambio estructural, chow, probabilidad lineal, logit y probit."
+      },
+      "position": {
+        "x": 1200,
+        "y": 80
       }
     }
   ],
-  "edges": []
+  "edges": [
+    {
+      "id": "datos-data-particion-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "particion",
+      "target_port": "data"
+    },
+    {
+      "id": "particion-train-modelo-data",
+      "source": "particion",
+      "source_port": "train",
+      "target": "modelo",
+      "target_port": "data"
+    },
+    {
+      "id": "modelo-model-evaluar-model",
+      "source": "modelo",
+      "source_port": "model",
+      "target": "evaluar",
+      "target_port": "model"
+    },
+    {
+      "id": "particion-test-evaluar-data",
+      "source": "particion",
+      "source_port": "test",
+      "target": "evaluar",
+      "target_port": "data"
+    },
+    {
+      "id": "evaluar-result-reporte-result",
+      "source": "evaluar",
+      "source_port": "result",
+      "target": "reporte",
+      "target_port": "result"
+    }
+  ],
+  "lesson": {
+    "module": "C12",
+    "title": "Clasificar con logit y probit",
+    "objective": "Construir clasificar con logit y probit conectando herramientas y comprobando cada salida.",
+    "references": [
+      "B06",
+      "B33"
+    ],
+    "steps": [
+      {
+        "node_id": "datos",
+        "title": "1. Genera y revisa la tabla",
+        "instruction": "La clase es una realización Bernoulli, no una probabilidad observada. Revisa P(clase = 1 | x) = logística(−0.4 + 1.2x).",
+        "expected": "Una tabla visible y exportable; todavía no se ha estimado ningún modelo.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "particion",
+        "title": "Separar entrenamiento/prueba",
+        "instruction": "Separa tablas antes de ajustar modelos o escaladores. Temporal conserva orden; aleatorio usa semilla.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "modelo",
+        "title": "Logit / probit",
+        "instruction": "Ajusta una respuesta binaria. Evalúa fuera del entrenamiento mediante otra herramienta.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "evaluar",
+        "title": "Evaluar predicciones",
+        "instruction": "Predice sobre la tabla conectada y compara con sus observaciones. No reajusta el modelo.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "reporte",
+        "title": "Interpreta y documenta",
+        "instruction": "Conecta el resultado elegido al reporte. Explica qué se calculó, con qué datos y qué no puede concluirse.",
+        "expected": "El reporte conserva el resultado de entrada y añade la pregunta de trabajo sin reestimar.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      }
+    ],
+    "missing_tools": [
+      "Variables categóricas, interacciones, Chow y efectos marginales"
+    ]
+  }
 }

@@ -1,22 +1,153 @@
 {
   "schema_version": "1.0.0",
-  "app_version": "0.3.0",
+  "app_version": "0.4.0",
   "title": "C23 · Backtest temporal con costos",
   "nodes": [
     {
-      "id": "experiment",
-      "type": "experiment",
+      "id": "datos",
+      "type": "synthetic",
       "node_version": "1.0.0",
       "parameters": {
-        "topic": "C23",
-        "seed": 42,
-        "n": 300
+        "scenario": "returns",
+        "n": 600,
+        "seed": 42
       },
       "position": {
-        "x": 150,
-        "y": 100
+        "x": 0,
+        "y": 80
+      }
+    },
+    {
+      "id": "senal",
+      "type": "signal",
+      "node_version": "1.0.0",
+      "parameters": {
+        "column": "retorno",
+        "lookback": 5,
+        "output": "senal"
+      },
+      "position": {
+        "x": 300,
+        "y": 165
+      }
+    },
+    {
+      "id": "particion",
+      "type": "split",
+      "node_version": "1.0.0",
+      "parameters": {
+        "fraction": 0.7,
+        "method": "temporal",
+        "seed": 42
+      },
+      "position": {
+        "x": 600,
+        "y": 80
+      }
+    },
+    {
+      "id": "backtest",
+      "type": "backtest",
+      "node_version": "1.0.0",
+      "parameters": {
+        "returns": "retorno",
+        "signal": "senal",
+        "cost": 0.0005
+      },
+      "position": {
+        "x": 900,
+        "y": 165
+      }
+    },
+    {
+      "id": "reporte",
+      "type": "report",
+      "node_version": "1.0.0",
+      "parameters": {
+        "note": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando estrategias, justificación ex ante, muestra sin supervivencia, sobreajuste, costos y backtest."
+      },
+      "position": {
+        "x": 1200,
+        "y": 80
       }
     }
   ],
-  "edges": []
+  "edges": [
+    {
+      "id": "datos-data-senal-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "senal",
+      "target_port": "data"
+    },
+    {
+      "id": "senal-data-particion-data",
+      "source": "senal",
+      "source_port": "data",
+      "target": "particion",
+      "target_port": "data"
+    },
+    {
+      "id": "particion-test-backtest-data",
+      "source": "particion",
+      "source_port": "test",
+      "target": "backtest",
+      "target_port": "data"
+    },
+    {
+      "id": "backtest-result-reporte-result",
+      "source": "backtest",
+      "source_port": "result",
+      "target": "reporte",
+      "target_port": "result"
+    }
+  ],
+  "lesson": {
+    "module": "C23",
+    "title": "Backtest temporal con costos",
+    "objective": "Construir backtest temporal con costos conectando herramientas y comprobando cada salida.",
+    "references": [
+      "B27"
+    ],
+    "steps": [
+      {
+        "node_id": "datos",
+        "title": "1. Genera y revisa la tabla",
+        "instruction": "No hay estrategia en el generador; señal, partición y costos se calculan después. Revisa retorno ~ Normal(0.0003, 0.012²).",
+        "expected": "Una tabla visible y exportable; todavía no se ha estimado ningún modelo.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "senal",
+        "title": "Señal de momentum",
+        "instruction": "Usa únicamente rendimientos anteriores para decidir una posición. Incluye un rezago para evitar mirar el futuro.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "particion",
+        "title": "Separar entrenamiento/prueba",
+        "instruction": "Separa tablas antes de ajustar modelos o escaladores. Temporal conserva orden; aleatorio usa semilla.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "backtest",
+        "title": "Evaluar estrategia",
+        "instruction": "Aplica una señal previamente construida, descuenta costos por cambios de posición y compara con mantener el activo.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "reporte",
+        "title": "Interpreta y documenta",
+        "instruction": "Conecta el resultado elegido al reporte. Explica qué se calculó, con qué datos y qué no puede concluirse.",
+        "expected": "El reporte conserva el resultado de entrada y añade la pregunta de trabajo sin reestimar.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      }
+    ],
+    "missing_tools": [
+      "Datos históricos sin supervivencia y costos de ejecución completos"
+    ]
+  }
 }

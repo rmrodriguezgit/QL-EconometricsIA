@@ -1,22 +1,148 @@
 {
   "schema_version": "1.0.0",
-  "app_version": "0.3.0",
+  "app_version": "0.4.0",
   "title": "C11 · Diagnosticar heterocedasticidad",
   "nodes": [
     {
-      "id": "experiment",
-      "type": "experiment",
+      "id": "datos",
+      "type": "synthetic",
       "node_version": "1.0.0",
       "parameters": {
-        "topic": "C11",
-        "seed": 42,
-        "n": 300
+        "scenario": "hetero",
+        "n": 300,
+        "seed": 42
       },
       "position": {
-        "x": 150,
-        "y": 100
+        "x": 0,
+        "y": 80
+      }
+    },
+    {
+      "id": "modelo",
+      "type": "ols",
+      "node_version": "1.0.0",
+      "parameters": {
+        "x": "x",
+        "y": "y",
+        "covariance": "nonrobust"
+      },
+      "position": {
+        "x": 300,
+        "y": 165
+      }
+    },
+    {
+      "id": "diagnostico",
+      "type": "diagnostics",
+      "node_version": "1.0.0",
+      "parameters": {},
+      "position": {
+        "x": 600,
+        "y": 80
+      }
+    },
+    {
+      "id": "inferencia",
+      "type": "covariance",
+      "node_version": "1.0.0",
+      "parameters": {
+        "method": "HC3"
+      },
+      "position": {
+        "x": 900,
+        "y": 165
+      }
+    },
+    {
+      "id": "reporte",
+      "type": "report",
+      "node_version": "1.0.0",
+      "parameters": {
+        "note": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando selección de variables, stepwise, especificación, heterocedasticidad, autocorrelación, influencia y atípicos."
+      },
+      "position": {
+        "x": 1200,
+        "y": 80
       }
     }
   ],
-  "edges": []
+  "edges": [
+    {
+      "id": "datos-data-modelo-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "modelo",
+      "target_port": "data"
+    },
+    {
+      "id": "modelo-model-diagnostico-model",
+      "source": "modelo",
+      "source_port": "model",
+      "target": "diagnostico",
+      "target_port": "model"
+    },
+    {
+      "id": "modelo-model-inferencia-model",
+      "source": "modelo",
+      "source_port": "model",
+      "target": "inferencia",
+      "target_port": "model"
+    },
+    {
+      "id": "inferencia-result-reporte-result",
+      "source": "inferencia",
+      "source_port": "result",
+      "target": "reporte",
+      "target_port": "result"
+    }
+  ],
+  "lesson": {
+    "module": "C11",
+    "title": "Diagnosticar heterocedasticidad",
+    "objective": "Construir diagnosticar heterocedasticidad conectando herramientas y comprobando cada salida.",
+    "references": [
+      "B24",
+      "B31"
+    ],
+    "steps": [
+      {
+        "node_id": "datos",
+        "title": "1. Genera y revisa la tabla",
+        "instruction": "La dispersión del error aumenta con la magnitud de x. Revisa y = 1 + x + (0.2 + 2|x|)ε.",
+        "expected": "Una tabla visible y exportable; todavía no se ha estimado ningún modelo.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "modelo",
+        "title": "Regresión OLS",
+        "instruction": "Estima y = β₀ + β₁x + ε. HC3 cambia los errores estándar y conserva los coeficientes.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "diagnostico",
+        "title": "Diagnóstico del modelo",
+        "instruction": "Examina el modelo conectado: heterocedasticidad, autocorrelación e influencia; GARCH usa residuos estandarizados.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "inferencia",
+        "title": "Cambiar covarianza",
+        "instruction": "Recalcula inferencia clásica, HC3 o HAC sobre la misma estimación; no cambia sus coeficientes.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "reporte",
+        "title": "Interpreta y documenta",
+        "instruction": "Conecta el resultado elegido al reporte. Explica qué se calculó, con qué datos y qué no puede concluirse.",
+        "expected": "El reporte conserva el resultado de entrada y añade la pregunta de trabajo sin reestimar.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      }
+    ],
+    "missing_tools": [
+      "Gráficos de influencia, selección stepwise y otras correcciones"
+    ]
+  }
 }

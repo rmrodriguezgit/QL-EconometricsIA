@@ -18,6 +18,9 @@ def system_audit():
             valid = False
     references = {ref for example in examples for ref in example['references']}
     checks.append({'id':'catalog','title':'Catálogo de los 28 módulos','status':'ok' if ids == expected and valid else 'pending','detail':f'{len(ids)} módulos con proyectos de estructura validada. Esta comprobación no ejecuta modelos; sus pruebas científicas se ejecutan en la suite.'})
+    connected = all(example.get('format')=='connected' and all(node['type']!='experiment' for node in example_get(example['id'])['project']['nodes']) for example in examples)
+    guided = all({step['node_id'] for step in example_get(example['id'])['project'].get('lesson',{}).get('steps',[])} == {node['id'] for node in example_get(example['id'])['project']['nodes']} for example in examples)
+    checks.append({'id':'connected','title':'Herramientas propias y pasos inspeccionables','status':'ok' if connected and guided else 'pending','detail':f'{len(NODES)} tipos registrados (incluida compatibilidad anterior). Los 28 ejemplos son grafos conectados, sin receta cerrada, y cada nodo tiene un paso explicativo.'})
     checks.append({'id':'references','title':'Trazabilidad bibliográfica','status':'ok' if references == {f'B{i:02}' for i in range(1,37)} else 'pending','detail':f'{len(references)} capítulos referenciados. La existencia de un ejemplo introductorio no acredita todos los subtemas del capítulo.'})
     try:
         with tempfile.NamedTemporaryFile(dir=folder(), prefix='.audit-', delete=True) as stream:
@@ -30,7 +33,7 @@ def system_audit():
     checks.append({'id':'files','title':'Integridad de archivos guardados','status':'ok' if not files['unreadable'] and not trash['unreadable'] else 'pending','detail':f"{len(files['items'])} proyectos; {len(trash['items'])} en papelera; {len(files['unreadable'])+len(trash['unreadable'])} archivos no legibles conservados sin modificación."})
     checks.append({'id':'draft','title':'Separación entre guardar y ejecutar','status':'ok','detail':'Los borradores vacíos o sin conectar pueden guardarse; ejecutar exige fuentes y conexiones válidas.'})
     checks.append({'id':'sample','title':'Coherencia entre gráfico y estimación','status':'ok','detail':'La recta OLS solo se superpone cuando coincide la fuente de datos y los nombres de variables.'})
-    checks.append({'id':'curriculum','title':'Cobertura científica exhaustiva','status':'pending','detail':'Hay 28 experimentos introductorios, no 28 módulos completos. Faltan ampliaciones como volatilidad multivariada, panel, GMM general y ejercicios de cada sección.'})
+    checks.append({'id':'curriculum','title':'Cobertura científica exhaustiva','status':'pending','detail':'Los 28 recorridos ya utilizan herramientas reutilizables, pero aún faltan subtemas. Cada guía enumera sus pendientes: por ejemplo volatilidad multivariada, panel y GMM de momentos general.'})
     checks.append({'id':'desktop','title':'Instaladores de macOS y Windows','status':'pending','detail':'Tauri sigue sin compilar en este equipo; faltan Cargo.lock, empaquetado científico, firma y verificación por plataforma.'})
     checks.append({'id':'engine','title':'Motor persistente y ejecución larga','status':'pending','detail':'El transporte limita cada ejecución a 60 segundos. Faltan sidecar persistente, progreso incremental, cancelación y caché del DAG.'})
     return {'app_version':VERSION,'checks':checks,'scope':'Auditoría funcional acotada; no es certificación de seguridad ni revisión bibliográfica exhaustiva.'}

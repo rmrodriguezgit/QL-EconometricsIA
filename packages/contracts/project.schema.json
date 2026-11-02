@@ -3,30 +3,233 @@
   "$id": "https://quantlabs.local/schemas/project-1.0.0.json",
   "title": "Quantlabs project 1.0.0",
   "type": "object",
-  "required": ["schema_version", "app_version", "title", "nodes", "edges"],
+  "required": [
+    "schema_version",
+    "app_version",
+    "title",
+    "nodes",
+    "edges"
+  ],
   "properties": {
-    "schema_version": { "const": "1.0.0" },
-    "app_version": { "type": "string" },
-    "title": { "type": "string", "maxLength": 120 },
-    "nodes": { "type": "array", "minItems": 0, "maxItems": 100, "items": { "$ref": "#/$defs/node" } },
-    "edges": { "type": "array", "maxItems": 400, "items": { "$ref": "#/$defs/edge" } }
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "app_version": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "nodes": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/$defs/node"
+      }
+    },
+    "edges": {
+      "type": "array",
+      "maxItems": 400,
+      "items": {
+        "$ref": "#/$defs/edge"
+      }
+    },
+    "lesson": {
+      "type": "object",
+      "required": [
+        "module",
+        "title",
+        "objective",
+        "references",
+        "steps",
+        "missing_tools"
+      ],
+      "properties": {
+        "module": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "objective": {
+          "type": "string"
+        },
+        "references": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "missing_tools": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "steps": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "items": {
+            "type": "object",
+            "required": [
+              "node_id",
+              "title",
+              "instruction",
+              "expected",
+              "question"
+            ],
+            "properties": {
+              "node_id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "instruction": {
+                "type": "string"
+              },
+              "expected": {
+                "type": "string"
+              },
+              "question": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
   },
   "$defs": {
     "node": {
-      "type": "object", "required": ["id", "type", "node_version", "parameters", "position"],
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "node_version",
+        "parameters",
+        "position"
+      ],
       "properties": {
-        "id": { "type": "string", "minLength": 1, "maxLength": 128 },
-        "type": { "enum": ["simulate", "csv", "worldbank", "describe", "scatter", "ols", "experiment"] },
-        "node_version": { "const": "1.0.0" },
-        "parameters": { "type": "object", "additionalProperties": { "type": ["number", "string"] } },
-        "position": { "type": "object", "required": ["x", "y"], "properties": { "x": { "type": "number" }, "y": { "type": "number" } } }
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "type": {
+          "enum": [
+            "simulate",
+            "csv",
+            "worldbank",
+            "describe",
+            "scatter",
+            "ols",
+            "experiment",
+            "synthetic",
+            "log",
+            "deflate",
+            "per_capita",
+            "growth",
+            "lag",
+            "difference",
+            "polynomial",
+            "compound",
+            "signal",
+            "standardize",
+            "apply_scaler",
+            "split",
+            "sample",
+            "histogram",
+            "correlation",
+            "probability",
+            "sampling_audit",
+            "mean_ci",
+            "paired_test",
+            "unit_root",
+            "monte_carlo",
+            "backtest",
+            "multiple_ols",
+            "logit",
+            "arima",
+            "garch",
+            "robust",
+            "iv2sls",
+            "hmm",
+            "gmm",
+            "kmeans",
+            "mlp",
+            "diagnostics",
+            "covariance",
+            "evaluate",
+            "compare_models",
+            "silhouette",
+            "cointegration",
+            "ecm",
+            "quantile",
+            "pca",
+            "factor_analysis",
+            "sem",
+            "report",
+            "acf"
+          ]
+        },
+        "node_version": {
+          "const": "1.0.0"
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "number",
+              "string"
+            ]
+          }
+        },
+        "position": {
+          "type": "object",
+          "required": [
+            "x",
+            "y"
+          ],
+          "properties": {
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            }
+          }
+        }
       }
     },
     "edge": {
-      "type": "object", "required": ["id", "source", "target", "source_port", "target_port"],
+      "type": "object",
+      "required": [
+        "id",
+        "source",
+        "target",
+        "source_port",
+        "target_port"
+      ],
       "properties": {
-        "id": { "type": "string" }, "source": { "type": "string" }, "target": { "type": "string" },
-        "source_port": { "type": "string" }, "target_port": { "type": "string" }
+        "id": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "target": {
+          "type": "string"
+        },
+        "source_port": {
+          "type": "string"
+        },
+        "target_port": {
+          "type": "string"
+        }
       }
     }
   }

@@ -1,22 +1,150 @@
 {
   "schema_version": "1.0.0",
-  "app_version": "0.3.0",
+  "app_version": "0.4.0",
   "title": "C02 · Nominal, real y per cápita",
   "nodes": [
     {
-      "id": "experiment",
-      "type": "experiment",
+      "id": "datos",
+      "type": "synthetic",
       "node_version": "1.0.0",
       "parameters": {
-        "topic": "C02",
-        "seed": 42,
-        "n": 300
+        "scenario": "prices",
+        "n": 120,
+        "seed": 42
       },
       "position": {
-        "x": 150,
-        "y": 100
+        "x": 0,
+        "y": 80
+      }
+    },
+    {
+      "id": "deflactar",
+      "type": "deflate",
+      "node_version": "1.0.0",
+      "parameters": {
+        "nominal": "nominal",
+        "index": "indice",
+        "base": 100,
+        "output": "real"
+      },
+      "position": {
+        "x": 300,
+        "y": 165
+      }
+    },
+    {
+      "id": "habitante",
+      "type": "per_capita",
+      "node_version": "1.0.0",
+      "parameters": {
+        "value": "real",
+        "population": "poblacion",
+        "output": "real_per_capita"
+      },
+      "position": {
+        "x": 600,
+        "y": 80
+      }
+    },
+    {
+      "id": "describir",
+      "type": "describe",
+      "node_version": "1.0.0",
+      "parameters": {},
+      "position": {
+        "x": 900,
+        "y": 165
+      }
+    },
+    {
+      "id": "reporte",
+      "type": "report",
+      "node_version": "1.0.0",
+      "parameters": {
+        "note": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando medición, categorías, corte transversal, tiempo, panel, índices, deflactación y per cápita."
+      },
+      "position": {
+        "x": 1200,
+        "y": 80
       }
     }
   ],
-  "edges": []
+  "edges": [
+    {
+      "id": "datos-data-deflactar-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "deflactar",
+      "target_port": "data"
+    },
+    {
+      "id": "deflactar-data-habitante-data",
+      "source": "deflactar",
+      "source_port": "data",
+      "target": "habitante",
+      "target_port": "data"
+    },
+    {
+      "id": "habitante-data-describir-data",
+      "source": "habitante",
+      "source_port": "data",
+      "target": "describir",
+      "target_port": "data"
+    },
+    {
+      "id": "describir-result-reporte-result",
+      "source": "describir",
+      "source_port": "result",
+      "target": "reporte",
+      "target_port": "result"
+    }
+  ],
+  "lesson": {
+    "module": "C02",
+    "title": "Nominal, real y per cápita",
+    "objective": "Construir nominal, real y per cápita conectando herramientas y comprobando cada salida.",
+    "references": [
+      "B16"
+    ],
+    "steps": [
+      {
+        "node_id": "datos",
+        "title": "1. Genera y revisa la tabla",
+        "instruction": "El generador solo produce nominal, índice y población. El ajuste real se calcula en nodos posteriores; períodos artificiales. Revisa real = nominal / índice × 100.",
+        "expected": "Una tabla visible y exportable; todavía no se ha estimado ningún modelo.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "deflactar",
+        "title": "Deflactar",
+        "instruction": "Divide el valor nominal por un índice de precios, con base explícita.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "habitante",
+        "title": "Por habitante",
+        "instruction": "Divide por la población del mismo período. Rechaza denominadores no positivos.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "describir",
+        "title": "Descriptivos",
+        "instruction": "Cuenta observaciones y faltantes, media, mediana y desviación muestral por columna.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "reporte",
+        "title": "Interpreta y documenta",
+        "instruction": "Conecta el resultado elegido al reporte. Explica qué se calculó, con qué datos y qué no puede concluirse.",
+        "expected": "El reporte conserva el resultado de entrada y añade la pregunta de trabajo sin reestimar.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      }
+    ],
+    "missing_tools": [
+      "Datos de panel, índices alternativos y metadatos editables de unidades"
+    ]
+  }
 }

@@ -1,19 +1,16 @@
-export type Kind = 'simulate' | 'csv' | 'worldbank' | 'describe' | 'scatter' | 'ols' | 'experiment';
+import nodeCatalog from '../../../packages/contracts/nodeCatalog.json';
+export type Kind = keyof typeof nodeCatalog;
 export type Parameters = Record<string, string | number>;
 export type ProjectNode = { id: string; type: Kind; node_version: '1.0.0'; parameters: Parameters; position: { x: number; y: number } };
-export type Project = { schema_version: '1.0.0'; app_version: string; title: string; nodes: ProjectNode[]; edges: { id: string; source: string; target: string; source_port: string; target_port: string }[] };
+export type LessonStep = { node_id: string; title: string; instruction: string; expected: string; question: string };
+export type Lesson = { module: string; title: string; objective: string; references: string[]; steps: LessonStep[]; missing_tools: string[] };
+export type Project = { lesson?: Lesson; schema_version: '1.0.0'; app_version: string; title: string; nodes: ProjectNode[]; edges: { id: string; source: string; target: string; source_port: string; target_port: string }[] };
 export type NodeResult = { status: 'succeeded' | 'failed' | 'skipped'; result?: Record<string, unknown>; error?: { code: string; message: string }; message?: string };
 export type Run = { run_id: string; status: string; nodes: Record<string, NodeResult>; manifest: { graph_sha256: string; [key: string]: unknown } };
-export const version = '0.3.0';
-export const catalog: Record<Kind, { label: string; detail: string; category: string; color: string; references: string; explanation: string; defaults: Parameters }> = {
-  experiment: { label: 'Experimento guiado', detail: 'Un laboratorio para cada tema', category: 'Experimentos', color: 'purple', references: 'Catálogo C01–C28', explanation: 'Ejecuta un experimento reproducible del catálogo. Cada tema incluye interpretación, bibliografía y límites; los modelos no cubiertos permanecen explícitos.', defaults: { topic: 'C01', seed: 42, n: 300 } },
-  simulate: { label: 'Datos simulados', detail: 'Una muestra que puedes reproducir', category: 'Fuentes de datos', color: 'green', references: 'B18 · B29', explanation: 'Consumo = intercepto + pendiente × ingreso + ruido normal. Cambia la semilla para obtener otra muestra o consérvala para repetir el experimento.', defaults: { n: 120, seed: 42, intercept: 12, slope: 0.72, noise: 9 } },
-  csv: { label: 'Archivo CSV', detail: 'Tus datos, desde un archivo local', category: 'Fuentes de datos', color: 'green', references: 'B16', explanation: 'Importa hasta 10.000 filas y 50 columnas. Los datos faltantes permanecen explícitos; declara sus unidades antes de interpretar.', defaults: { content: '', delimiter: ',' } },
-  worldbank: { label: 'Banco Mundial', detail: 'Indicadores económicos por país', category: 'Fuentes de datos', color: 'green', references: 'B01', explanation: 'Consulta un indicador anual por país. Requiere conexión. La ejecución registra consulta, fecha y huella de los datos; revisa las unidades del indicador.', defaults: { country: 'MEX', indicator: 'NY.GDP.PCAP.KD', start: 2000, end: 2023 } },
-  describe: { label: 'Descriptivos', detail: 'Entiende la muestra antes de modelar', category: 'Exploración', color: 'blue', references: 'B18', explanation: 'Media, mediana, desviación estándar muestral y extremos. Cada columna informa su número de valores observados y faltantes.', defaults: {} },
-  scatter: { label: 'Dispersión', detail: 'Explora la relación entre variables', category: 'Exploración', color: 'blue', references: 'B17', explanation: 'Cada punto es una observación completa de dos variables. Una asociación visual no demuestra causalidad.', defaults: { x: 'ingreso', y: 'consumo' } },
-  ols: { label: 'Regresión OLS', detail: 'Estima una relación lineal simple', category: 'Modelos', color: 'purple', references: 'B03 · B23 · B29', explanation: 'y = β₀ + β₁x + ε. OLS estima los coeficientes que minimizan los residuos al cuadrado. HC3 ajusta los errores estándar ante heterocedasticidad; no identifica causalidad.', defaults: { x: 'ingreso', y: 'consumo', covariance: 'HC3' } },
-};
+export const version = '0.4.0';
+export type ToolDefinition = { label: string; detail: string; category: string; color: string; references: string; explanation: string; defaults: Parameters; inputs: Record<string,string>; outputs: Record<string,string>; choices?: Record<string,string[]>; choice_labels?: Record<string,Record<string,string>> };
+export const catalog = Object.fromEntries(Object.entries(nodeCatalog).map(([key,value]) => [key,{...value,references:value.references.join(' · ')}])) as unknown as Record<Kind,ToolDefinition>;
+
 export function starter(): Project {
   return { schema_version: '1.0.0', app_version: version, title: 'Ingreso y consumo', nodes: [
     { id: 'data', type: 'simulate', node_version: '1.0.0', parameters: { ...catalog.simulate.defaults }, position: { x: 30, y: 150 } },
@@ -32,6 +29,12 @@ export function parseProject(text: string): Project {
   }
   for (const edge of value.edges) {
     if (!edge || !['id', 'source', 'target', 'source_port', 'target_port'].every(key => typeof edge[key] === 'string')) throw new Error('El proyecto contiene una conexión inválida.');
+  }
+  if(value.lesson!==undefined){
+    const lesson=value.lesson;
+    if(!lesson||typeof lesson!=='object'||!['module','title','objective'].every(key=>typeof lesson[key]==='string')||!Array.isArray(lesson.steps)||lesson.steps.length<1||lesson.steps.length>100||!['references','missing_tools'].every(key=>Array.isArray(lesson[key])&&lesson[key].length<=100&&lesson[key].every((text:unknown)=>typeof text==='string')))throw new Error('La guía paso a paso no es válida.');
+    const seen=new Set<string>();
+    for(const step of lesson.steps){if(!step||!['node_id','title','instruction','expected','question'].every(key=>typeof step[key]==='string')||!value.nodes.some((node:ProjectNode)=>node.id===step.node_id)||seen.has(step.node_id))throw new Error('La guía contiene un paso inválido.');seen.add(step.node_id);}
   }
   return value as Project;
 }

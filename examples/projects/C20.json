@@ -1,22 +1,150 @@
 {
   "schema_version": "1.0.0",
-  "app_version": "0.3.0",
+  "app_version": "0.4.0",
   "title": "C20 · PCA y factores: dos reducciones distintas",
   "nodes": [
     {
-      "id": "experiment",
-      "type": "experiment",
+      "id": "datos",
+      "type": "synthetic",
       "node_version": "1.0.0",
       "parameters": {
-        "topic": "C20",
-        "seed": 42,
-        "n": 300
+        "scenario": "factors",
+        "n": 300,
+        "seed": 42
       },
       "position": {
-        "x": 150,
-        "y": 100
+        "x": 0,
+        "y": 80
+      }
+    },
+    {
+      "id": "escalar",
+      "type": "standardize",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "x1,x2,x3,x4,x5,x6"
+      },
+      "position": {
+        "x": 300,
+        "y": 165
+      }
+    },
+    {
+      "id": "componentes",
+      "type": "pca",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "x1,x2,x3,x4,x5,x6",
+        "components": 2
+      },
+      "position": {
+        "x": 600,
+        "y": 80
+      }
+    },
+    {
+      "id": "factores",
+      "type": "factor_analysis",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "x1,x2,x3,x4,x5,x6",
+        "components": 2,
+        "seed": 42
+      },
+      "position": {
+        "x": 900,
+        "y": 165
+      }
+    },
+    {
+      "id": "reporte",
+      "type": "report",
+      "node_version": "1.0.0",
+      "parameters": {
+        "note": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando factores, cargas, puntuaciones, modelos factoriales y componentes principales."
+      },
+      "position": {
+        "x": 1200,
+        "y": 80
       }
     }
   ],
-  "edges": []
+  "edges": [
+    {
+      "id": "datos-data-escalar-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "escalar",
+      "target_port": "data"
+    },
+    {
+      "id": "escalar-data-componentes-data",
+      "source": "escalar",
+      "source_port": "data",
+      "target": "componentes",
+      "target_port": "data"
+    },
+    {
+      "id": "escalar-data-factores-data",
+      "source": "escalar",
+      "source_port": "data",
+      "target": "factores",
+      "target_port": "data"
+    },
+    {
+      "id": "factores-result-reporte-result",
+      "source": "factores",
+      "source_port": "result",
+      "target": "reporte",
+      "target_port": "result"
+    }
+  ],
+  "lesson": {
+    "module": "C20",
+    "title": "PCA y factores: dos reducciones distintas",
+    "objective": "Construir pca y factores: dos reducciones distintas conectando herramientas y comprobando cada salida.",
+    "references": [
+      "B11"
+    ],
+    "steps": [
+      {
+        "node_id": "datos",
+        "title": "1. Genera y revisa la tabla",
+        "instruction": "No se incluyen los factores reales como columnas de ajuste. Revisa x1…x3 dependen de f1; x4…x6 de f2, más ruido.",
+        "expected": "Una tabla visible y exportable; todavía no se ha estimado ningún modelo.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "escalar",
+        "title": "Estandarizar",
+        "instruction": "Aprende media y desviación solo de su entrada. Conecta entrenamiento aquí y aplica el transformador a prueba por separado.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "componentes",
+        "title": "Componentes principales",
+        "instruction": "Descompone las columnas conectadas y muestra varianza explicada y cargas.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "factores",
+        "title": "Análisis factorial",
+        "instruction": "Distingue factores comunes y ruido específico sobre las columnas elegidas.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "reporte",
+        "title": "Interpreta y documenta",
+        "instruction": "Conecta el resultado elegido al reporte. Explica qué se calculó, con qué datos y qué no puede concluirse.",
+        "expected": "El reporte conserva el resultado de entrada y añade la pregunta de trabajo sin reestimar.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      }
+    ],
+    "missing_tools": [
+      "Rotación factorial y selección de número de factores"
+    ]
+  }
 }

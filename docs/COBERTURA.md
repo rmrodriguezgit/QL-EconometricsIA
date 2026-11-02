@@ -1,6 +1,6 @@
 # Matriz de cobertura curricular
 
-Versión: 0.3.0 · 2026-11-01. **No hay módulos completos. Los 28 módulos tienen ahora un experimento introductorio ejecutable; los subtemas no ejercitados siguen pendientes. Los nodos estándar adicionales mantienen su alcance parcial.** P1-P6 corresponden al roadmap. Los nombres de nodo son contratos propuestos.
+Versión: 0.4.0 · 2026-11-01. **No hay módulos completos. Los 28 módulos tienen ahora un recorrido introductorio con nodos reutilizables y pasos explicados; los subtemas no ejercitados siguen pendientes. Los nodos estándar adicionales mantienen su alcance parcial.** P1-P6 corresponden al roadmap. Los nombres de nodo son contratos propuestos.
 
 | Módulo | Temas que deben conservarse | Nodos / herramientas | Referencias | Fase | Evidencia mínima de aceptación |
 |---|---|---|---|---|---|
@@ -56,3 +56,9 @@ La base de cada implementación se vincula a las referencias de su fila. La revi
 ## Experimentos disponibles en 0.3.0
 
 Cada ID C01-C28 tiene una ficha y un JSON ejecutable en [EJEMPLOS.md](EJEMPLOS.md). Las fichas conservan todos los temas de la matriz como guía de ampliación y referencias B01-B36. Se probaron los 28 proyectos, pero su ejecución correcta no equivale a completar cada sección de la bibliografía. Los límites concretos se muestran en los reportes y en [AUDITORIA.md](AUDITORIA.md).
+
+## Reconstrucción con herramientas propias (0.4.0)
+
+Los 28 ejemplos se ejecutaron con herramientas del registro compartido; no utilizan experiment ni llaman sus recetas anteriores. Cada nodo tiene un paso, salida esperada y pregunta. El inventario [HERRAMIENTAS.md](HERRAMIENTAS.md) vincula herramientas a módulos y enumera lo que falta. La definición legible por máquina se conserva en examples/tool-gaps.json.
+
+Se implementaron particiones, escaladores aprendidos/aplicados por separado, puertos para modelos y resultados, transformaciones y diagnósticos requeridos por esos recorridos. Continúa pendiente la cobertura exhaustiva de subtemas; los pendientes no se sustituyen por una receta cerrada.

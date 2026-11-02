@@ -53,4 +53,4 @@ function engineBridge(): Plugin {
     },
   };
 }
-export default defineConfig({ plugins: [react(), engineBridge()], server: { port: 1420, strictPort: true }, clearScreen: false });
+export default defineConfig({ plugins: [react(), engineBridge()], server: { port: 1420, strictPort: true, fs: { allow: [resolve(root,'apps/desktop'), resolve(root,'packages/contracts')] } }, clearScreen: false });

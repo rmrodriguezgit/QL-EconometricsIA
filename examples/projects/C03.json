@@ -1,22 +1,123 @@
 {
   "schema_version": "1.0.0",
-  "app_version": "0.3.0",
+  "app_version": "0.4.0",
   "title": "C03 · Visualizar sin ocultar observaciones",
   "nodes": [
     {
-      "id": "experiment",
-      "type": "experiment",
+      "id": "datos",
+      "type": "synthetic",
       "node_version": "1.0.0",
       "parameters": {
-        "topic": "C03",
-        "seed": 42,
-        "n": 300
+        "scenario": "regression",
+        "n": 300,
+        "seed": 42
       },
       "position": {
-        "x": 150,
-        "y": 100
+        "x": 0,
+        "y": 80
+      }
+    },
+    {
+      "id": "histograma",
+      "type": "histogram",
+      "node_version": "1.0.0",
+      "parameters": {
+        "column": "consumo",
+        "bins": 8
+      },
+      "position": {
+        "x": 300,
+        "y": 165
+      }
+    },
+    {
+      "id": "dispersion",
+      "type": "scatter",
+      "node_version": "1.0.0",
+      "parameters": {
+        "x": "ingreso",
+        "y": "consumo"
+      },
+      "position": {
+        "x": 600,
+        "y": 80
+      }
+    },
+    {
+      "id": "reporte",
+      "type": "report",
+      "node_version": "1.0.0",
+      "parameters": {
+        "note": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando barras, histogramas, dispersión, series, ejes y sesgos visuales."
+      },
+      "position": {
+        "x": 900,
+        "y": 165
       }
     }
   ],
-  "edges": []
+  "edges": [
+    {
+      "id": "datos-data-histograma-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "histograma",
+      "target_port": "data"
+    },
+    {
+      "id": "datos-data-dispersion-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "dispersion",
+      "target_port": "data"
+    },
+    {
+      "id": "dispersion-result-reporte-result",
+      "source": "dispersion",
+      "source_port": "result",
+      "target": "reporte",
+      "target_port": "result"
+    }
+  ],
+  "lesson": {
+    "module": "C03",
+    "title": "Visualizar sin ocultar observaciones",
+    "objective": "Construir visualizar sin ocultar observaciones conectando herramientas y comprobando cada salida.",
+    "references": [
+      "B17"
+    ],
+    "steps": [
+      {
+        "node_id": "datos",
+        "title": "1. Genera y revisa la tabla",
+        "instruction": "Ingreso y error normales independientes; unidades artificiales normalizadas, que pueden ser negativas. Revisa consumo = 2 + 0.8 × ingreso + ε.",
+        "expected": "Una tabla visible y exportable; todavía no se ha estimado ningún modelo.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "histograma",
+        "title": "Histograma",
+        "instruction": "Construye intervalos y cuenta filas. La suma de frecuencias debe coincidir con la muestra observada.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "dispersion",
+        "title": "Dispersión",
+        "instruction": "Representa pares completos de las variables elegidas. Asociación no implica causalidad.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "reporte",
+        "title": "Interpreta y documenta",
+        "instruction": "Conecta el resultado elegido al reporte. Explica qué se calculó, con qué datos y qué no puede concluirse.",
+        "expected": "El reporte conserva el resultado de entrada y añade la pregunta de trabajo sin reestimar.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      }
+    ],
+    "missing_tools": [
+      "Gráfico de barras, caja y controles interactivos de ejes"
+    ]
+  }
 }

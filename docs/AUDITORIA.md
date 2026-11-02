@@ -1,6 +1,6 @@
 # Auditoría funcional y correcciones de sistemas
 
-Versión 0.3.0 · 2026-11-01 · Alcance: aplicación local React/Python, contratos, ejemplos, persistencia, integridad y ciclo de trabajo. No es certificación de seguridad, auditoría de todos los capítulos ni validación de instaladores inexistentes.
+Versión 0.4.0 · 2026-11-01 · Alcance: aplicación local React/Python, contratos, ejemplos, persistencia, integridad y ciclo de trabajo. No es certificación de seguridad, auditoría de todos los capítulos ni validación de instaladores inexistentes.
 
 ## Hallazgos corregidos
 
@@ -22,7 +22,7 @@ Versión 0.3.0 · 2026-11-01 · Alcance: aplicación local React/Python, contrat
 ## Límites que siguen abiertos
 
 - **Currículo:** hay un experimento introductorio por módulo, no cobertura exhaustiva de cada subtema. GARCH multivariado, EGARCH, GMM general, panel y pruebas avanzadas requieren desarrollo y validación específicos.
-- **Editor de nodos:** los experimentos avanzados son recetas registradas en un nodo autónomo, con semilla y tamaño de muestra editables. No exponen todavía cada estimador/transformación como bloque independiente conectable.
+- **Editor de nodos:** los ejemplos se reconstruyeron como herramientas independientes conectables. Siguen pendientes los estimadores y opciones de la matriz de HERRAMIENTAS.md.
 - **Escritorio:** falta Rust, Cargo.lock, PyInstaller bloqueado, builds, firma/notarización y pruebas de instalación macOS/Windows. La aplicación sigue funcionando en modo local de desarrollo.
 - **Ejecución:** procesos por solicitud, plazo máximo de 60 segundos, sin cola persistente, cancelación ni recuperación de una ejecución interrumpida.
 - **Persistencia:** archivos JSON locales con papelera; sin sincronización remota, backups externos, auto guardado o SQLite/Parquet. Borrar datos del directorio local manualmente queda fuera del mecanismo de recuperación.
@@ -40,3 +40,17 @@ npm run build --prefix apps/desktop
 Las pruebas usan directorios temporales para guardar, editar, borrar y restaurar. No modifican proyectos personales. La auditoría de la app usa un archivo temporal de prueba que elimina al terminar, valida estructuras y lee metadatos; no ejecuta todos los modelos cada vez que se abre.
 
 Fuentes de implementación científica consultadas el 2026-11-01: [arch](https://arch.readthedocs.io/en/latest/univariate/introduction.html), [hmmlearn](https://hmmlearn.readthedocs.io/en/latest/tutorial.html), [semopy](https://semopy.com/tutorial.html) y [scikit-learn MLP](https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPRegressor.html). Las versiones adoptadas y sus licencias están en VERSIONES.md; las APIs se verificaron también contra las instalaciones bloqueadas.
+
+## Hallazgos al construir los módulos con la propia aplicación (0.4.0)
+
+| ID | Carencia encontrada | Corrección implementada | Evidencia |
+|---|---|---|---|
+| A13 | Las recetas impedían inspeccionar datos y pasos intermedios | 28 grafos sin experiment; 131 pasos explicados | Todos los ejemplos ejecutados con una prueba que prohíbe llamar la receta anterior |
+| A14 | El canvas solo suponía entrada/salida data | Contrato compartido, puertos múltiples y artefactos de modelo/transformador/resultado | Validación de puertos, tipos y ciclos; build TypeScript |
+| A15 | No podía usarse la estimación de un nodo en otro | Modelos ajustados conectados a diagnóstico, evaluación, covarianza y comparación | Pruebas de datos conectados y coeficientes conocidos |
+| A16 | No había una forma explícita de aprender el escalador solo en train | split → standardize(train) → apply_scaler(test) | Fixture con valores extremos en prueba: la media del escalador sigue siendo la de entrenamiento |
+| A17 | Cada clic ejecutaba todo el módulo | Ejecución de la clausura de ancestros con target_node | Pruebas de prefijos y ramas incompletas ajenas |
+| A18 | La guía no explicaba qué revisar | Instrucciones, ecuación generadora, resultado esperado, salida por nodo y preguntas | Recorrido manual y validación de todas las referencias de pasos |
+| A19 | Podían tratarse años ausentes como filas adyacentes | Rechazo explícito de calendario irregular y de compresión de faltantes temporales | Fixture de períodos 2000, 2001, 2003, 2004 rechazado al crear rezagos |
+
+La lista de lo que falta ahora proviene de reconstruir cada recorrido con puertos reales. Se publica por módulo en HERRAMIENTAS.md y en cada guía. No se afirma soporte de métodos pendientes, como GARCH multivariado o GMM de momentos general; la herramienta gmm existente significa mezcla gaussiana y lo indica expresamente.

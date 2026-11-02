@@ -18,7 +18,7 @@ import pandas as pd
 import statsmodels.api as sm
 
 ROOT = Path(__file__).resolve().parents[2]
-VERSION = (ROOT / 'VERSION').read_text().strip() if (ROOT / 'VERSION').exists() else '0.3.0'
+VERSION = (ROOT / 'VERSION').read_text().strip() if (ROOT / 'VERSION').exists() else '0.4.0'
 SCHEMA = '1.0.0'
 
 class EngineError(ValueError):
@@ -28,15 +28,9 @@ class EngineError(ValueError):
         self.node_id = node_id
 
 # port name -> scientific type; each input currently has arity exactly one.
-NODES = {
-    'experiment': {'label': 'Experimento guiado', 'inputs': {}, 'outputs': {}, 'references': ['B01', 'B28']},
-    'simulate': {'label': 'Datos simulados', 'inputs': {}, 'outputs': {'data': 'Dataset'}, 'references': ['B18', 'B29']},
-    'csv': {'label': 'Archivo CSV', 'inputs': {}, 'outputs': {'data': 'Dataset'}, 'references': ['B16']},
-    'worldbank': {'label': 'Banco Mundial', 'inputs': {}, 'outputs': {'data': 'Dataset'}, 'references': ['B01']},
-    'describe': {'label': 'Estadística descriptiva', 'inputs': {'data': 'Dataset'}, 'outputs': {'summary': 'Summary'}, 'references': ['B18']},
-    'scatter': {'label': 'Dispersión', 'inputs': {'data': 'Dataset'}, 'outputs': {'plot': 'Plot'}, 'references': ['B17']},
-    'ols': {'label': 'Regresión OLS', 'inputs': {'data': 'Dataset'}, 'outputs': {'model': 'FittedModel'}, 'references': ['B03', 'B23', 'B29']},
-}
+NODE_CATALOG = json.loads((ROOT / 'packages/contracts/nodeCatalog.json').read_text(encoding='utf-8'))
+NODES = {key: {field: definition[field] for field in ['label','inputs','outputs','references']} for key, definition in NODE_CATALOG.items()}
+
 
 
 def finite_json(value):
@@ -91,6 +85,23 @@ def validate_project(project, require_connected=True):
         if any(not isinstance(value, (str, int, float)) or isinstance(value, bool) or (isinstance(value, (int, float)) and not math.isfinite(value)) for value in node['parameters'].values()):
             fail('Los parámetros deben ser textos o números finitos.', node_id=node['id'])
         ids[node['id']] = node
+    lesson = project.get('lesson')
+    if lesson is not None:
+        if not isinstance(lesson, dict) or any(not isinstance(lesson.get(k), str) or len(lesson[k])>5000 for k in ['module','title','objective']):
+            fail('La guía necesita módulo, título y objetivo válidos.')
+        for field in ['references','missing_tools']:
+            if not isinstance(lesson.get(field), list) or len(lesson[field])>100 or any(not isinstance(value,str) or len(value)>5000 for value in lesson[field]):
+                fail('Las referencias y herramientas pendientes de la guía no son válidas.')
+        steps = lesson.get('steps')
+        if not isinstance(steps,list) or not 1<=len(steps)<=100:
+            fail('La guía necesita entre 1 y 100 pasos.')
+        seen_steps = set()
+        for step in steps:
+            if not isinstance(step,dict) or any(not isinstance(step.get(k),str) or len(step[k])>5000 for k in ['node_id','title','instruction','expected','question']):
+                fail('Cada paso debe explicar una herramienta existente.')
+            if step['node_id'] not in ids or step['node_id'] in seen_steps:
+                fail('Los pasos de la guía deben apuntar a nodos distintos y existentes.')
+            seen_steps.add(step['node_id'])
     children = {key: [] for key in ids}
     indegree = {key: 0 for key in ids}
     incoming = {key: {} for key in ids}
@@ -251,7 +262,7 @@ def scatter(frame, parameters):
             'n': len(values), 'dropped': len(frame) - len(values)}
 
 
-def ols(frame, parameters):
+def ols(frame, parameters, with_model=False):
     x, y = parameters.get('x', 'ingreso'), parameters.get('y', 'consumo')
     cov = parameters.get('covariance', 'HC3')
     if x == y or cov not in ['nonrobust', 'HC3']:
@@ -268,44 +279,82 @@ def ols(frame, parameters):
                      'statistic': fitted.tvalues[term], 'p_value': fitted.pvalues[term],
                      'ci_low': interval.loc[term, 0], 'ci_high': interval.loc[term, 1]}
                     for term in fitted.params.index]
-    return finite_json({'kind': 'ols', 'x': x, 'y': y, 'n': int(fitted.nobs),
+    result = finite_json({'kind': 'ols', 'x': x, 'y': y, 'n': int(fitted.nobs),
             'dropped': len(frame) - len(values), 'r_squared': fitted.rsquared,
             'r_squared_adj': fitted.rsquared_adj, 'aic': fitted.aic, 'bic': fitted.bic,
             'covariance': cov, 'coefficients': coefficients,
             'residuals': fitted.resid.tolist(), 'fitted': fitted.fittedvalues.tolist(),
             'note': 'Asociación estimada; no identifica un efecto causal. HC3 modifica la inferencia, no los coeficientes OLS.'})
+    return (result, fitted) if with_model else result
 
 
-def execute(project):
-    ids, ordered, incoming = validate_project(project)
-    results, raw, sources = {}, {}, {}
+def execute(project, target_node=None):
+    ids, ordered, incoming = validate_project(project, require_connected=target_node is None)
+    links = {key: {} for key in ids}
+    for edge in project['edges']:
+        links[edge['target']][edge['target_port']] = (edge['source'], edge['source_port'])
+    active = set(ids)
+    if target_node is not None:
+        if not isinstance(target_node, str) or target_node not in ids:
+            fail('Selecciona un nodo existente para ejecutar el paso.')
+        active = set()
+        def include(key):
+            if key in active: return
+            active.add(key)
+            for parent in incoming[key].values(): include(parent)
+        include(target_node)
+        for key in active:
+            if set(NODES[ids[key]['type']]['inputs']) - set(incoming[key]):
+                fail('Conecta las entradas de este paso y sus dependencias.', node_id=key)
+    results, artifacts, sources = {}, {}, {}
     started = datetime.now(timezone.utc).isoformat()
     for key in ordered:
+        if key not in active: continue
         node = ids[key]
         parents = list(incoming[key].values())
         if any(results[parent]['status'] != 'succeeded' for parent in parents):
-            results[key] = {'status': 'skipped', 'message': 'El nodo de origen no produjo datos.'}
+            results[key] = {'status': 'skipped', 'message': 'Una dependencia no produjo un resultado válido.'}
             continue
         try:
-            kind, params = node['type'], node['parameters']
+            from .tools import run_tool, Fitted, frame_result
+            kind = node['type']
+            params = {**NODE_CATALOG[kind]['defaults'], **node['parameters']}
+            inputs = {port: artifacts[parent][source_port] for port,(parent,source_port) in links[key].items()}
+            outputs = {}
             if kind == 'experiment':
                 from .experiments import run_experiment
                 result = run_experiment(params)
             elif kind in ['simulate', 'csv', 'worldbank']:
                 frame, source = {'simulate': simulate, 'csv': csv_data, 'worldbank': world_bank}[kind](params)
-                if len(frame.columns) > 50 or len(frame) > 10000:
-                    fail('Se excedió el límite de filas o columnas.', 'INVALID_PARAMETERS')
-                raw[key] = frame
-                records = json.loads(frame.to_json(orient='records', double_precision=15))
-                source.update({'retrieved_at': datetime.now(timezone.utc).isoformat(),
-                               'data_sha256': digest(records), 'n': len(frame)})
+                result = frame_result(frame,'Datos de origen; revisa unidades y faltantes.')
+                source.update({'retrieved_at': datetime.now(timezone.utc).isoformat(), 'data_sha256': result['data_sha256'], 'n': len(frame)})
                 sources[key] = source
-                result = {'kind': 'dataset', 'columns': frame.columns.tolist(), 'n': len(frame),
-                          'preview': records[:8], 'records': records, 'source': source}
+                result['source'] = source
+                outputs['data'] = frame
+            elif kind in ['describe', 'scatter', 'ols']:
+                frame = inputs['data']
+                if kind == 'ols':
+                    result, fit = ols(frame, params, with_model=True)
+                    outputs['model'] = Fitted('ols', fit, frame[[params['x'],params['y']]].dropna(), [params['x']], params['y'], 'OLS '+params['covariance'])
+                else:
+                    result = {'describe': describe, 'scatter': scatter}[kind](frame, params)
+                    outputs['summary' if kind == 'describe' else 'plot'] = result
+                result['input_source_id'] = ':'.join(links[key]['data'])
+                outputs['result'] = result
             else:
-                frame = raw[incoming[key]['data']]
-                result = {'describe': describe, 'scatter': scatter, 'ols': ols}[kind](frame, params)
-                result['input_source_id'] = incoming[key]['data']
+                result, outputs = run_tool(kind, inputs, params)
+            previews = {}
+            for port, artifact in outputs.items():
+                if isinstance(artifact, pd.DataFrame):
+                    if len(artifact)>10000 or len(artifact.columns)>50: fail('Se excedió el límite de filas o columnas.', 'INVALID_PARAMETERS')
+                    preview = frame_result(artifact,'Tabla de salida del paso.')
+                    previews[port] = {field: preview[field] for field in ['columns','n','preview','data_sha256']}
+                    source_key = key if port == 'data' else key+':'+port
+                    if source_key not in sources:
+                        sources[source_key] = {'provider': 'synthetic' if kind == 'synthetic' else 'transformation', 'node_type': kind, 'parameters': params, 'parents': links[key], 'data_sha256':preview['data_sha256'],'n':len(artifact),'retrieved_at':datetime.now(timezone.utc).isoformat()}
+            if previews: result['output_previews'] = previews
+            result['tool_type'] = kind
+            artifacts[key] = outputs
             results[key] = {'status': 'succeeded', 'result': finite_json(result)}
         except EngineError as exc:
             results[key] = {'status': 'failed', 'error': {'code': exc.code, 'message': str(exc)}}
@@ -313,11 +362,10 @@ def execute(project):
             results[key] = {'status': 'failed', 'error': {'code': 'INTERNAL_ERROR', 'message': 'No se pudo calcular el nodo; revisa los datos y parámetros.'}}
     try:
         commit = subprocess.run(['git', 'rev-parse', 'HEAD'], cwd=ROOT, capture_output=True, text=True, timeout=2).stdout.strip() or None
-    except (OSError, subprocess.TimeoutExpired):
-        commit = None
+    except (OSError, subprocess.TimeoutExpired): commit = None
     return {'run_id': str(uuid.uuid4()), 'status': 'failed' if any(r['status'] == 'failed' for r in results.values()) else 'succeeded',
             'nodes': results, 'manifest': {'app_version': VERSION, 'schema_version': SCHEMA,
-            'protocol_version': '1.0.0', 'started_at': started,
+            'protocol_version': '1.0.0', 'target_node':target_node, 'execution_order':[key for key in ordered if key in active], 'started_at': started,
             'finished_at': datetime.now(timezone.utc).isoformat(), 'graph_sha256': digest({'schema_version': project['schema_version'], 'nodes': [{k: node[k] for k in ['id', 'type', 'node_version', 'parameters']} for node in project['nodes']], 'edges': project['edges']}),
             'python': platform.python_version(), 'platform': platform.platform(),
             'dependencies': {name: package_version(name) for name in ['numpy', 'pandas', 'scipy', 'statsmodels', 'wbdata', 'arch', 'scikit-learn', 'hmmlearn', 'semopy']},

@@ -1,22 +1,123 @@
 {
   "schema_version": "1.0.0",
-  "app_version": "0.3.0",
+  "app_version": "0.4.0",
   "title": "C13 · Elasticidades de Cobb-Douglas",
   "nodes": [
     {
-      "id": "experiment",
-      "type": "experiment",
+      "id": "datos",
+      "type": "synthetic",
       "node_version": "1.0.0",
       "parameters": {
-        "topic": "C13",
-        "seed": 42,
-        "n": 300
+        "scenario": "cobb",
+        "n": 300,
+        "seed": 42
       },
       "position": {
-        "x": 150,
-        "y": 100
+        "x": 0,
+        "y": 80
+      }
+    },
+    {
+      "id": "logaritmos",
+      "type": "log",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "capital,trabajo,produccion"
+      },
+      "position": {
+        "x": 300,
+        "y": 165
+      }
+    },
+    {
+      "id": "modelo",
+      "type": "multiple_ols",
+      "node_version": "1.0.0",
+      "parameters": {
+        "features": "log_capital,log_trabajo",
+        "y": "log_produccion",
+        "covariance": "nonrobust"
+      },
+      "position": {
+        "x": 600,
+        "y": 80
+      }
+    },
+    {
+      "id": "reporte",
+      "type": "report",
+      "node_version": "1.0.0",
+      "parameters": {
+        "note": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando formas lineales, polinomios, potencia, logaritmos, elasticidad, cobb-douglas, crecimiento y causalidad."
+      },
+      "position": {
+        "x": 900,
+        "y": 165
       }
     }
   ],
-  "edges": []
+  "edges": [
+    {
+      "id": "datos-data-logaritmos-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "logaritmos",
+      "target_port": "data"
+    },
+    {
+      "id": "logaritmos-data-modelo-data",
+      "source": "logaritmos",
+      "source_port": "data",
+      "target": "modelo",
+      "target_port": "data"
+    },
+    {
+      "id": "modelo-result-reporte-result",
+      "source": "modelo",
+      "source_port": "result",
+      "target": "reporte",
+      "target_port": "result"
+    }
+  ],
+  "lesson": {
+    "module": "C13",
+    "title": "Elasticidades de Cobb-Douglas",
+    "objective": "Construir elasticidades de cobb-douglas conectando herramientas y comprobando cada salida.",
+    "references": [
+      "B15"
+    ],
+    "steps": [
+      {
+        "node_id": "datos",
+        "title": "1. Genera y revisa la tabla",
+        "instruction": "Capital, trabajo y producción son positivos; sus logaritmos se crean en otro nodo. Revisa producción = 1.5 × capital^0.35 × trabajo^0.6 × exp(ε).",
+        "expected": "Una tabla visible y exportable; todavía no se ha estimado ningún modelo.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "logaritmos",
+        "title": "Logaritmo",
+        "instruction": "Añade columnas log_ con logaritmos naturales. Rechaza valores no positivos.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "modelo",
+        "title": "OLS múltiple",
+        "instruction": "Ajusta una respuesta con varios regresores. Verifica rango y muestra efectiva.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "reporte",
+        "title": "Interpreta y documenta",
+        "instruction": "Conecta el resultado elegido al reporte. Explica qué se calculó, con qué datos y qué no puede concluirse.",
+        "expected": "El reporte conserva el resultado de entrada y añade la pregunta de trabajo sin reestimar.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      }
+    ],
+    "missing_tools": [
+      "Editor de funciones de potencia y elasticidades generales"
+    ]
+  }
 }

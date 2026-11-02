@@ -28,3 +28,7 @@ Datos sintéticos o consulta World Bank → revisar tipos/unidades → limpieza 
 ## Avance 0.3.0
 
 Administrador local de archivos y catálogo de 28 experimentos entregados. Se adelantan ejemplos de P2-P6 para facilitar aprendizaje y pruebas, manteniendo abiertas las condiciones de cierre de cada fase. Próximas unidades: convertir recetas en nodos independientes, ampliar cada módulo conforme a sus capítulos, persistencia de ejecuciones y empaquetado nativo. El número 0.3.0 no implica que P2 haya terminado.
+
+## Avance 0.4.0
+
+Se completó la conversión de las 28 recetas del catálogo a grafos conectados con 131 pasos. Se incorporaron las herramientas necesarias para esos recorridos, la ejecución de prefijos y un inventario explícito de carencias por módulo. Las fases curriculares y el empaquetado nativo continúan abiertos: un recorrido introductorio no cubre todos los métodos del capítulo.

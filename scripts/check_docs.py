@@ -6,7 +6,7 @@ import re
 ROOT = Path(__file__).resolve().parents[1]
 REQUIRED = ['README.md', 'AGENTS.md', 'CHANGELOG.md', 'VERSION',
             'docs/ARQUITECTURA.md', 'docs/BIBLIOGRAFIA.md', 'docs/COBERTURA.md',
-            'docs/ROADMAP.md', 'docs/VERSIONES.md', 'docs/VERSIONADO.md', 'docs/DESARROLLO.md', 'docs/EJEMPLOS.md', 'docs/AUDITORIA.md']
+            'docs/ROADMAP.md', 'docs/VERSIONES.md', 'docs/VERSIONADO.md', 'docs/DESARROLLO.md', 'docs/EJEMPLOS.md', 'docs/AUDITORIA.md', 'docs/HERRAMIENTAS.md']
 
 
 def check(root=ROOT):
@@ -49,9 +49,15 @@ def check(root=ROOT):
         raise ValueError('Expected one example per curricular module')
     if {ref for item in examples for ref in item['references']} != set(ids):
         raise ValueError('Examples must reference every chapter')
+    registry=json.loads((root/'packages/contracts/nodeCatalog.json').read_text())
     for item in examples:
         if not (root / 'examples/projects' / f"{item['id']}.json").is_file():
             raise ValueError(f"Missing example file: {item['id']}")
+        graph=json.loads((root/'examples/projects'/f"{item['id']}.json").read_text())
+        if any(node['type'] not in registry or node['type']=='experiment' for node in graph['nodes']):
+            raise ValueError('Examples must use actual registered tools')
+        if {step['node_id'] for step in graph.get('lesson',{}).get('steps',[])}!={node['id'] for node in graph['nodes']}:
+            raise ValueError('Every example node needs an explanatory step')
     print(f'OK: version {version}; {len(ids)} references covered; local links valid.')
 
 

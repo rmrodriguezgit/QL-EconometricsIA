@@ -32,7 +32,7 @@ def dispatch(request):
             from .projects import dispatch_files
             result = dispatch_files(method, params)
         elif method == 'run.start':
-            result = execute(params.get('project'))
+            result = execute(params.get('project'), params.get('target_node'))
         else:
             return {'jsonrpc': '2.0', 'id': request_id, 'error': {'code': -32601, 'message': 'Método desconocido.'}}
         return {'jsonrpc': '2.0', 'id': request_id, 'result': result}

@@ -1,22 +1,165 @@
 {
   "schema_version": "1.0.0",
-  "app_version": "0.3.0",
+  "app_version": "0.4.0",
   "title": "C24 · Regímenes ocultos y mezclas gaussianas",
   "nodes": [
     {
-      "id": "experiment",
-      "type": "experiment",
+      "id": "datos",
+      "type": "synthetic",
       "node_version": "1.0.0",
       "parameters": {
-        "topic": "C24",
-        "seed": 42,
-        "n": 300
+        "scenario": "regimes",
+        "n": 500,
+        "seed": 42
       },
       "position": {
-        "x": 150,
-        "y": 100
+        "x": 0,
+        "y": 80
+      }
+    },
+    {
+      "id": "hmm",
+      "type": "hmm",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "valor",
+        "states": 2,
+        "seed": 42
+      },
+      "position": {
+        "x": 300,
+        "y": 165
+      }
+    },
+    {
+      "id": "mezcla",
+      "type": "gmm",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "valor",
+        "components": 2,
+        "seed": 42
+      },
+      "position": {
+        "x": 600,
+        "y": 80
+      }
+    },
+    {
+      "id": "comparar",
+      "type": "compare_models",
+      "node_version": "1.0.0",
+      "parameters": {
+        "evaluation": "muestra_comun"
+      },
+      "position": {
+        "x": 900,
+        "y": 165
+      }
+    },
+    {
+      "id": "reporte",
+      "type": "report",
+      "node_version": "1.0.0",
+      "parameters": {
+        "note": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando regímenes ocultos, markov, transiciones y mezclas gaussianas."
+      },
+      "position": {
+        "x": 1200,
+        "y": 80
       }
     }
   ],
-  "edges": []
+  "edges": [
+    {
+      "id": "datos-data-hmm-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "hmm",
+      "target_port": "data"
+    },
+    {
+      "id": "datos-data-mezcla-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "mezcla",
+      "target_port": "data"
+    },
+    {
+      "id": "hmm-model-comparar-first",
+      "source": "hmm",
+      "source_port": "model",
+      "target": "comparar",
+      "target_port": "first"
+    },
+    {
+      "id": "mezcla-model-comparar-second",
+      "source": "mezcla",
+      "source_port": "model",
+      "target": "comparar",
+      "target_port": "second"
+    },
+    {
+      "id": "datos-data-comparar-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "comparar",
+      "target_port": "data"
+    },
+    {
+      "id": "comparar-result-reporte-result",
+      "source": "comparar",
+      "source_port": "result",
+      "target": "reporte",
+      "target_port": "result"
+    }
+  ],
+  "lesson": {
+    "module": "C24",
+    "title": "Regímenes ocultos y mezclas gaussianas",
+    "objective": "Construir regímenes ocultos y mezclas gaussianas conectando herramientas y comprobando cada salida.",
+    "references": [
+      "B07"
+    ],
+    "steps": [
+      {
+        "node_id": "datos",
+        "title": "1. Genera y revisa la tabla",
+        "instruction": "estado_real sirve como referencia didáctica y no se utiliza como entrada de HMM o mezcla. Revisa P(permanecer) = 0.96; media de emisión −2 o 2.",
+        "expected": "Una tabla visible y exportable; todavía no se ha estimado ningún modelo.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "hmm",
+        "title": "Regímenes HMM",
+        "instruction": "Estima emisiones y transiciones entre estados ocultos a partir de la serie conectada.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "mezcla",
+        "title": "Mezcla gaussiana",
+        "instruction": "Estima una mezcla gaussiana sin transiciones temporales. No es el método generalizado de momentos.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "comparar",
+        "title": "Comparar modelos",
+        "instruction": "Compara modelos sobre datos comunes. AIC/BIC solo se muestran como comparables cuando coinciden sus muestras de ajuste.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "reporte",
+        "title": "Interpreta y documenta",
+        "instruction": "Conecta el resultado elegido al reporte. Explica qué se calculó, con qué datos y qué no puede concluirse.",
+        "expected": "El reporte conserva el resultado de entrada y añade la pregunta de trabajo sin reestimar.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      }
+    ],
+    "missing_tools": [
+      "Selección de estados y evaluación temporal de regímenes"
+    ]
+  }
 }

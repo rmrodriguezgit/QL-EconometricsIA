@@ -2,7 +2,7 @@
 
 Laboratorio educativo de econometría con programación visual mediante nodos y motor analítico Python. Objetivo de escritorio: macOS y Windows. [Repositorio](https://github.com/rmrodriguezgit/Quantlabs-Econometrics).
 
-**Versión 0.3.0 · 2026-11-01 · Alpha funcional en modo de desarrollo local. Integración Tauri preparada, sin compilar todavía.**
+**Versión 0.4.0 · 2026-11-01 · Alpha funcional en modo de desarrollo local. Integración Tauri preparada, sin compilar todavía.**
 
 ## Arrancar
 
@@ -18,11 +18,13 @@ Abre [el laboratorio local](http://127.0.0.1:1420) y pulsa **Ejecutar flujo**. E
 
 ## Ya funciona
 
-- **Archivos y ejemplos**: catálogo de 28 experimentos, uno por módulo, con objetivos, subtemas y referencias a los 36 capítulos.
+- **Archivos y ejemplos**: 28 recorridos construidos con herramientas conectadas, uno por módulo, con objetivos y referencias a los 36 capítulos. Cada nodo tiene un paso explicativo.
+- **Guía paso a paso**: instrucciones, resultado esperado, ejecución de dependencias, inspección de salidas, Anterior/Siguiente y vista del flujo completo.
+- **Herramientas reutilizables**: 53 tipos registrados (incluida compatibilidad anterior); 49 tipos se utilizan en los 28 recorridos, con 131 pasos explicados.
 - **Mis proyectos**: guardar, abrir, editar JSON, validar, ejecutar, duplicar y exportar. Borrar mueve a una papelera restaurable.
 - **Auditoría** dentro del administrador: comprueba catálogo, referencias, almacenamiento e integridad y muestra los pendientes.
 
-- Canvas editable con conexiones, siete tipos de nodo, eliminación, zoom y deshacer. Desconecta enlaces desde el inspector o seleccionando su línea y pulsando **Desconectar**.
+- Canvas editable con conexiones, puertos tipados para tablas, modelos, transformadores y resultados, eliminación, zoom y deshacer. Desconecta enlaces desde el inspector o seleccionando su línea y pulsando **Desconectar**.
 - Datos sintéticos con semilla, CSV local y consulta anual de un indicador/país del Banco Mundial. Lista desplegable con búsqueda en el catálogo completo de indicadores y selección automática de su fuente.
 - Descriptivos, dispersión y regresión OLS simple con covarianza clásica o HC3.
 - Ventana **Ecuación** con fórmula poblacional y recta ajustada con los coeficientes calculados.
@@ -34,9 +36,13 @@ El ejemplo [ingreso-consumo.json](examples/ingreso-consumo.json) se incluye al a
 
 ## Límites de esta alpha
 
-Las fases curriculares siguen abiertas. Hay un experimento introductorio ejecutable para cada uno de los 28 módulos; esto no completa todos sus subtemas. Los ejemplos avanzados son recetas registradas en un nodo autónomo, no bloques independientes de todos los estimadores. Faltan instaladores nativos, Excel, panel, GARCH multivariado, GMM general, almacenamiento Parquet/SQLite, caché del DAG, cancelación y lecciones completas. Consulta la auditoría para distinguir lo corregido de lo pendiente.
+Las fases curriculares siguen abiertas. Hay un experimento introductorio ejecutable para cada uno de los 28 módulos; esto no completa todos sus subtemas. Los ejemplos ya no utilizan una receta autónoma: los generadores, transformaciones, estimadores, diagnósticos y reportes son nodos separados. Los estimadores o subtemas aún no disponibles se enumeran en cada guía y en HERRAMIENTAS.md. Faltan instaladores nativos, Excel, panel, GARCH multivariado, GMM general, almacenamiento Parquet/SQLite, caché del DAG, cancelación y lecciones completas. Consulta la auditoría para distinguir lo corregido de lo pendiente.
 
 Los proyectos guardados incluyen el contenido de CSV importados. Los resultados exportados incluyen datos de la ejecución; se guardan solo al solicitarlos. El botón Guardar incorpora el proyecto a **Mis proyectos**, en `.quantlabs/projects/` local (excluida de Git). No existe autoguardado: guarda antes de salir. El editor JSON avisa al descartar cambios y el canvas avisa al cerrar con cambios pendientes. Los proyectos guardados pueden reabrirse; la papelera permite recuperar los borrados. Los PDF, ZIP, datasets y cachés no se publican en Git.
+
+## Seguir un recorrido
+
+Abre **Archivos y ejemplos → Ejemplos**, elige un módulo y pulsa **Abrir en canvas**. Lee el paso, pulsa **Ejecutar hasta este paso**, inspecciona su salida y continúa con **Siguiente**. Los pasos recalculan únicamente sus dependencias; no ejecutan nodos posteriores. Puedes cambiar parámetros, desconectar herramientas y guardar tu propia variante.
 
 ## Verificar y publicar cambios
 
@@ -53,6 +59,7 @@ El último comando valida documentación, pruebas y frontend, incorpora rutas pe
 
 | Archivo | Contenido |
 |---|---|
+| [Herramientas y pendientes](docs/HERRAMIENTAS.md) | Registro de puertos, uso por módulo y carencias identificadas |
 | [Catálogo de ejemplos](docs/EJEMPLOS.md) | Los 28 experimentos y sus archivos JSON |
 | [Auditoría](docs/AUDITORIA.md) | Hallazgos, correcciones y pendientes verificables |
 | [Desarrollo](docs/DESARROLLO.md) | Ejecución, protocolo, pruebas y límites actuales |

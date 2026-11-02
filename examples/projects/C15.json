@@ -1,22 +1,158 @@
 {
   "schema_version": "1.0.0",
-  "app_version": "0.3.0",
+  "app_version": "0.4.0",
   "title": "C15 · Pronosticar con una prueba temporal",
   "nodes": [
     {
-      "id": "experiment",
-      "type": "experiment",
+      "id": "datos",
+      "type": "synthetic",
       "node_version": "1.0.0",
       "parameters": {
-        "topic": "C15",
-        "seed": 42,
-        "n": 300
+        "scenario": "ar1",
+        "n": 300,
+        "seed": 42
       },
       "position": {
-        "x": 150,
-        "y": 100
+        "x": 0,
+        "y": 80
+      }
+    },
+    {
+      "id": "particion",
+      "type": "split",
+      "node_version": "1.0.0",
+      "parameters": {
+        "fraction": 0.8,
+        "method": "temporal",
+        "seed": 42
+      },
+      "position": {
+        "x": 300,
+        "y": 165
+      }
+    },
+    {
+      "id": "modelo",
+      "type": "arima",
+      "node_version": "1.0.0",
+      "parameters": {
+        "column": "y",
+        "p": 1,
+        "d": 0,
+        "q": 0
+      },
+      "position": {
+        "x": 600,
+        "y": 80
+      }
+    },
+    {
+      "id": "evaluar",
+      "type": "evaluate",
+      "node_version": "1.0.0",
+      "parameters": {},
+      "position": {
+        "x": 900,
+        "y": 165
+      }
+    },
+    {
+      "id": "reporte",
+      "type": "report",
+      "node_version": "1.0.0",
+      "parameters": {
+        "note": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando ar/ma/arma/arima/sarima, acf/pacf, estacionariedad, adf/kpss, suavizado aditivo, forecast y var."
+      },
+      "position": {
+        "x": 1200,
+        "y": 80
       }
     }
   ],
-  "edges": []
+  "edges": [
+    {
+      "id": "datos-data-particion-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "particion",
+      "target_port": "data"
+    },
+    {
+      "id": "particion-train-modelo-data",
+      "source": "particion",
+      "source_port": "train",
+      "target": "modelo",
+      "target_port": "data"
+    },
+    {
+      "id": "modelo-model-evaluar-model",
+      "source": "modelo",
+      "source_port": "model",
+      "target": "evaluar",
+      "target_port": "model"
+    },
+    {
+      "id": "particion-test-evaluar-data",
+      "source": "particion",
+      "source_port": "test",
+      "target": "evaluar",
+      "target_port": "data"
+    },
+    {
+      "id": "evaluar-result-reporte-result",
+      "source": "evaluar",
+      "source_port": "result",
+      "target": "reporte",
+      "target_port": "result"
+    }
+  ],
+  "lesson": {
+    "module": "C15",
+    "title": "Pronosticar con una prueba temporal",
+    "objective": "Construir pronosticar con una prueba temporal conectando herramientas y comprobando cada salida.",
+    "references": [
+      "B05",
+      "B36"
+    ],
+    "steps": [
+      {
+        "node_id": "datos",
+        "title": "1. Genera y revisa la tabla",
+        "instruction": "Ambos procesos tienen dependencia temporal, pero solo el primero revierte a una media. Revisa y[t] = 0.75y[t−1] + ε[t]; walk[t] = walk[t−1] + u[t].",
+        "expected": "Una tabla visible y exportable; todavía no se ha estimado ningún modelo.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "particion",
+        "title": "Separar entrenamiento/prueba",
+        "instruction": "Separa tablas antes de ajustar modelos o escaladores. Temporal conserva orden; aleatorio usa semilla.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "modelo",
+        "title": "ARIMA",
+        "instruction": "Ajusta una serie de entrenamiento. El pronóstico y su evaluación usan la tabla de prueba conectada después.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "evaluar",
+        "title": "Evaluar predicciones",
+        "instruction": "Conecta únicamente la prueba al evaluador. El modelo no se vuelve a ajustar y el bloque futuro no entra en su entrenamiento.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "reporte",
+        "title": "Interpreta y documenta",
+        "instruction": "Conecta el resultado elegido al reporte. Explica qué se calculó, con qué datos y qué no puede concluirse.",
+        "expected": "El reporte conserva el resultado de entrada y añade la pregunta de trabajo sin reestimar.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      }
+    ],
+    "missing_tools": [
+      "SARIMA, VAR, rolling validation e intervalos de pronóstico"
+    ]
+  }
 }

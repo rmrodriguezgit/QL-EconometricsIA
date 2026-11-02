@@ -1,22 +1,164 @@
 {
   "schema_version": "1.0.0",
-  "app_version": "0.3.0",
+  "app_version": "0.4.0",
   "title": "C19 · Regresión robusta con valores atípicos",
   "nodes": [
     {
-      "id": "experiment",
-      "type": "experiment",
+      "id": "datos",
+      "type": "synthetic",
       "node_version": "1.0.0",
       "parameters": {
-        "topic": "C19",
-        "seed": 42,
-        "n": 300
+        "scenario": "outliers",
+        "n": 300,
+        "seed": 42
       },
       "position": {
-        "x": 150,
-        "y": 100
+        "x": 0,
+        "y": 80
+      }
+    },
+    {
+      "id": "clasico",
+      "type": "ols",
+      "node_version": "1.0.0",
+      "parameters": {
+        "x": "x",
+        "y": "y",
+        "covariance": "HC3"
+      },
+      "position": {
+        "x": 300,
+        "y": 165
+      }
+    },
+    {
+      "id": "robusto",
+      "type": "robust",
+      "node_version": "1.0.0",
+      "parameters": {
+        "features": "x",
+        "y": "y"
+      },
+      "position": {
+        "x": 600,
+        "y": 80
+      }
+    },
+    {
+      "id": "comparar",
+      "type": "compare_models",
+      "node_version": "1.0.0",
+      "parameters": {
+        "evaluation": "muestra_comun"
+      },
+      "position": {
+        "x": 900,
+        "y": 165
+      }
+    },
+    {
+      "id": "reporte",
+      "type": "report",
+      "node_version": "1.0.0",
+      "parameters": {
+        "note": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando robustez a atípicos, estimadores robustos e influencia."
+      },
+      "position": {
+        "x": 1200,
+        "y": 80
       }
     }
   ],
-  "edges": []
+  "edges": [
+    {
+      "id": "datos-data-clasico-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "clasico",
+      "target_port": "data"
+    },
+    {
+      "id": "datos-data-robusto-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "robusto",
+      "target_port": "data"
+    },
+    {
+      "id": "clasico-model-comparar-first",
+      "source": "clasico",
+      "source_port": "model",
+      "target": "comparar",
+      "target_port": "first"
+    },
+    {
+      "id": "robusto-model-comparar-second",
+      "source": "robusto",
+      "source_port": "model",
+      "target": "comparar",
+      "target_port": "second"
+    },
+    {
+      "id": "datos-data-comparar-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "comparar",
+      "target_port": "data"
+    },
+    {
+      "id": "comparar-result-reporte-result",
+      "source": "comparar",
+      "source_port": "result",
+      "target": "reporte",
+      "target_port": "result"
+    }
+  ],
+  "lesson": {
+    "module": "C19",
+    "title": "Regresión robusta con valores atípicos",
+    "objective": "Construir regresión robusta con valores atípicos conectando herramientas y comprobando cada salida.",
+    "references": [
+      "B35"
+    ],
+    "steps": [
+      {
+        "node_id": "datos",
+        "title": "1. Genera y revisa la tabla",
+        "instruction": "Se contaminan observaciones para comparar OLS con Huber. Revisa y = 2 + 0.8x + ε; primeras filas +25.",
+        "expected": "Una tabla visible y exportable; todavía no se ha estimado ningún modelo.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "clasico",
+        "title": "Regresión OLS",
+        "instruction": "Estima y = β₀ + β₁x + ε. HC3 cambia los errores estándar y conserva los coeficientes.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "robusto",
+        "title": "Regresión Huber",
+        "instruction": "Reduce la influencia de residuos grandes mediante RLM Huber. No equivale a errores estándar robustos.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "comparar",
+        "title": "Comparar modelos",
+        "instruction": "Compara modelos sobre datos comunes. AIC/BIC solo se muestran como comparables cuando coinciden sus muestras de ajuste.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "reporte",
+        "title": "Interpreta y documenta",
+        "instruction": "Conecta el resultado elegido al reporte. Explica qué se calculó, con qué datos y qué no puede concluirse.",
+        "expected": "El reporte conserva el resultado de entrada y añade la pregunta de trabajo sin reestimar.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      }
+    ],
+    "missing_tools": [
+      "Otros estimadores robustos y diagnóstico de influencia"
+    ]
+  }
 }

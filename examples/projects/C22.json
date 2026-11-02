@@ -1,22 +1,220 @@
 {
   "schema_version": "1.0.0",
-  "app_version": "0.3.0",
+  "app_version": "0.4.0",
   "title": "C22 · Complejidad, AIC, BIC y prueba externa",
   "nodes": [
     {
-      "id": "experiment",
-      "type": "experiment",
+      "id": "datos",
+      "type": "synthetic",
       "node_version": "1.0.0",
       "parameters": {
-        "topic": "C22",
-        "seed": 42,
-        "n": 300
+        "scenario": "polynomial",
+        "n": 300,
+        "seed": 42
       },
       "position": {
-        "x": 150,
-        "y": 100
+        "x": 0,
+        "y": 80
+      }
+    },
+    {
+      "id": "potencias",
+      "type": "polynomial",
+      "node_version": "1.0.0",
+      "parameters": {
+        "column": "x",
+        "degree": 6
+      },
+      "position": {
+        "x": 300,
+        "y": 165
+      }
+    },
+    {
+      "id": "particion",
+      "type": "split",
+      "node_version": "1.0.0",
+      "parameters": {
+        "fraction": 0.75,
+        "method": "temporal",
+        "seed": 42
+      },
+      "position": {
+        "x": 600,
+        "y": 80
+      }
+    },
+    {
+      "id": "simple",
+      "type": "multiple_ols",
+      "node_version": "1.0.0",
+      "parameters": {
+        "features": "x,x2",
+        "y": "y",
+        "covariance": "nonrobust"
+      },
+      "position": {
+        "x": 900,
+        "y": 165
+      }
+    },
+    {
+      "id": "complejo",
+      "type": "multiple_ols",
+      "node_version": "1.0.0",
+      "parameters": {
+        "features": "x,x2,x3,x4,x5,x6",
+        "y": "y",
+        "covariance": "nonrobust"
+      },
+      "position": {
+        "x": 1200,
+        "y": 80
+      }
+    },
+    {
+      "id": "comparar",
+      "type": "compare_models",
+      "node_version": "1.0.0",
+      "parameters": {
+        "evaluation": "prueba reservada"
+      },
+      "position": {
+        "x": 1500,
+        "y": 165
+      }
+    },
+    {
+      "id": "reporte",
+      "type": "report",
+      "node_version": "1.0.0",
+      "parameters": {
+        "note": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando complejidad, penalización, sobreajuste, validación, aic/bic/r² ajustado, model averaging y riesgo."
+      },
+      "position": {
+        "x": 1800,
+        "y": 80
       }
     }
   ],
-  "edges": []
+  "edges": [
+    {
+      "id": "datos-data-potencias-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "potencias",
+      "target_port": "data"
+    },
+    {
+      "id": "potencias-data-particion-data",
+      "source": "potencias",
+      "source_port": "data",
+      "target": "particion",
+      "target_port": "data"
+    },
+    {
+      "id": "particion-train-simple-data",
+      "source": "particion",
+      "source_port": "train",
+      "target": "simple",
+      "target_port": "data"
+    },
+    {
+      "id": "particion-train-complejo-data",
+      "source": "particion",
+      "source_port": "train",
+      "target": "complejo",
+      "target_port": "data"
+    },
+    {
+      "id": "simple-model-comparar-first",
+      "source": "simple",
+      "source_port": "model",
+      "target": "comparar",
+      "target_port": "first"
+    },
+    {
+      "id": "complejo-model-comparar-second",
+      "source": "complejo",
+      "source_port": "model",
+      "target": "comparar",
+      "target_port": "second"
+    },
+    {
+      "id": "particion-test-comparar-data",
+      "source": "particion",
+      "source_port": "test",
+      "target": "comparar",
+      "target_port": "data"
+    },
+    {
+      "id": "comparar-result-reporte-result",
+      "source": "comparar",
+      "source_port": "result",
+      "target": "reporte",
+      "target_port": "result"
+    }
+  ],
+  "lesson": {
+    "module": "C22",
+    "title": "Complejidad, AIC, BIC y prueba externa",
+    "objective": "Construir complejidad, aic, bic y prueba externa conectando herramientas y comprobando cada salida.",
+    "references": [
+      "B13"
+    ],
+    "steps": [
+      {
+        "node_id": "datos",
+        "title": "1. Genera y revisa la tabla",
+        "instruction": "Las potencias se añaden con otra herramienta; el generador no selecciona modelos. Revisa y = 1 + x + 0.4x² + ε.",
+        "expected": "Una tabla visible y exportable; todavía no se ha estimado ningún modelo.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "potencias",
+        "title": "Potencias",
+        "instruction": "Añade potencias sin ajustar parámetros. Es una transformación determinista anterior a la partición.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "particion",
+        "title": "Separar entrenamiento/prueba",
+        "instruction": "Separa tablas antes de ajustar modelos o escaladores. Temporal conserva orden; aleatorio usa semilla.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "simple",
+        "title": "OLS múltiple",
+        "instruction": "Ajusta una respuesta con varios regresores. Verifica rango y muestra efectiva.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "complejo",
+        "title": "OLS múltiple",
+        "instruction": "Ajusta una respuesta con varios regresores. Verifica rango y muestra efectiva.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "comparar",
+        "title": "Comparar modelos",
+        "instruction": "Compara modelos sobre datos comunes. AIC/BIC solo se muestran como comparables cuando coinciden sus muestras de ajuste.",
+        "expected": "Inspecciona la salida y comprueba que corresponde a la entrada conectada.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      },
+      {
+        "node_id": "reporte",
+        "title": "Interpreta y documenta",
+        "instruction": "Conecta el resultado elegido al reporte. Explica qué se calculó, con qué datos y qué no puede concluirse.",
+        "expected": "El reporte conserva el resultado de entrada y añade la pregunta de trabajo sin reestimar.",
+        "question": "¿Qué cambia si modificas un parámetro de este paso y vuelves a ejecutarlo?"
+      }
+    ],
+    "missing_tools": [
+      "Regularización, promediado de modelos y validación anidada"
+    ]
+  }
 }

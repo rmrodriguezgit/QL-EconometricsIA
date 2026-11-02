@@ -1,6 +1,6 @@
 # Arquitectura de Quantlabs-Econometrics
 
-Versión de diseño: 0.1.0. Fecha: 2026-11-01. Estado: diseño objetivo. Para el alcance real de la alpha 0.3.0, consultar [DESARROLLO.md](DESARROLLO.md).
+Versión de diseño: 0.1.0. Fecha: 2026-11-01. Estado: diseño objetivo. Para el alcance real de la alpha 0.4.0, consultar [DESARROLLO.md](DESARROLLO.md).
 
 ## Objetivo y límites
 
@@ -113,3 +113,7 @@ Pendientes: patches y lockfiles, biblioteca SEM/HMM/IV-GMM, motor GARCH multivar
 ## Implementación incremental 0.3.0
 
 El administrador usa archivos JSON administrados y papelera local antes de introducir SQLite. La identidad de fuente acompaña los resultados para impedir mezclar un gráfico con la estimación de otro dataset. El tipo experiment añade recetas autónomas registradas para los 28 módulos; su catálogo está separado del registro de nodos y no permite ejecutar código arbitrario. Ver DESARROLLO.md y AUDITORIA.md para contratos, límites y estado real.
+
+## Herramientas conectables 0.4.0
+
+La ejecución transporta artefactos por pares nodo/puerto, incluidos modelos y transformadores. Los 28 módulos de ejemplo ya son grafos de herramientas independientes. La guía es metadato opcional del proyecto; no contiene código científico. El contrato compartido y la validación evitan que la interfaz anuncie puertos que el motor no tiene. La reconstrucción y sus pendientes se documentan en HERRAMIENTAS.md.

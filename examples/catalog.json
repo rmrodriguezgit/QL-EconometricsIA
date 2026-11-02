@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "2.0.0",
   "examples": [
     {
       "id": "C01",
@@ -11,10 +11,21 @@
       ],
       "phase": "P1",
       "status": "executable",
-      "objective": "Explorar del proceso generador a la estimación con datos sintéticos y una semilla reproducible.",
+      "objective": "Construir del proceso generador a la estimación conectando herramientas y comprobando cada salida.",
       "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando econometría, teoría, dgp, especificación, estimación y contraste.",
       "acceptance": "Estudiante distingue datos, supuestos e inferencia",
-      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+      "scope": "Recorrido ejecutable con herramientas reutilizables. Los subtemas pendientes se enumeran por separado; no se declara un módulo completo.",
+      "tools": [
+        "synthetic",
+        "describe",
+        "ols",
+        "report"
+      ],
+      "steps": 4,
+      "format": "connected",
+      "missing_tools": [
+        "Lección evaluable completa y contraste de distintas especificaciones"
+      ]
     },
     {
       "id": "C02",
@@ -25,10 +36,22 @@
       ],
       "phase": "P1",
       "status": "executable",
-      "objective": "Explorar nominal, real y per cápita con datos sintéticos y una semilla reproducible.",
+      "objective": "Construir nominal, real y per cápita conectando herramientas y comprobando cada salida.",
       "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando medición, categorías, corte transversal, tiempo, panel, índices, deflactación y per cápita.",
       "acceptance": "Unidades y claves verificadas; ejemplo nominal/real",
-      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+      "scope": "Recorrido ejecutable con herramientas reutilizables. Los subtemas pendientes se enumeran por separado; no se declara un módulo completo.",
+      "tools": [
+        "synthetic",
+        "deflate",
+        "per_capita",
+        "describe",
+        "report"
+      ],
+      "steps": 5,
+      "format": "connected",
+      "missing_tools": [
+        "Datos de panel, índices alternativos y metadatos editables de unidades"
+      ]
     },
     {
       "id": "C03",
@@ -39,10 +62,21 @@
       ],
       "phase": "P1",
       "status": "executable",
-      "objective": "Explorar visualizar sin ocultar observaciones con datos sintéticos y una semilla reproducible.",
+      "objective": "Construir visualizar sin ocultar observaciones conectando herramientas y comprobando cada salida.",
       "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando barras, histogramas, dispersión, series, ejes y sesgos visuales.",
       "acceptance": "Gráficos y tablas concordantes con unidades visibles",
-      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+      "scope": "Recorrido ejecutable con herramientas reutilizables. Los subtemas pendientes se enumeran por separado; no se declara un módulo completo.",
+      "tools": [
+        "synthetic",
+        "histogram",
+        "scatter",
+        "report"
+      ],
+      "steps": 4,
+      "format": "connected",
+      "missing_tools": [
+        "Gráfico de barras, caja y controles interactivos de ejes"
+      ]
     },
     {
       "id": "C04",
@@ -53,10 +87,22 @@
       ],
       "phase": "P1",
       "status": "executable",
-      "objective": "Explorar describir antes de explicar con datos sintéticos y una semilla reproducible.",
+      "objective": "Construir describir antes de explicar conectando herramientas y comprobando cada salida.",
       "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando media, mediana, varianza, desviación, caja, crecimiento, media geométrica y correlación.",
       "acceptance": "Resultado conocido y dominio de crecimiento validado",
-      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+      "scope": "Recorrido ejecutable con herramientas reutilizables. Los subtemas pendientes se enumeran por separado; no se declara un módulo completo.",
+      "tools": [
+        "synthetic",
+        "growth",
+        "describe",
+        "correlation",
+        "report"
+      ],
+      "steps": 5,
+      "format": "connected",
+      "missing_tools": [
+        "Media geométrica y distribución de la correlación"
+      ]
     },
     {
       "id": "C05",
@@ -67,10 +113,20 @@
       ],
       "phase": "P2",
       "status": "executable",
-      "objective": "Explorar bayes y el teorema del límite central con datos sintéticos y una semilla reproducible.",
+      "objective": "Construir bayes y el teorema del límite central conectando herramientas y comprobando cada salida.",
       "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando probabilidad, condicional, independencia, bayes, esperanza, normal, estandarización y tcl.",
       "acceptance": "Simulación con semilla y explicación de probabilidades",
-      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+      "scope": "Recorrido ejecutable con herramientas reutilizables. Los subtemas pendientes se enumeran por separado; no se declara un módulo completo.",
+      "tools": [
+        "synthetic",
+        "probability",
+        "report"
+      ],
+      "steps": 3,
+      "format": "connected",
+      "missing_tools": [
+        "Editor general de distribuciones y probabilidades"
+      ]
     },
     {
       "id": "C06",
@@ -81,10 +137,21 @@
       ],
       "phase": "P2",
       "status": "executable",
-      "objective": "Explorar muestreo aleatorio y sesgo de selección con datos sintéticos y una semilla reproducible.",
+      "objective": "Construir muestreo aleatorio y sesgo de selección conectando herramientas y comprobando cada salida.",
       "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando población, muestra aleatoria, selección, supervivencia, observación, experimento y confusión.",
       "acceptance": "Ejemplo de sesgo y muestreo reproducible",
-      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+      "scope": "Recorrido ejecutable con herramientas reutilizables. Los subtemas pendientes se enumeran por separado; no se declara un módulo completo.",
+      "tools": [
+        "synthetic",
+        "sample",
+        "sampling_audit",
+        "report"
+      ],
+      "steps": 5,
+      "format": "connected",
+      "missing_tools": [
+        "Muestreo estratificado y sesgo de supervivencia"
+      ]
     },
     {
       "id": "C07",
@@ -95,10 +162,21 @@
       ],
       "phase": "P2",
       "status": "executable",
-      "objective": "Explorar la incertidumbre de una media con datos sintéticos y una semilla reproducible.",
+      "objective": "Construir la incertidumbre de una media conectando herramientas y comprobando cada salida.",
       "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando sesgo/varianza de estimadores, distribución muestral, intervalos t, nivel, tamaño y corrección finita.",
       "acceptance": "Intervalos correctos sobre muestra conocida",
-      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+      "scope": "Recorrido ejecutable con herramientas reutilizables. Los subtemas pendientes se enumeran por separado; no se declara un módulo completo.",
+      "tools": [
+        "synthetic",
+        "sample",
+        "mean_ci",
+        "report"
+      ],
+      "steps": 4,
+      "format": "connected",
+      "missing_tools": [
+        "Cálculo de tamaño de muestra y corrección por población finita"
+      ]
     },
     {
       "id": "C08",
@@ -109,10 +187,20 @@
       ],
       "phase": "P2",
       "status": "executable",
-      "objective": "Explorar pruebas de hipótesis con pares con datos sintéticos y una semilla reproducible.",
+      "objective": "Construir pruebas de hipótesis con pares conectando herramientas y comprobando cada salida.",
       "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando h0/h1, p-valores, significancia, pares, efecto práctico y minería de datos.",
       "acceptance": "Interpretación correcta y registro de contrastes múltiples",
-      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+      "scope": "Recorrido ejecutable con herramientas reutilizables. Los subtemas pendientes se enumeran por separado; no se declara un módulo completo.",
+      "tools": [
+        "synthetic",
+        "paired_test",
+        "report"
+      ],
+      "steps": 3,
+      "format": "connected",
+      "missing_tools": [
+        "Contrastes múltiples y control de falsos descubrimientos"
+      ]
     },
     {
       "id": "C09",
@@ -125,10 +213,21 @@
       ],
       "phase": "P2",
       "status": "executable",
-      "objective": "Explorar ingreso y consumo: ols simple con datos sintéticos y una semilla reproducible.",
+      "objective": "Construir ingreso y consumo: ols simple conectando herramientas y comprobando cada salida.",
       "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando ols simple, residuos, supuestos, r², intervalos de coeficientes y predicción, consumo.",
       "acceptance": "Coincidencia con statsmodels y muestra documentada",
-      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+      "scope": "Recorrido ejecutable con herramientas reutilizables. Los subtemas pendientes se enumeran por separado; no se declara un módulo completo.",
+      "tools": [
+        "synthetic",
+        "describe",
+        "ols",
+        "report"
+      ],
+      "steps": 4,
+      "format": "connected",
+      "missing_tools": [
+        "Intervalos de predicción y contraste manual de hipótesis"
+      ]
     },
     {
       "id": "C10",
@@ -141,10 +240,21 @@
       ],
       "phase": "P2",
       "status": "executable",
-      "objective": "Explorar regresión múltiple y multicolinealidad con datos sintéticos y una semilla reproducible.",
+      "objective": "Construir regresión múltiple y multicolinealidad conectando herramientas y comprobando cada salida.",
       "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando ols múltiple, matriz de diseño, t/f, covarianza, correlación, controles, multicolinealidad.",
       "acceptance": "Detectar rango deficiente y reproducir t/F",
-      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+      "scope": "Recorrido ejecutable con herramientas reutilizables. Los subtemas pendientes se enumeran por separado; no se declara un módulo completo.",
+      "tools": [
+        "synthetic",
+        "multiple_ols",
+        "diagnostics",
+        "report"
+      ],
+      "steps": 4,
+      "format": "connected",
+      "missing_tools": [
+        "Editor de restricciones t/F y selección de especificación"
+      ]
     },
     {
       "id": "C11",
@@ -156,10 +266,22 @@
       ],
       "phase": "P2",
       "status": "executable",
-      "objective": "Explorar diagnosticar heterocedasticidad con datos sintéticos y una semilla reproducible.",
+      "objective": "Construir diagnosticar heterocedasticidad conectando herramientas y comprobando cada salida.",
       "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando selección de variables, stepwise, especificación, heterocedasticidad, autocorrelación, influencia y atípicos.",
       "acceptance": "No confundir inferencia robusta con estimación robusta",
-      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+      "scope": "Recorrido ejecutable con herramientas reutilizables. Los subtemas pendientes se enumeran por separado; no se declara un módulo completo.",
+      "tools": [
+        "synthetic",
+        "ols",
+        "diagnostics",
+        "covariance",
+        "report"
+      ],
+      "steps": 5,
+      "format": "connected",
+      "missing_tools": [
+        "Gráficos de influencia, selección stepwise y otras correcciones"
+      ]
     },
     {
       "id": "C12",
@@ -171,10 +293,22 @@
       ],
       "phase": "P3",
       "status": "executable",
-      "objective": "Explorar clasificar con logit y probit con datos sintéticos y una semilla reproducible.",
+      "objective": "Construir clasificar con logit y probit conectando herramientas y comprobando cada salida.",
       "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando dummies, interacciones, cambio estructural, chow, probabilidad lineal, logit y probit.",
       "acceptance": "Evitar dummy trap, mostrar efectos marginales y clasificación",
-      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+      "scope": "Recorrido ejecutable con herramientas reutilizables. Los subtemas pendientes se enumeran por separado; no se declara un módulo completo.",
+      "tools": [
+        "synthetic",
+        "split",
+        "logit",
+        "evaluate",
+        "report"
+      ],
+      "steps": 5,
+      "format": "connected",
+      "missing_tools": [
+        "Variables categóricas, interacciones, Chow y efectos marginales"
+      ]
     },
     {
       "id": "C13",
@@ -185,10 +319,21 @@
       ],
       "phase": "P3",
       "status": "executable",
-      "objective": "Explorar elasticidades de cobb-douglas con datos sintéticos y una semilla reproducible.",
+      "objective": "Construir elasticidades de cobb-douglas conectando herramientas y comprobando cada salida.",
       "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando formas lineales, polinomios, potencia, logaritmos, elasticidad, cobb-douglas, crecimiento y causalidad.",
       "acceptance": "Transformaciones válidas y coeficientes interpretados",
-      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+      "scope": "Recorrido ejecutable con herramientas reutilizables. Los subtemas pendientes se enumeran por separado; no se declara un módulo completo.",
+      "tools": [
+        "synthetic",
+        "log",
+        "multiple_ols",
+        "report"
+      ],
+      "steps": 4,
+      "format": "connected",
+      "missing_tools": [
+        "Editor de funciones de potencia y elasticidades generales"
+      ]
     },
     {
       "id": "C14",
@@ -199,10 +344,22 @@
       ],
       "phase": "P3",
       "status": "executable",
-      "objective": "Explorar ar(1) frente a un paseo aleatorio con datos sintéticos y una semilla reproducible.",
+      "objective": "Construir ar(1) frente a un paseo aleatorio conectando herramientas y comprobando cada salida.",
       "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando tendencia, ciclo, estacionalidad, ecuaciones en diferencias, random walk, ruido y rezagos.",
       "acceptance": "Rezagos no cruzan países y respetan años ausentes",
-      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+      "scope": "Recorrido ejecutable con herramientas reutilizables. Los subtemas pendientes se enumeran por separado; no se declara un módulo completo.",
+      "tools": [
+        "synthetic",
+        "lag",
+        "difference",
+        "acf",
+        "report"
+      ],
+      "steps": 5,
+      "format": "connected",
+      "missing_tools": [
+        "Estacionalidad, descomposición y rezagos agrupados por país"
+      ]
     },
     {
       "id": "C15",
@@ -214,10 +371,22 @@
       ],
       "phase": "P3",
       "status": "executable",
-      "objective": "Explorar pronosticar con una prueba temporal con datos sintéticos y una semilla reproducible.",
+      "objective": "Construir pronosticar con una prueba temporal conectando herramientas y comprobando cada salida.",
       "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando ar/ma/arma/arima/sarima, acf/pacf, estacionariedad, adf/kpss, suavizado aditivo, forecast y var.",
       "acceptance": "Evaluación temporal, intervalos y residuos sin fuga de información",
-      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+      "scope": "Recorrido ejecutable con herramientas reutilizables. Los subtemas pendientes se enumeran por separado; no se declara un módulo completo.",
+      "tools": [
+        "synthetic",
+        "split",
+        "arima",
+        "evaluate",
+        "report"
+      ],
+      "steps": 5,
+      "format": "connected",
+      "missing_tools": [
+        "SARIMA, VAR, rolling validation e intervalos de pronóstico"
+      ]
     },
     {
       "id": "C16",
@@ -228,10 +397,22 @@
       ],
       "phase": "P4",
       "status": "executable",
-      "objective": "Explorar cointegración y corrección de errores con datos sintéticos y una semilla reproducible.",
+      "objective": "Construir cointegración y corrección de errores conectando herramientas y comprobando cada salida.",
       "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando regresión espuria, integración, engle-granger, johansen, rango y corrección de errores.",
       "acceptance": "Orden de integración y términos deterministas explícitos",
-      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+      "scope": "Recorrido ejecutable con herramientas reutilizables. Los subtemas pendientes se enumeran por separado; no se declara un módulo completo.",
+      "tools": [
+        "synthetic",
+        "unit_root",
+        "cointegration",
+        "ecm",
+        "report"
+      ],
+      "steps": 5,
+      "format": "connected",
+      "missing_tools": [
+        "Johansen y VECM de varias relaciones"
+      ]
     },
     {
       "id": "C17",
@@ -242,10 +423,22 @@
       ],
       "phase": "P4",
       "status": "executable",
-      "objective": "Explorar la volatilidad cambia: garch(1,1) con datos sintéticos y una semilla reproducible.",
+      "objective": "Construir la volatilidad cambia: garch(1,1) conectando herramientas y comprobando cada salida.",
       "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando homocedasticidad, arch/garch, asimetría, egarch, volatilidad y arch multivariado.",
       "acceptance": "Convergencia, restricciones y residuos estandarizados; motor multivariado validado aparte",
-      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+      "scope": "Recorrido ejecutable con herramientas reutilizables. Los subtemas pendientes se enumeran por separado; no se declara un módulo completo.",
+      "tools": [
+        "synthetic",
+        "describe",
+        "garch",
+        "diagnostics",
+        "report"
+      ],
+      "steps": 5,
+      "format": "connected",
+      "missing_tools": [
+        "EGARCH y volatilidad multivariada"
+      ]
     },
     {
       "id": "C18",
@@ -256,10 +449,20 @@
       ],
       "phase": "P4",
       "status": "executable",
-      "objective": "Explorar más allá de la media: cuantiles con datos sintéticos y una semilla reproducible.",
+      "objective": "Construir más allá de la media: cuantiles conectando herramientas y comprobando cada salida.",
       "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando cuantiles, asimetría, colas, diferencias entre coeficientes y regresión temporal/transversal.",
       "acceptance": "Cobertura de varios cuantiles y contraste válido",
-      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+      "scope": "Recorrido ejecutable con herramientas reutilizables. Los subtemas pendientes se enumeran por separado; no se declara un módulo completo.",
+      "tools": [
+        "synthetic",
+        "quantile",
+        "report"
+      ],
+      "steps": 3,
+      "format": "connected",
+      "missing_tools": [
+        "Contraste entre coeficientes de distintos cuantiles"
+      ]
     },
     {
       "id": "C19",
@@ -270,10 +473,22 @@
       ],
       "phase": "P4",
       "status": "executable",
-      "objective": "Explorar regresión robusta con valores atípicos con datos sintéticos y una semilla reproducible.",
+      "objective": "Construir regresión robusta con valores atípicos conectando herramientas y comprobando cada salida.",
       "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando robustez a atípicos, estimadores robustos e influencia.",
       "acceptance": "Contaminación sintética y distinción respecto de HC/HAC",
-      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+      "scope": "Recorrido ejecutable con herramientas reutilizables. Los subtemas pendientes se enumeran por separado; no se declara un módulo completo.",
+      "tools": [
+        "synthetic",
+        "ols",
+        "robust",
+        "compare_models",
+        "report"
+      ],
+      "steps": 5,
+      "format": "connected",
+      "missing_tools": [
+        "Otros estimadores robustos y diagnóstico de influencia"
+      ]
     },
     {
       "id": "C20",
@@ -284,10 +499,22 @@
       ],
       "phase": "P5",
       "status": "executable",
-      "objective": "Explorar pca y factores: dos reducciones distintas con datos sintéticos y una semilla reproducible.",
+      "objective": "Construir pca y factores: dos reducciones distintas conectando herramientas y comprobando cada salida.",
       "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando factores, cargas, puntuaciones, modelos factoriales y componentes principales.",
       "acceptance": "Estandarización, varianza explicada y diferencia PCA/factores",
-      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+      "scope": "Recorrido ejecutable con herramientas reutilizables. Los subtemas pendientes se enumeran por separado; no se declara un módulo completo.",
+      "tools": [
+        "synthetic",
+        "standardize",
+        "pca",
+        "factor_analysis",
+        "report"
+      ],
+      "steps": 5,
+      "format": "connected",
+      "missing_tools": [
+        "Rotación factorial y selección de número de factores"
+      ]
     },
     {
       "id": "C21",
@@ -298,10 +525,22 @@
       ],
       "phase": "P4",
       "status": "executable",
-      "objective": "Explorar endogeneidad y variables instrumentales con datos sintéticos y una semilla reproducible.",
+      "objective": "Construir endogeneidad y variables instrumentales conectando herramientas y comprobando cada salida.",
       "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando propiedades, ols/wls/gls, máxima verosimilitud, iv/2sls, momentos y gmm.",
       "acceptance": "Identificación, instrumentos y condiciones de momentos documentadas",
-      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+      "scope": "Recorrido ejecutable con herramientas reutilizables. Los subtemas pendientes se enumeran por separado; no se declara un módulo completo.",
+      "tools": [
+        "synthetic",
+        "ols",
+        "iv2sls",
+        "compare_models",
+        "report"
+      ],
+      "steps": 5,
+      "format": "connected",
+      "missing_tools": [
+        "WLS, GLS, máxima verosimilitud y GMM de momentos general"
+      ]
     },
     {
       "id": "C22",
@@ -312,10 +551,23 @@
       ],
       "phase": "P4",
       "status": "executable",
-      "objective": "Explorar complejidad, aic, bic y prueba externa con datos sintéticos y una semilla reproducible.",
+      "objective": "Construir complejidad, aic, bic y prueba externa conectando herramientas y comprobando cada salida.",
       "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando complejidad, penalización, sobreajuste, validación, aic/bic/r² ajustado, model averaging y riesgo.",
       "acceptance": "Misma muestra al comparar y separación de ajuste/evaluación",
-      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+      "scope": "Recorrido ejecutable con herramientas reutilizables. Los subtemas pendientes se enumeran por separado; no se declara un módulo completo.",
+      "tools": [
+        "synthetic",
+        "polynomial",
+        "split",
+        "multiple_ols",
+        "compare_models",
+        "report"
+      ],
+      "steps": 7,
+      "format": "connected",
+      "missing_tools": [
+        "Regularización, promediado de modelos y validación anidada"
+      ]
     },
     {
       "id": "C23",
@@ -326,10 +578,22 @@
       ],
       "phase": "P6",
       "status": "executable",
-      "objective": "Explorar backtest temporal con costos con datos sintéticos y una semilla reproducible.",
+      "objective": "Construir backtest temporal con costos conectando herramientas y comprobando cada salida.",
       "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando estrategias, justificación ex ante, muestra sin supervivencia, sobreajuste, costos y backtest.",
       "acceptance": "Separación temporal, costos y disponibilidad histórica",
-      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+      "scope": "Recorrido ejecutable con herramientas reutilizables. Los subtemas pendientes se enumeran por separado; no se declara un módulo completo.",
+      "tools": [
+        "synthetic",
+        "signal",
+        "split",
+        "backtest",
+        "report"
+      ],
+      "steps": 5,
+      "format": "connected",
+      "missing_tools": [
+        "Datos históricos sin supervivencia y costos de ejecución completos"
+      ]
     },
     {
       "id": "C24",
@@ -340,10 +604,22 @@
       ],
       "phase": "P5",
       "status": "executable",
-      "objective": "Explorar regímenes ocultos y mezclas gaussianas con datos sintéticos y una semilla reproducible.",
+      "objective": "Construir regímenes ocultos y mezclas gaussianas conectando herramientas y comprobando cada salida.",
       "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando regímenes ocultos, markov, transiciones y mezclas gaussianas.",
       "acceptance": "Distinguir dependencia temporal de mezcla independiente",
-      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+      "scope": "Recorrido ejecutable con herramientas reutilizables. Los subtemas pendientes se enumeran por separado; no se declara un módulo completo.",
+      "tools": [
+        "synthetic",
+        "hmm",
+        "gmm",
+        "compare_models",
+        "report"
+      ],
+      "steps": 5,
+      "format": "connected",
+      "missing_tools": [
+        "Selección de estados y evaluación temporal de regímenes"
+      ]
     },
     {
       "id": "C25",
@@ -354,10 +630,22 @@
       ],
       "phase": "P5",
       "status": "executable",
-      "objective": "Explorar grupos con k-means con datos sintéticos y una semilla reproducible.",
+      "objective": "Construir grupos con k-means conectando herramientas y comprobando cada salida.",
       "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando k-means, distancias, escalado, centroides, elección de k e inb por continente.",
       "acceptance": "Semilla, evaluación y escalado dentro del entrenamiento cuando aplique",
-      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+      "scope": "Recorrido ejecutable con herramientas reutilizables. Los subtemas pendientes se enumeran por separado; no se declara un módulo completo.",
+      "tools": [
+        "synthetic",
+        "standardize",
+        "kmeans",
+        "silhouette",
+        "report"
+      ],
+      "steps": 5,
+      "format": "connected",
+      "missing_tools": [
+        "Elección de k y evaluación de estabilidad de grupos"
+      ]
     },
     {
       "id": "C26",
@@ -368,10 +656,25 @@
       ],
       "phase": "P5",
       "status": "executable",
-      "objective": "Explorar red neuronal frente a un baseline lineal con datos sintéticos y una semilla reproducible.",
+      "objective": "Construir red neuronal frente a un baseline lineal conectando herramientas y comprobando cada salida.",
       "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando redes neuronales, activación, pesos, capas, entrenamiento y generalización.",
       "acceptance": "Baseline, particiones y convergencia documentadas",
-      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+      "scope": "Recorrido ejecutable con herramientas reutilizables. Los subtemas pendientes se enumeran por separado; no se declara un módulo completo.",
+      "tools": [
+        "synthetic",
+        "split",
+        "standardize",
+        "apply_scaler",
+        "mlp",
+        "ols",
+        "compare_models",
+        "report"
+      ],
+      "steps": 8,
+      "format": "connected",
+      "missing_tools": [
+        "Selección de arquitectura sin usar el bloque de prueba"
+      ]
     },
     {
       "id": "C27",
@@ -382,10 +685,21 @@
       ],
       "phase": "P5",
       "status": "executable",
-      "objective": "Explorar escenarios de inflación por monte carlo con datos sintéticos y una semilla reproducible.",
+      "objective": "Construir escenarios de inflación por monte carlo conectando herramientas y comprobando cada salida.",
       "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando monte carlo, inflación, escenarios, incertidumbre y distribuciones.",
       "acceptance": "Semilla, supuestos y error Monte Carlo visibles",
-      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+      "scope": "Recorrido ejecutable con herramientas reutilizables. Los subtemas pendientes se enumeran por separado; no se declara un módulo completo.",
+      "tools": [
+        "synthetic",
+        "compound",
+        "monte_carlo",
+        "report"
+      ],
+      "steps": 4,
+      "format": "connected",
+      "missing_tools": [
+        "Distribuciones y escenarios editables más allá de la inflación"
+      ]
     },
     {
       "id": "C28",
@@ -396,10 +710,21 @@
       ],
       "phase": "P6",
       "status": "executable",
-      "objective": "Explorar medición latente y trayectorias sem con datos sintéticos y una semilla reproducible.",
+      "objective": "Construir medición latente y trayectorias sem conectando herramientas y comprobando cada salida.",
       "question": "¿Qué cambiaría al modificar la semilla o el tamaño de la muestra? Justifica la respuesta usando sem, covarianza, correlación, variables latentes, trayectorias e identificación causal.",
       "acceptance": "Identificación y supuestos; ajuste no se interpreta como prueba causal",
-      "scope": "Experimento introductorio. Los temas del módulo se conservan como guía; no se declara cobertura completa de cada subtema."
+      "scope": "Recorrido ejecutable con herramientas reutilizables. Los subtemas pendientes se enumeran por separado; no se declara un módulo completo.",
+      "tools": [
+        "synthetic",
+        "correlation",
+        "sem",
+        "report"
+      ],
+      "steps": 4,
+      "format": "connected",
+      "missing_tools": [
+        "Editor de diagramas SEM y diagnóstico general de identificación"
+      ]
     }
   ]
 }

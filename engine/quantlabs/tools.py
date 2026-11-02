@@ -258,6 +258,10 @@ def calculate(kind,inputs,params):
         model=Fitted(kind,fit,data,features,target,kind);outputs['model']=model
         result=regression_report(model) if kind!='mlp' else report('Red ajustada; conecta datos de prueba para evaluar sin reajustar.',n_ajuste=len(data),iteraciones=fit.n_iter_)
         result['n']=len(data);result['dropped']=len(frame)-len(data)
+        if kind=='multiple_ols':
+            interval=fit.conf_int()
+            result['regression']={'y':target,'features':features,'n':len(data),'dropped':len(frame)-len(data),'r_squared':float(fit.rsquared),'r_squared_adj':float(fit.rsquared_adj),'aic':float(fit.aic),'bic':float(fit.bic),'covariance':cov,'coefficients':[{'term':name,'estimate':float(fit.params[name]),'std_error':float(fit.bse[name]),'p_value':float(fit.pvalues[name]),'ci_low':float(interval.loc[name,0]),'ci_high':float(interval.loc[name,1])} for name in fit.params.index]}
+            result['metrics'].extend([{'label':'R²','value':fit.rsquared},{'label':'R² ajustado','value':fit.rsquared_adj}])
     elif kind in ['arima','garch']:
         name=columns(frame,params.get('column','y' if kind=='arima' else 'retorno'))[0];data=sample(time_order(frame),[name],20);ensure_contiguous(data)
         if kind=='arima':

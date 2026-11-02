@@ -106,3 +106,9 @@ La aplicación y sus instaladores están pendientes de implementación. Los camb
 - Recomendaciones de salida solo con doble clic, o Enter para teclado; elimina activación por hover, foco o clic simple.
 - OLS múltiple conectado a wage1 ofrece ejemplo wage ~ educ + exper + tenure con HC3. Respuesta aparece primero y no puede marcarse como regresor.
 - Elegir casillas retira nombres inexistentes y repetidos; los errores identifican qué columnas faltan o están duplicadas.
+
+## 0.7.2 - 2026-11-02
+
+- Pestaña Regresión para OLS simple y múltiple, con selección persistente del modelo, coeficientes, intervalos y métricas.
+- Ecuación múltiple junto a Proyectos: especificación, estimación numérica y explicación de variables; ecuación simple conservada.
+- Resultados estructurados de OLS múltiple contrastados con statsmodels HC3.

@@ -39,3 +39,7 @@ Fuentes: [paquete Python y uso de data()](https://github.com/spring-haru/wooldri
 Conectar data de Wooldridge (wage1) a data de OLS múltiple. Pulsar Usar ejemplo wage1 en el inspector o elegir respuesta wage y marcar educ, exper, tenure; covarianza HC3. Ejecutar y mostrar la salida con el ojo del nodo. El proyecto examples/wooldridge-wage1-multiple-ols.json también se puede importar. La respuesta no se puede seleccionar como regresor. Las casillas descartan nombres iniciales x/z inexistentes al elegir columnas nuevas, y eliminan repeticiones.
 
 No escribir toda la fórmula en una casilla: respuesta y regresores son campos separados. El intercepto lo añade el motor. Es una asociación salarial condicionada a esas variables; no demuestra causalidad.
+
+### Regresión y ecuación (0.7.2)
+
+Ejecuta el modelo y abre Regresión. El selector permite elegir OLS simple o múltiple; se conserva la selección al consultar otros nodos. Ecuación, junto a Proyectos, muestra ese mismo modelo: forma teórica, estimación y significado de variables. En wage1 usa wage como dependiente y educ, exper, tenure como regresores. La presentación de la ecuación simple se conserva.

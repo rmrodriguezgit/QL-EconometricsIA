@@ -55,3 +55,11 @@ class WooldridgeTests(unittest.TestCase):
   self.assertEqual([row[0] for row in rows],['const','educ','exper','tenure'])
   np.testing.assert_allclose([row[1] for row in rows],expected.params,rtol=1e-10)
   self.assertEqual(result['nodes']['modelo']['result']['n'],526)
+
+  regression=result['nodes']['modelo']['result']['regression']
+  self.assertEqual(regression['features'],['educ','exper','tenure'])
+  self.assertEqual(regression['y'],'wage')
+  self.assertAlmostEqual(regression['r_squared'],expected.rsquared)
+  np.testing.assert_allclose([row['estimate'] for row in regression['coefficients']],expected.params,rtol=1e-10)
+  np.testing.assert_allclose([row['std_error'] for row in regression['coefficients']],expected.bse,rtol=1e-10)
+  np.testing.assert_allclose([[row['ci_low'],row['ci_high']] for row in regression['coefficients']],expected.conf_int(),rtol=1e-10)

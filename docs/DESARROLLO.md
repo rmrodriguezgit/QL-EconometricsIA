@@ -132,3 +132,7 @@ Resultados agrupa tarjetas visibles; OLS, Dispersión e Histograma aparecen inic
 Desde 0.7.1 las recomendaciones se abren con doble clic en los puntos de salida o Enter al enfocarlos; hover, foco y clic simple no las activan. Solo proponen herramientas con entrada del mismo tipo del registro compartido. Se priorizan descriptivos/gráficos/modelos para Dataset, diagnóstico/evaluación para modelos y aplicación para Transformer. Elegir crea un nodo nuevo y una conexión; no completa arbitrariamente las otras entradas. Salidas sin consumidor compatible ofrecen ver/exportar resultado. Arrastrar conexiones sigue disponible.
 
 Al editar, se comparan firmas de cada nodo y todos sus ancestros (tipos, parámetros, versiones y puertos; excluyen posiciones). Solo se conservan resultados con firmas idénticas. Manifest mantiene run_id y graph_sha256 originales y añade pending_node_ids y results_retained_for_unchanged_nodes; no presenta una ejecución completa del grafo editado. Cambiar indicador, datos, regresores o enlaces invalida sus dependientes. Ejecutar completo sustituye estos resultados por un manifiesto nuevo.
+
+### Regresión y ecuación (0.7.2)
+
+Ejecuta el modelo y abre Regresión. El selector permite elegir OLS simple o múltiple; se conserva la selección al consultar otros nodos. Ecuación, junto a Proyectos, muestra ese mismo modelo: forma teórica, estimación y significado de variables. En wage1 usa wage como dependiente y educ, exper, tenure como regresores. La presentación de la ecuación simple se conserva.

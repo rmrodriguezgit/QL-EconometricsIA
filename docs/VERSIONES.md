@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.7.1**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.7.2**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -144,3 +144,7 @@ Nueva dependencia **wooldridge==0.5.0**, consultada e instalada desde PyPI el 20
 ## Entrega 0.7.1
 
 Sin dependencias nuevas. Aplicación y lockfiles sincronizados en 0.7.1. Protocolo/esquema/nodos siguen 1.0.0. Ejemplo OLS múltiple verificado con statsmodels sobre wage1.
+
+## 0.7.2 · 2026-11-02
+
+Corrección de la pestaña Regresión y ecuación múltiple; misma selección de modelo entre pestaña y diálogo. OLS simple conserva su ecuación y gráfico. Sin cambios de dependencias.

@@ -58,3 +58,7 @@ La lista de lo que falta ahora proviene de reconstruir cada recorrido con puerto
 ## Revisión 0.5.0
 
 Electron incorporado con renderer aislado, origen/frame IPC validado, límites de procesos y terminación explícita. Las fuentes remotas fueron retiradas. Recta de regresión contrastada sobre estudio oscuro. Continúan pendientes instaladores, Python redistribuible, firma y actualización automática; consultar Releases no acredita esas capacidades. [Detalle](ELECTRON.md).
+
+## Revisión de selección 0.5.3
+
+Se revisaron los campos x/y, column, columns, features, instruments, nominal, index, value, population, returns, signal, before, after y error. Los nombres nuevos de salida y parámetros numéricos conservan su edición habitual. Los selectores dependen de columnas numéricas efectivas por puerto; sin esquema se ofrece cargar la fuente. Selecciones que dejan de existir se señalan, sin remapear arbitrariamente. Continúa pendiente unión multiserie de Banco Mundial.

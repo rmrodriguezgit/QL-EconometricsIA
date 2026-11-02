@@ -1,6 +1,6 @@
 [package]
 name = "quantlabs-desktop"
-version = "0.5.2"
+version = "0.5.3"
 description = "Quantlabs Econometrics"
 edition = "2021"
 rust-version = "1.88"

@@ -67,3 +67,11 @@ La aplicación y sus instaladores están pendientes de implementación. Los camb
 
 - Corrección de caché wbdata compartida dañada: cada proceso usa una caché temporal aislada, incluso durante la importación del paquete. Conserva cachés anteriores y catálogo JSON.
 - Dispersión muestra las columnas disponibles ante un error y ofrece configurar periodo/valor al conectarse con Banco Mundial.
+
+## 0.5.3 · 2026-11-01
+
+- Código completo, nombre y fuente del indicador con ajuste de línea; metadatos seleccionados conservados en el proyecto.
+- Listas de variables para OLS y Dispersión, intercambio X/Y, contexto de la serie y vista de datos. Selección por casillas para regresores/instrumentos y columnas múltiples en modelos y transformaciones.
+- Carga de columnas desde la tabla conectada; esquema numérico explícito del motor, separado por puerto. Invalida al cambiar indicador, datos o conexiones, sin reutilizar resultados anteriores.
+- Selección inicial periodo/valor al conectar World Bank a OLS o Dispersión con sus parámetros originales; no sustituye elecciones personalizadas.
+- Pulsar el código abre un diálogo flotante amplio con selección actual, nombre, código completo, fuente, búsqueda y lista paginada.

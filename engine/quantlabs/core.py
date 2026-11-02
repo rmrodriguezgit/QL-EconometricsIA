@@ -18,7 +18,7 @@ import pandas as pd
 import statsmodels.api as sm
 
 ROOT = Path(__file__).resolve().parents[2]
-VERSION = (ROOT / 'VERSION').read_text().strip() if (ROOT / 'VERSION').exists() else '0.5.2'
+VERSION = (ROOT / 'VERSION').read_text().strip() if (ROOT / 'VERSION').exists() else '0.5.3'
 SCHEMA = '1.0.0'
 
 class EngineError(ValueError):
@@ -348,7 +348,7 @@ def execute(project, target_node=None):
                 if isinstance(artifact, pd.DataFrame):
                     if len(artifact)>10000 or len(artifact.columns)>50: fail('Se excedió el límite de filas o columnas.', 'INVALID_PARAMETERS')
                     preview = frame_result(artifact,'Tabla de salida del paso.')
-                    previews[port] = {field: preview[field] for field in ['columns','n','preview','data_sha256']}
+                    previews[port] = {field: preview[field] for field in ['columns','numeric_columns','n','preview','data_sha256']}
                     source_key = key if port == 'data' else key+':'+port
                     if source_key not in sources:
                         sources[source_key] = {'provider': 'synthetic' if kind == 'synthetic' else 'transformation', 'node_type': kind, 'parameters': params, 'parents': links[key], 'data_sha256':preview['data_sha256'],'n':len(artifact),'retrieved_at':datetime.now(timezone.utc).isoformat()}

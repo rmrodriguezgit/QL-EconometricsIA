@@ -2,7 +2,7 @@
 
 Laboratorio educativo de econometría con programación visual mediante nodos y motor analítico Python. Objetivo de escritorio: macOS y Windows. [Repositorio](https://github.com/rmrodriguezgit/Quantlabs-Econometrics).
 
-**Versión 0.5.2 · 2026-11-01 · Alpha local con escritorio Electron y estudio oscuro. Instaladores independientes y actualización automática pendientes.**
+**Versión 0.5.3 · 2026-11-01 · Alpha local con escritorio Electron y estudio oscuro. Instaladores independientes y actualización automática pendientes.**
 
 ## Arrancar
 
@@ -78,3 +78,5 @@ Ejecutar `npm run desktop --prefix apps/desktop` después de `uv sync` y `npm ci
 Para empezar de cero, usa **Nuevo proyecto** en la barra del canvas. El flujo vacío explica los primeros pasos y ofrece añadir datos simulados; si hay cambios sin guardar, pide confirmación antes de sustituirlos.
 
 Banco Mundial → Dispersión: configurar `x=periodo` e `y=valor`, o pulsar **Usar periodo y valor** en el inspector. La caché interna de wbdata se aísla por proceso para evitar corrupción entre consultas.
+
+En OLS y Dispersión se eligen variables en listas con las columnas numéricas de la tabla conectada. Los modelos múltiples y transformaciones comparten selectores y casillas. **Cargar columnas de la fuente** ejecuta solo la tabla y sus dependencias; cambiar indicador retira los resultados anteriores y exige volver a calcular. Los códigos del catálogo se muestran completos.

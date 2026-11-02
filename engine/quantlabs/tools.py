@@ -62,7 +62,7 @@ def regression_report(model,text='Coeficientes de la muestra conectada; una asoc
 
 def frame_result(frame,note):
     records=json.loads(frame.to_json(orient='records',double_precision=15))
-    return {'kind':'dataset','columns':frame.columns.tolist(),'n':len(frame),'preview':records[:8],'records':records,'note':note,'data_sha256':digest(records)}
+    return {'kind':'dataset','columns':frame.columns.tolist(),'numeric_columns':frame.select_dtypes(include='number').columns.tolist(),'n':len(frame),'preview':records[:8],'records':records,'note':note,'data_sha256':digest(records)}
 
 
 def synthetic(params):

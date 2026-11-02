@@ -20,6 +20,17 @@ def node(id,kind,parameters):return {'id':id,'type':kind,'node_version':'1.0.0',
 def edge(source,port,target,target_port):return {'id':f'{source}-{port}-{target}-{target_port}','source':source,'source_port':port,'target':target,'target_port':target_port}
 
 class ConnectedToolsTests(unittest.TestCase):
+    def test_output_schema_preserves_numeric_columns_even_with_missing_values(self):
+        from quantlabs.tools import frame_result
+        import pandas as pd
+        frame=pd.DataFrame({'periodo':[2000,2001],'valor':[float('nan'),2.0],'pais':['MEX','MEX']})
+        result=frame_result(frame,'')
+        self.assertEqual(result['numeric_columns'],['periodo','valor'])
+        self.assertEqual(result['preview'][0]['valor'],None)
+        project=json.loads((ROOT/'examples/ingreso-consumo.json').read_text())
+        run=execute(project)
+        self.assertIn('numeric_columns',run['nodes']['data']['result']['output_previews']['data'])
+
     def test_every_catalog_example_is_a_real_connected_graph_with_all_steps(self):
         for example in example_catalog():
             with self.subTest(module=example['id']):

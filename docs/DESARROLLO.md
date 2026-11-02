@@ -100,3 +100,13 @@ La ruta recomendada de escritorio usa `npm run desktop --prefix apps/desktop`; p
 ## Consulta World Bank y Dispersión (0.5.2)
 
 Las salidas son periodo y valor: usar esos ejes o el botón del inspector. Una caché shelve compartida produjo SystemError al importar wbdata; wb_client.client aísla importación y cliente en una carpeta temporal exclusiva del proceso. El catálogo de indicadores conserva su almacenamiento JSON y los archivos anteriores no se borran. Los datos se vuelven a descargar por proceso; los resultados exportados conservan su procedencia.
+
+## Variables de entrada (0.5.3)
+
+El motor publica numeric_columns por salida Dataset, incluso cuando hay faltantes. OLS y Dispersión presentan selectores X/Y; regresores, instrumentos y conjuntos de columnas usan casillas. El resto de campos de columnas usa listas. Cargar columnas ejecuta la fuente inmediata y sus dependencias, incluso si el modelo todavía no está configurado.
+
+Las vistas previas se identifican por fuente/puerto y firma de todos sus ancestros y parámetros; no dependen de la selección X/Y ni de la posición visual. Cambiar indicador, país, años, transformaciones o enlace invalida el esquema previo. Todo cambio de parámetros retira los resultados calculados. Un indicador World Bank conserva las columnas periodo/valor, pero representa otra serie: hay que volver a ejecutar. OLS con periodo/valor es una tendencia temporal, no una regresión entre dos indicadores. Unir indicadores en una tabla sigue pendiente.
+
+La elección de indicador persiste nombre/unidad/fuente como metadatos; código y texto pueden ocupar varias líneas y no usan puntos suspensivos. Los proyectos previos siguen funcionando aunque aún no tengan esos nombres guardados.
+
+El código del indicador es un botón que abre un diálogo modal nativo en la capa superior. Conserva la selección actual, nombres largos y fuente durante la búsqueda; Escape o Cerrar devuelven al inspector, y elegir una opción actualiza el proyecto.

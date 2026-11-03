@@ -124,3 +124,7 @@ La aplicación y sus instaladores están pendientes de implementación. Los camb
 - Nodo Serie temporal, con selección de columnas de años o fechas ISO y variable numérica, título, etiquetas, línea verde y leyenda.
 - Orden cronológico, interrupción por valores o años faltantes y rechazo de períodos repetidos para evitar mezclar países.
 - Ejemplo conectado de Banco Mundial para interés de préstamos en Estados Unidos; no reproduce cifras a partir de una imagen.
+
+## 0.7.5 - 2026-11-03
+
+- Serie temporal: línea y leyenda más finas (2,5 unidades SVG); puntos reducidos para mantener la proporción visual.

@@ -33,3 +33,7 @@ La media no detecta normalidad ni se divide entre grados de libertad; el divisor
 Imputar medias reduce artificialmente la dispersión y puede distorsionar correlaciones, errores estándar y pruebas de normalidad. Se ofrece para reproducir el procedimiento didáctico, sin presentarlo como tratamiento universal. Para evaluación predictiva, una media debe aprenderse solo en entrenamiento; este nodo explícitamente usa toda la entrada y no implementa una transformación entrenada independiente. En series temporales, tendencia y dependencia también limitan la interpretación de las pruebas; HC3 no corrige autocorrelación. Los diagnósticos no habilitan ni bloquean automáticamente OLS.
 
 Diseñado e implementado: nodos, controles de columnas, auditoría y gráficos. Verificado con tests/test_normality_tools.py: fórmulas, equivalencia con SciPy, unión temporal, imputación no destructiva, casos constantes/grandes y ejecución de todas las ramas con CSV artificiales. La compilación TypeScript valida la integración del frontend. C02/C04/C05/C08/C11 conservan sus demás pendientes y referencias.
+
+## Boxplot antes de imputar · 0.8.1
+
+N01 incorpora un paso conectado a la tabla unida: lending_rate, color verde y distribución antes de imputar. [Guía](BOXPLOT.md).

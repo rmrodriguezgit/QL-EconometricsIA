@@ -115,6 +115,21 @@
         "x": 1340,
         "y": 270
       }
+    },
+    {
+      "id": "caja",
+      "type": "boxplot",
+      "node_version": "1.0.0",
+      "parameters": {
+        "column": "lending_rate",
+        "title": "Tasa de interés de los préstamos en EE. UU. (%)",
+        "y_label": "Valores",
+        "color": "#008000"
+      },
+      "position": {
+        "x": 680,
+        "y": 470
+      }
     }
   ],
   "edges": [
@@ -166,6 +181,13 @@
       "source_port": "model",
       "target": "residuos",
       "target_port": "model"
+    },
+    {
+      "id": "unir-caja",
+      "source": "unir",
+      "source_port": "data",
+      "target": "caja",
+      "target_port": "data"
     }
   ],
   "lesson": {
@@ -208,6 +230,13 @@
         "instruction": "Calcula descriptivos, histogramas, Q–Q y pruebas antes de imputar.",
         "expected": "Faltantes excluidos por variable y contados; pruebas sobre observados.",
         "question": "¿Qué cambia en la muestra y qué supuestos siguen sin comprobarse?"
+      },
+      {
+        "node_id": "caja",
+        "title": "Distribución en caja y bigotes",
+        "instruction": "Dibuja lending_rate antes de imputar; observa mediana, cuartiles y atípicos. Puedes editar el color.",
+        "expected": "Boxplot verde con etiquetas y tabla de resumen; faltantes excluidos y contados.",
+        "question": "¿Los valores atípicos deben borrarse por aparecer fuera de los bigotes?"
       },
       {
         "node_id": "imputar",

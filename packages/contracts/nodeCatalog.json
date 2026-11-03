@@ -1438,5 +1438,28 @@
       "B24",
       "B31"
     ]
+  },
+  "boxplot": {
+    "label": "Boxplot",
+    "detail": "Caja, mediana, cuartiles, bigotes y valores atípicos",
+    "category": "Exploración",
+    "color": "blue",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "result": "Result"
+    },
+    "defaults": {
+      "column": "valor",
+      "title": "Tasa de interés de los préstamos en EE. UU. (%)",
+      "y_label": "Valores",
+      "color": "#51df83"
+    },
+    "explanation": "Resume una variable numérica con caja Q1–Q3, mediana y bigotes de Tukey (1,5×RIC). Muestra atípicos sin eliminarlos. Selecciona una columna y ajusta título, eje y color. No prueba normalidad.",
+    "references": [
+      "B17",
+      "B18"
+    ]
   }
 }

@@ -179,7 +179,8 @@
             "join_series",
             "impute_mean",
             "normality",
-            "residual_normality"
+            "residual_normality",
+            "boxplot"
           ]
         },
         "node_version": {

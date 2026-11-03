@@ -128,3 +128,7 @@ Wooldridge → salida data:Dataset, 115 conjuntos clásicos seleccionables. Aña
 ## Normalidad y faltantes · 0.8.0
 
 Registro actual: 59 tipos. `join_series` consume left/right Dataset y produce data Dataset mediante unión exterior uno a uno; `impute_mean` transforma columnas elegidas y registra medias y reemplazos; `normality` consume Dataset y `residual_normality` consume FittedModel, ambos producen Result con descriptivos, pruebas y gráficos. Referencias B16/B18/B19/B22/B24/B31. [Guía](NORMALIDAD.md).
+
+## Boxplot · 0.8.1
+
+`boxplot`: Dataset → Result. Categoría Exploración; variable numérica, cuartiles, mediana, RIC, bigotes y atípicos. Color y etiquetas editables. Registro: 60 tipos. Referencias B17/B18. [Guía](BOXPLOT.md).

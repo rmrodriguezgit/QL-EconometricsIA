@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.8.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.8.1**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -168,3 +168,7 @@ Color configurable de Serie temporal mediante parámetro hexadecimal validado. S
 ## 0.8.0 · 2026-11-03
 
 Cuatro nodos nuevos, 59 herramientas registradas. Unión exterior por período sin duplicados; media por columnas; diagnósticos descriptivos y de residuos. SciPy ya era dependencia transitiva del stack científico; no se incorporan paquetes. Shapiro limitado a n≤5000 sin submuestreo silencioso; Q–Q muestra hasta 400 cuantiles y pruebas usan todos los observados. Ejemplo N01 se distribuye con el frontend sin alterar los 28 módulos del catálogo curricular. Disponibilidad remota no sustituye la prueba de integración sin red.
+
+## 0.8.1 · 2026-11-03
+
+Boxplot añade el tipo 60. Cálculo NumPy con cuartiles lineales y bigotes 1,5×RIC; SVG React. Sin dependencias nuevas. Pruebas numéricas y CSV; compilación frontend.

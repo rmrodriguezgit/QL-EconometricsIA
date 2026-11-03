@@ -37,3 +37,5 @@ body{background:#0d1118}button:focus-visible,input:focus-visible,select:focus-vi
 .temporal-plot{padding:16px;min-width:0}.temporal-plot svg{display:block;width:100%;height:auto;min-height:220px;background:#111d2b;border-radius:12px}.temporal-plot svg text{fill:#bdcddd;font-size:12px;font-family:inherit}.temporal-plot p{font-size:12px;color:#a3b4c7;line-height:1.6}
 
 .normality-qq{padding:16px}.normality-qq svg{width:100%;height:auto;background:#111d2b;border-radius:10px}.normality-qq svg text{fill:#bdcddd;font-size:11px}.normality-qq p{color:#a3b4c7;font-size:12px;line-height:1.6}.normality-plots>section{border-bottom:1px solid #304258}
+
+.box-plot{padding:16px;min-width:0}.box-plot svg{width:100%;height:auto;max-height:500px;background:#111d2b;border-radius:12px}.box-plot svg text{fill:#bdcddd;font-size:12px}.box-plot p{color:#a3b4c7;font-size:12px;line-height:1.6}

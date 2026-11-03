@@ -147,6 +147,30 @@
         "x": 1010,
         "y": 500
       }
+    },
+    {
+      "id": "correlacion",
+      "type": "correlation",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "lending_rate,final_consumption"
+      },
+      "position": {
+        "x": 1350,
+        "y": 40
+      }
+    },
+    {
+      "id": "covarianza",
+      "type": "covariance_matrix",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "lending_rate,final_consumption"
+      },
+      "position": {
+        "x": 1350,
+        "y": 500
+      }
     }
   ],
   "edges": [
@@ -211,6 +235,20 @@
       "source": "unir",
       "source_port": "data",
       "target": "caja_tratada",
+      "target_port": "data"
+    },
+    {
+      "id": "unir-correlacion",
+      "source": "unir",
+      "source_port": "data",
+      "target": "correlacion",
+      "target_port": "data"
+    },
+    {
+      "id": "unir-covarianza",
+      "source": "unir",
+      "source_port": "data",
+      "target": "covarianza",
       "target_port": "data"
     }
   ],
@@ -296,6 +334,20 @@
         "instruction": "Conecta la salida model de OLS. Revisa Q–Q y pruebas de sus residuos, distintos de las variables originales.",
         "expected": "Diagnóstico de errores aproximados por residuos; no certifica el modelo.",
         "question": "¿Qué cambia en la muestra y qué supuestos siguen sin comprobarse?"
+      },
+      {
+        "node_id": "correlacion",
+        "title": "Correlación de interés y consumo",
+        "instruction": "Selecciona lending_rate y final_consumption de la tabla unida antes de imputar. Revisa la muestra común y los años excluidos.",
+        "expected": "Matriz etiquetada con muestra común; covarianza muestral y/o correlación de Pearson.",
+        "question": "¿Por qué la covarianza cambia con las unidades y la correlación no?"
+      },
+      {
+        "node_id": "covarianza",
+        "title": "Covarianza de interés y consumo",
+        "instruction": "Selecciona lending_rate y final_consumption de la tabla unida antes de imputar. Revisa la muestra común y los años excluidos.",
+        "expected": "Matriz etiquetada con muestra común; covarianza muestral y/o correlación de Pearson.",
+        "question": "¿Por qué la covarianza cambia con las unidades y la correlación no?"
       }
     ],
     "missing_tools": [

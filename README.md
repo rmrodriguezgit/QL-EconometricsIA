@@ -2,19 +2,19 @@
 
 **Conecta datos. Estima modelos. Comprende cada resultado.**
 
-[![Versión](https://img.shields.io/badge/versión-0.8.3-6cc9ac)](https://github.com/rmrodriguezgit/Quantlabs-Econometrics/blob/main/VERSION)
+[![Versión](https://img.shields.io/badge/versión-0.8.4-6cc9ac)](https://github.com/rmrodriguezgit/Quantlabs-Econometrics/blob/main/VERSION)
 [![Escritorio](https://img.shields.io/badge/escritorio-macOS%20%7C%20Windows-79b4ef)](docs/ARRANQUE.md)
 [![Electron](https://img.shields.io/badge/Electron-45.2.1-79b4ef)](apps/desktop/package.json)
 [![React](https://img.shields.io/badge/React-19.3.1-61dafb)](apps/desktop/package.json)
 [![TypeScript](https://img.shields.io/badge/TypeScript-7.0.2-3178c6)](apps/desktop/package.json)
 [![Python](https://img.shields.io/badge/Python-3.12-ffd343)](pyproject.toml)
-[![Herramientas](https://img.shields.io/badge/nodos-60-c49af8)](docs/HERRAMIENTAS.md)
+[![Herramientas](https://img.shields.io/badge/nodos-61-c49af8)](docs/HERRAMIENTAS.md)
 [![Recorridos](https://img.shields.io/badge/recorridos-28-c49af8)](docs/EJEMPLOS.md)
 [![Wooldridge](https://img.shields.io/badge/Wooldridge-115%20datasets-6cc9ac)](docs/WOOLDRIDGE.md)
 
 Laboratorio educativo de econometría con programación visual mediante nodos y motor analítico Python. Objetivo de escritorio: macOS y Windows. [Repositorio](https://github.com/rmrodriguezgit/Quantlabs-Econometrics).
 
-**Versión 0.8.3 · 2026-11-03 · Alpha local con escritorio Electron y estudio oscuro. Instaladores independientes y actualización automática pendientes.**
+**Versión 0.8.4 · 2026-11-03 · Alpha local con escritorio Electron y estudio oscuro. Instaladores independientes y actualización automática pendientes.**
 
 ## Abrir en el escritorio
 
@@ -42,7 +42,7 @@ Abre [el laboratorio local](http://127.0.0.1:1420) y pulsa **Ejecutar flujo**. C
 
 - **Archivos y ejemplos**: 28 recorridos construidos con herramientas conectadas, uno por módulo, con objetivos y referencias a los 36 capítulos. Cada nodo tiene un paso explicativo.
 - **Guía paso a paso**: instrucciones, resultado esperado, ejecución de dependencias, inspección de salidas, Anterior/Siguiente y vista del flujo completo.
-- **Herramientas reutilizables**: 60 tipos registrados (incluida compatibilidad anterior); 49 tipos se utilizan en los 28 recorridos, con 131 pasos explicados.
+- **Herramientas reutilizables**: 61 tipos registrados (incluida compatibilidad anterior); 49 tipos se utilizan en los 28 recorridos, con 131 pasos explicados.
 - **Mis proyectos**: guardar, abrir, editar JSON, validar, ejecutar, duplicar y exportar. Borrar mueve a una papelera restaurable.
 - **Auditoría** dentro del administrador: comprueba catálogo, referencias, almacenamiento e integridad y muestra los pendientes.
 
@@ -128,3 +128,5 @@ En **Archivos y ejemplos → Ejemplos**, busca **N01 · Normalidad · interés y
 Boxplot incluye **Reemplazo condicional**: elige `>`, `>=`, `<`, `<=`, `==` o `!=` y un umbral para sustituir por la media original. Muestra el recuento y ofrece la tabla resultante por `data`, conservando la fuente.
 
 En Resultados, los recorridos guiados también muestran todas las salidas con el ojo activado. Usa los accesos del panel para saltar directamente a cada Boxplot, sin recorrer los demás gráficos.
+
+**Correlación** y **Covarianza de variables**, en Exploración, permiten seleccionar columnas y mostrar matrices en Resultados. [Guía](docs/CORRELACION_COVARIANZA.md).

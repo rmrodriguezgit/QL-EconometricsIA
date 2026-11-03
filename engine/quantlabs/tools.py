@@ -347,7 +347,7 @@ def calculate(kind,inputs,params):
         data=sample(frame,columns(frame,','.join(model.features)));labels=model.fit.predict(data.to_numpy())
         if len(set(labels))<2:raise EngineError('INSUFFICIENT_SAMPLE','La evaluación necesita al menos dos grupos.')
         result=report('Separación de grupos en la tabla conectada; no reajusta los centroides.',silueta=silhouette_score(data,labels,sample_size=min(2000,len(data)),random_state=42),n=len(data))
-    elif kind in ['histogram','correlation','mean_ci','paired_test','probability','sampling_audit','unit_root','monte_carlo','backtest','quantile','pca','factor_analysis','cointegration','ecm','sem','acf']:
+    elif kind in ['histogram','correlation','covariance_matrix','mean_ci','paired_test','probability','sampling_audit','unit_root','monte_carlo','backtest','quantile','pca','factor_analysis','cointegration','ecm','sem','acf']:
         result,extra=analyze(kind,inputs,params);outputs.update(extra)
     else:raise EngineError('INVALID_PARAMETERS','Herramienta no implementada.')
     if 'result' not in outputs:outputs['result']=result
@@ -376,10 +376,21 @@ def analyze(kind,inputs,params):
         result['n']=len(data)
         result['histogram']={'column':name,'n':len(data),'missing':len(frame)-len(data),'bins':[{'lower':float(bounds[i]),'upper':float(bounds[i+1]),'count':int(counts[i])} for i in range(len(counts))]}
         result['tables']=[table('Histograma',['Desde','Hasta','Frecuencia'],[[bounds[i],bounds[i+1],int(counts[i])] for i in range(len(counts))])]
-    elif kind=='correlation':
-        names=columns(frame,params.get('columns','ingreso,consumo'));data=sample(frame,names)
-        result=report('Se utilizan las mismas filas completas para todas las columnas. Asociación no implica causalidad.',n=len(data),faltantes=len(frame)-len(data))
-        result['tables']=[table('Correlación',['Variable',*names],[[name,*data.corr().loc[name].tolist()] for name in names]),table('Covarianza',['Variable',*names],[[name,*data.cov().loc[name].tolist()] for name in names])]
+    elif kind in ['correlation','covariance_matrix']:
+        names=columns(frame,params.get('columns','ingreso,consumo'))
+        if len(names)<2:raise EngineError('INVALID_PARAMETERS','Selecciona al menos dos variables para comparar.')
+        data=sample(frame,names,2)
+        result=report('Mismas filas completas para todas las variables. Correlación de Pearson sin unidades; covarianza muestral con divisor n−1 y unidades producto. Asociación no implica causalidad.',n=len(data),filas_excluidas=len(frame)-len(data))
+        result['n']=len(data);result['missing']=len(frame)-len(data)
+        covariance=data.cov(ddof=1)
+        result['tables']=[]
+        if kind=='correlation':
+            correlation=data.corr(method='pearson')
+            result['tables'].append(table('Correlación de Pearson',['Variable',*names],[[name,*correlation.loc[name].tolist()] for name in names]))
+            constant=[name for name in names if data[name].nunique()<=1]
+            if constant:result['warnings'].append('Correlación no definida para columnas constantes: '+', '.join(constant)+'. Se muestra No definido, no cero.')
+        result['tables'].append(table('Covarianza muestral (n−1)',['Variable',*names],[[name,*covariance.loc[name].tolist()] for name in names]))
+        result['limitations']=['Las filas se excluyen conjuntamente si falta una variable seleccionada; no se imputan ni se usan muestras distintas por par.','La covarianza depende de la escala y las unidades; una covarianza grande no implica mayor intensidad de asociación.','Dependencia temporal, tendencias y valores imputados pueden distorsionar la interpretación; estas matrices no prueban causalidad.']
     elif kind=='mean_ci':
         name=columns(frame,params.get('column','valor'))[0];data=sample(frame,[name],2);confidence=number(params,'confidence',.95,.5,.999);se=data[name].std(ddof=1)/np.sqrt(len(data));lo,hi=stats.t.interval(confidence,len(data)-1,loc=data[name].mean(),scale=se)
         result=report('Intervalo t de la media de la tabla conectada. Su nivel describe cobertura del procedimiento, no probabilidad de un parámetro fijo.',n=len(data),media=data[name].mean(),error_estandar=se,limite_inferior=lo,limite_superior=hi)

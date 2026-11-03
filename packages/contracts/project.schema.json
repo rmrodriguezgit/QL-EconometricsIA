@@ -180,7 +180,8 @@
             "impute_mean",
             "normality",
             "residual_normality",
-            "boxplot"
+            "boxplot",
+            "covariance_matrix"
           ]
         },
         "node_version": {

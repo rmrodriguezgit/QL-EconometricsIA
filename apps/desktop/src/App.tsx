@@ -49,7 +49,7 @@ export default function App() {
   useEffect(()=>{try{sessionStorage.setItem('quantlabs-draft',JSON.stringify(project));}catch{/* El canvas continúa disponible si se agota el almacenamiento. */}},[project]);
   const [outputVisibility,setOutputVisibility]=useState<Record<string,boolean>>({});
   const [suggestion,setSuggestion]=useState<{id:string;port:string;x:number;y:number}|null>(null);
-  const isOutputVisible=(id:string)=>outputVisibility[id]??project.nodes.some(node=>node.id===id&&['ols','scatter','histogram','boxplot','time_plot','normality','residual_normality','impute_mean'].includes(node.type));
+  const isOutputVisible=(id:string)=>outputVisibility[id]??project.nodes.some(node=>node.id===id&&['ols','scatter','histogram','boxplot','correlation','covariance_matrix','time_plot','normality','residual_normality','impute_mean'].includes(node.type));
   const setOutputVisible=(id:string,visible:boolean)=>{setOutputVisibility(previous=>({...previous,[id]:visible}));setTab('Resultados');};
   const suggest=(id:string,port:string,x:number,y:number)=>setSuggestion({id,port,x,y});
   const [history, setHistory] = useState<Project[]>([]);

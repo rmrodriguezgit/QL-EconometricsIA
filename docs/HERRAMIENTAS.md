@@ -132,3 +132,7 @@ Registro actual: 59 tipos. `join_series` consume left/right Dataset y produce da
 ## Boxplot · 0.8.1
 
 `boxplot`: Dataset → Result. Categoría Exploración; variable numérica, cuartiles, mediana, RIC, bigotes y atípicos. Color y etiquetas editables. Registro: 60 tipos. Referencias B17/B18. [Guía](BOXPLOT.md).
+
+## Asociación de variables · 0.8.4
+
+Registro actual: 61 tipos. Correlación devuelve matrices de Pearson y covarianza; Covarianza de variables (`covariance_matrix`) devuelve matriz muestral. Ambos Dataset → Result, Exploración, B18. Cambiar covarianza sigue siendo un diagnóstico de FittedModel, distinto de estas matrices. [Guía](CORRELACION_COVARIANZA.md).

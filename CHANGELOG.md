@@ -155,3 +155,9 @@ La aplicación y sus instaladores están pendientes de implementación. Los camb
 
 - Corregida la vista inferior de recorridos guiados: Resultados respeta el ojo de todos los nodos y muestra ambas cajas de N01.
 - Seleccionar un paso abre su salida en Resultados. Navegación directa entre tarjetas visibles, con títulos para distinguir Boxplot original y tratado.
+
+## 0.8.4 - 2026-11-03
+
+- Correlación visible por defecto con matrices de Pearson y covarianza muestral; muestra común, faltantes y constantes explícitos.
+- Nodo Covarianza de variables independiente del ajuste de covarianza del modelo OLS.
+- Ambas herramientas incluidas en N01 antes de imputar; mínimo dos observaciones completas y dos variables.

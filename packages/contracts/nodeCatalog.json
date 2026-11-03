@@ -642,7 +642,7 @@
   },
   "correlation": {
     "label": "Correlación",
-    "detail": "Calcula la matriz de correlación y covarianza",
+    "detail": "Correlación de Pearson y covarianza muestral entre variables",
     "category": "Exploración",
     "color": "blue",
     "inputs": {
@@ -654,7 +654,7 @@
     "defaults": {
       "columns": "ingreso,consumo"
     },
-    "explanation": "Calcula la matriz de correlación y covarianza. No convierte asociación en causalidad.",
+    "explanation": "Selecciona columnas numéricas. Calcula correlación de Pearson y covarianza muestral (n−1) con las mismas filas completas; informa faltantes. Correlación no implica causalidad.",
     "references": [
       "B18"
     ]
@@ -1462,6 +1462,25 @@
     "explanation": "Resume una variable numérica con caja Q1–Q3, mediana y bigotes de Tukey (1,5×RIC). Muestra atípicos sin eliminarlos. Selecciona una columna y ajusta título, eje y color. No prueba normalidad. Opcionalmente reemplaza valores por su media original según >, >=, <, <=, == o !=; se conserva la fuente y se ofrece una tabla de salida.",
     "references": [
       "B17",
+      "B18"
+    ]
+  },
+  "covariance_matrix": {
+    "label": "Covarianza de variables",
+    "detail": "Matriz de covarianza muestral (n−1) de las columnas seleccionadas",
+    "category": "Exploración",
+    "color": "blue",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "result": "Result"
+    },
+    "defaults": {
+      "columns": "lending_rate,final_consumption"
+    },
+    "explanation": "Calcula covarianza entre variables de una tabla, con divisor n−1 y filas completas comunes. La diagonal contiene varianzas; las unidades son productos de las unidades originales. No es la covarianza de los estimadores OLS.",
+    "references": [
       "B18"
     ]
   }

@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.8.3**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.8.4**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -180,3 +180,7 @@ Boxplot mantiene el tipo (60 herramientas) y añade salida Dataset y tratamiento
 ## 0.8.3 · 2026-11-03
 
 Resultados utiliza el mismo panel de salidas visibles en proyectos libres y recorridos guiados. Se retira la rama que limitaba los recorridos a una sola salida. Navegación por tarjetas y pasos abre Resultados; Regresión conserva su panel propio. Sin cambios científicos ni dependencias.
+
+## 0.8.4 · 2026-11-03
+
+61 tipos: covariance_matrix añade covarianza de variables Dataset → Result. Correlación conserva sus dos matrices y ambas salidas se muestran por defecto. Pearson y covarianza ddof=1 mediante pandas; filas completas comunes y constantes no definidas explícitas. Sin nuevas dependencias. Pruebas numéricas e integración CSV.

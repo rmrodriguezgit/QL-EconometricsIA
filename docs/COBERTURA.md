@@ -78,3 +78,7 @@ C03/C04: Boxplot reutilizable y N01 actualizado; B17/B18. Pruebas en tests/test_
 ### Evidencia adicional · 0.8.2
 
 C03/C04/C11: comparación explícita de Boxplot original y tratado por umbral; tests/test_box_plot.py contrasta operadores y datos de salida. No completa estrategias generales de robustez ni elimina los pendientes.
+
+### Evidencia adicional · 0.8.4
+
+C04: correlación Pearson y covarianza muestral en herramientas visibles y N01, referencia B18. Pruebas en tests/test_association.py. No se completa causalidad, dependencia temporal ni inferencia de correlaciones.

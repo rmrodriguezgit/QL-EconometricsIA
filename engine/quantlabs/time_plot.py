@@ -5,6 +5,9 @@ import pandas as pd
 from .core import EngineError
 
 def time_plot(frame, params):
+    color=params.get('color','#51df83')
+    if not isinstance(color,str) or not re.fullmatch(r'#[0-9a-fA-F]{6}',color):
+        raise EngineError('INVALID_PARAMETERS','El color debe ser hexadecimal, por ejemplo #51df83.')
     time=params.get('time','periodo');value=params.get('value','valor');mode=params.get('time_mode','year')
     if time==value or time not in frame or value not in frame:
         raise EngineError('INVALID_PARAMETERS','Selecciona columnas distintas de tiempo y valor de la tabla conectada.')
@@ -37,4 +40,4 @@ def time_plot(frame, params):
         if mode=='year' and previous is not None and x-previous>1:
             points.append({'x':previous+1,'y':None,'label':'Períodos ausentes'});gaps+=1
         points.append({'x':x,'y':None if pd.isna(row[value]) else float(row[value]),'label':row['_label']});previous=x
-    return {'kind':'time_plot','n':int(work[value].notna().sum()),'missing':int(work[value].isna().sum()),'missing_time':missing_time,'gaps':gaps,'time':time,'value':value,'time_mode':mode,'title':str(params.get('title','Serie temporal'))[:150],'x_label':str(params.get('x_label','Fecha'))[:100],'y_label':str(params.get('y_label','Valor'))[:100],'points':points,'note':'Valores ordenados por tiempo; sin agregación ni imputación. Los faltantes interrumpen la línea. En modo date se unen las fechas observadas; no se presupone frecuencia diaria.'}
+    return {'kind':'time_plot','color':color,'n':int(work[value].notna().sum()),'missing':int(work[value].isna().sum()),'missing_time':missing_time,'gaps':gaps,'time':time,'value':value,'time_mode':mode,'title':str(params.get('title','Serie temporal'))[:150],'x_label':str(params.get('x_label','Fecha'))[:100],'y_label':str(params.get('y_label','Valor'))[:100],'points':points,'note':'Valores ordenados por tiempo; sin agregación ni imputación. Los faltantes interrumpen la línea. En modo date se unen las fechas observadas; no se presupone frecuencia diaria.'}

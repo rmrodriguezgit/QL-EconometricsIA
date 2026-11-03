@@ -20,3 +20,7 @@ El [Banco Mundial identifica FR.INR.LEND](https://databank.worldbank.org/metadat
 ## Estado
 
 Implementados nodo, controles de selección y representación SVG. Verificados orden, fechas ISO, años ausentes, valores nulos, negativos, infinitos, períodos repetidos e integración CSV en tests/test_time_plot.py. TypeScript y frontend se comprueban con la compilación. El ejemplo remoto no es una prueba de disponibilidad de todos sus años. Referencias curriculares: B17 y B32; C03/C14 siguen con alcance parcial.
+
+## Color y trazo · 0.7.6
+
+En el inspector selecciona **Color de la línea** y elige un color. Ejecuta el flujo para aplicarlo a la línea, los puntos y la leyenda; guarda el proyecto para conservarlo. El verde es el valor predeterminado. El trazo usa 2,5 unidades SVG. En JSON el parámetro es `color`, por ejemplo `#ffb454`; el motor rechaza formatos inválidos.

@@ -22,3 +22,10 @@ class TimePlotTests(unittest.TestCase):
  def test_connected_csv_project_produces_visible_result(self):
   p={'schema_version':'1.0.0','app_version':'0.7.4','title':'Serie','nodes':[{'id':'data','type':'csv','node_version':'1.0.0','parameters':{'content':'year,rate\n2001,3\n2000,2\n','delimiter':','},'position':{'x':0,'y':0}},{'id':'chart','type':'time_plot','node_version':'1.0.0','parameters':{'time':'year','value':'rate'},'position':{'x':300,'y':0}}],'edges':[{'id':'link','source':'data','source_port':'data','target':'chart','target_port':'data'}]}
   run=execute(p);self.assertEqual(run['status'],'succeeded',run['nodes']);self.assertEqual(run['nodes']['chart']['result']['points'][0]['x'],2000)
+
+ def test_color_is_preserved_defaulted_and_validated(self):
+  frame=pd.DataFrame({'periodo':[2000,2001],'valor':[2,3]})
+  self.assertEqual(time_plot(frame,{})['color'],'#51df83')
+  self.assertEqual(time_plot(frame,{'color':'#ffB454'})['color'],'#ffB454')
+  for color in ['red','#abc','url(x)',None]:
+   with self.assertRaises(EngineError):time_plot(frame,{'color':color})

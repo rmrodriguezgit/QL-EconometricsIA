@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.7.5**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.7.6**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -160,3 +160,7 @@ Serie temporal incorpora el tipo time_plot al registro compartido (55 herramient
 ## 0.7.5 · 2026-11-03
 
 Ajuste visual de Serie temporal: grosor de 3,5 a 2,5 unidades SVG, leyenda a juego y radio de puntos de 3 a 2. Sin cambios de dependencias ni cálculos.
+
+## 0.7.6 · 2026-11-03
+
+Color configurable de Serie temporal mediante parámetro hexadecimal validado. Selector nativo HTML de color; sin nuevas dependencias. Proyectos anteriores conservan verde al omitir el parámetro.

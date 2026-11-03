@@ -128,3 +128,7 @@ La aplicación y sus instaladores están pendientes de implementación. Los camb
 ## 0.7.5 - 2026-11-03
 
 - Serie temporal: línea y leyenda más finas (2,5 unidades SVG); puntos reducidos para mantener la proporción visual.
+
+## 0.7.6 - 2026-11-03
+
+- Selector de color para Serie temporal en el inspector, persistido en el proyecto y aplicado a línea, puntos y leyenda. Validación hexadecimal en el motor; verde predeterminado compatible con proyectos existentes.

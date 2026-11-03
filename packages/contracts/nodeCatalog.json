@@ -1341,7 +1341,8 @@
       "time_mode": "year",
       "title": "Serie temporal",
       "x_label": "Fecha",
-      "y_label": "Valor"
+      "y_label": "Valor",
+      "color": "#51df83"
     },
     "explanation": "Ordena el tiempo y dibuja una línea. Selecciona tiempo y valor; los años ausentes y valores faltantes interrumpen la línea. No mezcla países con períodos repetidos.",
     "references": [

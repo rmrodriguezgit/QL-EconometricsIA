@@ -2,6 +2,7 @@ import wooldridge from '../../../packages/contracts/wooldridgeCatalog.json' with
 import type {ProjectNode} from './model';
 export function knownSourceColumns(source:ProjectNode|undefined):string[]{
  if(!source)return [];
+ if(source.type==='join_series')return ['periodo',String(source.parameters.left_name??'lending_rate'),String(source.parameters.right_name??'final_consumption')];
  if(source.type==='worldbank')return ['periodo','valor'];
  if(source.type==='simulate')return ['ingreso','consumo'];
  if(source.type==='wooldridge')return wooldridge.items.find(item=>item.id===source.parameters.dataset)?.columns.filter(column=>column.numeric).map(column=>column.name)??[];

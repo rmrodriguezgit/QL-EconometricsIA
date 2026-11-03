@@ -450,6 +450,12 @@ def analyze(kind,inputs,params):
 
 
 def run_tool(kind,inputs,params):
+    if kind in ['join_series','impute_mean','normality','residual_normality']:
+        from .normality_tools import run_normality_tool
+        result,outputs=run_normality_tool(kind,inputs,params)
+        if result.get('kind')=='analysis':
+            result.setdefault('topic',kind);result.setdefault('scope','Diagnóstico descriptivo, no certifica supuestos ni causalidad.')
+        return finite_json(result),outputs
     if kind=='time_plot':
         from .time_plot import time_plot
         result=time_plot(inputs['data'],params)

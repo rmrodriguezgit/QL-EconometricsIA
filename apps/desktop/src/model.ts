@@ -7,7 +7,7 @@ export type Lesson = { module: string; title: string; objective: string; referen
 export type Project = { lesson?: Lesson; schema_version: '1.0.0'; app_version: string; title: string; nodes: ProjectNode[]; edges: { id: string; source: string; target: string; source_port: string; target_port: string }[] };
 export type NodeResult = { status: 'succeeded' | 'failed' | 'skipped'; result?: Record<string, unknown>; error?: { code: string; message: string }; message?: string };
 export type Run = { run_id: string; status: string; nodes: Record<string, NodeResult>; manifest: { graph_sha256: string; [key: string]: unknown } };
-export const version = '0.7.6';
+export const version = '0.8.0';
 export type ToolDefinition = { label: string; detail: string; category: string; color: string; references: string; explanation: string; defaults: Parameters; inputs: Record<string,string>; outputs: Record<string,string>; choices?: Record<string,string[]>; choice_labels?: Record<string,Record<string,string>> };
 export const catalog = Object.fromEntries(Object.entries(nodeCatalog).map(([key,value]) => [key,{...value,references:value.references.join(' · ')}])) as unknown as Record<Kind,ToolDefinition>;
 

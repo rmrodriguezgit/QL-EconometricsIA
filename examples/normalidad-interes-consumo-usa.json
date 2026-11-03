@@ -1,0 +1,246 @@
+{
+  "schema_version": "1.0.0",
+  "app_version": "0.8.0",
+  "title": "Normalidad · interés y consumo USA",
+  "nodes": [
+    {
+      "id": "interes",
+      "type": "worldbank",
+      "node_version": "1.0.0",
+      "parameters": {
+        "country": "USA",
+        "indicator": "FR.INR.LEND",
+        "start": 1960,
+        "end": 2020,
+        "source": 2
+      },
+      "position": {
+        "x": 20,
+        "y": 30
+      }
+    },
+    {
+      "id": "consumo",
+      "type": "worldbank",
+      "node_version": "1.0.0",
+      "parameters": {
+        "country": "USA",
+        "indicator": "NE.CON.TOTL.CD",
+        "start": 1960,
+        "end": 2020,
+        "source": 2
+      },
+      "position": {
+        "x": 20,
+        "y": 250
+      }
+    },
+    {
+      "id": "unir",
+      "type": "join_series",
+      "node_version": "1.0.0",
+      "parameters": {
+        "left_key": "periodo",
+        "left_value": "valor",
+        "left_name": "lending_rate",
+        "right_key": "periodo",
+        "right_value": "valor",
+        "right_name": "final_consumption"
+      },
+      "position": {
+        "x": 340,
+        "y": 120
+      }
+    },
+    {
+      "id": "observados",
+      "type": "normality",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "lending_rate,final_consumption",
+        "alpha": 0.05
+      },
+      "position": {
+        "x": 680,
+        "y": 10
+      }
+    },
+    {
+      "id": "imputar",
+      "type": "impute_mean",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "lending_rate,final_consumption"
+      },
+      "position": {
+        "x": 680,
+        "y": 240
+      }
+    },
+    {
+      "id": "imputados",
+      "type": "normality",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "lending_rate,final_consumption",
+        "alpha": 0.05
+      },
+      "position": {
+        "x": 1010,
+        "y": 50
+      }
+    },
+    {
+      "id": "ols",
+      "type": "ols",
+      "node_version": "1.0.0",
+      "parameters": {
+        "x": "lending_rate",
+        "y": "final_consumption",
+        "covariance": "HC3"
+      },
+      "position": {
+        "x": 1010,
+        "y": 270
+      }
+    },
+    {
+      "id": "residuos",
+      "type": "residual_normality",
+      "node_version": "1.0.0",
+      "parameters": {
+        "alpha": 0.05
+      },
+      "position": {
+        "x": 1340,
+        "y": 270
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "interes-unir-left",
+      "source": "interes",
+      "source_port": "data",
+      "target": "unir",
+      "target_port": "left"
+    },
+    {
+      "id": "consumo-unir-right",
+      "source": "consumo",
+      "source_port": "data",
+      "target": "unir",
+      "target_port": "right"
+    },
+    {
+      "id": "unir-observados-data",
+      "source": "unir",
+      "source_port": "data",
+      "target": "observados",
+      "target_port": "data"
+    },
+    {
+      "id": "unir-imputar-data",
+      "source": "unir",
+      "source_port": "data",
+      "target": "imputar",
+      "target_port": "data"
+    },
+    {
+      "id": "imputar-imputados-data",
+      "source": "imputar",
+      "source_port": "data",
+      "target": "imputados",
+      "target_port": "data"
+    },
+    {
+      "id": "imputar-ols-data",
+      "source": "imputar",
+      "source_port": "data",
+      "target": "ols",
+      "target_port": "data"
+    },
+    {
+      "id": "ols-residuos-model",
+      "source": "ols",
+      "source_port": "model",
+      "target": "residuos",
+      "target_port": "model"
+    }
+  ],
+  "lesson": {
+    "module": "C11",
+    "title": "Normalidad, faltantes e inferencia",
+    "objective": "Alinear series y distinguir descriptivos, imputación y normalidad de residuos.",
+    "references": [
+      "B16",
+      "B18",
+      "B19",
+      "B22",
+      "B24",
+      "B31"
+    ],
+    "steps": [
+      {
+        "node_id": "interes",
+        "title": "Cargar interés de préstamos",
+        "instruction": "Consulta la serie anual FR.INR.LEND para USA; conserva años y faltantes.",
+        "expected": "Tabla periodo/valor; consulta externa con metadatos.",
+        "question": "¿Qué cambia en la muestra y qué supuestos siguen sin comprobarse?"
+      },
+      {
+        "node_id": "consumo",
+        "title": "Cargar consumo final",
+        "instruction": "Consulta consumo final en dólares corrientes; no es una serie mensual.",
+        "expected": "Tabla anual; valores no comparables directamente con porcentajes.",
+        "question": "¿Qué cambia en la muestra y qué supuestos siguen sin comprobarse?"
+      },
+      {
+        "node_id": "unir",
+        "title": "Alinear por período",
+        "instruction": "Conecta interés a left y consumo a right. Conserva nombres lending_rate y final_consumption.",
+        "expected": "Unión exterior por año; no se pierden períodos por posición.",
+        "question": "¿Qué cambia en la muestra y qué supuestos siguen sin comprobarse?"
+      },
+      {
+        "node_id": "observados",
+        "title": "Examinar datos observados",
+        "instruction": "Calcula descriptivos, histogramas, Q–Q y pruebas antes de imputar.",
+        "expected": "Faltantes excluidos por variable y contados; pruebas sobre observados.",
+        "question": "¿Qué cambia en la muestra y qué supuestos siguen sin comprobarse?"
+      },
+      {
+        "node_id": "imputar",
+        "title": "Reemplazar faltantes explícitamente",
+        "instruction": "Selecciona ambas variables. Compara la media aplicada, observados y reemplazados.",
+        "expected": "Medias calculadas con valores observados; tabla de auditoría.",
+        "question": "¿Qué cambia en la muestra y qué supuestos siguen sin comprobarse?"
+      },
+      {
+        "node_id": "imputados",
+        "title": "Comparar tras imputación",
+        "instruction": "Compara con el diagnóstico de observados. No interpretes rellenar faltantes como volver normales los datos.",
+        "expected": "Pruebas y dispersión pueden cambiar artificialmente.",
+        "question": "¿Qué cambia en la muestra y qué supuestos siguen sin comprobarse?"
+      },
+      {
+        "node_id": "ols",
+        "title": "Estimar OLS como ejercicio",
+        "instruction": "Regresa consumo sobre interés; no hace falta que las variables sean normales. HC3 no corrige tendencia ni autocorrelación.",
+        "expected": "Coeficientes y R²; asociación descriptiva, sin identificación causal.",
+        "question": "¿Qué cambia en la muestra y qué supuestos siguen sin comprobarse?"
+      },
+      {
+        "node_id": "residuos",
+        "title": "Examinar residuos",
+        "instruction": "Conecta la salida model de OLS. Revisa Q–Q y pruebas de sus residuos, distintos de las variables originales.",
+        "expected": "Diagnóstico de errores aproximados por residuos; no certifica el modelo.",
+        "question": "¿Qué cambia en la muestra y qué supuestos siguen sin comprobarse?"
+      }
+    ],
+    "missing_tools": [
+      "El ejemplo no corrige tendencia, autocorrelación, endogeneidad ni sesgo de imputación.",
+      "La media aplicada a toda la entrada no es una transformación aprendida exclusivamente en entrenamiento."
+    ]
+  }
+}

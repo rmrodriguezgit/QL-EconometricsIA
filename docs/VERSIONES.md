@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.7.6**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.8.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -164,3 +164,7 @@ Ajuste visual de Serie temporal: grosor de 3,5 a 2,5 unidades SVG, leyenda a jue
 ## 0.7.6 · 2026-11-03
 
 Color configurable de Serie temporal mediante parámetro hexadecimal validado. Selector nativo HTML de color; sin nuevas dependencias. Proyectos anteriores conservan verde al omitir el parámetro.
+
+## 0.8.0 · 2026-11-03
+
+Cuatro nodos nuevos, 59 herramientas registradas. Unión exterior por período sin duplicados; media por columnas; diagnósticos descriptivos y de residuos. SciPy ya era dependencia transitiva del stack científico; no se incorporan paquetes. Shapiro limitado a n≤5000 sin submuestreo silencioso; Q–Q muestra hasta 400 cuantiles y pruebas usan todos los observados. Ejemplo N01 se distribuye con el frontend sin alterar los 28 módulos del catálogo curricular. Disponibilidad remota no sustituye la prueba de integración sin red.

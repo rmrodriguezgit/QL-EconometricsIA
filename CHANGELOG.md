@@ -132,3 +132,10 @@ La aplicación y sus instaladores están pendientes de implementación. Los camb
 ## 0.7.6 - 2026-11-03
 
 - Selector de color para Serie temporal en el inspector, persistido en el proyecto y aplicado a línea, puntos y leyenda. Validación hexadecimal en el motor; verde predeterminado compatible con proyectos existentes.
+
+## 0.8.0 - 2026-11-03
+
+- Nodos Unir series por período, Imputar con la media, Normalidad de variables y Normalidad de residuos.
+- Media, mediana, varianza y desviación muestrales; histogramas y Q–Q normales; Shapiro–Wilk y Jarque–Bera con advertencias y decisiones explícitas.
+- Ejemplo guiado complementario N01 accesible desde Archivos y ejemplos: interés y consumo USA, datos observados e imputados y residuos OLS.
+- Alineación exterior uno a uno y auditoría de imputación; no se confunde normalidad de variables con el supuesto de errores ni se bloquea OLS por normalidad.

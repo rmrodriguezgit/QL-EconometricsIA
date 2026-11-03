@@ -66,3 +66,7 @@ Se implementaron particiones, escaladores aprendidos/aplicados por separado, pue
 ### Evidencia adicional · 0.7.4
 
 C03 y C14: nodo reutilizable Serie temporal (`time_plot`) con orden cronológico y faltantes explícitos; referencias B17 y B32. No completa descomposición, estacionalidad ni los demás pendientes. Pruebas: tests/test_time_plot.py.
+
+### Evidencia adicional · 0.8.0
+
+C02/C04/C05/C08/C11: unión por período, imputación explícita y normalidad descriptiva/de residuos; referencias B16, B18, B19, B22, B24 y B31. N01 es complementario y no elimina pendientes de los 28 módulos. Pruebas en tests/test_normality_tools.py comparan fórmulas, SciPy y un flujo completo con datos artificiales.

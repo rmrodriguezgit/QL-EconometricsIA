@@ -2,19 +2,19 @@
 
 **Conecta datos. Estima modelos. Comprende cada resultado.**
 
-[![Versión](https://img.shields.io/badge/versión-0.7.6-6cc9ac)](https://github.com/rmrodriguezgit/Quantlabs-Econometrics/blob/main/VERSION)
+[![Versión](https://img.shields.io/badge/versión-0.8.0-6cc9ac)](https://github.com/rmrodriguezgit/Quantlabs-Econometrics/blob/main/VERSION)
 [![Escritorio](https://img.shields.io/badge/escritorio-macOS%20%7C%20Windows-79b4ef)](docs/ARRANQUE.md)
 [![Electron](https://img.shields.io/badge/Electron-45.2.1-79b4ef)](apps/desktop/package.json)
 [![React](https://img.shields.io/badge/React-19.3.1-61dafb)](apps/desktop/package.json)
 [![TypeScript](https://img.shields.io/badge/TypeScript-7.0.2-3178c6)](apps/desktop/package.json)
 [![Python](https://img.shields.io/badge/Python-3.12-ffd343)](pyproject.toml)
-[![Herramientas](https://img.shields.io/badge/nodos-55-c49af8)](docs/HERRAMIENTAS.md)
+[![Herramientas](https://img.shields.io/badge/nodos-59-c49af8)](docs/HERRAMIENTAS.md)
 [![Recorridos](https://img.shields.io/badge/recorridos-28-c49af8)](docs/EJEMPLOS.md)
 [![Wooldridge](https://img.shields.io/badge/Wooldridge-115%20datasets-6cc9ac)](docs/WOOLDRIDGE.md)
 
 Laboratorio educativo de econometría con programación visual mediante nodos y motor analítico Python. Objetivo de escritorio: macOS y Windows. [Repositorio](https://github.com/rmrodriguezgit/Quantlabs-Econometrics).
 
-**Versión 0.7.6 · 2026-11-03 · Alpha local con escritorio Electron y estudio oscuro. Instaladores independientes y actualización automática pendientes.**
+**Versión 0.8.0 · 2026-11-03 · Alpha local con escritorio Electron y estudio oscuro. Instaladores independientes y actualización automática pendientes.**
 
 ## Abrir en el escritorio
 
@@ -42,7 +42,7 @@ Abre [el laboratorio local](http://127.0.0.1:1420) y pulsa **Ejecutar flujo**. C
 
 - **Archivos y ejemplos**: 28 recorridos construidos con herramientas conectadas, uno por módulo, con objetivos y referencias a los 36 capítulos. Cada nodo tiene un paso explicativo.
 - **Guía paso a paso**: instrucciones, resultado esperado, ejecución de dependencias, inspección de salidas, Anterior/Siguiente y vista del flujo completo.
-- **Herramientas reutilizables**: 55 tipos registrados (incluida compatibilidad anterior); 49 tipos se utilizan en los 28 recorridos, con 131 pasos explicados.
+- **Herramientas reutilizables**: 59 tipos registrados (incluida compatibilidad anterior); 49 tipos se utilizan en los 28 recorridos, con 131 pasos explicados.
 - **Mis proyectos**: guardar, abrir, editar JSON, validar, ejecutar, duplicar y exportar. Borrar mueve a una papelera restaurable.
 - **Auditoría** dentro del administrador: comprueba catálogo, referencias, almacenamiento e integridad y muestra los pendientes.
 
@@ -118,3 +118,7 @@ La pestaña Regresión permite elegir OLS simple o múltiple. El botón Ecuació
 ## Gráfico de serie temporal
 
 Añade **Serie temporal** en Exploración, conecta Banco Mundial, CSV o Wooldridge, elige tiempo y variable, y ejecuta. Permite título y etiquetas de ejes, con color configurable y leyenda. [Guía y ejemplo de tasas de interés](docs/SERIE_TEMPORAL.md).
+
+## Normalidad y datos faltantes
+
+En **Archivos y ejemplos → Ejemplos**, busca **N01 · Normalidad · interés y consumo USA**. Incluye dos fuentes anuales Banco Mundial, unión por año, descriptivos, histogramas, Q–Q, Shapiro–Wilk, Jarque–Bera, imputación explícita por media, OLS y diagnóstico de residuos. Es un ejemplo complementario a los 28 módulos. [Guía y límites](docs/NORMALIDAD.md).

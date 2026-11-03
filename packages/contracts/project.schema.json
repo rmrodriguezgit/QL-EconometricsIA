@@ -175,7 +175,11 @@
             "report",
             "acf",
             "wooldridge",
-            "time_plot"
+            "time_plot",
+            "join_series",
+            "impute_mean",
+            "normality",
+            "residual_normality"
           ]
         },
         "node_version": {

@@ -1,3 +1,4 @@
+import normalityLesson from '../../../examples/normalidad-interes-consumo-usa.json';
 import { useEffect, useRef, useState } from 'react';
 import { BookOpen, Braces, Check, Copy, Download, FileJson, FolderOpen, LoaderCircle, Play, Plus, Save, Search, ShieldCheck, Trash2, Undo2, Upload, X } from 'lucide-react';
 import { download, parseProject, rpc, version, type Project } from './model';
@@ -5,6 +6,7 @@ import { download, parseProject, rpc, version, type Project } from './model';
 export type SavedProject = { id: string; title: string; revision: string; created_at: string; updated_at: string; project: Project };
 type FileItem = Omit<SavedProject, 'project'>;
 type Example = { id: string; title: string; topics: string; references: string[]; phase: string; objective: string; question: string; scope: string; steps?: number; tools?: string[] };
+const normalityExample:Example={id:'N01',title:'Normalidad · interés y consumo USA',topics:'Normalidad, media, varianza, faltantes, unión temporal y residuos OLS',references:normalityLesson.lesson.references,phase:'Complementario',objective:normalityLesson.lesson.objective,question:'¿Cómo cambia la distribución al imputar y por qué no exige OLS variables normales?',scope:'Ejercicio guiado con datos anuales externos; no acredita supuestos causales ni completa C11.',steps:normalityLesson.nodes.length,tools:[...new Set(normalityLesson.nodes.map(node=>node.type))]};
 type AuditCheck = { id: string; title: string; status: string; detail: string };
 const normalize = (text: string) => text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase();
 
@@ -41,7 +43,7 @@ export default function ProjectManager({ project, active, onOpen, onRun, onDelet
     request.then(result => {
       if (!live) return;
       if ('checks' in result) setChecks(result.checks);
-      else if (view === 'examples') setExamples(result.items as Example[]);
+      else if (view === 'examples') setExamples([...(result.items as Example[]),normalityExample]);
       else { setFiles(result.items as FileItem[]); if ('unreadable' in result && result.unreadable.length) setError(`${result.unreadable.length} archivos no se pudieron leer. Se conservaron sin modificar.`); }
     }).catch(reason => { if (live) setError(String(reason.message ?? reason)); });
     return () => { live = false; };
@@ -57,7 +59,7 @@ export default function ProjectManager({ project, active, onOpen, onRun, onDelet
   }
   async function openExample(item: Example) {
     if (!canReplace()) return;
-    await act(async () => { const result = await rpc<{ project: Project; example: Example }>('examples.read', { id: item.id }); replace(result.project, null, result.example); setStatus(`${item.id}: ejemplo cargado en el editor. Puedes ejecutarlo o guardarlo como proyecto propio.`); });
+    await act(async () => { const result = item.id==='N01'?{project:parseProject(JSON.stringify(normalityLesson)),example:normalityExample}:await rpc<{ project: Project; example: Example }>('examples.read', { id: item.id }); replace(result.project, null, result.example); setStatus(`${item.id}: ejemplo cargado en el editor. Puedes ejecutarlo o guardarlo como proyecto propio.`); });
   }
   async function openFile(item: FileItem) {
     if (!canReplace()) return;

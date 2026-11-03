@@ -112,3 +112,9 @@ La aplicación y sus instaladores están pendientes de implementación. Los camb
 - Pestaña Regresión para OLS simple y múltiple, con selección persistente del modelo, coeficientes, intervalos y métricas.
 - Ecuación múltiple junto a Proyectos: especificación, estimación numérica y explicación de variables; ecuación simple conservada.
 - Resultados estructurados de OLS múltiple contrastados con statsmodels HC3.
+
+## 0.7.3 - 2026-11-03
+
+- Arrancadores macOS `.command` y Windows `.cmd`, con bootstrap compartido, Python 3.12 y dependencias bloqueadas. Caché de instalación invalidada por configuración, arquitectura y versión mayor de Node.
+- Portada README con insignias enlazadas a versiones reales, capacidades y guía de arranque. No se publican instaladores independientes.
+- Pruebas del enrutamiento Windows de comandos y de invalidación de dependencias; ejecución nativa en Windows pendiente.

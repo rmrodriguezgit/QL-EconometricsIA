@@ -1,26 +1,48 @@
-# Quantlabs-Econometrics
+# Quantlabs · Econometrics
+
+**Conecta datos. Estima modelos. Comprende cada resultado.**
+
+[![Versión](https://img.shields.io/badge/versión-0.7.3-6cc9ac)](https://github.com/rmrodriguezgit/Quantlabs-Econometrics/blob/main/VERSION)
+[![Escritorio](https://img.shields.io/badge/escritorio-macOS%20%7C%20Windows-79b4ef)](docs/ARRANQUE.md)
+[![Electron](https://img.shields.io/badge/Electron-45.2.1-79b4ef)](apps/desktop/package.json)
+[![React](https://img.shields.io/badge/React-19.3.1-61dafb)](apps/desktop/package.json)
+[![TypeScript](https://img.shields.io/badge/TypeScript-7.0.2-3178c6)](apps/desktop/package.json)
+[![Python](https://img.shields.io/badge/Python-3.12-ffd343)](pyproject.toml)
+[![Herramientas](https://img.shields.io/badge/nodos-54-c49af8)](docs/HERRAMIENTAS.md)
+[![Recorridos](https://img.shields.io/badge/recorridos-28-c49af8)](docs/EJEMPLOS.md)
+[![Wooldridge](https://img.shields.io/badge/Wooldridge-115%20datasets-6cc9ac)](docs/WOOLDRIDGE.md)
 
 Laboratorio educativo de econometría con programación visual mediante nodos y motor analítico Python. Objetivo de escritorio: macOS y Windows. [Repositorio](https://github.com/rmrodriguezgit/Quantlabs-Econometrics).
 
-**Versión 0.7.2 · 2026-11-02 · Alpha local con escritorio Electron y estudio oscuro. Instaladores independientes y actualización automática pendientes.**
+**Versión 0.7.3 · 2026-11-03 · Alpha local con escritorio Electron y estudio oscuro. Instaladores independientes y actualización automática pendientes.**
 
-## Arrancar
+## Abrir en el escritorio
 
-Requisitos de desarrollo: Python 3.12, [uv](https://docs.astral.sh/uv/), Node.js 22 y npm. Desde la raíz:
+| macOS | Windows |
+|---|---|
+| Doble clic en **[Arrancar-Quantlabs.command](Arrancar-Quantlabs.command)** | Doble clic en **[Arrancar-Quantlabs.cmd](Arrancar-Quantlabs.cmd)** |
+
+**Preparación inicial:** instala [Node.js 22 o posterior](https://nodejs.org/) (incluye npm) y [uv](https://docs.astral.sh/uv/getting-started/installation/). Descarga o clona este repositorio completo y conserva el arrancador en su raíz. Si descargas un ZIP, extráelo antes de abrirlo. En macOS, clonar con Git conserva el permiso ejecutable; si una descarga lo pierde, ejecuta una vez `chmod +x Arrancar-Quantlabs.command` desde la carpeta del proyecto.
+
+El arrancador prepara Python 3.12 con `uv sync --frozen --python 3.12`, instala las dependencias del escritorio cuando faltan o cambia su configuración, construye la interfaz actual y abre Electron. El primer arranque necesita conexión y puede tardar varios minutos. Los siguientes reutilizan dependencias; no descargan cambios del repositorio. Para actualizar el código, usa `git pull` y vuelve a abrir el arrancador.
+
+La terminal muestra el progreso y conserva el error si el arranque falla. Usa **Salir por completo** para cerrar ventanas y procesos del motor. Los proyectos se guardan localmente; pulsa **Guardar** antes de salir. Estos son arrancadores del código fuente: **los instaladores independientes siguen pendientes**. [Detalles y estado de verificación](docs/ARRANQUE.md).
+
+### Desarrollo en navegador
 
 ```sh
-uv sync --frozen
+uv sync --frozen --python 3.12
 npm ci --prefix apps/desktop
-python3 scripts/dev.py
+uv run python scripts/dev.py
 ```
 
-Abre [el laboratorio local](http://127.0.0.1:1420) y pulsa **Ejecutar flujo**. En Windows usa `python` en lugar de `python3`. El servidor queda ligado a loopback; Ctrl+C lo detiene. `npm run preview` solo muestra el build estático y no ejecuta el motor: para trabajar usa el comando de desarrollo.
+Abre [el laboratorio local](http://127.0.0.1:1420) y pulsa **Ejecutar flujo**. Ctrl+C detiene el servidor ligado a loopback. `npm run preview` solo muestra el build estático; no ejecuta el motor.
 
 ## Ya funciona
 
 - **Archivos y ejemplos**: 28 recorridos construidos con herramientas conectadas, uno por módulo, con objetivos y referencias a los 36 capítulos. Cada nodo tiene un paso explicativo.
 - **Guía paso a paso**: instrucciones, resultado esperado, ejecución de dependencias, inspección de salidas, Anterior/Siguiente y vista del flujo completo.
-- **Herramientas reutilizables**: 53 tipos registrados (incluida compatibilidad anterior); 49 tipos se utilizan en los 28 recorridos, con 131 pasos explicados.
+- **Herramientas reutilizables**: 54 tipos registrados (incluida compatibilidad anterior); 49 tipos se utilizan en los 28 recorridos, con 131 pasos explicados.
 - **Mis proyectos**: guardar, abrir, editar JSON, validar, ejecutar, duplicar y exportar. Borrar mueve a una papelera restaurable.
 - **Auditoría** dentro del administrador: comprueba catálogo, referencias, almacenamiento e integridad y muestra los pendientes.
 

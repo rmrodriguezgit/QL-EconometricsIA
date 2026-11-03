@@ -450,6 +450,10 @@ def analyze(kind,inputs,params):
 
 
 def run_tool(kind,inputs,params):
+    if kind=='time_plot':
+        from .time_plot import time_plot
+        result=time_plot(inputs['data'],params)
+        return finite_json(result),{'result':result}
     with warnings.catch_warnings(record=True) as messages:
         warnings.simplefilter('always')
         try: result,outputs=calculate(kind,inputs,params)

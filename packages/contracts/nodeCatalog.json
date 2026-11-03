@@ -1323,5 +1323,30 @@
       "B01",
       "B03"
     ]
+  },
+  "time_plot": {
+    "label": "Serie temporal",
+    "detail": "Dibuja una variable a lo largo de años o fechas",
+    "category": "Exploración",
+    "color": "blue",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "result": "Result"
+    },
+    "defaults": {
+      "time": "periodo",
+      "value": "valor",
+      "time_mode": "year",
+      "title": "Serie temporal",
+      "x_label": "Fecha",
+      "y_label": "Valor"
+    },
+    "explanation": "Ordena el tiempo y dibuja una línea. Selecciona tiempo y valor; los años ausentes y valores faltantes interrumpen la línea. No mezcla países con períodos repetidos.",
+    "references": [
+      "B17",
+      "B32"
+    ]
   }
 }

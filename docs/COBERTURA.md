@@ -62,3 +62,7 @@ Cada ID C01-C28 tiene una ficha y un JSON ejecutable en [EJEMPLOS.md](EJEMPLOS.m
 Los 28 ejemplos se ejecutaron con herramientas del registro compartido; no utilizan experiment ni llaman sus recetas anteriores. Cada nodo tiene un paso, salida esperada y pregunta. El inventario [HERRAMIENTAS.md](HERRAMIENTAS.md) vincula herramientas a módulos y enumera lo que falta. La definición legible por máquina se conserva en examples/tool-gaps.json.
 
 Se implementaron particiones, escaladores aprendidos/aplicados por separado, puertos para modelos y resultados, transformaciones y diagnósticos requeridos por esos recorridos. Continúa pendiente la cobertura exhaustiva de subtemas; los pendientes no se sustituyen por una receta cerrada.
+
+### Evidencia adicional · 0.7.4
+
+C03 y C14: nodo reutilizable Serie temporal (`time_plot`) con orden cronológico y faltantes explícitos; referencias B17 y B32. No completa descomposición, estacionalidad ni los demás pendientes. Pruebas: tests/test_time_plot.py.

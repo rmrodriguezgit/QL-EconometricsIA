@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.7.3**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.7.4**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -152,3 +152,7 @@ Corrección de la pestaña Regresión y ecuación múltiple; misma selección de
 ## 0.7.3 · 2026-11-03
 
 Arrancadores de fuente para macOS y Windows. Node >=22 y uv son requisitos externos; uv prepara Python 3.12. Sin nuevas dependencias. Se utiliza npm ci con package-lock y uv sync --frozen; no se instalan herramientas globales. README muestra versiones declaradas en los manifiestos, sin atribuir a Econometrics releases de Blueprints ni PyTorch. Ver docs/ARRANQUE.md para límites de verificación.
+
+## 0.7.4 · 2026-11-03
+
+Serie temporal incorpora el tipo time_plot al registro compartido (55 herramientas), calculado con pandas y representado mediante SVG de React. Sin dependencias nuevas. Pruebas de calendario, faltantes, validación e integración CSV; compilación TypeScript. La disponibilidad de datos del ejemplo Banco Mundial depende del servicio externo.

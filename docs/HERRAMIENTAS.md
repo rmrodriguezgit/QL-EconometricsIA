@@ -120,3 +120,7 @@ Los pasos no emplean una caché persistente: recalculan dependencias. La interfa
 ## Fuente adicional 0.7.0
 
 Wooldridge → salida data:Dataset, 115 conjuntos clásicos seleccionables. Añade una herramienta al registro (54 en total); los 28 recorridos anteriores mantienen su cobertura y pendientes. [Guía](WOOLDRIDGE.md).
+
+## Serie temporal · 0.7.4
+
+`time_plot`: Dataset → Result. Selección de tiempo y valor, formato year/date, título y ejes; disponible desde CSV, Banco Mundial y Wooldridge. Referencias B17 y B32; cubre parte de C03/C14. Registro actual: 55 tipos. [Guía](SERIE_TEMPORAL.md).

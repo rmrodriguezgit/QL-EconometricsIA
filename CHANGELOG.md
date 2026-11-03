@@ -118,3 +118,9 @@ La aplicación y sus instaladores están pendientes de implementación. Los camb
 - Arrancadores macOS `.command` y Windows `.cmd`, con bootstrap compartido, Python 3.12 y dependencias bloqueadas. Caché de instalación invalidada por configuración, arquitectura y versión mayor de Node.
 - Portada README con insignias enlazadas a versiones reales, capacidades y guía de arranque. No se publican instaladores independientes.
 - Pruebas del enrutamiento Windows de comandos y de invalidación de dependencias; ejecución nativa en Windows pendiente.
+
+## 0.7.4 - 2026-11-03
+
+- Nodo Serie temporal, con selección de columnas de años o fechas ISO y variable numérica, título, etiquetas, línea verde y leyenda.
+- Orden cronológico, interrupción por valores o años faltantes y rechazo de períodos repetidos para evitar mezclar países.
+- Ejemplo conectado de Banco Mundial para interés de préstamos en Estados Unidos; no reproduce cifras a partir de una imagen.

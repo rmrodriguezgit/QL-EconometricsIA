@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0.0",
+  "app_version": "0.7.4",
+  "title": "Estados Unidos · interés y tiempo",
+  "nodes": [
+    {
+      "id": "datos",
+      "type": "worldbank",
+      "node_version": "1.0.0",
+      "parameters": {
+        "country": "USA",
+        "indicator": "FR.INR.LEND",
+        "start": 1960,
+        "end": 2020,
+        "source": 2
+      },
+      "position": {
+        "x": 30,
+        "y": 100
+      }
+    },
+    {
+      "id": "serie",
+      "type": "time_plot",
+      "node_version": "1.0.0",
+      "parameters": {
+        "time": "periodo",
+        "value": "valor",
+        "time_mode": "year",
+        "title": "Estados Unidos · tasa de interés de préstamos (%)",
+        "x_label": "Año",
+        "y_label": "Tasa de interés (%)"
+      },
+      "position": {
+        "x": 350,
+        "y": 100
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "datos-serie",
+      "source": "datos",
+      "source_port": "data",
+      "target": "serie",
+      "target_port": "data"
+    }
+  ]
+}

@@ -20,3 +20,28 @@ class BoxPlotTests(unittest.TestCase):
  def test_connected_csv(self):
   p={'schema_version':'1.0.0','app_version':'0.8.1','title':'Boxplot','nodes':[{'id':'data','type':'csv','node_version':'1.0.0','parameters':{'content':'rate\n1\n2\n3\n4\n5\n100\n','delimiter':','},'position':{'x':0,'y':0}},{'id':'box','type':'boxplot','node_version':'1.0.0','parameters':{'column':'rate'},'position':{'x':300,'y':0}}],'edges':[{'id':'link','source':'data','source_port':'data','target':'box','target_port':'data'}]}
   result=execute(p);self.assertEqual(result['status'],'succeeded',result['nodes']);self.assertEqual(result['nodes']['box']['result']['outliers'],[100])
+ def test_conditional_mean_matches_numpy_where_and_preserves_original(self):
+  values=np.array([1.,14.5,15.,20.,np.nan]);frame=pd.DataFrame({'rate':values,'other':[1,2,3,4,5]})
+  from operator import gt,ge,lt,le,eq,ne
+  for op,comparison in [('>',gt),('>=',ge),('<',lt),('<=',le),('==',eq),('!=',ne)]:
+   result,data=box_plot(frame,{'column':'rate','operator':op,'threshold':14.5},with_data=True)
+   mask=comparison(values,14.5)&~np.isnan(values)
+   expected=np.where(mask,np.nanmean(values),values)
+   np.testing.assert_allclose(data.rate,expected,equal_nan=True);pd.testing.assert_series_equal(data.other,frame.other)
+   self.assertEqual(result['replacement']['matched'],int(mask.sum()));self.assertEqual(result['replacement']['mean'],np.nanmean(values));self.assertEqual(result['missing'],1)
+   np.testing.assert_allclose([result['q1'],result['median'],result['q3']],np.quantile(expected[~np.isnan(expected)],[.25,.5,.75]))
+  np.testing.assert_allclose(frame.rate,values,equal_nan=True)
+ def test_conditional_boundaries_disabled_and_invalid_parameters(self):
+  frame=pd.DataFrame({'rate':[14.,14.5,15.]})
+  self.assertEqual(box_plot(frame,{'column':'rate','operator':'>','threshold':14.5})['replacement']['matched'],1)
+  self.assertEqual(box_plot(frame,{'column':'rate','operator':'>=','threshold':14.5})['replacement']['matched'],2)
+  result,data=box_plot(frame,{'column':'rate'},with_data=True);self.assertNotIn('replacement',result);pd.testing.assert_frame_equal(data,frame)
+  for params in [{'operator':'eval(x)'},{'operator':'>=','threshold':float('nan')},{'operator':'>=','threshold':float('inf')}]:
+   with self.assertRaises(EngineError):box_plot(frame,{'column':'rate',**params})
+ def test_output_data_can_feed_a_following_node(self):
+  import json
+  p=json.loads((ROOT/'examples/normalidad-interes-consumo-usa.json').read_text())
+  # A small complete graph proves that the visible box and the forwarded data agree.
+  p.pop('lesson',None);p['nodes']=[{'id':'data','type':'csv','node_version':'1.0.0','parameters':{'content':'rate\n1\n14.5\n15\n20\n','delimiter':','},'position':{'x':0,'y':0}},{'id':'box','type':'boxplot','node_version':'1.0.0','parameters':{'column':'rate','operator':'>=','threshold':14.5},'position':{'x':300,'y':0}},{'id':'summary','type':'describe','node_version':'1.0.0','parameters':{},'position':{'x':600,'y':0}}];p['edges']=[{'id':'first','source':'data','source_port':'data','target':'box','target_port':'data'},{'id':'second','source':'box','source_port':'data','target':'summary','target_port':'data'}]
+  run=execute(p);self.assertEqual(run['status'],'succeeded',run['nodes']);self.assertEqual(run['nodes']['box']['result']['replacement']['matched'],3)
+  expected=np.mean([1,np.mean([1,14.5,15,20]),np.mean([1,14.5,15,20]),np.mean([1,14.5,15,20])]);self.assertAlmostEqual(run['nodes']['summary']['result']['rows'][0]['mean'],expected)

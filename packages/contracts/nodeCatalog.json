@@ -1448,15 +1448,18 @@
       "data": "Dataset"
     },
     "outputs": {
-      "result": "Result"
+      "result": "Result",
+      "data": "Dataset"
     },
     "defaults": {
       "column": "valor",
       "title": "Tasa de interés de los préstamos en EE. UU. (%)",
       "y_label": "Valores",
-      "color": "#51df83"
+      "color": "#51df83",
+      "operator": "none",
+      "threshold": 14.5
     },
-    "explanation": "Resume una variable numérica con caja Q1–Q3, mediana y bigotes de Tukey (1,5×RIC). Muestra atípicos sin eliminarlos. Selecciona una columna y ajusta título, eje y color. No prueba normalidad.",
+    "explanation": "Resume una variable numérica con caja Q1–Q3, mediana y bigotes de Tukey (1,5×RIC). Muestra atípicos sin eliminarlos. Selecciona una columna y ajusta título, eje y color. No prueba normalidad. Opcionalmente reemplaza valores por su media original según >, >=, <, <=, == o !=; se conserva la fuente y se ofrece una tabla de salida.",
     "references": [
       "B17",
       "B18"

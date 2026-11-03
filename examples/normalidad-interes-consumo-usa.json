@@ -130,6 +130,23 @@
         "x": 680,
         "y": 470
       }
+    },
+    {
+      "id": "caja_tratada",
+      "type": "boxplot",
+      "node_version": "1.0.0",
+      "parameters": {
+        "column": "lending_rate",
+        "title": "Tasa de préstamos · reemplazo >14,5 por media",
+        "y_label": "Valores",
+        "color": "#008000",
+        "operator": ">",
+        "threshold": 14.5
+      },
+      "position": {
+        "x": 1010,
+        "y": 500
+      }
     }
   ],
   "edges": [
@@ -188,6 +205,13 @@
       "source_port": "data",
       "target": "caja",
       "target_port": "data"
+    },
+    {
+      "id": "unir-caja-tratada",
+      "source": "unir",
+      "source_port": "data",
+      "target": "caja_tratada",
+      "target_port": "data"
     }
   ],
   "lesson": {
@@ -237,6 +261,13 @@
         "instruction": "Dibuja lending_rate antes de imputar; observa mediana, cuartiles y atípicos. Puedes editar el color.",
         "expected": "Boxplot verde con etiquetas y tabla de resumen; faltantes excluidos y contados.",
         "question": "¿Los valores atípicos deben borrarse por aparecer fuera de los bigotes?"
+      },
+      {
+        "node_id": "caja_tratada",
+        "title": "Comparar reemplazo por umbral",
+        "instruction": "Elige > y 14.5 para reemplazar por la media original. Prueba >= para incluir valores exactamente iguales al umbral.",
+        "expected": "Caja tratada con condición, media y recuento de reemplazos; la rama original permanece intacta.",
+        "question": "¿Qué diferencia hay entre > y >=? ¿Qué cambia en la distribución?"
       },
       {
         "node_id": "imputar",

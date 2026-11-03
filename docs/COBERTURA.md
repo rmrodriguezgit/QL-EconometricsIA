@@ -74,3 +74,7 @@ C02/C04/C05/C08/C11: unión por período, imputación explícita y normalidad de
 ### Evidencia adicional · 0.8.1
 
 C03/C04: Boxplot reutilizable y N01 actualizado; B17/B18. Pruebas en tests/test_box_plot.py. Restantes subtemas y cobertura exhaustiva siguen pendientes.
+
+### Evidencia adicional · 0.8.2
+
+C03/C04/C11: comparación explícita de Boxplot original y tratado por umbral; tests/test_box_plot.py contrasta operadores y datos de salida. No completa estrategias generales de robustez ni elimina los pendientes.

@@ -452,8 +452,8 @@ def analyze(kind,inputs,params):
 def run_tool(kind,inputs,params):
     if kind=='boxplot':
         from .box_plot import box_plot
-        result=box_plot(inputs['data'],params)
-        return finite_json(result),{'result':result}
+        result,data=box_plot(inputs['data'],params,with_data=True)
+        return finite_json(result),{'result':result,'data':data}
     if kind in ['join_series','impute_mean','normality','residual_normality']:
         from .normality_tools import run_normality_tool
         result,outputs=run_normality_tool(kind,inputs,params)

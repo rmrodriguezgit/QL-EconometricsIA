@@ -2,7 +2,7 @@
 
 **Conecta datos. Estima modelos. Comprende cada resultado.**
 
-[![Versión](https://img.shields.io/badge/versión-0.8.1-6cc9ac)](https://github.com/rmrodriguezgit/Quantlabs-Econometrics/blob/main/VERSION)
+[![Versión](https://img.shields.io/badge/versión-0.8.2-6cc9ac)](https://github.com/rmrodriguezgit/Quantlabs-Econometrics/blob/main/VERSION)
 [![Escritorio](https://img.shields.io/badge/escritorio-macOS%20%7C%20Windows-79b4ef)](docs/ARRANQUE.md)
 [![Electron](https://img.shields.io/badge/Electron-45.2.1-79b4ef)](apps/desktop/package.json)
 [![React](https://img.shields.io/badge/React-19.3.1-61dafb)](apps/desktop/package.json)
@@ -14,7 +14,7 @@
 
 Laboratorio educativo de econometría con programación visual mediante nodos y motor analítico Python. Objetivo de escritorio: macOS y Windows. [Repositorio](https://github.com/rmrodriguezgit/Quantlabs-Econometrics).
 
-**Versión 0.8.1 · 2026-11-03 · Alpha local con escritorio Electron y estudio oscuro. Instaladores independientes y actualización automática pendientes.**
+**Versión 0.8.2 · 2026-11-03 · Alpha local con escritorio Electron y estudio oscuro. Instaladores independientes y actualización automática pendientes.**
 
 ## Abrir en el escritorio
 
@@ -124,3 +124,5 @@ Añade **Serie temporal** en Exploración, conecta Banco Mundial, CSV o Wooldrid
 En **Archivos y ejemplos → Ejemplos**, busca **N01 · Normalidad · interés y consumo USA**. Incluye dos fuentes anuales Banco Mundial, unión por año, descriptivos, histogramas, Q–Q, Shapiro–Wilk, Jarque–Bera, imputación explícita por media, OLS y diagnóstico de residuos. Es un ejemplo complementario a los 28 módulos. [Guía y límites](docs/NORMALIDAD.md).
 
 **Boxplot** en Exploración: selecciona variable, título, etiqueta vertical y color. Incluido en N01 antes de imputar. [Guía](docs/BOXPLOT.md).
+
+Boxplot incluye **Reemplazo condicional**: elige `>`, `>=`, `<`, `<=`, `==` o `!=` y un umbral para sustituir por la media original. Muestra el recuento y ofrece la tabla resultante por `data`, conservando la fuente.

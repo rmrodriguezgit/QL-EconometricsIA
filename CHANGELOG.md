@@ -144,3 +144,9 @@ La aplicación y sus instaladores están pendientes de implementación. Los camb
 
 - Nodo Boxplot con variable, título, eje vertical y color editables; cuartiles lineales, mediana, bigotes de Tukey y atípicos, con resumen y faltantes contados.
 - Incluido en N01 antes de imputar. No elimina atípicos ni prueba normalidad.
+
+## 0.8.2 - 2026-11-03
+
+- Boxplot: reemplazo opcional por la media original con condiciones >, >=, <, <=, == o != y umbral editable. Desactivado por defecto.
+- Auditoría de condición, media y recuento; fuente intacta y salida data para continuar el flujo con la tabla resultante.
+- N01 compara cajas originales y tratadas con >14,5. Pruebas de fronteras inclusivas, equivalencia NumPy y propagación de datos.

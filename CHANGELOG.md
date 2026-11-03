@@ -150,3 +150,8 @@ La aplicación y sus instaladores están pendientes de implementación. Los camb
 - Boxplot: reemplazo opcional por la media original con condiciones >, >=, <, <=, == o != y umbral editable. Desactivado por defecto.
 - Auditoría de condición, media y recuento; fuente intacta y salida data para continuar el flujo con la tabla resultante.
 - N01 compara cajas originales y tratadas con >14,5. Pruebas de fronteras inclusivas, equivalencia NumPy y propagación de datos.
+
+## 0.8.3 - 2026-11-03
+
+- Corregida la vista inferior de recorridos guiados: Resultados respeta el ojo de todos los nodos y muestra ambas cajas de N01.
+- Seleccionar un paso abre su salida en Resultados. Navegación directa entre tarjetas visibles, con títulos para distinguir Boxplot original y tratado.

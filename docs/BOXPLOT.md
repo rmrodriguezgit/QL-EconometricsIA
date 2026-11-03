@@ -22,3 +22,7 @@ La media se calcula una sola vez con los valores originales observados, incluido
 La fuente original permanece intacta. La nueva salida **data · Dataset** de Boxplot permite conectar descriptivos, normalidad, OLS u otra visualización a la tabla resultante. La salida **result** conserva el gráfico y su auditoría. Guardar el proyecto conserva la condición; exportar resultados incluye los datos de salida según los límites habituales de exportación.
 
 N01 incluye dos cajas en ramas paralelas: original y reemplazo >14,5. El reemplazo no normaliza ni corrige automáticamente los datos; puede alterar distribución y resultados inferenciales. Las pruebas verifican seis operadores, frontera 14,5, equivalencia con np.where, fuente intacta y uso de data por un nodo posterior.
+
+## Encontrar las cajas en Resultados · 0.8.3
+
+La pestaña **Resultados** muestra todos los nodos con ojo activo, también en N01. En la navegación de salidas pulsa Boxplot y su título para ir a la caja original o tratada. Seleccionar los pasos 5 o 6 abre Resultados y activa la salida correspondiente. Regresión muestra su tabla y ecuación, no las cajas.

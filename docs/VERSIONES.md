@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.8.2**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.8.3**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -176,3 +176,7 @@ Boxplot añade el tipo 60. Cálculo NumPy con cuartiles lineales y bigotes 1,5×
 ## 0.8.2 · 2026-11-03
 
 Boxplot mantiene el tipo (60 herramientas) y añade salida Dataset y tratamiento condicional por media. Comparadores en lista cerrada, sin eval; media original y faltantes conservados. Parámetros compatibles con proyectos anteriores; selector visible aunque no incluyan operator. Sin nuevas dependencias.
+
+## 0.8.3 · 2026-11-03
+
+Resultados utiliza el mismo panel de salidas visibles en proyectos libres y recorridos guiados. Se retira la rama que limitaba los recorridos a una sola salida. Navegación por tarjetas y pasos abre Resultados; Regresión conserva su panel propio. Sin cambios científicos ni dependencias.

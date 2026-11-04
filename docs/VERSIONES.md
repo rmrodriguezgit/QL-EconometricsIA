@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.11.1**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.12.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -204,3 +204,7 @@ Resultados utiliza el mismo panel de salidas visibles en proyectos libres y reco
 ## Escritorio 0.11.1
 
 Sin dependencias nuevas. El supervisor de desarrollo usa la API `createServer` de Vite 8.3.5 ya instalado y el `cli.js` de Electron 45.2.1. Decisión: Vite en el mismo proceso que el supervisor para que no pueda quedar huérfano; Electron vigila el PID del supervisor (`QL_DEV_SUPERVISOR`).
+
+## Interfaz 0.12.0
+
+Sin dependencias nuevas: modo ampliado con CSS (`position: fixed`) e iconos `Maximize2`/`Minimize2`/`Scan` de lucide-react 1.66.0 ya instalado. Decisión: ocupar la ventana en vez de la Fullscreen API, porque Electron deniega permisos al renderer por política de seguridad.

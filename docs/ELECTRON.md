@@ -44,6 +44,10 @@ En macOS también sirve el doble clic en `Arrancar-Quantlabs-Dev.command` (equiv
 
 Actualizar el checkout: guardar proyectos, salir, ejecutar git pull --ff-only, uv sync y npm ci --prefix apps/desktop; después arrancar de nuevo. No ejecutar git pull desde el renderer ni reemplazar dependencias mientras se calcula.
 
+## Espacio de trabajo a pantalla completa (0.12.0)
+
+El botón **Ampliar** (icono de flechas, junto a *Ejecutar flujo*) hace que el lienzo ocupe toda la ventana para revisar grafos grandes. Biblioteca, inspector, guía y resultados quedan ocultos; el grafo se reencuadra automáticamente. Una barra flotante muestra el nombre del proyecto, nodos y conexiones, y ofrece **Encuadrar**, **Ejecutar** y **Volver al layout**. `Esc` también regresa al layout normal; si hay un diálogo abierto (Cerebro IA, Proyectos, Ecuación), `Esc` lo cierra primero. Los diálogos se muestran por encima del lienzo ampliado. Ocupa la ventana, no el monitor: para el monitor completo combínalo con *Vista → Pantalla completa* de Electron.
+
 ## Interfaz
 
 Referencia revisada: [Quantlabs-Blueprints](https://github.com/rmrodriguezgit/Quantlabs-Blueprints), concretamente su renderer/styles.css y main/main.ts, 2026-11-01. Se adopta la organización de estudio oscuro con biblioteca, canvas, inspector y resultados, conservando los contratos, ejemplos y motor de Econometrics. No se cambia el remoto Git.

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ReactFlow, Background, Controls, Handle, Position, addEdge, applyNodeChanges, applyEdgeChanges, type Node, type NodeProps, type Connection, type ReactFlowInstance } from '@xyflow/react';
-import { ArrowDownToLine, ArrowUpFromLine, FolderOpen, Play, Plus, Search, FlaskConical, Database, ChartScatter, ChartNoAxesCombined, Sigma, BookOpen, ChevronRight, CircleCheck, RotateCcw, Undo2, Brain, Trash2, Unplug, Network, CircleAlert, Braces, LoaderCircle, Eye, EyeOff, X } from 'lucide-react';
+import { ArrowDownToLine, ArrowUpFromLine, FolderOpen, Play, Plus, Search, FlaskConical, Database, ChartScatter, ChartNoAxesCombined, Sigma, BookOpen, ChevronRight, CircleCheck, RotateCcw, Undo2, Brain, Trash2, Unplug, Network, CircleAlert, Braces, LoaderCircle, Eye, EyeOff, X, Maximize2, Minimize2, Scan } from 'lucide-react';
 import OutputDashboard from './OutputDashboard';
 import {nextTools,retainResults} from './flowUi';
 import DataVariables from './DataVariables';
@@ -68,6 +68,18 @@ export default function App() {
   const [equationOpen, setEquationOpen] = useState(false);
   const [managerOpen, setManagerOpen] = useState(false);
   const [brainOpen, setBrainOpen] = useState(false);
+  // Espacio de trabajo a pantalla completa para revisar el grafo; Esc vuelve al layout normal.
+  const [focusMode, setFocusMode] = useState(false);
+  useEffect(() => {
+    if (!focusMode) return;
+    const onKey = (event: KeyboardEvent) => {
+      // Esc cierra primero cualquier diálogo abierto; solo después sale del modo ampliado.
+      if (event.key !== 'Escape' || document.querySelector('dialog[open]')) return;
+      setFocusMode(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [focusMode]);
   const [activeFile, setActiveFile] = useState<SavedProject | null>(null);
   const [stepIndex,setStepIndex]=useState(0);
   const [flow,setFlow]=useState<ReactFlowInstance<CanvasNode>|null>(null);
@@ -183,7 +195,9 @@ export default function App() {
   const suggestionSource=project.nodes.find(node=>node.id===suggestion?.id);
   const recommendations=suggestion&&suggestionSource?nextTools(catalog,suggestionSource.type,suggestion.port):[];
   const visible = Object.entries(catalog).filter(([, value]) => `${value.label} ${value.detail}`.toLocaleLowerCase().includes(query.toLocaleLowerCase()));
-  return <div className="app-shell">
+  const refit=()=>requestAnimationFrame(()=>requestAnimationFrame(()=>void flow?.fitView({padding:.12,minZoom:.1,maxZoom:1.2,duration:250})));
+  const toggleFocus=(value=!focusMode)=>{setFocusMode(value);setSuggestion(null);refit();};
+  return <div className={`app-shell${focusMode?' workspace-focus':''}`}>
     {suggestion&&suggestionSource&&<aside className="port-suggestions" aria-label="Qué conectar después" style={{left:Math.max(8,Math.min(suggestion.x+14,window.innerWidth-365)),top:Math.max(8,Math.min(suggestion.y,window.innerHeight-430))}}><header><div><strong>Después de {catalog[suggestionSource.type].label}</strong><small>{suggestion.port} · {catalog[suggestionSource.type].outputs[suggestion.port]}</small></div><button aria-label="Cerrar recomendaciones" onClick={()=>setSuggestion(null)}><X size={15}/></button></header><p>Elige para añadir y conectar una herramienta compatible.</p><div className="recommendation-list">{recommendations.map(option=><button disabled={busy} key={option.kind} onClick={()=>addRecommended(option.kind as Kind,option.input)}><strong>{option.label}<Plus size={13}/></strong><span>{option.detail}</span><small>Conecta a {option.input}{option.remaining.length?` · Completa también: ${option.remaining.join(', ')}`:' · Entrada lista'}</small></button>)}{!recommendations.length&&<p>Esta salida no tiene otra herramienta compatible. Usa el ojo del nodo para ver el resultado y Exportar para guardarlo.</p>}</div></aside>}
     <header className="app-header">
       <div className="brand"><span className="brand-mark"><Network size={21} /></span><span>Quantlabs<span className="brand-light"> / Econometrics</span></span><span className="alpha-tag">STUDIO</span></div>
@@ -203,11 +217,12 @@ export default function App() {
           <button className="icon-button" title="Deshacer" aria-label="Deshacer" disabled={!history.length || busy} onClick={() => { const previous = history[history.length - 1]; setHistory(history.slice(0, -1)); setProject(previous);setRun(retainResults(project,previous,run)); }}><Undo2 size={16} /></button>
           <button className="icon-button" title="Abrir proyecto" aria-label="Abrir proyecto" disabled={busy} onClick={() => fileRef.current?.click()}><ArrowUpFromLine size={16} /></button>
           <button className="icon-button" title="Guardar proyecto" aria-label="Guardar proyecto" disabled={busy} onClick={() => void saveCurrent()}><ArrowDownToLine size={16} /></button>
+          <button className="icon-button" title="Ampliar el espacio de trabajo a toda la pantalla" aria-label="Ampliar espacio de trabajo" aria-pressed={focusMode} onClick={() => toggleFocus(true)}><Maximize2 size={16} /></button>
           <button className="run-button" disabled={busy || !project.nodes.length} onClick={() => void execute()}>{busy ? <LoaderCircle className="spin" size={15} /> : <Play size={14} fill="currentColor" />}{busy ? 'Calculando…' : 'Ejecutar flujo'}</button>
         </div></div>
         <input ref={fileRef} type="file" accept=".json" hidden onChange={e => { void openProject(e.target.files?.[0]); e.target.value = ''; }} />
         {project.lesson&&<LessonGuide lesson={project.lesson} index={stepIndex} run={run} busy={busy} onChoose={chooseStep} onExecute={id=>{setSelectedId(id);void execute(project,id);}} onOverview={()=>void flow?.fitView({padding:.15,minZoom:.1,maxZoom:.8,duration:250})}/>}
-        <div className="canvas-area">{!project.nodes.length&&<div className="empty-canvas"><Network size={30}/><h2>Empieza un proyecto nuevo</h2><p>1. Ponle un nombre arriba.<br/>2. Añade una fuente de datos.<br/>3. Conecta las herramientas y ejecuta.</p><button onClick={()=>addNode('simulate')} disabled={busy}><Plus size={15}/>Añadir datos simulados</button><small>También puedes cargar CSV, Wooldridge o Banco Mundial desde la biblioteca.</small></div>}{selectedEdge && <div className="edge-actions"><span>{nodeLabel(selectedEdge.source)} → {nodeLabel(selectedEdge.target)}</span><button disabled={busy} onClick={() => disconnect(selectedEdge.id)}><Unplug size={13} />Desconectar</button></div>}<div className="canvas-breadcrumb"><Network size={13} /> Espacio de trabajo <ChevronRight size={12} /> <strong>{project.title || 'Sin título'}</strong></div><ReactFlow<CanvasNode> nodes={nodes} edges={edges} nodeTypes={nodeTypes} onInit={setFlow} onConnect={connect} isValidConnection={validConnection} nodesDraggable={!busy} nodesConnectable={!busy} elementsSelectable={!busy}
+        <div className="canvas-area">{focusMode&&<div className="focus-bar" role="toolbar" aria-label="Revisión a pantalla completa"><span className="focus-title"><span className="project-dot"/>{project.title}<small>{project.nodes.length} nodos · {project.edges.length} conexiones</small></span><button title="Encuadrar todo el grafo" onClick={refit}><Scan size={14}/>Encuadrar</button><button className="focus-run" disabled={busy || !project.nodes.length} onClick={() => void execute()}>{busy ? <LoaderCircle className="spin" size={14} /> : <Play size={13} fill="currentColor" />}{busy ? 'Calculando…' : 'Ejecutar'}</button><button className="focus-exit" title="Volver al layout normal (Esc)" aria-label="Volver al layout normal" onClick={() => toggleFocus(false)}><Minimize2 size={14}/>Volver al layout<kbd>Esc</kbd></button></div>}{!project.nodes.length&&<div className="empty-canvas"><Network size={30}/><h2>Empieza un proyecto nuevo</h2><p>1. Ponle un nombre arriba.<br/>2. Añade una fuente de datos.<br/>3. Conecta las herramientas y ejecuta.</p><button onClick={()=>addNode('simulate')} disabled={busy}><Plus size={15}/>Añadir datos simulados</button><small>También puedes cargar CSV, Wooldridge o Banco Mundial desde la biblioteca.</small></div>}{selectedEdge && <div className="edge-actions"><span>{nodeLabel(selectedEdge.source)} → {nodeLabel(selectedEdge.target)}</span><button disabled={busy} onClick={() => disconnect(selectedEdge.id)}><Unplug size={13} />Desconectar</button></div>}<div className="canvas-breadcrumb"><Network size={13} /> Espacio de trabajo <ChevronRight size={12} /> <strong>{project.title || 'Sin título'}</strong></div><ReactFlow<CanvasNode> nodes={nodes} edges={edges} nodeTypes={nodeTypes} onInit={setFlow} onConnect={connect} isValidConnection={validConnection} nodesDraggable={!busy} nodesConnectable={!busy} elementsSelectable={!busy}
           onNodeClick={(_, node) => { setTab('Resultados');setOutputVisible(node.id,true);setSelectedId(node.id);setSuggestion(null); setSelectedEdgeId('');const index=project.lesson?.steps.findIndex(step=>step.node_id===node.id);if(index!==undefined&&index>=0)setStepIndex(index); }} onEdgeClick={(_, edge) => { setSelectedEdgeId(edge.id); setSelectedId(''); }} onPaneClick={() => { setSuggestion(null);setSelectedId(''); setSelectedEdgeId(''); }}
           onNodeDragStart={() => setHistory(h => [...h.slice(-29), project])}
           onNodesChange={changes => { if (busy) return; const changed = applyNodeChanges(changes, nodes); if (changes.some(c => c.type === 'position')) setProject(p => ({ ...p, nodes: p.nodes.map(n => ({ ...n, position: changed.find(c => c.id === n.id)?.position ?? n.position })) })); const removed = changes.filter(c => c.type === 'remove').map(c => c.id); if (removed.length) update({ ...project, nodes: project.nodes.filter(n => !removed.includes(n.id)), edges: project.edges.filter(e => !removed.includes(e.source) && !removed.includes(e.target)) }); }}

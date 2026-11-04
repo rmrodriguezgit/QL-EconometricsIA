@@ -2,7 +2,7 @@
 
 **Describe tu análisis. El segundo cerebro construye el blueprint. Tú compruebas cada resultado.**
 
-[![Versión](https://img.shields.io/badge/versión-0.11.1-6cc9ac)](VERSION)
+[![Versión](https://img.shields.io/badge/versión-0.12.0-6cc9ac)](VERSION)
 [![Cerebro IA](https://img.shields.io/badge/cerebro-Qwen%20local%20%2B%20RAG-c49af8)](docs/CEREBRO.md)
 [![Escritorio](https://img.shields.io/badge/escritorio-macOS%20%7C%20Windows-79b4ef)](docs/ARRANQUE.md)
 [![Electron](https://img.shields.io/badge/Electron-45.2.1-79b4ef)](apps/desktop/package.json)
@@ -15,7 +15,7 @@
 
 Laboratorio educativo de econometría con programación visual mediante nodos, motor analítico Python y un **segundo cerebro de IA local** que convierte enunciados en flujos conectados y verificados. Objetivo de escritorio: macOS y Windows. [Repositorio](https://github.com/rmrodriguezgit/QL-EconometricsIA) · derivado de [Quantlabs-Econometrics](https://github.com/rmrodriguezgit/Quantlabs-Econometrics) con su historial completo.
 
-**Versión 0.11.1 · 2026-11-04 · Alpha local con escritorio Electron, estudio oscuro y segundo cerebro (Ollama/Qwen + reglas). Instaladores independientes y actualización automática pendientes.**
+**Versión 0.12.0 · 2026-11-04 · Alpha local con escritorio Electron, estudio oscuro y segundo cerebro (Ollama/Qwen + reglas). Instaladores independientes y actualización automática pendientes.**
 
 ## Segundo cerebro IA
 
@@ -120,6 +120,10 @@ El último comando valida documentación, pruebas y frontend, incorpora rutas pe
 | [Versiones](docs/VERSIONES.md) | Versiones observadas, adoptadas y pendientes |
 | [Versionado](docs/VERSIONADO.md) | Commits, push y recuperación |
 | [Cambios](CHANGELOG.md) | Historial de entregas |
+
+## Revisar a pantalla completa (0.12.0)
+
+El botón **Ampliar** de la barra del lienzo extiende el espacio de trabajo a toda la ventana para revisar el grafo; **Volver al layout** o `Esc` restauran la disposición normal. [Detalles](docs/ELECTRON.md#espacio-de-trabajo-a-pantalla-completa-0120).
 
 ## Escritorio Electron (0.5.0)
 

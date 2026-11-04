@@ -48,6 +48,10 @@ Actualizar el checkout: guardar proyectos, salir, ejecutar git pull --ff-only, u
 
 El botón **Ampliar** (icono de flechas, junto a *Ejecutar flujo*) hace que el lienzo ocupe toda la ventana para revisar grafos grandes. Biblioteca, inspector, guía y resultados quedan ocultos; el grafo se reencuadra automáticamente. Una barra flotante muestra el nombre del proyecto, nodos y conexiones, y ofrece **Encuadrar**, **Ejecutar** y **Volver al layout**. `Esc` también regresa al layout normal; si hay un diálogo abierto (Cerebro IA, Proyectos, Ecuación), `Esc` lo cierra primero. Los diálogos se muestran por encima del lienzo ampliado. Ocupa la ventana, no el monitor: para el monitor completo combínalo con *Vista → Pantalla completa* de Electron.
 
+### Resultados a pantalla completa (0.12.1)
+
+El botón **Ampliar** de la cabecera de resultados (junto a *Exportar*) extiende el área **Resultados · Regresión · Descriptivos · Trazabilidad** a toda la ventana. Las pestañas quedan fijas arriba mientras el contenido se desplaza, y siguen funcionando. **Volver al layout** o `Esc` restauran la disposición. Ampliar el lienzo cierra la ampliación de resultados y viceversa; solo una vista ampliada a la vez.
+
 ## Interfaz
 
 Referencia revisada: [Quantlabs-Blueprints](https://github.com/rmrodriguezgit/Quantlabs-Blueprints), concretamente su renderer/styles.css y main/main.ts, 2026-11-01. Se adopta la organización de estudio oscuro con biblioteca, canvas, inspector y resultados, conservando los contratos, ejemplos y motor de Econometrics. No se cambia el remoto Git.

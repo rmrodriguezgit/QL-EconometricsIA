@@ -206,3 +206,8 @@ La aplicación y sus instaladores están pendientes de implementación. Los camb
 
 - Lienzo: modo de revisión a pantalla completa. Botón **Ampliar** en la barra del lienzo; barra flotante con proyecto, nodos/conexiones, **Encuadrar**, **Ejecutar** y **Volver al layout**; `Esc` regresa (cede antes a los diálogos abiertos). El grafo se reencuadra al entrar y al salir.
 - Verificado en la interfaz (navegador, 1440×900): el lienzo ocupa toda la ventana, ejecuta el flujo desde la barra ampliada y vuelve al layout con el botón y con `Esc`. No probado aún a mano dentro de la ventana Electron.
+
+## 0.12.1 - 2026-11-04
+
+- Resultados: botón **Ampliar** junto a *Exportar* que lleva Resultados, Regresión, Descriptivos y Trazabilidad a toda la ventana, con pestañas fijas al desplazarse; **Volver al layout** o `Esc` regresan. Solo una vista ampliada a la vez (lienzo o resultados).
+- Verificado en el navegador (1440×900): ocupa la ventana, el contenido desplaza con la cabecera fija, el cambio de pestaña conserva la ampliación y `Esc` vuelve al layout.

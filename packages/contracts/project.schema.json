@@ -193,7 +193,12 @@
             "johansen",
             "wls",
             "regularized",
-            "cluster_selection"
+            "cluster_selection",
+            "panel",
+            "egarch",
+            "stepwise",
+            "marginal_effects",
+            "bootstrap"
           ]
         },
         "node_version": {

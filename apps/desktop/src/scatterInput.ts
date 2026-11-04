@@ -18,7 +18,7 @@ export function initialScatterAxes(type:string,parameters:Record<string,string|n
  return type==='worldbank'&&parameters.x==='ingreso'&&parameters.y==='consumo'?{...parameters,x:'periodo',y:'valor'}:parameters;
 }
 
-export const singleColumnKeys=new Set(['x','y','column','value','nominal','index','population','returns','signal','before','after','error']);
+export const singleColumnKeys=new Set(['x','y','column','value','nominal','index','population','returns','signal','before','after','error','entity']);
 export const multipleColumnKeys=new Set(['columns','features','instruments']);
 export const isColumnParameter=(key:string)=>singleColumnKeys.has(key)||multipleColumnKeys.has(key);
 

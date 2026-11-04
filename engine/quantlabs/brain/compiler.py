@@ -13,16 +13,18 @@ from .knowledge import EXCLUDED_TOOLS, fold
 
 SOURCES = {kind for kind, definition in NODE_CATALOG.items()
            if not definition['inputs'] and definition['outputs'].get('data') == 'Dataset'}
-SINGLE_COLUMNS = {'x', 'y', 'column', 'value', 'nominal', 'index', 'population', 'returns', 'signal', 'before', 'after', 'error', 'time', 'group'}
+SINGLE_COLUMNS = {'x', 'y', 'column', 'value', 'nominal', 'index', 'population', 'returns', 'signal', 'before', 'after', 'error', 'time', 'group', 'entity'}
 MULTI_COLUMNS = {'columns', 'features', 'instruments'}
 TARGET_NAMES = ['y', 'consumo', 'clase', 'produccion', 'valor', 'ventas', 'retorno', 'despues', 'lwage', 'wage', 'precio']
 MAX_STEPS = 12
 LINEAR = {'ols', 'multiple_ols', 'ecm', 'covariance'}
 # Qué nodos productores de FittedModel acepta cada consumidor (según tools.py y normality_tools.py).
 MODEL_ACCEPTS = {
-    'diagnostics': LINEAR | {'garch'}, 'covariance': LINEAR, 'residual_normality': {'ols', 'multiple_ols', 'robust', 'covariance'},
-    'silhouette': {'kmeans'}, 'evaluate': {'ols', 'multiple_ols', 'robust', 'iv2sls', 'logit', 'ecm', 'covariance', 'wls', 'mlp', 'arima', 'hmm', 'gmm'},
-    'compare_models': {'ols', 'multiple_ols', 'robust', 'iv2sls', 'logit', 'ecm', 'covariance', 'wls', 'mlp', 'arima'},
+    'diagnostics': LINEAR | {'garch', 'egarch', 'stepwise'}, 'residual_normality': {'ols', 'multiple_ols', 'robust', 'covariance', 'stepwise'},
+    'marginal_effects': {'logit', 'ols', 'multiple_ols', 'covariance', 'robust', 'wls', 'stepwise'},
+    'silhouette': {'kmeans'}, 'evaluate': {'ols', 'multiple_ols', 'robust', 'iv2sls', 'logit', 'ecm', 'covariance', 'wls', 'mlp', 'arima', 'hmm', 'gmm', 'stepwise'},
+    'compare_models': {'ols', 'multiple_ols', 'robust', 'iv2sls', 'logit', 'ecm', 'covariance', 'wls', 'mlp', 'arima', 'stepwise'},
+    'covariance': LINEAR | {'stepwise'},
 }
 
 
@@ -174,12 +176,16 @@ def _pick(candidates, prompt, preferred=()):
     return next((name for name in preferred if name in candidates), candidates[-1] if candidates else None)
 
 
+def params_entity(node):
+    return str(node['parameters'].get('entity', '')) or None
+
+
 def assign_columns(node, schema, prompt):
     """Reasigna parámetros de columna con columnas numéricas reales del puerto de entrada."""
     numeric = list(schema.get('numeric_columns') or [])
     if not numeric:
         return False
-    usable = [c for c in numeric if c != 'periodo'] or numeric
+    usable = [c for c in numeric if c not in ('periodo', params_entity(node))] or numeric
     params, changed = node['parameters'], False
     kind = node['type']
     target = _pick(usable, prompt, ['clase'] if kind == 'logit' else TARGET_NAMES)
@@ -190,7 +196,9 @@ def assign_columns(node, schema, prompt):
         current = [c.strip() for c in str(params[key]).split(',') if c.strip()]
         if current and all(c in schema.get('columns', []) for c in current):
             continue
-        if key == 'time':
+        if key == 'entity':
+            value = next((c for c in schema.get('columns', []) if fold(c) in ('entidad', 'id', 'pais', 'empresa', 'unidad', 'country')), params[key])
+        elif key == 'time':
             value = 'periodo' if 'periodo' in schema.get('columns', []) else (schema.get('columns') or [''])[0]
         elif key in ('y', 'column', 'value', 'returns', 'after', 'nominal'):
             value = target

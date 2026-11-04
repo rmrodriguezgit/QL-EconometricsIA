@@ -57,9 +57,12 @@ class IntentTests(BrainCase):
         self.assertNotIn('regularized', kinds + [g['id'] for g in gaps])
 
     def test_unregistered_topics_become_gap_specs(self):
-        _, gaps = detect_tools('Estima efectos fijos con datos de panel')
-        self.assertEqual(gaps[0]['id'], 'panel')
-        self.assertEqual(gaps[0]['outputs']['model'], 'FittedModel')
+        _, gaps = detect_tools('Modela la volatilidad multivariada con DCC')
+        self.assertEqual(gaps[0]['id'], 'mgarch')
+        self.assertEqual(gaps[0]['inputs']['data'], 'Dataset')
+        kinds, gaps = detect_tools('Estima efectos fijos con datos de panel')
+        self.assertIn('panel', kinds)
+        self.assertEqual(gaps, [])
 
 
 class CompilerTests(BrainCase):
@@ -128,13 +131,13 @@ class CompilerTests(BrainCase):
 
 class ServiceTests(BrainCase):
     def test_auto_falls_back_to_rules_and_verifies_by_execution(self):
-        result = plan({'prompt': 'Regresión múltiple con normalidad de residuos y un modelo de datos de panel'})
+        result = plan({'prompt': 'Regresión múltiple con normalidad de residuos y volatilidad multivariada DCC'})
         self.assertEqual(result['engine'], 'rules')
         self.assertIn('Ollama', result['fallback_reason'])
         self.assertTrue(result['verification']['executed'])
         self.assertEqual(result['verification']['status'], 'succeeded')
-        self.assertEqual([g['id'] for g in result['gaps']], ['panel'])
-        self.assertEqual(store.list_gaps('pending')[0]['id'], 'panel')
+        self.assertEqual([g['id'] for g in result['gaps']], ['mgarch'])
+        self.assertEqual(store.list_gaps('pending')[0]['id'], 'mgarch')
         self.assertEqual(len(store.history()), 1)
 
     def test_explicit_ollama_engine_reports_unavailability(self):
@@ -146,12 +149,13 @@ class ServiceTests(BrainCase):
             {'id': 'datos', 'tool': 'synthetic', 'parameters': {'scenario': 'regression'}, 'why': 'datos'},
             {'id': 'mco', 'tool': 'ols', 'parameters': {'x': 'ingreso', 'y': 'consumo'}, 'why': 'estimar'},
             {'id': 'diag', 'tool': 'diagnostics', 'why': 'residuos'}],
-            'missing': [{'name': 'Contraste de efectos fijos en panel', 'purpose': 'datos de panel'}, {'name': 'missing', 'purpose': ''}]}
+            'missing': [{'name': 'Volatilidad multivariada', 'purpose': 'modelo DCC entre activos'}, {'name': 'missing', 'purpose': ''},
+                        {'name': 'Panel', 'purpose': 'efectos fijos'}]}
         with patch.object(llm, 'plan', return_value=(fake, {'model': 'qwen-test', 'seconds': 1})):
-            result = plan({'prompt': 'consumo e ingreso con panel'})
+            result = plan({'prompt': 'consumo e ingreso con volatilidad multivariada'})
         self.assertEqual(result['engine'], 'ollama')
         self.assertEqual([n['type'] for n in result['project']['nodes']], ['synthetic', 'ols', 'diagnostics'])
-        self.assertEqual([g['id'] for g in result['gaps']], ['panel'])
+        self.assertEqual([g['id'] for g in result['gaps']], ['mgarch'])  # 'panel' ya existe: no es hueco
 
     def test_feedback_feeds_memory_and_rpc_endpoints(self):
         result = plan({'prompt': 'histograma y normalidad de una variable', 'engine': 'rules'})
@@ -165,8 +169,15 @@ class ServiceTests(BrainCase):
         self.assertEqual(bad['error']['data']['code'], 'INVALID_PARAMETERS')
 
     def test_normalize_gaps_deduplicates(self):
-        gaps = normalize_gaps([{'name': 'Modelo VAR', 'purpose': 'vector autorregresivo'}, {'id': 'panel', 'name': 'x'}, {'id': 'panel', 'name': 'y'}])
-        self.assertEqual(len([g for g in gaps if g['id'] == 'panel']), 1)
+        gaps = normalize_gaps([{'name': 'Modelo VAR', 'purpose': 'vector autorregresivo'}, {'id': 'mgarch', 'name': 'x'}, {'id': 'mgarch', 'name': 'y'}])
+        self.assertEqual([g['id'] for g in gaps], ['mgarch'])  # VAR ya está registrado y no se duplica
+
+    def test_panel_prompt_builds_verified_blueprint(self):
+        result = plan({'prompt': 'Datos de panel con efectos fijos, aleatorios y Hausman', 'engine': 'rules'})
+        types = [n['type'] for n in result['project']['nodes']]
+        self.assertEqual(result['project']['nodes'][0]['parameters']['scenario'], 'panel')
+        self.assertIn('panel', types)
+        self.assertEqual(result['verification']['status'], 'succeeded')
 
     def test_remote_ollama_requires_opt_in(self):
         with patch.dict(os.environ, {'QL_BRAIN_OLLAMA_URL': 'http://example.com:11434'}):

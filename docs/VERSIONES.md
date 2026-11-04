@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.10.1**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.11.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -196,3 +196,7 @@ Resultados utiliza el mismo panel de salidas visibles en proyectos libres y reco
 ## Herramientas 0.10.0
 
 73 tipos. Nuevos nodos en `engine/quantlabs/gap_tools.py` con statsmodels 0.15.0 (SARIMAX, VAR, coint_johansen, WLS, multipletests, seasonal_decompose), scipy y scikit-learn 1.9.1 (LassoCV, RidgeCV, ElasticNetCV, KMeans). Sin dependencias nuevas.
+
+## Herramientas 0.11.0
+
+78 tipos. Panel implementado con statsmodels (sin `linearmodels`), EGARCH/GJR con arch 8.0.0, bootstrap con `scipy.stats.bootstrap`. Sin dependencias nuevas.

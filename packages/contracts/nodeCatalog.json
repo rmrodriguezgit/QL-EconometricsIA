@@ -186,7 +186,8 @@
         "nonlinear",
         "inflation",
         "sem",
-        "seasonal"
+        "seasonal",
+        "panel"
       ]
     },
     "scenario_info": {
@@ -314,6 +315,11 @@
         "title": "Serie mensual con estacionalidad",
         "equation": "ventas = 100 + 0.4t + 12·sen(2πt/12) + ruido N(0, 3²)",
         "description": "Tendencia lineal y ciclo de 12 períodos. Útil para descomposición estacional y SARIMA; el generador no estima nada."
+      },
+      "panel": {
+        "title": "Panel con efecto individual correlacionado",
+        "equation": "yᵢₜ = 1 + 1.5xᵢₜ + αᵢ + εᵢₜ; xᵢₜ = 0.8αᵢ + uᵢₜ",
+        "description": "n/10 unidades observadas en varios períodos. Como αᵢ se correlaciona con x, MCO agrupado y efectos aleatorios están sesgados; efectos fijos recupera 1.5."
       }
     },
     "choice_labels": {
@@ -342,7 +348,8 @@
         "nonlinear": "Respuesta no lineal",
         "inflation": "Trayectorias de cinco tasas",
         "sem": "Indicadores de un factor latente",
-        "seasonal": "Estacional mensual"
+        "seasonal": "Estacional mensual",
+        "panel": "Panel con efectos individuales"
       }
     }
   },
@@ -1800,5 +1807,169 @@
       "B08",
       "B07"
     ]
+  },
+  "panel": {
+    "label": "Datos de panel (FE/RE)",
+    "detail": "Efectos fijos, aleatorios y contraste de Hausman",
+    "category": "Modelos",
+    "color": "purple",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "result": "Result"
+    },
+    "defaults": {
+      "entity": "entidad",
+      "features": "x",
+      "y": "y",
+      "covariance": "cluster"
+    },
+    "explanation": "Estima MCO agrupado, efectos fijos (transformación within) y efectos aleatorios (Swamy–Arora) y contrasta con Hausman si el efecto individual se correlaciona con los regresores. Errores estándar por conglomerado de unidad o clásicos.",
+    "references": [
+      "B16",
+      "B30",
+      "B31"
+    ],
+    "choices": {
+      "covariance": [
+        "cluster",
+        "nonrobust"
+      ]
+    }
+  },
+  "egarch": {
+    "label": "EGARCH / GJR-GARCH",
+    "detail": "Volatilidad asimétrica con efecto apalancamiento",
+    "category": "Modelos",
+    "color": "purple",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "model": "FittedModel",
+      "result": "Result"
+    },
+    "defaults": {
+      "column": "retorno",
+      "vol": "EGARCH",
+      "p": 1,
+      "o": 1,
+      "q": 1,
+      "dist": "normal"
+    },
+    "explanation": "Modelo de volatilidad con término asimétrico γ: choques negativos y positivos pueden afectar distinto a la varianza condicional. Produce un modelo compatible con Diagnóstico.",
+    "references": [
+      "B26",
+      "B27"
+    ],
+    "choices": {
+      "vol": [
+        "EGARCH",
+        "GJR-GARCH"
+      ],
+      "dist": [
+        "normal",
+        "t"
+      ]
+    }
+  },
+  "stepwise": {
+    "label": "Selección stepwise",
+    "detail": "Forward/backward por AIC o BIC",
+    "category": "Modelos",
+    "color": "purple",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "model": "FittedModel",
+      "result": "Result"
+    },
+    "defaults": {
+      "features": "x,z",
+      "y": "y",
+      "direction": "forward",
+      "criterion": "aic"
+    },
+    "explanation": "Añade (forward) o elimina (backward) regresores mientras mejore el AIC/BIC y devuelve el OLS final, compatible con Diagnóstico y Evaluar. La inferencia posterior a la selección es optimista.",
+    "references": [
+      "B13",
+      "B31"
+    ],
+    "choices": {
+      "direction": [
+        "forward",
+        "backward"
+      ],
+      "criterion": [
+        "aic",
+        "bic"
+      ]
+    }
+  },
+  "marginal_effects": {
+    "label": "Efectos marginales",
+    "detail": "dy/dx de logit/probit o de una regresión lineal",
+    "category": "Diagnósticos",
+    "color": "orange",
+    "inputs": {
+      "model": "FittedModel"
+    },
+    "outputs": {
+      "result": "Result"
+    },
+    "defaults": {
+      "at": "overall"
+    },
+    "explanation": "Para logit/probit calcula el cambio en la probabilidad por unidad de cada regresor (promedio de efectos o en la media). En modelos lineales el efecto es el coeficiente.",
+    "references": [
+      "B06",
+      "B33"
+    ],
+    "choices": {
+      "at": [
+        "overall",
+        "mean"
+      ]
+    }
+  },
+  "bootstrap": {
+    "label": "Bootstrap",
+    "detail": "Intervalo de confianza por remuestreo de un estadístico",
+    "category": "Exploración",
+    "color": "blue",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "result": "Result"
+    },
+    "defaults": {
+      "column": "valor",
+      "statistic": "median",
+      "method": "percentile",
+      "replications": 2000,
+      "confidence": 0.95,
+      "seed": 42
+    },
+    "explanation": "Remuestrea con reemplazo para aproximar la distribución de la media, mediana, desviación estándar o rango intercuartílico y su intervalo (percentil, básico o BCa).",
+    "references": [
+      "B20",
+      "B21"
+    ],
+    "choices": {
+      "statistic": [
+        "mean",
+        "median",
+        "std",
+        "iqr"
+      ],
+      "method": [
+        "percentile",
+        "basic",
+        "BCa"
+      ]
+    }
   }
 }

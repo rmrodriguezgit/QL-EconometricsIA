@@ -120,6 +120,9 @@ def synthetic(params):
     elif scenario=='inflation': frame=pd.DataFrame(rng.normal(.03,.015,(n,5)),columns=[f'r{i}' for i in range(1,6)])
     elif scenario=='sem':
         factor=rng.normal(size=n);frame=pd.DataFrame({'x1':factor+rng.normal(0,.3,n),'x2':.8*factor+rng.normal(0,.3,n),'x3':1.2*factor+rng.normal(0,.3,n),'y':.7*factor+rng.normal(0,.5,n)})
+    elif scenario=='panel':
+        units=max(5,n//10);periods=max(2,n//units);entity=np.repeat(np.arange(1,units+1),periods);effect=rng.normal(0,2,units)[entity-1]
+        x=.8*effect+rng.normal(size=len(entity));frame=pd.DataFrame({'entidad':entity,'periodo':np.tile(np.arange(1,periods+1),units),'x':x,'y':1+1.5*x+effect+rng.normal(size=len(entity))})
     elif scenario=='seasonal':
         t=np.arange(n);frame=pd.DataFrame({'periodo':t+1,'ventas':100+.4*t+12*np.sin(2*np.pi*t/12)+rng.normal(0,3,n)})
     else: raise EngineError('INVALID_PARAMETERS','Escenario desconocido. Consulta la lista de escenarios del generador.')

@@ -86,3 +86,7 @@ C04: correlación Pearson y covarianza muestral en herramientas visibles y N01, 
 ### Evidencia adicional · 0.10.0
 
 C07, C08, C09, C12, C14, C15, C16, C21, C22 y C25: doce herramientas nuevas (ver [HERRAMIENTAS.md](HERRAMIENTAS.md)) con pruebas en tests/test_gap_tools.py. Cubren parte de los pendientes de cada módulo; siguen abiertos rolling validation, VECM, GLS general, validación anidada, estabilidad de grupos, efectos marginales, panel y EGARCH, entre otros enumerados en examples/tool-gaps.json.
+
+### Evidencia adicional · 0.11.0
+
+C02, C09, C11, C12 y C17: panel FE/RE con Hausman, bootstrap, stepwise, efectos marginales y EGARCH/GJR con pruebas en tests/test_panel_tools.py. Siguen abiertos efectos temporales y paneles dinámicos, bootstrap por bloques, volatilidad multivariada e índices alternativos.

@@ -186,3 +186,10 @@ La aplicación y sus instaladores están pendientes de implementación. Los camb
 - Auditoría del sistema incluye el estado del segundo cerebro y las fichas pendientes.
 - Documentación: arquitectura del cerebro, instrucciones para agentes sobre cómo implementar fichas y novedades en README.
 - Verificado en navegador: Qwen `qwen3.5:4b` construyó un blueprint de 6 nodos en 48 s, verificado 6/6 y abierto y ejecutado en el canvas.
+
+## 0.11.0 - 2026-11-04
+
+- Cinco fichas pendientes del cerebro implementadas: datos de panel (efectos fijos, aleatorios y Hausman), EGARCH/GJR-GARCH, selección stepwise, efectos marginales y bootstrap. Registro: 78 tipos.
+- Escenario sintético `panel` y selector de columna `entity` en el inspector.
+- El cerebro conecta los nuevos modelos (EGARCH y stepwise con Diagnóstico; efectos marginales con logit y regresiones lineales), traslada matices (GJR, distribución t, backward, BIC, BCa) y registra `mgarch` como nuevo hueco.
+- 9 pruebas nuevas (127 en total), incluida la tasa de rechazo de Hausman bajo H₀.

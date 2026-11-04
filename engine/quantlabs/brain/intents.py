@@ -59,7 +59,7 @@ INTENTS = [
      {'name': 'Vector autorregresivo (VAR)', 'module': 'C15', 'inputs': {'data': 'Dataset'}, 'outputs': {'result': 'Result'}}),
     (r'johansen|vecm', 'johansen', 3,
      {'name': 'Contraste de Johansen', 'module': 'C16', 'inputs': {'data': 'Dataset'}, 'outputs': {'result': 'Result'}}),
-    (r'garch|volatilidad', 'garch', 3, None),
+    (r'(?<!e)(?<!gjr-)(?<!gjr )garch|volatilidad(?! asimetrica)(?! multivariada)', 'garch', 3, None),
     (r'cointegra', 'cointegration', 3, None),
     (r'correccion de error|\becm\b', 'ecm', 3, None),
     (r'cuantil|mediana condicional', 'quantile', 3, None),
@@ -84,10 +84,12 @@ INTENTS = [
     # Temas sin herramienta prevista todavía: quedan como fichas pendientes.
     (r'datos de panel|efectos fijos|efectos aleatorios|hausman', 'panel', 3,
      {'name': 'Modelos de datos de panel (efectos fijos/aleatorios)', 'module': 'C02', 'inputs': {'data': 'Dataset'}, 'outputs': {'model': 'FittedModel', 'result': 'Result'}}),
-    (r'egarch|volatilidad multivariada|dcc', 'egarch', 3,
+    (r'egarch|gjr|volatilidad asimetrica|apalancamiento', 'egarch', 3,
      {'name': 'EGARCH y volatilidad multivariada', 'module': 'C17', 'inputs': {'data': 'Dataset'}, 'outputs': {'model': 'FittedModel', 'result': 'Result'}}),
-    (r'stepwise|paso a paso hacia', 'stepwise', 3,
+    (r'stepwise|seleccion de (variables|regresores)|forward|backward', 'stepwise', 3,
      {'name': 'Selección stepwise de regresores', 'module': 'C11', 'inputs': {'data': 'Dataset'}, 'outputs': {'result': 'Result'}}),
+    (r'volatilidad multivariada|\bdcc\b|\bbekk\b', 'mgarch', 3,
+     {'name': 'Volatilidad multivariada (DCC/BEKK)', 'module': 'C17', 'inputs': {'data': 'Dataset'}, 'outputs': {'result': 'Result'}}),
     (r'efectos marginales', 'marginal_effects', 4,
      {'name': 'Efectos marginales', 'module': 'C12', 'inputs': {'model': 'FittedModel'}, 'outputs': {'result': 'Result'}}),
     (r'bootstrap|remuestreo', 'bootstrap', 2,
@@ -106,6 +108,7 @@ SCENARIO_FOR = {
     'mean_ci': 'normal', 'histogram': 'normal', 'normality': 'normal', 'growth': 'positive', 'time_plot': 'positive',
     'regularized': 'multiple', 'chow': 'regression', 'prediction_interval': 'regression', 'multiple_testing': 'factors',
     'seasonal_decompose': 'seasonal', 'sarima': 'seasonal', 'dummies': 'multiple', 'boxplot': 'outliers',
+    'panel': 'panel', 'egarch': 'garch', 'stepwise': 'multiple', 'marginal_effects': 'logistic', 'bootstrap': 'income',
 }
 
 # Matices del enunciado que se trasladan a parámetros del catálogo.
@@ -118,6 +121,10 @@ PARAM_HINTS = {
     'wls': [(r'1/x|inversa', {'method': 'inversa_x2'})],
     'split': [(r'aleatori', {'method': 'aleatorio'})],
     'seasonal_decompose': [(r'multiplicativ', {'model': 'multiplicative'})],
+    'egarch': [(r'\bgjr\b|apalancamiento', {'vol': 'GJR-GARCH'}), (r'\bt de student|colas pesadas', {'dist': 't'})],
+    'stepwise': [(r'backward|hacia atras|eliminacion', {'direction': 'backward'}), (r'\bbic\b', {'criterion': 'bic'})],
+    'marginal_effects': [(r'en la media', {'at': 'mean'})],
+    'bootstrap': [(r'\bbca\b', {'method': 'BCa'}), (r'la media\b', {'statistic': 'mean'}), (r'desviacion', {'statistic': 'std'})],
     'ols': [(r'clasic|no robust', {'covariance': 'nonrobust'})],
 }
 

@@ -157,3 +157,17 @@ Registro actual: **73 tipos**. Doce nodos nuevos implementados a partir de las f
 | `cluster_selection` | Dataset → Result | C25 | Inercia y silueta para k = 2…máx. | B08, B07 | No evalúa estabilidad de grupos |
 
 El generador sintético añade el escenario `seasonal` (`periodo`, `ventas` con tendencia y ciclo de 12). `wls` produce un `FittedModel` compatible con **Evaluar** y **Comparar modelos**; los diagnósticos OLS lo rechazan de forma explícita y el cerebro no los conecta.
+
+## Fichas pendientes completadas · 0.11.0
+
+Registro actual: **78 tipos**. Cinco fichas que el cerebro mantenía pendientes pasan a nodos reales. Pruebas en `tests/test_panel_tools.py`.
+
+| Tipo | Puertos | Módulo | Método | Referencias | Verificación | Límite declarado |
+|---|---|---|---|---|---|---|
+| `panel` | Dataset → Result | C02 | MCO agrupado, efectos fijos (within), efectos aleatorios (Swamy–Arora) y Hausman; EE por conglomerado o clásicos | B16, B30, B31 | FE = LSDV con dummies (coeficiente y EE); tamaño de Hausman ≤ 15 % en 40 réplicas bajo H₀ | Sin efectos temporales; Hausman con covarianzas clásicas |
+| `egarch` | Dataset → FittedModel, Result | C17 | EGARCH o GJR-GARCH(p,o,q), media constante, errores normales o t | B26, B27 | Ajuste y conexión con Diagnóstico (ARCH-LM, Ljung–Box) | Univariado; DCC/BEKK pendiente |
+| `stepwise` | Dataset → FittedModel, Result | C11 | Forward/backward por AIC o BIC; OLS final con recorrido | B13, B31 | Recupera los regresores verdaderos; primer paso = mínimo AIC | Inferencia post-selección optimista |
+| `marginal_effects` | FittedModel → Result | C12 | `get_margeff` promedio o en la media para logit/probit; coeficientes en modelos lineales | B06, B33 | AME logit = media(p(1−p))·β | Sin efectos con interacciones combinadas |
+| `bootstrap` | Dataset → Result | C09 | Remuestreo de media, mediana, DE o RIC; IC percentil, básico o BCa | B20, B21 | EE bootstrap ≈ σ/√n; reproducible con semilla | Supone independencia (sin bloques) |
+
+El generador sintético añade el escenario `panel` (`entidad`, `periodo`, `x`, `y`) con efecto individual correlacionado con x. El inspector ofrece `entity` como selector de columna. Queda abierta, entre otras, la ficha `mgarch` (volatilidad multivariada).

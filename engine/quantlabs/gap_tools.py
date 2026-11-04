@@ -4,6 +4,8 @@ Cubren pendientes documentados en ``examples/tool-gaps.json``: tamaño de muestr
 contrastes múltiples (C08), intervalos de predicción (C09), Chow y variables
 dicotómicas (C12), descomposición estacional (C14), SARIMA y VAR (C15), Johansen
 (C16), WLS/FGLS (C21), regularización (C22) y selección de k (C25).
+En 0.11.0 se añaden panel con efectos fijos/aleatorios (C02), EGARCH/GJR (C17),
+selección stepwise (C11), efectos marginales (C12) y bootstrap (C09).
 Cada cálculo consume los artefactos conectados; ninguna acepta expresiones.
 """
 import numpy as np
@@ -15,7 +17,8 @@ from .core import EngineError, number
 from .tools import Fitted, columns, regression_report, report, sample, series, table, time_order, ensure_contiguous
 
 GAP_TOOLS = {'sample_size', 'multiple_testing', 'prediction_interval', 'chow', 'dummies', 'seasonal_decompose',
-             'sarima', 'var', 'johansen', 'wls', 'regularized', 'cluster_selection'}
+             'sarima', 'var', 'johansen', 'wls', 'regularized', 'cluster_selection',
+             'panel', 'egarch', 'stepwise', 'marginal_effects', 'bootstrap'}
 
 
 def choice(params, key, options):
@@ -336,11 +339,187 @@ def cluster_selection(frame, params):
     return result, {'result': result}
 
 
+# ------------------------------------------------------------------ 0.11.0
+
+def panel(frame, params):
+    entity = str(params.get('entity', 'entidad'))
+    if entity not in frame:
+        raise EngineError('INVALID_PARAMETERS', f'No existe la columna de unidades «{entity}».')
+    features = columns(frame, params.get('features', 'x'))
+    y = single(frame, params, 'y', 'y')
+    if y in features or entity in features + [y]:
+        raise EngineError('INVALID_PARAMETERS', 'La respuesta, los regresores y la unidad deben ser columnas distintas.')
+    covariance = choice(params, 'covariance', ['cluster', 'nonrobust'])
+    data = frame[[entity, *features, y]].dropna().copy()
+    sizes = data.groupby(entity)[y].transform('size')
+    data = data[sizes >= 2]
+    groups = data[entity].nunique()
+    k = len(features)
+    if groups < 3 or len(data) < groups + k + 3:
+        raise EngineError('INSUFFICIENT_SAMPLE', 'Se necesitan al menos tres unidades con dos o más observaciones cada una.')
+    codes = pd.factorize(data[entity])[0]
+    names = [*features, y]
+    means = data.groupby(entity)[names].transform('mean')
+    within = data[names] - means
+    if (within[features].std() < 1e-12).any():
+        raise EngineError('RANK_DEFICIENT', 'Algún regresor no varía dentro de las unidades: efectos fijos no lo identifican.')
+    dof = len(data) - groups - k
+    fe = sm.OLS(within[y], within[features]).fit()
+    sigma_e2 = fe.ssr / dof
+    fe_cov = sigma_e2 * np.linalg.inv(within[features].T.to_numpy() @ within[features].to_numpy())
+    fe_se = np.sqrt(np.diag(fe_cov))
+    if covariance == 'cluster':
+        clustered = sm.OLS(within[y], within[features]).fit(cov_type='cluster', cov_kwds={'groups': codes})
+        fe_se_report = np.asarray(clustered.bse) * np.sqrt((len(data) - k) / dof)  # corrige gl por los efectos absorbidos
+    else:
+        fe_se_report = fe_se
+    # Efectos aleatorios (Swamy–Arora): cuasi-diferencia con θᵢ = 1 − √(σ²ₑ / (Tᵢσ²ᵤ + σ²ₑ)).
+    group_means = data.groupby(entity)[names].mean()
+    t_i = data.groupby(entity)[y].size()
+    between = sm.OLS(group_means[y], sm.add_constant(group_means[features], has_constant='add')).fit()
+    t_bar = groups / (1 / t_i).sum()
+    sigma_u2 = max(0.0, between.ssr / max(1, groups - k - 1) - sigma_e2 / t_bar)
+    theta = 1 - np.sqrt(sigma_e2 / (t_i.loc[data[entity]].to_numpy() * sigma_u2 + sigma_e2))
+    quasi = data[names] - theta[:, None] * means.to_numpy()
+    design = sm.add_constant(quasi[features], has_constant='add')
+    design['const'] = 1 - theta
+    re = sm.OLS(quasi[y], design).fit(**({'cov_type': 'cluster', 'cov_kwds': {'groups': codes}} if covariance == 'cluster' else {}))
+    re_classic = sm.OLS(quasi[y], design).fit()
+    diff = fe.params.to_numpy() - re_classic.params[features].to_numpy()
+    variance = fe_cov - re_classic.cov_params().loc[features, features].to_numpy()
+    definite = bool(np.all(np.linalg.eigvalsh((variance + variance.T) / 2) > 0))
+    hausman = float(diff @ np.linalg.pinv(variance) @ diff) if definite else None
+    p_hausman = float(stats.chi2.sf(hausman, k)) if definite else None
+    pooled = sm.OLS(data[y], sm.add_constant(data[features], has_constant='add')).fit()
+    rows = [[name, pooled.params[name], fe.params[name], fe_se_report[i], re.params[name], re.bse[name]] for i, name in enumerate(features)]
+    result = report(f'Panel con {groups} unidades y {len(data)} observaciones. Efectos fijos usan solo la variación dentro de cada unidad; '
+                    'efectos aleatorios suponen que el efecto individual no se correlaciona con los regresores. '
+                    + (f'Hausman {"rechaza" if p_hausman < 0.05 else "no rechaza"} esa hipótesis al 5 %.' if definite else
+                     'Hausman no está definido: Var(FE) − Var(RE) no es definida positiva en esta muestra.'),
+                    unidades=groups, n=len(data), Hausman=hausman, p_Hausman=p_hausman, sigma_u=np.sqrt(sigma_u2),
+                    sigma_e=np.sqrt(sigma_e2), rho=sigma_u2 / (sigma_u2 + sigma_e2) if sigma_u2 + sigma_e2 else None)
+    result['tables'] = [table('Coeficientes', ['Variable', 'Agrupado (MCO)', 'Efectos fijos', 'EE fijos', 'Efectos aleatorios', 'EE aleatorios'], rows)]
+    result['limitations'] = ['Hausman usa covarianzas clásicas aunque se reporten EE por conglomerado; con heterocedasticidad usa un contraste robusto (pendiente).',
+                             'Las unidades con una sola observación se excluyen. Sin efectos temporales en esta versión.']
+    return result, {'result': result}
+
+
+def egarch(frame, params):
+    from arch import arch_model
+    name = single(frame, params, 'column', 'retorno')
+    vol = choice(params, 'vol', ['EGARCH', 'GJR-GARCH'])
+    dist = choice(params, 'dist', ['normal', 't'])
+    p, o, q = (number(params, key, 1, 0 if key == 'o' else 1, 3, True) for key in ['p', 'o', 'q'])
+    data = sample(time_order(frame), [name], 50)
+    ensure_contiguous(data)
+    fit = arch_model(data[name].to_numpy(), mean='Constant', vol='EGARCH' if vol == 'EGARCH' else 'GARCH', p=p, o=o, q=q,
+                     dist=dist, rescale=False).fit(disp='off')
+    if fit.convergence_flag:
+        raise EngineError('NON_CONVERGENCE', f'{vol} no convergió; prueba otra escala de retornos u órdenes menores.')
+    gamma = [value for key, value in fit.params.items() if key.startswith('gamma')]
+    result = report(f'{vol}({p},{o},{q}) con distribución {dist}. El término γ capta asimetría: '
+                    + ('en EGARCH, γ < 0 indica que los choques negativos elevan más la volatilidad.' if vol == 'EGARCH'
+                       else 'en GJR, γ > 0 indica efecto apalancamiento.'),
+                    AIC=fit.aic, BIC=fit.bic, n=len(data), gamma=gamma[0] if gamma else None)
+    result['tables'] = [table('Parámetros', ['Parámetro', 'Estimación', 'p-valor'], [[key, fit.params[key], fit.pvalues[key]] for key in fit.params.index])]
+    result['series'] = [series('Volatilidad condicional', fit.conditional_volatility)]
+    result['limitations'] = ['Univariado: la volatilidad multivariada (DCC/BEKK) sigue pendiente.']
+    return result, {'result': result, 'model': Fitted('garch', fit, data, [], name, vol)}
+
+
+def stepwise(frame, params):
+    features = columns(frame, params.get('features', 'x,z'))
+    y = single(frame, params, 'y', 'y')
+    features = [f for f in features if f != y]
+    direction = choice(params, 'direction', ['forward', 'backward'])
+    criterion = choice(params, 'criterion', ['aic', 'bic'])
+    data = sample(frame, [*features, y], len(features) + 5)
+
+    def score(names):
+        design = sm.add_constant(data[names], has_constant='add') if names else np.ones((len(data), 1))
+        fit = sm.OLS(data[y], design).fit()
+        return getattr(fit, criterion), fit
+    selected = [] if direction == 'forward' else list(features)
+    current, _ = score(selected)
+    path = [['inicio', '—', ', '.join(selected) or '(solo constante)', current]]
+    while True:
+        candidates = [f for f in features if f not in selected] if direction == 'forward' else list(selected)
+        if not candidates:
+            break
+        trials = [(score(selected + [c] if direction == 'forward' else [s for s in selected if s != c])[0], c) for c in candidates]
+        best, variable = min(trials)
+        if best >= current - 1e-9:
+            break
+        selected = selected + [variable] if direction == 'forward' else [s for s in selected if s != variable]
+        current = best
+        path.append(['añade' if direction == 'forward' else 'elimina', variable, ', '.join(selected) or '(solo constante)', best])
+    if not selected:
+        raise EngineError('INSUFFICIENT_SAMPLE', 'Ningún regresor mejora el criterio frente a la constante.')
+    _, fit = score(selected)
+    model = Fitted('multiple_ols', fit, data[[*selected, y]], selected, y, 'OLS stepwise')
+    result = regression_report(model, f'Selección {direction} por {criterion.upper()}. Los p-valores tras seleccionar son optimistas: '
+                                      'la misma muestra eligió las variables. Valida con datos nuevos.')
+    result['metrics'] += [{'label': criterion.upper(), 'value': current}, {'label': 'seleccionadas', 'value': len(selected)}, {'label': 'candidatas', 'value': len(features)}]
+    result['tables'].append(table('Recorrido', ['Paso', 'Variable', 'Modelo', criterion.upper()], path))
+    return result, {'result': result, 'model': model}
+
+
+def marginal_effects(model, params):
+    at = choice(params, 'at', ['overall', 'mean'])
+    fit = model.fit
+    if model.kind == 'logit':
+        margins = fit.get_margeff(at=at)
+        frame = margins.summary_frame()
+        rows = [[name, frame.iloc[i, 0], frame.iloc[i, 1], frame.iloc[i, 3]] for i, name in enumerate(model.features)]
+        text = ('Efecto medio de un cambio unitario en cada regresor sobre la probabilidad (promedio de efectos individuales).' if at == 'overall'
+                else 'Efecto sobre la probabilidad evaluado en la media de los regresores.')
+    elif model.kind in ('ols', 'multiple_ols', 'covariance', 'robust', 'wls'):
+        rows = [[name, fit.params[name], fit.bse[name], fit.pvalues[name]] for name in model.features]
+        text = 'En un modelo lineal sin términos no lineales el efecto marginal es el propio coeficiente y no depende de x.'
+        powered = [name for name in model.features if '^' in name or '_x_' in name or name.startswith('poly')]
+        if powered:
+            text += f' Atención: {", ".join(powered)} parecen potencias o interacciones; el efecto total combina varios coeficientes.'
+    else:
+        raise EngineError('TYPE_MISMATCH', 'Conecta un modelo logit/probit o una regresión lineal.')
+    result = report(text, n=len(model.frame), modelo=model.label or model.kind)
+    result['tables'] = [table('Efectos marginales', ['Variable', 'dy/dx', 'Error estándar', 'p-valor'], rows)]
+    return result, {'result': result}
+
+
+def bootstrap(frame, params):
+    column = single(frame, params, 'column', 'valor')
+    statistic = choice(params, 'statistic', ['mean', 'median', 'std', 'iqr'])
+    method = choice(params, 'method', ['percentile', 'basic', 'BCa'])
+    replications = number(params, 'replications', 2000, 100, 20000, True)
+    level = confidence(params)
+    seed = number(params, 'seed', 42, 0, 2**32 - 1, True)
+    values = frame[column].dropna().to_numpy(dtype=float)
+    if len(values) < 10:
+        raise EngineError('INSUFFICIENT_SAMPLE', 'El bootstrap necesita al menos 10 observaciones.')
+    function = {'mean': np.mean, 'median': np.median, 'std': lambda v, axis=-1: np.std(v, ddof=1, axis=axis),
+                'iqr': lambda v, axis=-1: stats.iqr(v, axis=axis)}[statistic]
+    res = stats.bootstrap((values,), function, n_resamples=replications, confidence_level=level, method=method,
+                          random_state=np.random.default_rng(seed), vectorized=True)
+    estimate = float(function(values))
+    distribution = np.sort(res.bootstrap_distribution)
+    counts, edges = np.histogram(distribution, bins=20)
+    result = report(f'Bootstrap no paramétrico ({method}) de la {statistic} de {column} con {replications} remuestras. '
+                    'Supone observaciones independientes; con dependencia temporal usa bootstrap por bloques (pendiente).',
+                    estimacion=estimate, ic_inferior=float(res.confidence_interval.low), ic_superior=float(res.confidence_interval.high),
+                    error_estandar=float(res.standard_error), n=len(values), confianza=level)
+    result['tables'] = [table('Distribución bootstrap', ['Desde', 'Hasta', 'Frecuencia'], [[edges[i], edges[i + 1], int(c)] for i, c in enumerate(counts)])]
+    result['series'] = [series('Frecuencia por intervalo', counts)]
+    return result, {'result': result}
+
+
 def run_gap_tool(kind, inputs, params):
     if kind == 'sample_size':
         return sample_size(params)
+    if kind == 'marginal_effects':
+        return marginal_effects(inputs['model'], params)
     frame = inputs['data']
     handler = {'multiple_testing': multiple_testing, 'prediction_interval': prediction_interval, 'chow': chow, 'dummies': dummies,
                'seasonal_decompose': seasonal_decompose, 'sarima': sarima, 'var': var_model, 'johansen': johansen, 'wls': wls,
-               'regularized': regularized, 'cluster_selection': cluster_selection}[kind]
+               'regularized': regularized, 'cluster_selection': cluster_selection, 'panel': panel, 'egarch': egarch,
+               'stepwise': stepwise, 'bootstrap': bootstrap}[kind]
     return handler(frame, params)

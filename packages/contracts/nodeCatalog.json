@@ -185,7 +185,8 @@
         "clusters",
         "nonlinear",
         "inflation",
-        "sem"
+        "sem",
+        "seasonal"
       ]
     },
     "scenario_info": {
@@ -308,6 +309,11 @@
         "title": "Indicadores de un factor latente",
         "equation": "x1 = f + ruido; x2 = 0.8f + ruido; x3 = 1.2f + ruido; y = 0.7f + ruido",
         "description": "El factor real no aparece como columna observada; la plantilla SEM fija su escala."
+      },
+      "seasonal": {
+        "title": "Serie mensual con estacionalidad",
+        "equation": "ventas = 100 + 0.4t + 12·sen(2πt/12) + ruido N(0, 3²)",
+        "description": "Tendencia lineal y ciclo de 12 períodos. Útil para descomposición estacional y SARIMA; el generador no estima nada."
       }
     },
     "choice_labels": {
@@ -335,7 +341,8 @@
         "clusters": "Tres grupos artificiales",
         "nonlinear": "Respuesta no lineal",
         "inflation": "Trayectorias de cinco tasas",
-        "sem": "Indicadores de un factor latente"
+        "sem": "Indicadores de un factor latente",
+        "seasonal": "Estacional mensual"
       }
     }
   },
@@ -1482,6 +1489,316 @@
     "explanation": "Calcula covarianza entre variables de una tabla, con divisor n−1 y filas completas comunes. La diagonal contiene varianzas; las unidades son productos de las unidades originales. No es la covarianza de los estimadores OLS.",
     "references": [
       "B18"
+    ]
+  },
+  "sample_size": {
+    "label": "Tamaño de muestra",
+    "detail": "n mínima para un margen de error, con corrección por población finita",
+    "category": "Exploración",
+    "color": "blue",
+    "inputs": {},
+    "outputs": {
+      "result": "Result"
+    },
+    "defaults": {
+      "target": "media",
+      "confidence": 0.95,
+      "margin": 0.05,
+      "sd": 1,
+      "proportion": 0.5,
+      "population_size": 0
+    },
+    "explanation": "Calcula la n mínima para estimar una media (σ conocida) o una proporción con el margen y la confianza indicados. population_size=0 indica población infinita; si es mayor aplica la corrección por población finita.",
+    "references": [
+      "B20",
+      "B21"
+    ],
+    "choices": {
+      "target": [
+        "media",
+        "proporcion"
+      ]
+    }
+  },
+  "multiple_testing": {
+    "label": "Contrastes múltiples",
+    "detail": "Contrastes t por columna con control FDR, Holm o Bonferroni",
+    "category": "Diagnósticos",
+    "color": "orange",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "result": "Result"
+    },
+    "defaults": {
+      "columns": "x1,x2,x3",
+      "mu": 0,
+      "method": "fdr_bh",
+      "alpha": 0.05
+    },
+    "explanation": "Contrasta H₀: media = mu para cada columna y ajusta los p-valores. Compara cuántos rechazos sobreviven a la corrección.",
+    "references": [
+      "B22"
+    ],
+    "choices": {
+      "method": [
+        "fdr_bh",
+        "holm",
+        "bonferroni"
+      ]
+    }
+  },
+  "prediction_interval": {
+    "label": "Intervalos de predicción",
+    "detail": "IC de la media condicional frente a IP de una observación nueva",
+    "category": "Modelos",
+    "color": "purple",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "data": "Dataset",
+      "result": "Result"
+    },
+    "defaults": {
+      "x": "ingreso",
+      "y": "consumo",
+      "confidence": 0.95
+    },
+    "explanation": "Ajusta OLS simple y reporta, para cuantiles de x, el intervalo de confianza de E[y|x] y el intervalo de predicción de y. Añade columnas prediccion, pi_inferior y pi_superior.",
+    "references": [
+      "B21",
+      "B23",
+      "B24"
+    ]
+  },
+  "chow": {
+    "label": "Contraste de Chow",
+    "detail": "Cambio estructural con quiebre conocido",
+    "category": "Diagnósticos",
+    "color": "orange",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "result": "Result"
+    },
+    "defaults": {
+      "features": "ingreso",
+      "y": "consumo",
+      "break_fraction": 0.5
+    },
+    "explanation": "Compara la suma de residuos de la regresión conjunta con la de dos tramos (antes/después del quiebre). Si hay columna periodo se ordena por ella.",
+    "references": [
+      "B31",
+      "B33"
+    ]
+  },
+  "dummies": {
+    "label": "Dicotómica e interacción",
+    "detail": "Crea d = 1(columna > umbral) y su interacción con x",
+    "category": "Transformaciones",
+    "color": "green",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "data": "Dataset",
+      "result": "Result"
+    },
+    "defaults": {
+      "column": "x",
+      "threshold": 0,
+      "x": "x",
+      "output": "grupo"
+    },
+    "explanation": "Genera una variable dicotómica a partir de un umbral y su interacción con x, para estimar cambios de intercepto y pendiente entre grupos.",
+    "references": [
+      "B33"
+    ]
+  },
+  "seasonal_decompose": {
+    "label": "Descomposición estacional",
+    "detail": "Tendencia, estacionalidad e irregular por medias móviles",
+    "category": "Transformaciones",
+    "color": "green",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "data": "Dataset",
+      "result": "Result"
+    },
+    "defaults": {
+      "column": "ventas",
+      "period": 12,
+      "model": "additive"
+    },
+    "explanation": "Separa la serie en tendencia, componente estacional e irregular (aditivo o multiplicativo) y añade las tres columnas a la tabla.",
+    "references": [
+      "B32"
+    ],
+    "choices": {
+      "model": [
+        "additive",
+        "multiplicative"
+      ]
+    }
+  },
+  "sarima": {
+    "label": "SARIMA y pronóstico",
+    "detail": "ARIMA estacional con intervalos de pronóstico",
+    "category": "Modelos",
+    "color": "purple",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "result": "Result"
+    },
+    "defaults": {
+      "column": "ventas",
+      "p": 1,
+      "d": 0,
+      "q": 0,
+      "P": 1,
+      "D": 0,
+      "Q": 0,
+      "s": 12,
+      "horizon": 12,
+      "confidence": 0.95
+    },
+    "explanation": "Estima SARIMA(p,d,q)×(P,D,Q)s y pronostica h períodos con intervalos. s=0 desactiva la parte estacional.",
+    "references": [
+      "B36",
+      "B05",
+      "B32"
+    ]
+  },
+  "var": {
+    "label": "Vector autorregresivo (VAR)",
+    "detail": "VAR con rezagos por AIC, Granger y pronóstico",
+    "category": "Modelos",
+    "color": "purple",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "result": "Result"
+    },
+    "defaults": {
+      "columns": "x,y",
+      "lags": 0,
+      "horizon": 8
+    },
+    "explanation": "Estima un VAR sobre series estacionarias. lags=0 elige el rezago por AIC. Reporta causalidad de Granger por pares, estabilidad y pronóstico.",
+    "references": [
+      "B32",
+      "B25"
+    ]
+  },
+  "johansen": {
+    "label": "Contraste de Johansen",
+    "detail": "Rango de cointegración entre varias series",
+    "category": "Diagnósticos",
+    "color": "orange",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "result": "Result"
+    },
+    "defaults": {
+      "columns": "x,y",
+      "det_order": 0,
+      "k_ar_diff": 1
+    },
+    "explanation": "Estadísticos de traza y máximo autovalor con valores críticos al 5 % y vectores de cointegración. det_order: −1 sin constante, 0 constante, 1 tendencia.",
+    "references": [
+      "B25"
+    ]
+  },
+  "wls": {
+    "label": "WLS / FGLS",
+    "detail": "Mínimos cuadrados ponderados frente a heterocedasticidad",
+    "category": "Modelos",
+    "color": "purple",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "model": "FittedModel",
+      "result": "Result"
+    },
+    "defaults": {
+      "features": "x",
+      "y": "y",
+      "method": "fgls"
+    },
+    "explanation": "FGLS estima la función de varianza con log(ε̂²); inversa_x2 usa pesos 1/x². Muestra OLS de referencia para comparar errores estándar.",
+    "references": [
+      "B24",
+      "B31"
+    ],
+    "choices": {
+      "method": [
+        "fgls",
+        "inversa_x2"
+      ]
+    }
+  },
+  "regularized": {
+    "label": "Regresión regularizada",
+    "detail": "Lasso, Ridge o Elastic Net con validación cruzada",
+    "category": "Modelos",
+    "color": "purple",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "result": "Result"
+    },
+    "defaults": {
+      "features": "x,z",
+      "y": "y",
+      "method": "lasso",
+      "folds": 5,
+      "seed": 42
+    },
+    "explanation": "Estandariza regresores, elige la penalización por validación cruzada y compara coeficientes contraídos con OLS. Lasso puede excluir variables.",
+    "references": [
+      "B13",
+      "B15"
+    ],
+    "choices": {
+      "method": [
+        "lasso",
+        "ridge",
+        "elasticnet"
+      ]
+    }
+  },
+  "cluster_selection": {
+    "label": "Selección de k",
+    "detail": "Codo e índice de silueta para elegir el número de grupos",
+    "category": "Diagnósticos",
+    "color": "orange",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "result": "Result"
+    },
+    "defaults": {
+      "columns": "x1,x2",
+      "max_k": 8,
+      "seed": 42
+    },
+    "explanation": "Ajusta k-means para k = 2…max_k con variables estandarizadas y reporta inercia y silueta media para sugerir k.",
+    "references": [
+      "B08",
+      "B07"
     ]
   }
 }

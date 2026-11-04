@@ -82,3 +82,7 @@ C03/C04/C11: comparación explícita de Boxplot original y tratado por umbral; t
 ### Evidencia adicional · 0.8.4
 
 C04: correlación Pearson y covarianza muestral en herramientas visibles y N01, referencia B18. Pruebas en tests/test_association.py. No se completa causalidad, dependencia temporal ni inferencia de correlaciones.
+
+### Evidencia adicional · 0.10.0
+
+C07, C08, C09, C12, C14, C15, C16, C21, C22 y C25: doce herramientas nuevas (ver [HERRAMIENTAS.md](HERRAMIENTAS.md)) con pruebas en tests/test_gap_tools.py. Cubren parte de los pendientes de cada módulo; siguen abiertos rolling validation, VECM, GLS general, validación anidada, estabilidad de grupos, efectos marginales, panel y EGARCH, entre otros enumerados en examples/tool-gaps.json.

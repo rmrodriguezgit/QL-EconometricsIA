@@ -136,3 +136,24 @@ Registro actual: 59 tipos. `join_series` consume left/right Dataset y produce da
 ## Asociación de variables · 0.8.4
 
 Registro actual: 61 tipos. Correlación devuelve matrices de Pearson y covarianza; Covarianza de variables (`covariance_matrix`) devuelve matriz muestral. Ambos Dataset → Result, Exploración, B18. Cambiar covarianza sigue siendo un diagnóstico de FittedModel, distinto de estas matrices. [Guía](CORRELACION_COVARIANZA.md).
+
+## Herramientas desde el segundo cerebro · 0.10.0
+
+Registro actual: **73 tipos**. Doce nodos nuevos implementados a partir de las fichas de herramientas faltantes del [segundo cerebro](CEREBRO.md). Todos consumen artefactos conectados, rechazan expresiones y devuelven `Result` con métricas, tablas, series y límites explícitos. Pruebas numéricas en `tests/test_gap_tools.py` contra fórmulas cerradas, statsmodels, scipy o datos con efecto conocido.
+
+| Tipo | Puertos | Módulo | Método | Referencias | Límite declarado |
+|---|---|---|---|---|---|
+| `sample_size` | — → Result | C07 | n para media (σ) o proporción; corrección por población finita | B20, B21 | Solo muestreo aleatorio simple |
+| `multiple_testing` | Dataset → Result | C08 | t por columna; ajuste FDR-BH, Holm o Bonferroni | B22 | H₀ común μ₀ para todas las columnas |
+| `prediction_interval` | Dataset → Dataset, Result | C09 | IC de E[y\|x] frente a IP de y nueva; columnas `prediccion`, `pi_inferior`, `pi_superior` | B21, B23, B24 | OLS simple con errores homocedásticos |
+| `chow` | Dataset → Result | C12 | F de Chow con quiebre en fracción conocida (ordena por `periodo`) | B31, B33 | Quiebre fijado a priori, varianzas iguales |
+| `dummies` | Dataset → Dataset, Result | C12 | `d_<salida>` = 1(columna > umbral) e interacción con x | B33 | Un umbral; no codifica categorías múltiples |
+| `seasonal_decompose` | Dataset → Dataset, Result | C14 | Medias móviles aditivas o multiplicativas; fuerza estacional | B32 | Pierde extremos de la tendencia |
+| `sarima` | Dataset → Result | C15 | SARIMAX(p,d,q)×(P,D,Q)s, pronóstico e intervalos | B36, B05, B32 | Sin validación rodante |
+| `var` | Dataset → Result | C15 | VAR con rezago por AIC, Granger por pares, estabilidad y pronóstico | B32, B25 | Requiere series estacionarias |
+| `johansen` | Dataset → Result | C16 | Traza y máximo autovalor al 5 %, rango y vectores | B25 | VECM pendiente; críticos asintóticos |
+| `wls` | Dataset → FittedModel, Result | C21 | WLS con 1/x² o FGLS con log(ε̂²); OLS de referencia | B24, B31 | GLS con covarianza general pendiente |
+| `regularized` | Dataset → Result | C22 | Lasso, Ridge, Elastic Net estandarizados con CV | B13, B15 | CV no anidada (R² optimista) |
+| `cluster_selection` | Dataset → Result | C25 | Inercia y silueta para k = 2…máx. | B08, B07 | No evalúa estabilidad de grupos |
+
+El generador sintético añade el escenario `seasonal` (`periodo`, `ventas` con tendencia y ciclo de 12). `wls` produce un `FittedModel` compatible con **Evaluar** y **Comparar modelos**; los diagnósticos OLS lo rechazan de forma explícita y el cerebro no los conecta.

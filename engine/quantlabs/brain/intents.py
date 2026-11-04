@@ -108,6 +108,28 @@ SCENARIO_FOR = {
     'seasonal_decompose': 'seasonal', 'sarima': 'seasonal', 'dummies': 'multiple', 'boxplot': 'outliers',
 }
 
+# Matices del enunciado que se trasladan a parámetros del catálogo.
+PARAM_HINTS = {
+    'sample_size': [(r'proporcion|porcentaje', {'target': 'proporcion'})],
+    'multiple_testing': [(r'bonferroni', {'method': 'bonferroni'}), (r'\bholm\b', {'method': 'holm'})],
+    'regularized': [(r'\bridge\b', {'method': 'ridge'}), (r'elastic', {'method': 'elasticnet'})],
+    'logit': [(r'probit', {'method': 'probit'})],
+    'covariance': [(r'\bhac\b|newey|autocorrelacion', {'method': 'HAC'})],
+    'wls': [(r'1/x|inversa', {'method': 'inversa_x2'})],
+    'split': [(r'aleatori', {'method': 'aleatorio'})],
+    'seasonal_decompose': [(r'multiplicativ', {'model': 'multiplicative'})],
+    'ols': [(r'clasic|no robust', {'covariance': 'nonrobust'})],
+}
+
+
+def hints(kind, folded):
+    params = {}
+    for pattern, values in PARAM_HINTS.get(kind, []):
+        if re.search(pattern, folded):
+            params.update(values)
+    return params
+
+
 INDICATORS = [
     (r'pib per capita|producto interno bruto per capita|ingreso per capita', 'NY.GDP.PCAP.KD'),
     (r'crecimiento del pib|crecimiento economico', 'NY.GDP.MKTP.KD.ZG'),
@@ -225,7 +247,7 @@ def rules_plan(prompt, retrieved_tools=()):
     if 'describe' not in kinds and source != 'csv':
         kinds.insert(0, 'describe')
     for kind in kinds:
-        steps.append({'id': kind, 'tool': kind, 'parameters': {}, 'why': NODE_CATALOG[kind].get('explanation', '')})
+        steps.append({'id': kind, 'tool': kind, 'parameters': hints(kind, fold(prompt)), 'why': NODE_CATALOG[kind].get('explanation', '')})
     if any(NODE_CATALOG[k]['outputs'].get('result') == 'Result' for k in kinds):
         steps.append({'id': 'reporte', 'tool': 'report', 'parameters': {'note': f'Interpreta el resultado para responder: {prompt[:300]}'},
                       'why': 'Cierra el flujo con una pregunta de interpretación.'})

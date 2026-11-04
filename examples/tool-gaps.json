@@ -54,7 +54,19 @@
     "factor_analysis",
     "sem",
     "report",
-    "acf"
+    "acf",
+    "sample_size",
+    "multiple_testing",
+    "prediction_interval",
+    "chow",
+    "dummies",
+    "seasonal_decompose",
+    "sarima",
+    "var",
+    "johansen",
+    "wls",
+    "regularized",
+    "cluster_selection"
   ],
   "remaining_by_module": {
     "C01": [
@@ -141,5 +153,40 @@
     "C28": [
       "Editor de diagramas SEM y diagnóstico general de identificación"
     ]
-  }
+  },
+  "partially_covered_0_10_0": {
+    "C07": [
+      "sample_size: tamaño de muestra y corrección por población finita"
+    ],
+    "C08": [
+      "multiple_testing: Bonferroni, Holm y FDR (BH)"
+    ],
+    "C09": [
+      "prediction_interval: intervalos de predicción frente a confianza"
+    ],
+    "C12": [
+      "chow: cambio estructural con quiebre conocido",
+      "dummies: dicotómica e interacción"
+    ],
+    "C14": [
+      "seasonal_decompose: tendencia, estacional e irregular"
+    ],
+    "C15": [
+      "sarima: SARIMA con intervalos de pronóstico",
+      "var: VAR, Granger y pronóstico"
+    ],
+    "C16": [
+      "johansen: rango de cointegración (VECM sigue pendiente)"
+    ],
+    "C21": [
+      "wls: WLS y FGLS"
+    ],
+    "C22": [
+      "regularized: Lasso, Ridge y Elastic Net con CV no anidada"
+    ],
+    "C25": [
+      "cluster_selection: codo y silueta"
+    ]
+  },
+  "note_0_10_0": "Herramientas incorporadas desde las fichas del segundo cerebro. Los textos de remaining_by_module se conservan: cada módulo mantiene subtemas pendientes (p. ej. rolling validation, VECM, validación anidada, estabilidad de grupos)."
 }

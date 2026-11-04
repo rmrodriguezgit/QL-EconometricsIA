@@ -181,7 +181,19 @@
             "normality",
             "residual_normality",
             "boxplot",
-            "covariance_matrix"
+            "covariance_matrix",
+            "sample_size",
+            "multiple_testing",
+            "prediction_interval",
+            "chow",
+            "dummies",
+            "seasonal_decompose",
+            "sarima",
+            "var",
+            "johansen",
+            "wls",
+            "regularized",
+            "cluster_selection"
           ]
         },
         "node_version": {

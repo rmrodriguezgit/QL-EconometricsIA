@@ -170,3 +170,11 @@ La aplicación y sus instaladores están pendientes de implementación. Los camb
 - Fichas de herramientas faltantes deduplicadas con contador, puertos sugeridos y estado; memoria de blueprints con valoraciones que alimentan la recuperación.
 - Métodos JSON-RPC `brain.*`, CLI `python -m quantlabs.brain` y panel **Cerebro IA** en el estudio; `brain.plan` dispone de 180 s.
 - 17 pruebas nuevas del cerebro y una de transporte Electron.
+
+## 0.10.0 - 2026-11-04
+
+- Doce herramientas nuevas a partir de las fichas del segundo cerebro: tamaño de muestra, contrastes múltiples, intervalos de predicción, Chow, dicotómicas e interacción, descomposición estacional, SARIMA, VAR, Johansen, WLS/FGLS, regresión regularizada y selección de k. Registro: 73 tipos.
+- Escenario sintético `seasonal` y modelo `wls` compatible con evaluación y comparación.
+- El cerebro conecta los consumidores de modelos solo con productores compatibles y traslada matices del enunciado (proporción, Bonferroni, ridge, probit, HAC…) a parámetros.
+- Etiquetas en español de los nuevos parámetros en el inspector; inventario de pendientes anotado sin borrar subtemas abiertos.
+- 16 pruebas numéricas nuevas y 2 del cerebro (118 en total).

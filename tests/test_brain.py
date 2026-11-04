@@ -99,6 +99,19 @@ class CompilerTests(BrainCase):
         edges = {(e['source'], e['target_port']) for e in project['edges'] if e['target'] == 'c'}
         self.assertEqual(edges, {('a', 'first'), ('b', 'second'), ('d', 'data')})
 
+    def test_model_consumers_skip_incompatible_models(self):
+        raw = {'steps': [{'id': 'd', 'tool': 'synthetic', 'parameters': {'scenario': 'hetero'}, 'why': ''},
+                         {'id': 'mco', 'tool': 'ols', 'why': ''}, {'id': 'pond', 'tool': 'wls', 'why': ''},
+                         {'id': 'diag', 'tool': 'diagnostics', 'why': ''}]}
+        project, _ = compile_plan(raw)
+        self.assertEqual(next(e['source'] for e in project['edges'] if e['target'] == 'diag'), 'mco')
+
+    def test_rules_translate_prompt_nuances_to_parameters(self):
+        project, _ = compile_plan(rules_plan('tamaño de muestra para una proporción con Bonferroni en contrastes múltiples'))
+        params = {n['type']: n['parameters'] for n in project['nodes']}
+        self.assertEqual(params['sample_size']['target'], 'proporcion')
+        self.assertEqual(params['multiple_testing']['method'], 'bonferroni')
+
     def test_clean_parameters_respects_choices(self):
         params, notes = clean_parameters('split', {'method': 'aleatorio', 'fraction': 0.6})
         self.assertEqual((params['method'], params['fraction']), ('aleatorio', 0.6))

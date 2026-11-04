@@ -17,6 +17,13 @@ SINGLE_COLUMNS = {'x', 'y', 'column', 'value', 'nominal', 'index', 'population',
 MULTI_COLUMNS = {'columns', 'features', 'instruments'}
 TARGET_NAMES = ['y', 'consumo', 'clase', 'produccion', 'valor', 'ventas', 'retorno', 'despues', 'lwage', 'wage', 'precio']
 MAX_STEPS = 12
+LINEAR = {'ols', 'multiple_ols', 'ecm', 'covariance'}
+# Qué nodos productores de FittedModel acepta cada consumidor (según tools.py y normality_tools.py).
+MODEL_ACCEPTS = {
+    'diagnostics': LINEAR | {'garch'}, 'covariance': LINEAR, 'residual_normality': {'ols', 'multiple_ols', 'robust', 'covariance'},
+    'silhouette': {'kmeans'}, 'evaluate': {'ols', 'multiple_ols', 'robust', 'iv2sls', 'logit', 'ecm', 'covariance', 'wls', 'mlp', 'arima', 'hmm', 'gmm'},
+    'compare_models': {'ols', 'multiple_ols', 'robust', 'iv2sls', 'logit', 'ecm', 'covariance', 'wls', 'mlp', 'arima'},
+}
 
 
 def slug(value, used):
@@ -62,6 +69,7 @@ def compile_plan(plan, prompt=''):
     report = {'notes': [], 'dropped': [], 'gaps': []}
     used, nodes, explanations, by_step = set(), [], {}, {}
     produced = []  # (node_id, port, tipo) en orden de creación
+    node_types = {}
     steps = [step for step in plan.get('steps', []) if isinstance(step, dict)][:MAX_STEPS]
     for gap in plan.get('missing', []) or []:
         if isinstance(gap, dict) and gap.get('name'):
@@ -90,8 +98,10 @@ def compile_plan(plan, prompt=''):
                 candidates = [p for p in produced if p[0] == origin and p[2] == expected]
                 choice = next((p for p in candidates if p[1] == port), candidates[0] if candidates else None)
             if choice is None:
+                accepted = MODEL_ACCEPTS.get(kind) if expected == 'FittedModel' else None
                 for candidate in reversed(produced):
-                    if candidate[2] == expected and (candidate[0], candidate[1]) not in taken:
+                    if candidate[2] == expected and (candidate[0], candidate[1]) not in taken and \
+                            (accepted is None or node_types[candidate[0]] in accepted):
                         choice = candidate
                         break
             if choice is None:
@@ -104,6 +114,7 @@ def compile_plan(plan, prompt=''):
             report['dropped'].append({'tool': kind, 'reason': 'Sin salida compatible para ' + ', '.join(missing) + '.'})
             continue
         by_step[str(step.get('id') or kind)] = node_id
+        node_types[node_id] = kind
         nodes.append({'id': node_id, 'type': kind, 'node_version': '1.0.0', 'parameters': params,
                       'position': {'x': 0, 'y': 0}, '_wiring': wiring})
         explanations[node_id] = str(step.get('why') or definition.get('explanation', ''))[:600]

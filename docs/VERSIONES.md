@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.9.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.10.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -192,3 +192,7 @@ Resultados utiliza el mismo panel de salidas visibles en proyectos libres y reco
 | Ollama | 0.40.6 (Homebrew, runner MLX) | Servidor local del modelo; no admite salida estructurada con MLX, el cliente degrada a texto JSON |
 | Qwen | `qwen3.5:4b` | Modelo por defecto del cerebro; configurable con `QL_BRAIN_MODEL` |
 | Dependencias Python nuevas | Ninguna | Cliente HTTP con `urllib` y BM25 propio |
+
+## Herramientas 0.10.0
+
+73 tipos. Nuevos nodos en `engine/quantlabs/gap_tools.py` con statsmodels 0.15.0 (SARIMAX, VAR, coint_johansen, WLS, multipletests, seasonal_decompose), scipy y scikit-learn 1.9.1 (LassoCV, RidgeCV, ElasticNetCV, KMeans). Sin dependencias nuevas.

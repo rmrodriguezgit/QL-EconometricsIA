@@ -1,6 +1,6 @@
 {
   "name": "quantlabs-desktop",
-  "version": "0.11.0",
+  "version": "0.11.1",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,7 +9,7 @@
     "preview": "vite preview --host 127.0.0.1",
     "tauri": "tauri",
     "desktop": "npm run build && electron .",
-    "desktop:dev": "electron . --dev",
+    "desktop:dev": "node ../../scripts/desktop-dev.cjs",
     "test:desktop": "node --test electron/runtime.test.cjs electron/launcher.test.cjs && node --experimental-strip-types --test electron/variables.test.ts electron/countries.test.ts electron/flowUi.test.ts electron/regressions.test.ts"
   },
   "dependencies": {

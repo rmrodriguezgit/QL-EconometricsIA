@@ -1,6 +1,6 @@
 # Segundo cerebro · del enunciado al blueprint
 
-Versión del cerebro: 1.0.0 · aplicación 0.11.0 · 2026-11-04. Estado: **implementado y verificado con pruebas automáticas**; la calidad de los planes con Qwen depende del modelo local instalado y se evalúa caso a caso.
+Versión del cerebro: 1.0.0 · aplicación 0.11.1 · 2026-11-04. Estado: **implementado y verificado con pruebas automáticas**; la calidad de los planes con Qwen depende del modelo local instalado y se evalúa caso a caso.
 
 El segundo cerebro convierte una petición en lenguaje natural («estima el consumo sobre el ingreso con errores robustos y revisa heterocedasticidad») en un **blueprint**: un proyecto Quantlabs con nodos conectados, parámetros, guía paso a paso y lista de herramientas que faltan. Usa la misma mecánica de construcción que los 28 recorridos: catálogo cerrado de nodos, puertos tipados, validador DAG del motor y una guía con un paso por nodo.
 

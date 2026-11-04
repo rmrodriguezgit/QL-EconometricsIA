@@ -67,7 +67,7 @@ INTENTS = [
     (r'instrument|2sls|mc2e|endogen', 'iv2sls', 3, None),
     (r'markov|regimen|regimenes', 'hmm', 3, None),
     (r'mezcla gaussiana|\bgmm\b', 'gmm', 3, None),
-    (r'k-?means|cluster|conglomerad|agrupa', 'kmeans', 3, None),
+    (r'k-?means|conglomerad|(?<!errores )(?<!estandar )(?<!por )cluster(?!ed| robust| por)|(?<!errores )(?<!estandar )agrupa(?!dos? por)', 'kmeans', 3, None),
     (r'numero de (grupos|clusters)|codo|elegir k', 'cluster_selection', 3,
      {'name': 'Selección del número de grupos', 'module': 'C25', 'inputs': {'data': 'Dataset'}, 'outputs': {'result': 'Result'}}),
     (r'red(es)? neuronal|\bmlp\b|perceptron', 'mlp', 3, None),

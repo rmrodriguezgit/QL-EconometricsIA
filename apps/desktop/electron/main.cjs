@@ -7,6 +7,9 @@ const engine=createEngine(root);
 const dev=process.argv.includes('--dev');
 const origin=dev?'http://127.0.0.1:1420':'quantlabs://studio';
 let win,quitting=false,restarting=false;
+// Bajo scripts/desktop-dev.cjs el reinicio lo hace el supervisor (código 75) para no dejar procesos huérfanos.
+const supervisor=Number(process.env.QL_DEV_SUPERVISOR)||0;
+const RESTART_CODE=75;
 app.setName('Quantlabs Econometrics');
 protocol.registerSchemesAsPrivileged([{scheme:'quantlabs',privileges:{standard:true,secure:true,supportFetchAPI:true}}]);
 if(!app.requestSingleInstanceLock()) app.quit();
@@ -48,15 +51,25 @@ else {
       if(choice===1)event.preventDefault();else restarting=false;
     });
     Menu.setApplicationMenu(Menu.buildFromTemplate([
-      {label:'Quantlabs',submenu:[{label:'Recargar interfaz',accelerator:'CmdOrCtrl+R',click:()=>win.webContents.reload()},{label:'Reiniciar aplicación',click:()=>{restarting=true;app.quit();}},{type:'separator'},{label:'Salir por completo',accelerator:'CmdOrCtrl+Q',click:()=>app.quit()}]},
+      {label:'Quantlabs',submenu:[{label:'Recargar interfaz',accelerator:'CmdOrCtrl+R',click:()=>win.webContents.reload()},{label:'Recargar sin caché',accelerator:'CmdOrCtrl+Shift+R',click:()=>win.webContents.reloadIgnoringCache()},{label:'Reiniciar aplicación',click:()=>{restarting=true;app.quit();}},{type:'separator'},{label:'Salir por completo',accelerator:'CmdOrCtrl+Q',click:()=>app.quit()}]},
       {role:'editMenu'},{label:'Vista',submenu:[{role:'toggleDevTools'},{role:'resetZoom'},{role:'zoomIn'},{role:'zoomOut'},{role:'togglefullscreen'}]},
     ]));
     void win.loadURL(origin+'/');
   });
   app.on('window-all-closed',()=>app.quit());
+  // Ctrl+C, kill o cierre de terminal: salir ordenadamente para detener también el motor Python.
+  for(const signal of ['SIGINT','SIGTERM','SIGHUP'])process.on(signal,()=>app.quit());
+  if(supervisor){
+    // Si el supervisor desaparece (terminal cerrada a la fuerza), no quedarse residente.
+    setInterval(()=>{try{process.kill(supervisor,0);}catch{app.quit();}},2000).unref();
+  }
   app.on('will-quit',event=>{
     if(quitting)return;
     event.preventDefault();quitting=true;
-    void engine.stop().finally(()=>{if(restarting)app.relaunch();app.exit(0);});
+    void engine.stop().finally(()=>{
+      if(restarting&&supervisor){app.exit(RESTART_CODE);return;}
+      if(restarting)app.relaunch();
+      app.exit(0);
+    });
   });
 }

@@ -2,7 +2,7 @@
 
 **Describe tu análisis. El segundo cerebro construye el blueprint. Tú compruebas cada resultado.**
 
-[![Versión](https://img.shields.io/badge/versión-0.11.0-6cc9ac)](VERSION)
+[![Versión](https://img.shields.io/badge/versión-0.11.1-6cc9ac)](VERSION)
 [![Cerebro IA](https://img.shields.io/badge/cerebro-Qwen%20local%20%2B%20RAG-c49af8)](docs/CEREBRO.md)
 [![Escritorio](https://img.shields.io/badge/escritorio-macOS%20%7C%20Windows-79b4ef)](docs/ARRANQUE.md)
 [![Electron](https://img.shields.io/badge/Electron-45.2.1-79b4ef)](apps/desktop/package.json)
@@ -15,7 +15,7 @@
 
 Laboratorio educativo de econometría con programación visual mediante nodos, motor analítico Python y un **segundo cerebro de IA local** que convierte enunciados en flujos conectados y verificados. Objetivo de escritorio: macOS y Windows. [Repositorio](https://github.com/rmrodriguezgit/QL-EconometricsIA) · derivado de [Quantlabs-Econometrics](https://github.com/rmrodriguezgit/Quantlabs-Econometrics) con su historial completo.
 
-**Versión 0.11.0 · 2026-11-04 · Alpha local con escritorio Electron, estudio oscuro y segundo cerebro (Ollama/Qwen + reglas). Instaladores independientes y actualización automática pendientes.**
+**Versión 0.11.1 · 2026-11-04 · Alpha local con escritorio Electron, estudio oscuro y segundo cerebro (Ollama/Qwen + reglas). Instaladores independientes y actualización automática pendientes.**
 
 ## Segundo cerebro IA
 
@@ -45,6 +45,14 @@ Guía completa, métodos RPC, variables de entorno y límites: [CEREBRO.md](docs
 El arrancador prepara Python 3.12 con `uv sync --frozen --python 3.12`, instala las dependencias del escritorio cuando faltan o cambia su configuración, construye la interfaz actual y abre Electron. El primer arranque necesita conexión y puede tardar varios minutos. Los siguientes reutilizan dependencias; no descargan cambios del repositorio. Para actualizar el código, usa `git pull` y vuelve a abrir el arrancador.
 
 La terminal muestra el progreso y conserva el error si el arranque falla. Usa **Salir por completo** para cerrar ventanas y procesos del motor. Los proyectos se guardan localmente; pulsa **Guardar** antes de salir. Estos son arrancadores del código fuente: **los instaladores independientes siguen pendientes**. [Detalles y estado de verificación](docs/ARRANQUE.md).
+
+### Desarrollo en Electron con recarga
+
+```sh
+npm run desktop:dev --prefix apps/desktop
+```
+
+o doble clic en **[Arrancar-Quantlabs-Dev.command](Arrancar-Quantlabs-Dev.command)** (macOS). La interfaz se recarga en caliente al editar, el motor Python toma los cambios en el siguiente cálculo y Electron se reinicia solo si cambian sus archivos principales. Al salir (Cmd/Ctrl+Q, cerrar la ventana, Ctrl+C o cerrar la terminal) no queda ningún proceso en memoria. [Detalles](docs/ELECTRON.md#modo-desarrollo-con-recarga-0111).
 
 ### Desarrollo en navegador
 

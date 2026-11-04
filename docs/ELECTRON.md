@@ -1,6 +1,6 @@
 # Escritorio Electron y estudio visual
 
-Versión 0.5.0 · 2026-11-01.
+Versión 0.5.0 · 2026-11-01 · modo desarrollo supervisado 0.11.1 · 2026-11-04.
 
 ## Arrancar
 
@@ -14,17 +14,31 @@ npm run desktop --prefix apps/desktop
 
 El último comando compila React y abre Electron con los archivos locales, sin Vite, servidor HTTP ni Rust. El motor usa el Python de .venv y los proyectos de este checkout. Se requiere conservar el repositorio y su entorno Python: esta entrega todavía no es un instalador independiente.
 
-Para desarrollar con recarga automática, mantener dos terminales:
+### Modo desarrollo con recarga (0.11.1)
+
+Un solo proceso supervisor (`scripts/desktop-dev.cjs`) arranca Vite **dentro de su propio proceso** y abre Electron sobre `http://127.0.0.1:1420`:
 
 ```bash
-npm run dev --prefix apps/desktop
 npm run desktop:dev --prefix apps/desktop
 ```
+
+En macOS también sirve el doble clic en `Arrancar-Quantlabs-Dev.command` (equivale a `node scripts/launch.cjs --dev`: prepara dependencias como el arrancador normal pero no compila).
+
+| Qué cambias | Qué ocurre |
+|---|---|
+| `apps/desktop/src/**` (React, CSS) | Recarga en caliente (HMR) sin perder la ventana. |
+| `packages/contracts/*.json` | Vite recarga la interfaz. |
+| `engine/quantlabs/**` (Python) | Efecto inmediato en el siguiente cálculo: cada RPC arranca un proceso Python nuevo. |
+| `apps/desktop/electron/main.cjs`, `runtime.cjs`, `preload.cjs` | El supervisor reinicia Electron automáticamente. |
+| Tras `git pull` | Basta con Cmd/Ctrl+Shift+R (recarga sin caché); si cambió `package-lock.json`, sal y ejecuta `npm ci --prefix apps/desktop`. |
+
+**Cierre sin procesos residentes.** «Salir por completo» (Cmd/Ctrl+Q), cerrar la ventana, Ctrl+C en la terminal o cerrar la terminal terminan Electron, Vite y los procesos Python en curso. «Reiniciar aplicación» pide el reinicio al supervisor (código de salida 75) en vez de lanzar un Electron huérfano. Electron vigila al supervisor y se cierra si este muere, incluso con `kill -9`; como Vite corre en el mismo proceso que el supervisor, tampoco queda huérfano. Verificado en macOS el 2026-11-04 con los cuatro casos (salida de la app, Ctrl+C, `kill -9` del supervisor y reinicio por cambio de `preload.cjs`): ningún proceso Electron, Vite ni Python restante.
 
 ## Controles
 
 - Recargar interfaz, también Cmd/Ctrl+R: reinicia React y conserva el grafo en sessionStorage. Los resultados se recalculan al ejecutar. Un proyecto sin guardar pide confirmar el descarte del estado visible; la copia del grafo de la sesión sigue disponible al recargar. Guardar proyecto conserva además el JSON en Mis proyectos.
-- Reiniciar aplicación: cierra la instancia y vuelve a arrancar Electron. Guardar primero: la recuperación de sesión cubre recarga, no promete persistencia del borrador tras salir.
+- Recargar sin caché, Cmd/Ctrl+Shift+R: útil tras actualizar el código en modo desarrollo.
+- Reiniciar aplicación: cierra la instancia y vuelve a arrancar Electron (en modo desarrollo lo hace el supervisor). Guardar primero: la recuperación de sesión cubre recarga, no promete persistencia del borrador tras salir.
 - Salir por completo, también Cmd/Ctrl+Q: cierra ventanas, cancela cálculos activos, termina sus procesos Python y sale incluso en macOS. Cerrar la última ventana tiene el mismo efecto; no hay bandeja ni servicio residente.
 - Buscar actualizaciones: consulta el último GitHub Release del repositorio propio. Compara versiones numéricas y ofrece una URL fija de Releases. No descarga ni ejecuta instaladores automáticamente. Un 404 se presenta como ausencia de releases, no como aplicación actualizada.
 

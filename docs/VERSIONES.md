@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.11.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.11.1**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -200,3 +200,7 @@ Resultados utiliza el mismo panel de salidas visibles en proyectos libres y reco
 ## Herramientas 0.11.0
 
 78 tipos. Panel implementado con statsmodels (sin `linearmodels`), EGARCH/GJR con arch 8.0.0, bootstrap con `scipy.stats.bootstrap`. Sin dependencias nuevas.
+
+## Escritorio 0.11.1
+
+Sin dependencias nuevas. El supervisor de desarrollo usa la API `createServer` de Vite 8.3.5 ya instalado y el `cli.js` de Electron 45.2.1. Decisión: Vite en el mismo proceso que el supervisor para que no pueda quedar huérfano; Electron vigila el PID del supervisor (`QL_DEV_SUPERVISOR`).

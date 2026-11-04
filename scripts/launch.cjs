@@ -43,6 +43,12 @@ function main(){
   run('npm',['ci'],desktop);
   mkdirSync(join(root,'.cache','launcher'),{recursive:true});writeFileSync(stamp,hash+'\n');
  }
+ if(process.argv.includes('--dev')){
+  // Modo desarrollo: sin compilar; Vite recarga la interfaz y el supervisor cierra todo al salir.
+  console.log('\n3/3 Abrir Quantlabs en modo desarrollo (recarga en caliente).\n');
+  run(process.execPath,[join(__dirname,'desktop-dev.cjs')],desktop);
+  return;
+ }
  console.log('\n3/4 Construir la interfaz actual…');run('npm',['run','build'],desktop);
  console.log('\n4/4 Abrir Quantlabs. Cierra la aplicación con «Salir por completo».\n');
  run(process.execPath,[join(desktop,'node_modules','electron','cli.js'),'.'],desktop);

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-const format = (value: unknown): ReactNode => typeof value === 'number' ? new Intl.NumberFormat('es-MX', { maximumSignificantDigits: 6 }).format(value) : value === null ? 'No definido' : String(value);
+const format = (value: unknown): ReactNode => typeof value === 'number' ? (value !== 0 && Math.abs(value) < 1e-4 ? value.toExponential(2).replace('e', ' × 10^') : new Intl.NumberFormat('es-MX', { maximumSignificantDigits: 6 }).format(value)) : value === null ? 'No definido' : String(value);
 type Report = { topic: string; seed?: number; n?: number; interpretation: string; scope: string; metrics: { label: string; value: unknown }[]; tables: { title: string; columns: string[]; rows: unknown[][] }[]; series: { label: string; points: [number, number][] }[]; limitations: string[]; warnings: string[] };
 export default function ExperimentReport({ result }: { result: Record<string, unknown> }) {
   const report = result as unknown as Report;

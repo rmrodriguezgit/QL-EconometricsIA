@@ -179,6 +179,14 @@ class ServiceTests(BrainCase):
         self.assertIn('panel', types)
         self.assertEqual(result['verification']['status'], 'succeeded')
 
+    def test_clustered_errors_are_not_kmeans(self):
+        for prompt in ('Panel con efectos fijos y errores agrupados', 'efectos fijos con errores cluster por entidad'):
+            kinds, _ = detect_tools(prompt)
+            self.assertIn('panel', kinds)
+            self.assertNotIn('kmeans', kinds)
+        self.assertIn('kmeans', detect_tools('agrupa los clientes con k-means')[0])
+        self.assertIn('kmeans', detect_tools('cluster de clientes')[0])
+
     def test_remote_ollama_requires_opt_in(self):
         with patch.dict(os.environ, {'QL_BRAIN_OLLAMA_URL': 'http://example.com:11434'}):
             self.assertIsNone(llm.available_models())

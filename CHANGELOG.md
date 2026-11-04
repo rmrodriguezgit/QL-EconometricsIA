@@ -193,3 +193,11 @@ La aplicación y sus instaladores están pendientes de implementación. Los camb
 - Escenario sintético `panel` y selector de columna `entity` en el inspector.
 - El cerebro conecta los nuevos modelos (EGARCH y stepwise con Diagnóstico; efectos marginales con logit y regresiones lineales), traslada matices (GJR, distribución t, backward, BIC, BCa) y registra `mgarch` como nuevo hueco.
 - 9 pruebas nuevas (127 en total), incluida la tasa de rechazo de Hausman bajo H₀.
+
+## 0.11.1 - 2026-11-04
+
+- Escritorio: `npm run desktop:dev` arranca un supervisor único (`scripts/desktop-dev.cjs`) con Vite en proceso y Electron sobre él; HMR para la interfaz, reinicio automático de Electron al editar `main.cjs`/`runtime.cjs`/`preload.cjs`, y cierre completo (Electron, Vite y Python) al salir, con Ctrl+C, al cerrar la terminal o si el supervisor muere. Nuevo `Arrancar-Quantlabs-Dev.command` y `launch.cjs --dev`.
+- Electron: atiende SIGINT/SIGTERM/SIGHUP con salida ordenada, «Recargar sin caché» (Cmd/Ctrl+Shift+R) y reinicio delegado al supervisor en desarrollo.
+- Cerebro: «errores agrupados/cluster» ya no activa k-means (cambiaba el escenario y rompía el panel); prueba de regresión.
+- Interfaz: la etiqueta de cada tarjeta del lienzo sale de su categoría (Estimación, Diagnóstico, Transformación…) en lugar de «Exploración» genérica; opciones en español para panel, EGARCH, stepwise, efectos marginales y bootstrap; valores p diminutos en notación científica.
+- Verificado en la interfaz (navegador): panel y EGARCH abiertos y ejecutados desde el Cerebro IA. Stepwise, efectos marginales y bootstrap verificados por ejecución del blueprint, no a mano.

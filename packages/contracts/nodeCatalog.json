@@ -1836,6 +1836,12 @@
         "cluster",
         "nonrobust"
       ]
+    },
+    "choice_labels": {
+      "covariance": {
+        "cluster": "Por conglomerado de unidad",
+        "nonrobust": "Clásicos"
+      }
     }
   },
   "egarch": {
@@ -1872,6 +1878,16 @@
         "normal",
         "t"
       ]
+    },
+    "choice_labels": {
+      "vol": {
+        "EGARCH": "EGARCH (Nelson)",
+        "GJR-GARCH": "GJR-GARCH (umbral)"
+      },
+      "dist": {
+        "normal": "Normal",
+        "t": "t de Student"
+      }
     }
   },
   "stepwise": {
@@ -1906,6 +1922,16 @@
         "aic",
         "bic"
       ]
+    },
+    "choice_labels": {
+      "direction": {
+        "forward": "Hacia adelante (forward)",
+        "backward": "Hacia atrás (backward)"
+      },
+      "criterion": {
+        "aic": "AIC",
+        "bic": "BIC"
+      }
     }
   },
   "marginal_effects": {
@@ -1932,6 +1958,12 @@
         "overall",
         "mean"
       ]
+    },
+    "choice_labels": {
+      "at": {
+        "overall": "Efecto promedio (AME)",
+        "mean": "En la media de X (MEM)"
+      }
     }
   },
   "bootstrap": {
@@ -1970,6 +2002,19 @@
         "basic",
         "BCa"
       ]
+    },
+    "choice_labels": {
+      "statistic": {
+        "mean": "Media",
+        "median": "Mediana",
+        "std": "Desviación estándar",
+        "iqr": "Rango intercuartílico"
+      },
+      "method": {
+        "percentile": "Percentil",
+        "basic": "Básico",
+        "BCa": "BCa (sesgo corregido y acelerado)"
+      }
     }
   }
 }

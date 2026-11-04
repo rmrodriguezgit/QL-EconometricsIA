@@ -90,6 +90,9 @@ class CatalogTests(unittest.TestCase):
         client.get_dataframe.return_value = pd.DataFrame({'valor': [3., 4.]}, index=pd.Index(['2021', '2020'], name='date'))
         module = Mock()
         module.Client.return_value = client
+        from quantlabs import wb_client
+        wb_client.client.cache_clear()  # el cliente se guarda en caché por proceso; otra prueba pudo crearlo antes
+        self.addCleanup(wb_client.client.cache_clear)
         with patch.dict(sys.modules, {'wbdata': module}):
             frame, source = world_bank({'indicator': '1.0.HCount.1.90usd', 'source': 37, 'start': 2020, 'end': 2021})
         self.assertEqual(client.get_dataframe.call_args.kwargs['source'], 37)

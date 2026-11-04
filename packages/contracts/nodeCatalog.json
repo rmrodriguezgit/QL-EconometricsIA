@@ -96,7 +96,8 @@
     "explanation": "Cuenta observaciones y faltantes, media, mediana y desviación muestral por columna.",
     "references": [
       "B18"
-    ]
+    ],
+    "scope": "ambas"
   },
   "scatter": {
     "label": "Dispersión",
@@ -117,7 +118,8 @@
     "explanation": "Representa pares completos de las variables elegidas. Asociación no implica causalidad.",
     "references": [
       "B17"
-    ]
+    ],
+    "scope": "ambas"
   },
   "ols": {
     "label": "Regresión OLS",
@@ -141,7 +143,8 @@
       "B03",
       "B23",
       "B29"
-    ]
+    ],
+    "scope": "univariada"
   },
   "experiment": {
     "label": "Receta anterior",
@@ -673,7 +676,8 @@
     "explanation": "Construye intervalos y cuenta filas. La suma de frecuencias debe coincidir con la muestra observada.",
     "references": [
       "B17"
-    ]
+    ],
+    "scope": "univariada"
   },
   "correlation": {
     "label": "Correlación",
@@ -692,7 +696,8 @@
     "explanation": "Selecciona columnas numéricas. Calcula correlación de Pearson y covarianza muestral (n−1) con las mismas filas completas; informa faltantes. Correlación no implica causalidad.",
     "references": [
       "B18"
-    ]
+    ],
+    "scope": "multivariada"
   },
   "probability": {
     "label": "Bayes y TCL",
@@ -717,7 +722,8 @@
     "explanation": "Combina probabilidades mediante Bayes y remuestrea la tabla conectada para observar medias muestrales.",
     "references": [
       "B19"
-    ]
+    ],
+    "scope": "univariada"
   },
   "sampling_audit": {
     "label": "Comparar muestras",
@@ -758,7 +764,8 @@
     "explanation": "Calcula un intervalo t para la media y muestra muestra efectiva y error estándar.",
     "references": [
       "B21"
-    ]
+    ],
+    "scope": "univariada"
   },
   "paired_test": {
     "label": "Prueba pareada",
@@ -778,7 +785,8 @@
     "explanation": "Contrasta diferencias dentro de cada par. Muestra efecto práctico y p-valor.",
     "references": [
       "B22"
-    ]
+    ],
+    "scope": "univariada"
   },
   "unit_root": {
     "label": "Raíz unitaria",
@@ -798,7 +806,8 @@
     "references": [
       "B25",
       "B36"
-    ]
+    ],
+    "scope": "univariada"
   },
   "monte_carlo": {
     "label": "Resumen de escenarios",
@@ -818,7 +827,8 @@
     "explanation": "Resume trayectorias ya generadas y capitalizadas: percentiles, probabilidad y error Monte Carlo.",
     "references": [
       "B10"
-    ]
+    ],
+    "scope": "univariada"
   },
   "backtest": {
     "label": "Evaluar estrategia",
@@ -863,7 +873,8 @@
       "B04",
       "B14",
       "B30"
-    ]
+    ],
+    "scope": "multivariada"
   },
   "logit": {
     "label": "Logit / probit",
@@ -892,7 +903,8 @@
         "logit",
         "probit"
       ]
-    }
+    },
+    "scope": "multivariada"
   },
   "arima": {
     "label": "ARIMA",
@@ -916,7 +928,8 @@
     "references": [
       "B05",
       "B36"
-    ]
+    ],
+    "scope": "univariada"
   },
   "garch": {
     "label": "GARCH",
@@ -938,7 +951,8 @@
     "explanation": "Estima volatilidad condicional de los datos conectados. Comprueba convergencia.",
     "references": [
       "B26"
-    ]
+    ],
+    "scope": "univariada"
   },
   "robust": {
     "label": "Regresión Huber",
@@ -959,7 +973,8 @@
     "explanation": "Reduce la influencia de residuos grandes mediante RLM Huber. No equivale a errores estándar robustos.",
     "references": [
       "B35"
-    ]
+    ],
+    "scope": "multivariada"
   },
   "iv2sls": {
     "label": "Variables instrumentales",
@@ -981,7 +996,8 @@
     "explanation": "Estima por 2SLS usando instrumentos explícitos. Su validez requiere argumentos externos al ajuste.",
     "references": [
       "B12"
-    ]
+    ],
+    "scope": "multivariada"
   },
   "hmm": {
     "label": "Regímenes HMM",
@@ -1003,7 +1019,8 @@
     "explanation": "Estima emisiones y transiciones entre estados ocultos a partir de la serie conectada.",
     "references": [
       "B07"
-    ]
+    ],
+    "scope": "multivariada"
   },
   "gmm": {
     "label": "Mezcla gaussiana",
@@ -1025,7 +1042,8 @@
     "explanation": "Estima una mezcla gaussiana sin transiciones temporales. No es el método generalizado de momentos.",
     "references": [
       "B07"
-    ]
+    ],
+    "scope": "multivariada"
   },
   "kmeans": {
     "label": "Agrupar con k-means",
@@ -1047,7 +1065,8 @@
     "explanation": "Agrupa las filas conectadas por distancia. Debe aplicarse sobre variables con escalas comparables.",
     "references": [
       "B08"
-    ]
+    ],
+    "scope": "multivariada"
   },
   "mlp": {
     "label": "Red neuronal",
@@ -1070,7 +1089,8 @@
     "explanation": "Ajusta una red a la tabla de entrenamiento. La estandarización y la evaluación permanecen como pasos separados.",
     "references": [
       "B09"
-    ]
+    ],
+    "scope": "multivariada"
   },
   "diagnostics": {
     "label": "Diagnóstico del modelo",
@@ -1089,7 +1109,8 @@
       "B24",
       "B26",
       "B31"
-    ]
+    ],
+    "scope": "ambas"
   },
   "covariance": {
     "label": "Cambiar covarianza",
@@ -1135,7 +1156,8 @@
     "references": [
       "B05",
       "B13"
-    ]
+    ],
+    "scope": "ambas"
   },
   "compare_models": {
     "label": "Comparar modelos",
@@ -1156,7 +1178,8 @@
     "explanation": "Compara modelos sobre datos comunes. AIC/BIC solo se muestran como comparables cuando coinciden sus muestras de ajuste.",
     "references": [
       "B13"
-    ]
+    ],
+    "scope": "multivariada"
   },
   "silhouette": {
     "label": "Calidad de grupos",
@@ -1195,7 +1218,8 @@
     "explanation": "Estima la relación de largo plazo y añade su error de equilibrio. El contraste Engle-Granger no sustituye revisar integración.",
     "references": [
       "B25"
-    ]
+    ],
+    "scope": "multivariada"
   },
   "ecm": {
     "label": "Corrección de errores",
@@ -1217,7 +1241,8 @@
     "explanation": "Relaciona diferencias actuales con el error de equilibrio rezagado. Usa la salida del nodo de cointegración.",
     "references": [
       "B25"
-    ]
+    ],
+    "scope": "multivariada"
   },
   "quantile": {
     "label": "Regresión por cuantiles",
@@ -1238,7 +1263,8 @@
     "explanation": "Estima cuantiles de la tabla conectada. Muestra incertidumbre y límites de comparación.",
     "references": [
       "B34"
-    ]
+    ],
+    "scope": "multivariada"
   },
   "pca": {
     "label": "Componentes principales",
@@ -1258,7 +1284,8 @@
     "explanation": "Descompone las columnas conectadas y muestra varianza explicada y cargas.",
     "references": [
       "B11"
-    ]
+    ],
+    "scope": "multivariada"
   },
   "factor_analysis": {
     "label": "Análisis factorial",
@@ -1279,7 +1306,8 @@
     "explanation": "Distingue factores comunes y ruido específico sobre las columnas elegidas.",
     "references": [
       "B11"
-    ]
+    ],
+    "scope": "multivariada"
   },
   "sem": {
     "label": "Ecuaciones estructurales",
@@ -1298,7 +1326,8 @@
     "explanation": "Ajusta una plantilla de medición y trayectoria identificada. La estructura es explícita y no acepta código arbitrario.",
     "references": [
       "B02"
-    ]
+    ],
+    "scope": "multivariada"
   },
   "report": {
     "label": "Interpretar resultados",
@@ -1318,7 +1347,8 @@
     "references": [
       "B01",
       "B28"
-    ]
+    ],
+    "scope": "ambas"
   },
   "acf": {
     "label": "Autocorrelación",
@@ -1339,7 +1369,8 @@
     "references": [
       "B32",
       "B36"
-    ]
+    ],
+    "scope": "ambas"
   },
   "wooldridge": {
     "label": "Wooldridge",
@@ -1383,7 +1414,8 @@
     "references": [
       "B17",
       "B32"
-    ]
+    ],
+    "scope": "univariada"
   },
   "join_series": {
     "label": "Unir series por período",
@@ -1451,7 +1483,8 @@
       "B18",
       "B19",
       "B22"
-    ]
+    ],
+    "scope": "ambas"
   },
   "residual_normality": {
     "label": "Normalidad de residuos",
@@ -1472,7 +1505,8 @@
       "B03",
       "B24",
       "B31"
-    ]
+    ],
+    "scope": "ambas"
   },
   "boxplot": {
     "label": "Boxplot",
@@ -1498,7 +1532,8 @@
     "references": [
       "B17",
       "B18"
-    ]
+    ],
+    "scope": "univariada"
   },
   "covariance_matrix": {
     "label": "Covarianza de variables",
@@ -1517,7 +1552,8 @@
     "explanation": "Calcula covarianza entre variables de una tabla, con divisor n−1 y filas completas comunes. La diagonal contiene varianzas; las unidades son productos de las unidades originales. No es la covarianza de los estimadores OLS.",
     "references": [
       "B18"
-    ]
+    ],
+    "scope": "multivariada"
   },
   "sample_size": {
     "label": "Tamaño de muestra",
@@ -1546,7 +1582,8 @@
         "media",
         "proporcion"
       ]
-    }
+    },
+    "scope": "univariada"
   },
   "multiple_testing": {
     "label": "Contrastes múltiples",
@@ -1575,7 +1612,8 @@
         "holm",
         "bonferroni"
       ]
-    }
+    },
+    "scope": "ambas"
   },
   "prediction_interval": {
     "label": "Intervalos de predicción",
@@ -1599,7 +1637,8 @@
       "B21",
       "B23",
       "B24"
-    ]
+    ],
+    "scope": "univariada"
   },
   "chow": {
     "label": "Contraste de Chow",
@@ -1621,7 +1660,8 @@
     "references": [
       "B31",
       "B33"
-    ]
+    ],
+    "scope": "multivariada"
   },
   "dummies": {
     "label": "Dicotómica e interacción",
@@ -1672,7 +1712,8 @@
         "additive",
         "multiplicative"
       ]
-    }
+    },
+    "scope": "univariada"
   },
   "sarima": {
     "label": "SARIMA y pronóstico",
@@ -1702,7 +1743,8 @@
       "B36",
       "B05",
       "B32"
-    ]
+    ],
+    "scope": "univariada"
   },
   "var": {
     "label": "Vector autorregresivo (VAR)",
@@ -1724,7 +1766,8 @@
     "references": [
       "B32",
       "B25"
-    ]
+    ],
+    "scope": "multivariada"
   },
   "johansen": {
     "label": "Contraste de Johansen",
@@ -1745,7 +1788,8 @@
     "explanation": "Estadísticos de traza y máximo autovalor con valores críticos al 5 % y vectores de cointegración. det_order: −1 sin constante, 0 constante, 1 tendencia.",
     "references": [
       "B25"
-    ]
+    ],
+    "scope": "multivariada"
   },
   "wls": {
     "label": "WLS / FGLS",
@@ -1774,7 +1818,8 @@
         "fgls",
         "inversa_x2"
       ]
-    }
+    },
+    "scope": "multivariada"
   },
   "regularized": {
     "label": "Regresión regularizada",
@@ -1805,7 +1850,8 @@
         "ridge",
         "elasticnet"
       ]
-    }
+    },
+    "scope": "multivariada"
   },
   "cluster_selection": {
     "label": "Selección de k",
@@ -1827,7 +1873,8 @@
     "references": [
       "B08",
       "B07"
-    ]
+    ],
+    "scope": "multivariada"
   },
   "panel": {
     "label": "Datos de panel (FE/RE)",
@@ -1863,7 +1910,8 @@
         "cluster": "Por conglomerado de unidad",
         "nonrobust": "Clásicos"
       }
-    }
+    },
+    "scope": "multivariada"
   },
   "egarch": {
     "label": "EGARCH / GJR-GARCH",
@@ -1909,7 +1957,8 @@
         "normal": "Normal",
         "t": "t de Student"
       }
-    }
+    },
+    "scope": "univariada"
   },
   "stepwise": {
     "label": "Selección stepwise",
@@ -1953,7 +2002,8 @@
         "aic": "AIC",
         "bic": "BIC"
       }
-    }
+    },
+    "scope": "multivariada"
   },
   "marginal_effects": {
     "label": "Efectos marginales",
@@ -2036,7 +2086,8 @@
         "basic": "Básico",
         "BCa": "BCa (sesgo corregido y acelerado)"
       }
-    }
+    },
+    "scope": "univariada"
   },
   "pairplot": {
     "label": "Pairplot",
@@ -2060,6 +2111,331 @@
     "explanation": "Como seaborn.pairplot: dispersión de cada par de variables, histograma de cada variable en la diagonal y r de Pearson por par. Vacío en variables = todas las numéricas (sin periodo, hasta 6). Grupo opcional (p. ej. pais) colorea los puntos. Cada par usa sus filas completas. Asociación no implica causalidad.",
     "references": [
       "B17"
-    ]
+    ],
+    "scope": "multivariada"
+  },
+  "series_plot": {
+    "label": "Gráfico de varias series",
+    "detail": "Varias variables en el tiempo: paneles, índice base 100 u original",
+    "category": "Exploración",
+    "color": "blue",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "plot": "Plot",
+      "result": "Result"
+    },
+    "defaults": {
+      "columns": "",
+      "time": "periodo",
+      "mode": "paneles"
+    },
+    "choices": {
+      "mode": [
+        "paneles",
+        "indice",
+        "original"
+      ]
+    },
+    "choice_labels": {
+      "mode": {
+        "paneles": "Un panel por variable",
+        "indice": "Índice (primer año = 100)",
+        "original": "Mismo eje, escala original"
+      }
+    },
+    "explanation": "Grafica varias series de la tabla contra el periodo. En paneles cada variable usa su propia escala (útil con unidades distintas); el índice compara crecimientos relativos. Vacío en variables = todas las numéricas.",
+    "references": [
+      "B17"
+    ],
+    "scope": "multivariada"
+  },
+  "boxplots": {
+    "label": "Boxplot de varias variables",
+    "detail": "Cajas comparables de varias columnas (z o escala original)",
+    "category": "Exploración",
+    "color": "blue",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "plot": "Plot",
+      "result": "Result"
+    },
+    "defaults": {
+      "columns": "",
+      "scale": "zscore"
+    },
+    "choices": {
+      "scale": [
+        "zscore",
+        "original"
+      ]
+    },
+    "choice_labels": {
+      "scale": {
+        "zscore": "Estandarizado (z)",
+        "original": "Escala original"
+      }
+    },
+    "explanation": "Un boxplot de Tukey por variable. Estandarizar (z) permite comparar la forma de variables con unidades muy distintas; la tabla conserva media y DE originales.",
+    "references": [
+      "B17"
+    ],
+    "scope": "multivariada"
+  },
+  "describe_table": {
+    "label": "Descriptivos (describe + transpose)",
+    "detail": "count, mean, std, min, cuartiles y max por variable",
+    "category": "Exploración",
+    "color": "blue",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "summary": "Summary",
+      "result": "Result"
+    },
+    "defaults": {
+      "columns": "",
+      "orientation": "transpuesta"
+    },
+    "choices": {
+      "orientation": [
+        "transpuesta",
+        "pandas"
+      ]
+    },
+    "choice_labels": {
+      "orientation": {
+        "transpuesta": "describe().transpose(): una fila por variable",
+        "pandas": "describe(): una columna por variable"
+      }
+    },
+    "explanation": "Equivale a pandas describe() o describe().transpose(): count, mean, std (n−1), min, 25 %, 50 %, 75 % y max. Vacío en variables = todas las numéricas.",
+    "references": [
+      "B17",
+      "B20"
+    ],
+    "scope": "ambas"
+  },
+  "two_sample_test": {
+    "label": "Prueba de hipótesis entre dos variables",
+    "detail": "H₀: sin diferencia entre dos variables (Welch, Student, pareada o Mann-Whitney)",
+    "category": "Diagnósticos",
+    "color": "orange",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "result": "Result"
+    },
+    "defaults": {
+      "first": "x",
+      "second": "y",
+      "method": "welch",
+      "alternative": "two-sided",
+      "alpha": 0.05
+    },
+    "choices": {
+      "method": [
+        "welch",
+        "student",
+        "paired",
+        "mannwhitney"
+      ],
+      "alternative": [
+        "two-sided",
+        "less",
+        "greater"
+      ]
+    },
+    "choice_labels": {
+      "method": {
+        "welch": "t de Welch (varianzas distintas)",
+        "student": "t de Student (varianzas iguales)",
+        "paired": "t pareada (mismo año)",
+        "mannwhitney": "Mann-Whitney U (sin normalidad)"
+      },
+      "alternative": {
+        "two-sided": "Bilateral (≠)",
+        "less": "Menor (<)",
+        "greater": "Mayor (>)"
+      }
+    },
+    "explanation": "Contrasta H₀: no hay diferencia significativa entre dos variables frente a Hₐ: sí la hay. Reporta estadístico, p-valor, decisión al nivel α e hipótesis redactadas con los nombres de las variables.",
+    "references": [
+      "B20",
+      "B21"
+    ],
+    "scope": "multivariada"
+  },
+  "eigen_correlation": {
+    "label": "Correlación severa (valores propios)",
+    "detail": "Valores y vectores propios de la correlación, índice de condición y VIF",
+    "category": "Diagnósticos",
+    "color": "orange",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "result": "Result"
+    },
+    "defaults": {
+      "columns": "",
+      "condition_threshold": 30
+    },
+    "explanation": "Calcula np.linalg.eig de la matriz de correlación y arma la matriz propia (valores propios + vectores) por variable. Valores propios cercanos a 0, índice de condición > 30 o VIF > 10 indican correlación severa (multicolinealidad).",
+    "references": [
+      "B13",
+      "B31"
+    ],
+    "scope": "multivariada"
+  },
+  "sklearn_linear": {
+    "label": "Regresión lineal (scikit-learn)",
+    "detail": "LinearRegression con escalado opcional; base para validación y búsqueda",
+    "category": "Modelos",
+    "color": "purple",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "model": "FittedModel",
+      "result": "Result"
+    },
+    "defaults": {
+      "features": "x,z",
+      "y": "y",
+      "scale": "standard"
+    },
+    "choices": {
+      "scale": [
+        "standard",
+        "none"
+      ]
+    },
+    "choice_labels": {
+      "scale": {
+        "standard": "StandardScaler + LinearRegression",
+        "none": "Sin escalado"
+      }
+    },
+    "explanation": "Ajusta MCO con scikit-learn (LinearRegression). Coeficientes estandarizados y en unidades originales; R², RMSE y MAE de ajuste. No reporta errores estándar: para inferencia usa OLS múltiple (statsmodels).",
+    "references": [
+      "B31",
+      "B33"
+    ],
+    "scope": "multivariada"
+  },
+  "cross_validation": {
+    "label": "Validación cruzada",
+    "detail": "Reajusta el modelo en k pliegues y evalúa fuera de muestra",
+    "category": "Diagnósticos",
+    "color": "orange",
+    "inputs": {
+      "model": "FittedModel",
+      "data": "Dataset"
+    },
+    "outputs": {
+      "result": "Result"
+    },
+    "defaults": {
+      "folds": 5,
+      "cv": "timeseries",
+      "seed": 42
+    },
+    "choices": {
+      "cv": [
+        "timeseries",
+        "kfold"
+      ]
+    },
+    "choice_labels": {
+      "cv": {
+        "timeseries": "Temporal (TimeSeriesSplit)",
+        "kfold": "KFold con barajado"
+      }
+    },
+    "explanation": "Usa la especificación del modelo conectado (statsmodels o scikit-learn), lo reajusta en cada pliegue y reporta R², RMSE y MAE fuera de muestra. Con series anuales usa la validación temporal.",
+    "references": [
+      "B31",
+      "B33"
+    ],
+    "scope": "multivariada"
+  },
+  "hyperparameter_search": {
+    "label": "Optimización de hiperparámetros",
+    "detail": "GridSearchCV de α para Ridge, Lasso o ElasticNet",
+    "category": "Modelos",
+    "color": "purple",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "model": "FittedModel",
+      "result": "Result"
+    },
+    "defaults": {
+      "features": "x,z",
+      "y": "y",
+      "estimator": "ridge",
+      "alpha_min": 0.0001,
+      "alpha_max": 100,
+      "n_alphas": 20,
+      "folds": 5,
+      "cv": "timeseries",
+      "seed": 42
+    },
+    "choices": {
+      "estimator": [
+        "ridge",
+        "lasso",
+        "elasticnet"
+      ],
+      "cv": [
+        "timeseries",
+        "kfold"
+      ]
+    },
+    "choice_labels": {
+      "estimator": {
+        "ridge": "Ridge (L2)",
+        "lasso": "Lasso (L1)",
+        "elasticnet": "ElasticNet (L1+L2)"
+      },
+      "cv": {
+        "timeseries": "Temporal (TimeSeriesSplit)",
+        "kfold": "KFold con barajado"
+      }
+    },
+    "explanation": "Busca el α que minimiza el RMSE de validación cruzada en una rejilla logarítmica (GridSearchCV), con escalado estándar, y reajusta el mejor modelo con todos los datos. El modelo sale como FittedModel para residuos y evaluación.",
+    "references": [
+      "B31",
+      "B33"
+    ],
+    "scope": "multivariada"
+  },
+  "residual_analysis": {
+    "label": "Análisis de residuos",
+    "detail": "Residuos vs predichos, Q–Q, normalidad, heterocedasticidad y Durbin-Watson",
+    "category": "Diagnósticos",
+    "color": "orange",
+    "inputs": {
+      "model": "FittedModel"
+    },
+    "outputs": {
+      "result": "Result"
+    },
+    "defaults": {
+      "alpha": 0.05
+    },
+    "explanation": "Para cualquier regresión con respuesta (statsmodels o scikit-learn): residuos frente a predichos, histograma y Q–Q, Jarque-Bera, Shapiro-Wilk, Breusch-Pagan y Durbin-Watson sobre la muestra de ajuste.",
+    "references": [
+      "B13",
+      "B31"
+    ],
+    "scope": "ambas"
   }
 }

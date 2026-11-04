@@ -218,3 +218,12 @@ La aplicación y sus instaladores están pendientes de implementación. Los camb
 - Nuevo nodo **Pairplot**: matriz de dispersión con histogramas en la diagonal, r de Pearson por par, color opcional por grupo, tabla de filas completas por par y de correlación dentro de cada grupo, con aviso cuando las unidades pueden diferir entre grupos.
 - Cerebro: dos o más indicadores → `worldbank_multi`; las frases de indicadores ya no activan herramientas ni se cuentan dos veces; intención `pairplot` con «por país».
 - Verificado: pruebas sin red (cliente simulado) y comparación con pandas; consulta real USA/MEX y pairplot abierto y ejecutado desde el Cerebro IA en la interfaz.
+
+## 0.14.0 - 2026-11-04
+
+- Nueve herramientas multivariadas: gráfico de varias series, boxplot de varias variables, describe + transpose, prueba de hipótesis entre dos variables (Welch, Student, pareada, Mann-Whitney), correlación severa por valores propios (índice de condición, VIF), regresión lineal con scikit-learn, validación cruzada, optimización de hiperparámetros (GridSearchCV) y análisis de residuos para modelos de statsmodels y scikit-learn.
+- Biblioteca con apartados **Todas · Univariadas · Multivariadas** según el campo `scope` del catálogo.
+- Recorrido aplicado **R01** (a–p) con los cuatro indicadores de EE. UU.: 22 nodos guiados, desde la lectura hasta los residuos del modelo optimizado.
+- Cerebro: intenciones para las nuevas herramientas y conexión de modelos de scikit-learn.
+- Pruebas: 145 en total; las nuevas comparan con pandas, scipy, numpy y statsmodels. La prueba de Banco Mundial limpia el cliente en caché para no depender del orden.
+- Verificado en la interfaz: R01 abierto desde Ejemplos y ejecutado con datos reales (22/22 nodos), y apartados de la biblioteca.

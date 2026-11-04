@@ -155,7 +155,7 @@ def predict(model,frame):
     names=list(dict.fromkeys([*model.features,*([model.target] if model.target else [])]))
     values=sample(frame,columns(frame,','.join(names)),2)
     design=values[model.features]
-    if model.kind in ['ols','multiple_ols','robust','iv2sls','logit','ecm','covariance','wls']: design=sm.add_constant(design,has_constant='add')
+    if model.kind in ['ols','multiple_ols','robust','iv2sls','logit','ecm','covariance','wls','stepwise']: design=sm.add_constant(design,has_constant='add')
     if model.kind in ['hmm','gmm','kmeans']: return fit.predict(design.to_numpy()),None,values
     return np.asarray(fit.predict(design)),values[model.target].to_numpy(),values
 
@@ -484,7 +484,9 @@ def run_tool(kind,inputs,params):
         warnings.simplefilter('always')
         try:
             from .gap_tools import GAP_TOOLS, run_gap_tool
-            result,outputs=run_gap_tool(kind,inputs,params) if kind in GAP_TOOLS else calculate(kind,inputs,params)
+            from .multivariate_tools import MULTIVARIATE_TOOLS, run_multivariate_tool
+            if kind in MULTIVARIATE_TOOLS: result,outputs=run_multivariate_tool(kind,inputs,params)
+            else: result,outputs=run_gap_tool(kind,inputs,params) if kind in GAP_TOOLS else calculate(kind,inputs,params)
         except EngineError: raise
         except (ValueError,np.linalg.LinAlgError) as error:
             raise EngineError('ESTIMATION_ERROR','No se puede estimar con esta muestra o configuración: '+str(error)[:240]) from error

@@ -1,6 +1,6 @@
 # Segundo cerebro · del enunciado al blueprint
 
-Versión del cerebro: 1.0.0 · aplicación 0.13.0 · 2026-11-04. Estado: **implementado y verificado con pruebas automáticas**; la calidad de los planes con Qwen depende del modelo local instalado y se evalúa caso a caso.
+Versión del cerebro: 1.0.0 · aplicación 0.14.0 · 2026-11-04. Estado: **implementado y verificado con pruebas automáticas**; la calidad de los planes con Qwen depende del modelo local instalado y se evalúa caso a caso.
 
 El segundo cerebro convierte una petición en lenguaje natural («estima el consumo sobre el ingreso con errores robustos y revisa heterocedasticidad») en un **blueprint**: un proyecto Quantlabs con nodos conectados, parámetros, guía paso a paso y lista de herramientas que faltan. Usa la misma mecánica de construcción que los 28 recorridos: catálogo cerrado de nodos, puertos tipados, validador DAG del motor y una guía con un paso por nodo.
 
@@ -118,3 +118,7 @@ En 0.10.0 se implementaron así doce fichas (Chow, VAR, Johansen, SARIMA, WLS, r
 ## Banco Mundial con varios indicadores (0.13.0)
 
 Si el enunciado nombra dos o más indicadores reconocidos («contribuciones sociales, tasa de préstamo, crecimiento del PIB y gasto de consumo final total de Estados Unidos y México»), el cerebro usa `worldbank_multi` con alias de columna (`social_contri`, `lending_rate`, `gdp_growth`, `fin_cons`…) y todos los países mencionados. Cada frase de indicador se consume al reconocerla (así «consumo final» dentro de «gasto de consumo final total» no añade otro indicador) y esas frases no activan herramientas: «crecimiento del PIB» es un dato, no la transformación *Tasa de crecimiento*. «Pairplot», «matriz de dispersión» o «gráficos por pares» activan `pairplot`; «por país» lo colorea por `pais`.
+
+## Herramientas multivariadas (0.14.0)
+
+Nuevas intenciones: «describe/transpose» → `describe_table`; «graficar las variables» → `series_plot`; «boxplots de las variables» → `boxplots`; «prueba de hipótesis», «diferencia significativa», «Welch», «Mann-Whitney» → `two_sample_test`; «correlación severa», «multicolinealidad», «valores propios» → `eigen_correlation`; «reducción de dimensión» → `pca`; «scikit-learn» → `sklearn_linear`; «validación cruzada» → `cross_validation`; «hiperparámetros», «grid search» → `hyperparameter_search`; «análisis de residuos» → `residual_analysis`. Las versiones de varias variables sustituyen a las de una sola cuando ambas coinciden. `cross_validation`, `residual_analysis` y `evaluate` aceptan modelos de scikit-learn y de la búsqueda de hiperparámetros.

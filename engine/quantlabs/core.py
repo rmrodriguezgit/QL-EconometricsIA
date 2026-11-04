@@ -18,7 +18,7 @@ import pandas as pd
 import statsmodels.api as sm
 
 ROOT = Path(__file__).resolve().parents[2]
-VERSION = (ROOT / 'VERSION').read_text().strip() if (ROOT / 'VERSION').exists() else '0.13.0'
+VERSION = (ROOT / 'VERSION').read_text().strip() if (ROOT / 'VERSION').exists() else '0.14.0'
 SCHEMA = '1.0.0'
 
 class EngineError(ValueError):

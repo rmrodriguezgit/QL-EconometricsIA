@@ -725,6 +725,53 @@
       "missing_tools": [
         "Editor de diagramas SEM y diagnóstico general de identificación"
       ]
+    },
+    {
+      "id": "R01",
+      "title": "Indicadores de EE. UU.: análisis multivariado a–p",
+      "topics": "Lectura con wbdata, series, boxplot, covarianza, correlación, pairplot, describe, hipótesis, valores propios, PCA, MCO, scikit-learn, validación cruzada, hiperparámetros y residuos",
+      "references": [
+        "B01",
+        "B13",
+        "B17",
+        "B20",
+        "B31",
+        "B33"
+      ],
+      "phase": "P2",
+      "status": "executable",
+      "network": true,
+      "objective": "Recorrer el análisis completo de cuatro indicadores del Banco Mundial: lectura, gráficos, relaciones, hipótesis, colinealidad, reducción de dimensión, predicción, validación y residuos.",
+      "question": "¿Qué modelo predice mejor el gasto de consumo final fuera de muestra y qué supuestos fallan en sus residuos?",
+      "acceptance": "Cada paso a–p produce su salida y la interpretación cita evidencia de varias salidas",
+      "scope": "Recorrido aplicado con datos reales del Banco Mundial (requiere conexión). Usa herramientas reutilizables; no sustituye los módulos C01–C28.",
+      "tools": [
+        "boxplots",
+        "correlation",
+        "covariance_matrix",
+        "cross_validation",
+        "describe_table",
+        "eigen_correlation",
+        "evaluate",
+        "hyperparameter_search",
+        "multiple_ols",
+        "pairplot",
+        "pca",
+        "report",
+        "residual_analysis",
+        "series_plot",
+        "sklearn_linear",
+        "split",
+        "standardize",
+        "two_sample_test",
+        "worldbank_multi"
+      ],
+      "steps": 22,
+      "format": "connected",
+      "missing_tools": [
+        "Contrastes de hipótesis sobre variables en distintas unidades: conviene transformarlas (tasas, logaritmos) antes de comparar medias",
+        "Validación con efectos de autocorrelación (errores HAC en validación)"
+      ]
     }
   ]
 }

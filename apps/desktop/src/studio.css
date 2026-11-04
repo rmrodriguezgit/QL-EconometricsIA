@@ -103,3 +103,8 @@ body{background:#0d1118}button:focus-visible,input:focus-visible,select:focus-vi
 .pair-axis{fill:#a2b5cc;font-size:11px}.pair-tick{fill:#7d91ac;font-size:9px}
 .pair-legend{display:flex;flex-wrap:wrap;gap:12px;margin:4px 0 8px;font-size:11px;color:#c6d3e4}.pair-legend span{display:flex;align-items:center;gap:6px}.pair-legend i{width:10px;height:10px;border-radius:50%;display:inline-block}
 .results-focus .pair-plot svg{max-height:calc(100dvh - 160px)}
+/* Apartados Univariadas / Multivariadas */
+.library-scope{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:10px 0 4px}.library-scope button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;border:1px solid #2c394c;border-radius:6px;background:#141c27;color:#a9bbce;font-size:10px;cursor:pointer}.library-scope button small{font-size:9px;color:#7d91ac}.library-scope button.active{border-color:#6cc9ac;background:#16302a;color:#d7f3ea}.library-scope-note{font-size:9.5px;margin:4px 0 6px}
+/* Gráficos multivariados */
+.multi-plot{padding:12px 18px}.multi-plot svg{width:100%;height:auto;display:block;max-width:900px}.multi-frame{fill:#0f1620;stroke:#283548}.multi-grid{stroke:#223044;stroke-dasharray:3 4}
+.hypothesis-card{margin:12px 18px;padding:12px 14px;border-radius:8px;border:1px solid #34445b;background:#141c27;font-size:12px;line-height:1.6}.hypothesis-card p{margin:2px 0;color:#c6d3e4}.hypothesis-card strong{display:inline-block;width:28px;color:#9db0c7}.hypothesis-decision{margin-top:8px!important;font-weight:650}.hypothesis-card.reject{border-color:#6cc9ac66}.hypothesis-card.reject .hypothesis-decision{color:#6cc9ac}.hypothesis-card.keep .hypothesis-decision{color:#ffd166}

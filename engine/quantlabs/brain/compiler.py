@@ -13,7 +13,7 @@ from .knowledge import EXCLUDED_TOOLS, fold
 
 SOURCES = {kind for kind, definition in NODE_CATALOG.items()
            if not definition['inputs'] and definition['outputs'].get('data') == 'Dataset'}
-SINGLE_COLUMNS = {'x', 'y', 'column', 'value', 'nominal', 'index', 'population', 'returns', 'signal', 'before', 'after', 'error', 'time', 'group', 'entity'}
+SINGLE_COLUMNS = {'x', 'y', 'column', 'value', 'nominal', 'index', 'population', 'returns', 'signal', 'before', 'after', 'error', 'time', 'group', 'entity', 'first', 'second'}
 MULTI_COLUMNS = {'columns', 'features', 'instruments'}
 TARGET_NAMES = ['y', 'consumo', 'clase', 'produccion', 'valor', 'ventas', 'retorno', 'despues', 'lwage', 'wage', 'precio']
 MAX_STEPS = 12
@@ -25,7 +25,10 @@ MODEL_ACCEPTS = {
     'silhouette': {'kmeans'}, 'evaluate': {'ols', 'multiple_ols', 'robust', 'iv2sls', 'logit', 'ecm', 'covariance', 'wls', 'mlp', 'arima', 'hmm', 'gmm', 'stepwise'},
     'compare_models': {'ols', 'multiple_ols', 'robust', 'iv2sls', 'logit', 'ecm', 'covariance', 'wls', 'mlp', 'arima', 'stepwise'},
     'covariance': LINEAR | {'stepwise'},
+    'cross_validation': {'ols', 'multiple_ols', 'covariance', 'wls', 'robust', 'stepwise', 'sklearn_linear', 'hyperparameter_search'},
+    'residual_analysis': {'ols', 'multiple_ols', 'covariance', 'wls', 'robust', 'stepwise', 'sklearn_linear', 'hyperparameter_search'},
 }
+MODEL_ACCEPTS['evaluate'] = MODEL_ACCEPTS['evaluate'] | {'sklearn_linear', 'hyperparameter_search'}
 
 
 def slug(value, used):

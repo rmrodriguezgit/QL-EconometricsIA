@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.13.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.14.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -212,3 +212,7 @@ Sin dependencias nuevas: modo ampliado con CSS (`position: fixed`) e iconos `Max
 ## Herramientas 0.13.0
 
 80 tipos. Sin dependencias nuevas: `worldbank_multi` usa wbdata 1.1.0 (`Client.get_series` con `keep_levels`, un cliente aislado por indicador en `ThreadPoolExecutor`) y pairplot usa numpy/pandas; el dibujo es SVG propio, sin seaborn.
+
+## Herramientas 0.14.0
+
+89 tipos. Sin dependencias nuevas: scikit-learn 1.9.1 (LinearRegression, Ridge, Lasso, ElasticNet, GridSearchCV, KFold, TimeSeriesSplit), scipy (ttest_ind, ttest_rel, mannwhitneyu, shapiro) y statsmodels 0.15.0 (Jarque-Bera, Breusch-Pagan, Durbin-Watson). Los ejemplos admiten recorridos aplicados (`R…`) con `network: true` además de los 28 curriculares.

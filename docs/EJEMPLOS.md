@@ -40,3 +40,27 @@ Abre Archivos y ejemplos → Ejemplos, selecciona el módulo y pulsa Abrir en ca
 Cada proyecto incluye lesson: objetivo, referencias, pasos, instrucciones, resultado esperado, preguntas y herramientas pendientes. Cambiar la semilla o la tabla de origen afecta los cálculos posteriores; los modelos no generan una muestra interna.
 
 El catálogo conserva todos los temas de cada módulo como guía curricular, pero estos recorridos no completan cada sección de los libros. Los métodos y herramientas todavía pendientes están enumerados en [HERRAMIENTAS.md](HERRAMIENTAS.md). La definición del catálogo se guarda en [catalog.json](../examples/catalog.json). Los archivos personales 0.3.0 con experiment siguen admitidos como compatibilidad; el catálogo nuevo no los utiliza.
+
+## Recorrido aplicado R01 · Indicadores de EE. UU. (0.14.0)
+
+Requiere conexión (Banco Mundial). 22 nodos, un paso guiado por nodo; se abre desde **29 ejemplos → R01**. La suite valida su estructura sin red y lo ejecuta sin red sustituyendo la fuente por una tabla equivalente; la ejecución real (1972–2020, 49 años) se verificó el 2026-11-04 con los 22 nodos correctos.
+
+| Paso | Nodo(s) | Qué responde |
+|---|---|---|
+| a | `worldbank_multi` (USA: social_contri, lending_rate, gdp_growth, fin_cons) | Leer las 4 variables como `wbdata.get_dataframe` |
+| b | `series_plot` | Graficarlas (paneles; índice base 100 opcional) |
+| c | `boxplots` | Boxplot estandarizado y atípicos |
+| d, e | `covariance_matrix`, `correlation` | Covarianza y correlación |
+| f | `pairplot` | Matriz de dispersión |
+| g | `describe_table` | `describe().transpose()` |
+| h | 3 × `two_sample_test` | Hipótesis 1–3: cada variable frente al gasto de consumo final (Welch) |
+| i | `eigen_correlation` | Correlación severa: valores y vectores propios, índice de condición, VIF |
+| j | `standardize` → `pca` | Reducción de dimensión (escalado previo) |
+| k | `split` → `multiple_ols` → `evaluate` | Predicción con MCO de statsmodels y error fuera de muestra |
+| l | `residual_analysis` | Residuos del MCO |
+| m | `sklearn_linear` | MCO con scikit-learn |
+| n | `cross_validation` | Validación cruzada temporal |
+| o | `hyperparameter_search` | Ridge con α por GridSearchCV |
+| p | `residual_analysis` | Residuos del modelo optimizado |
+
+Lectura de la ejecución real: las tres hipótesis rechazan H₀, pero comparan variables en unidades distintas (moneda local, %, US$); el recorrido lo señala como pendiente metodológico. Los residuos del MCO muestran autocorrelación (Durbin-Watson ≈ 0,61) y heterocedasticidad (Breusch-Pagan p ≈ 0,006).

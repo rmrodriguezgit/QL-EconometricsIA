@@ -9,7 +9,8 @@ def system_audit():
     checks = []
     examples = example_catalog()
     expected = {f'C{i:02}' for i in range(1,29)}
-    ids = {example['id'] for example in examples}
+    ids = {example['id'] for example in examples if example['id'].startswith('C')}
+    applied = [example['id'] for example in examples if not example['id'].startswith('C')]
     valid = True
     for example in examples:
         try:
@@ -17,7 +18,7 @@ def system_audit():
         except Exception:
             valid = False
     references = {ref for example in examples for ref in example['references']}
-    checks.append({'id':'catalog','title':'Catálogo de los 28 módulos','status':'ok' if ids == expected and valid else 'pending','detail':f'{len(ids)} módulos con proyectos de estructura validada. Esta comprobación no ejecuta modelos; sus pruebas científicas se ejecutan en la suite.'})
+    checks.append({'id':'catalog','title':'Catálogo de los 28 módulos','status':'ok' if ids == expected and valid else 'pending','detail':f'{len(ids)} módulos con proyectos de estructura validada' + (f' y {len(applied)} recorrido(s) aplicado(s) ({", ".join(applied)})' if applied else '') + '. Esta comprobación no ejecuta modelos; sus pruebas científicas se ejecutan en la suite.'})
     connected = all(example.get('format')=='connected' and all(node['type']!='experiment' for node in example_get(example['id'])['project']['nodes']) for example in examples)
     guided = all({step['node_id'] for step in example_get(example['id'])['project'].get('lesson',{}).get('steps',[])} == {node['id'] for node in example_get(example['id'])['project']['nodes']} for example in examples)
     checks.append({'id':'connected','title':'Herramientas propias y pasos inspeccionables','status':'ok' if connected and guided else 'pending','detail':f'{len(NODES)} tipos registrados (incluida compatibilidad anterior). Los 28 ejemplos son grafos conectados, sin receta cerrada, y cada nodo tiene un paso explicativo.'})

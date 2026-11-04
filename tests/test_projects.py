@@ -105,11 +105,17 @@ except EngineError as error:
 class ExampleCatalogTests(unittest.TestCase):
     def test_every_module_and_chapter_has_an_example(self):
         examples=example_catalog()
-        self.assertEqual({item['id'] for item in examples},{f'C{i:02}' for i in range(1,29)})
+        self.assertEqual({item['id'] for item in examples if item['id'].startswith('C')},{f'C{i:02}' for i in range(1,29)})
+        self.assertTrue(all(item['id'].startswith('C') or item.get('network') is not None for item in examples))
         self.assertEqual({ref for item in examples for ref in item['references']},{f'B{i:02}' for i in range(1,37)})
         self.assertTrue(all(item['scope'] and item['question'] for item in examples))
     def test_all_28_examples_execute_with_finite_json_and_interpretation(self):
         for example in example_catalog():
+            if example.get('network'):
+                # Recorridos aplicados con Banco Mundial: se validan sin red; la ejecución real se documenta aparte.
+                project=example_get(example['id'])['project']
+                self.assertEqual({step['node_id'] for step in project['lesson']['steps']},{node['id'] for node in project['nodes']})
+                continue
             with self.subTest(topic=example['id']):
                 result=execute(example_get(example['id'])['project'])
                 node=result['nodes']['reporte']

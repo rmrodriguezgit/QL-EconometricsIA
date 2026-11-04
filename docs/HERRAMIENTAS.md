@@ -182,3 +182,21 @@ Registro actual: **80 tipos**. Pruebas sin red en `tests/test_wb_multi_pairplot.
 | `pairplot` | Dataset → Plot, Result | C03/C10 | Matriz tipo `seaborn.pairplot`: dispersión por par, histograma en la diagonal (apilado por grupo) y r de Pearson por par; grupo opcional (≤ 8 categorías) | B17 | r por pares = `DataFrame.corr()` de pandas (incluido n por par con faltantes); r dentro de cada grupo; suma de histogramas = n | Muestra hasta `max_points` puntos (histogramas y r usan todo); r combina grupos, con aviso y tabla por grupo |
 
 Valores por defecto de `worldbank_multi`: país `USA` e indicadores `GC.REV.SOCL.CN: social_contri`, `FR.INR.LEND: lending_rate`, `NY.GDP.MKTP.KD.ZG: gdp_growth`, `NE.CON.TOTL.CD: fin_cons`. El inspector edita países y filas indicador → alias con el buscador del catálogo; los alias inválidos o repetidos se marcan antes de ejecutar.
+
+## Herramientas multivariadas y apartados · 0.14.0
+
+Registro actual: **89 tipos**. Módulo `engine/quantlabs/multivariate_tools.py`; pruebas en `tests/test_multivariate_tools.py` contra pandas, scipy, numpy y statsmodels.
+
+| Tipo | Puertos | Método | Verificación | Límite declarado |
+|---|---|---|---|---|
+| `series_plot` | Dataset → Plot, Result | Varias series contra `periodo`: paneles con escala propia, índice base 100 o eje común | Índice = 100 en el primer año observado | Una sola entidad (rechaza tablas con varios países) |
+| `boxplots` | Dataset → Plot, Result | Boxplot de Tukey por variable, en z o escala original | Mediana z = cuantil de pandas | Atípicos según 1.5·RIC |
+| `describe_table` | Dataset → Summary, Result | `describe()` o `describe().transpose()` | Igual a pandas (rtol 1e-12) | — |
+| `two_sample_test` | Dataset → Result | H₀/Hₐ redactadas; Welch, Student, pareada o Mann-Whitney; alternativa bilateral o unilateral | p-valores iguales a scipy | Supone independencia; aviso si las magnitudes difieren > 10³ |
+| `eigen_correlation` | Dataset → Result | Valores y vectores propios de la correlación (disposición del listado), índice de condición, VIF, det(R) | Valores propios = `np.linalg.eig`; colinealidad casi perfecta → severa | Umbrales guía (30/10) |
+| `sklearn_linear` | Dataset → FittedModel, Result | LinearRegression con StandardScaler opcional; coeficientes estandarizados y originales | Coeficientes originales = statsmodels OLS | Sin inferencia (por diseño de scikit-learn) |
+| `cross_validation` | FittedModel + Dataset → Result | Reajusta la especificación en k pliegues (TimeSeriesSplit o KFold); R², RMSE, MAE | Número de pliegues y R² en datos simulados | Aviso si KFold barajado con datos anuales |
+| `hyperparameter_search` | Dataset → FittedModel, Result | GridSearchCV de α (Ridge, Lasso, ElasticNet) con escalado; curva de validación | α > 0 y residuos de media 0 | Aviso si α óptimo en el borde |
+| `residual_analysis` | FittedModel → Result | Residuos vs predichos, histograma y Q–Q, Jarque-Bera, Shapiro, Breusch-Pagan, Durbin-Watson | Media ≈ 0; rechaza logit | Sobre la muestra de ajuste |
+
+**Apartados de la biblioteca.** Cada herramienta de análisis declara `scope` en el catálogo (`univariada`, `multivariada` o `ambas`). La biblioteca ofrece **Todas · Univariadas · Multivariadas**; las fuentes de datos aparecen siempre. Transformaciones y experimentos solo en *Todas*.

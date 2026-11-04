@@ -45,8 +45,11 @@ def check(root=ROOT):
             if not ((root / name).parent / target.split('#')[0]).exists():
                 raise ValueError(f'Broken link in {name}: {target}')
     examples = json.loads((root / 'examples/catalog.json').read_text())['examples']
-    if {item['id'] for item in examples} != {f'C{i:02}' for i in range(1, 29)} or len(examples) != 28:
+    curricular = [item for item in examples if item['id'].startswith('C')]
+    if {item['id'] for item in curricular} != {f'C{i:02}' for i in range(1, 29)} or len(curricular) != 28:
         raise ValueError('Expected one example per curricular module')
+    if any(not item['id'].startswith('C') and not item.get('network') is not None for item in examples):
+        raise ValueError('Applied examples must declare whether they need network')
     if {ref for item in examples for ref in item['references']} != set(ids):
         raise ValueError('Examples must reference every chapter')
     registry=json.loads((root/'packages/contracts/nodeCatalog.json').read_text())

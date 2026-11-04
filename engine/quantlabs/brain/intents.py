@@ -28,7 +28,10 @@ INTENTS = [
      {'name': 'Variables dicotómicas e interacciones', 'module': 'C12', 'inputs': {'data': 'Dataset'}, 'outputs': {'data': 'Dataset'}}),
     (r'estacional|descompos', 'seasonal_decompose', 1,
      {'name': 'Descomposición estacional', 'module': 'C14', 'inputs': {'data': 'Dataset'}, 'outputs': {'data': 'Dataset', 'result': 'Result'}}),
+    (r'describe|transpose|transpuest', 'describe_table', 1, None),
     (r'descriptiv|resumen estadistic|estadistica[s]? basica|media y desviacion', 'describe', 2, None),
+    (r'grafica(r|lo|las)?( las| los)? (\d+ |cuatro |tres |varias )?(series|variables|indicadores)|varias series', 'series_plot', 2, None),
+    (r'boxplots? de (las |los |varias |todas las )?(\d+ |cuatro |tres )?(variables|indicadores|series)|boxplots\b', 'boxplots', 2, None),
     (r'dispersion|scatter|nube de puntos', 'scatter', 2, None),
     (r'matriz de covarianza', 'covariance_matrix', 2, None),
     (r'(?<!auto)correlacion(?! serial)', 'correlation', 2, None),
@@ -46,6 +49,7 @@ INTENTS = [
      {'name': 'Tamaño de muestra', 'module': 'C07', 'inputs': {}, 'outputs': {'result': 'Result'}}),
     (r'contrastes multiples|comparaciones multiples|falsos descubrimientos|bonferroni|\bfdr\b', 'multiple_testing', 2,
      {'name': 'Contrastes múltiples y FDR', 'module': 'C08', 'inputs': {'data': 'Dataset'}, 'outputs': {'result': 'Result'}}),
+    (r'prueba[s]? de hipotesis|diferencia significativa|t de welch|ttest|t-test|mann-?whitney', 'two_sample_test', 4, None),
     (r'antes y despues|pareada|muestras relacionadas', 'paired_test', 2, None),
     (r'regresion multiple|varias variables explicativas|varios regresores|multivariad[ao] de consumo', 'multiple_ols', 3, None),
     (r'mco|minimos cuadrados ordinarios|regresion|\bols\b|recta', 'ols', 3, None),
@@ -73,7 +77,12 @@ INTENTS = [
     (r'numero de (grupos|clusters)|codo|elegir k', 'cluster_selection', 3,
      {'name': 'Selección del número de grupos', 'module': 'C25', 'inputs': {'data': 'Dataset'}, 'outputs': {'result': 'Result'}}),
     (r'red(es)? neuronal|\bmlp\b|perceptron', 'mlp', 3, None),
-    (r'componentes principales|\bpca\b|\bacp\b', 'pca', 3, None),
+    (r'componentes principales|\bpca\b|\bacp\b|reduccion de (la )?dimension', 'pca', 3, None),
+    (r'correlacion severa|multicolinealidad|colinealidad|valores propios|eigen', 'eigen_correlation', 4, None),
+    (r'scikit|sklearn', 'sklearn_linear', 3, None),
+    (r'hiperparametro|grid ?search|optimizacion de (alpha|parametros)', 'hyperparameter_search', 3, None),
+    (r'validacion cruzada|cross.?validation|k-?fold', 'cross_validation', 4, None),
+    (r'analisis de (los )?residuos|residual analysis', 'residual_analysis', 4, None),
     (r'analisis factorial|factores latentes', 'factor_analysis', 3, None),
     (r'ecuaciones estructurales|\bsem\b', 'sem', 3, None),
     (r'heterocedast|diagnostic', 'diagnostics', 4, None),
@@ -123,6 +132,10 @@ PARAM_HINTS = {
     'wls': [(r'1/x|inversa', {'method': 'inversa_x2'})],
     'split': [(r'aleatori', {'method': 'aleatorio'})],
     'pairplot': [(r'por pais|color(ead[oa])? por pais', {'group': 'pais'})],
+    'two_sample_test': [(r'pareada', {'method': 'paired'}), (r'mann', {'method': 'mannwhitney'}), (r'student|varianzas iguales', {'method': 'student'})],
+    'hyperparameter_search': [(r'lasso', {'estimator': 'lasso'}), (r'elastic', {'estimator': 'elasticnet'})],
+    'cross_validation': [(r'k-?fold|barajad', {'cv': 'kfold'})],
+    'series_plot': [(r'indice|base 100', {'mode': 'indice'})],
     'seasonal_decompose': [(r'multiplicativ', {'model': 'multiplicative'})],
     'egarch': [(r'\bgjr\b|apalancamiento', {'vol': 'GJR-GARCH'}), (r'\bt de student|colas pesadas', {'dist': 't'})],
     'stepwise': [(r'backward|hacia atras|eliminacion', {'direction': 'backward'}), (r'\bbic\b', {'criterion': 'bic'})],
@@ -243,6 +256,11 @@ def detect_tools(text):
             continue
         if kind == 'arima' and 'sarima' in seen and 'sarima' in NODE_CATALOG:
             continue
+        # Las versiones de varias variables sustituyen a la de una sola.
+        if (kind == 'boxplot' and 'boxplots' in seen) or (kind == 'describe' and 'describe_table' in seen):
+            continue
+        if kind == 'paired_test' and 'two_sample_test' in seen:
+            continue
         seen.add(kind)
         if kind in NODE_CATALOG:
             found.append((stage, kind))
@@ -288,7 +306,7 @@ def rules_plan(prompt, retrieved_tools=()):
         source, source_params, source_reason = 'synthetic', {'scenario': scenario, 'n': 300, 'seed': 42}, \
             f'Sin fuente explícita: datos sintéticos reproducibles (escenario {scenario}, semilla 42).'
     steps = [{'id': 'datos', 'tool': source, 'parameters': source_params, 'why': source_reason}]
-    if 'describe' not in kinds and source != 'csv':
+    if 'describe' not in kinds and 'describe_table' not in kinds and source != 'csv':
         kinds.insert(0, 'describe')
     for kind in kinds:
         steps.append({'id': kind, 'tool': kind, 'parameters': hints(kind, fold(prompt)), 'why': NODE_CATALOG[kind].get('explanation', '')})

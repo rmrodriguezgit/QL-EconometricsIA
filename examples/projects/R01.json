@@ -1,0 +1,647 @@
+{
+  "schema_version": "1.0.0",
+  "app_version": "0.14.0",
+  "title": "Indicadores de EE. UU. · análisis multivariado a–p",
+  "nodes": [
+    {
+      "id": "datos",
+      "type": "worldbank_multi",
+      "node_version": "1.0.0",
+      "parameters": {
+        "countries": "USA",
+        "indicators": "GC.REV.SOCL.CN: social_contri\nFR.INR.LEND: lending_rate\nNY.GDP.MKTP.KD.ZG: gdp_growth\nNE.CON.TOTL.CD: fin_cons",
+        "source": 2,
+        "start": 1972,
+        "end": 2020
+      },
+      "position": {
+        "x": 0,
+        "y": 400
+      }
+    },
+    {
+      "id": "series",
+      "type": "series_plot",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "social_contri,lending_rate,gdp_growth,fin_cons",
+        "time": "periodo",
+        "mode": "paneles"
+      },
+      "position": {
+        "x": 330,
+        "y": 0
+      }
+    },
+    {
+      "id": "cajas",
+      "type": "boxplots",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "social_contri,lending_rate,gdp_growth,fin_cons",
+        "scale": "zscore"
+      },
+      "position": {
+        "x": 330,
+        "y": 160
+      }
+    },
+    {
+      "id": "covarianza",
+      "type": "covariance_matrix",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "social_contri,lending_rate,gdp_growth,fin_cons"
+      },
+      "position": {
+        "x": 330,
+        "y": 320
+      }
+    },
+    {
+      "id": "correlacion",
+      "type": "correlation",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "social_contri,lending_rate,gdp_growth,fin_cons"
+      },
+      "position": {
+        "x": 330,
+        "y": 480
+      }
+    },
+    {
+      "id": "pares",
+      "type": "pairplot",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "social_contri,lending_rate,gdp_growth,fin_cons",
+        "group": "",
+        "bins": 15,
+        "max_points": 600,
+        "seed": 42
+      },
+      "position": {
+        "x": 330,
+        "y": 640
+      }
+    },
+    {
+      "id": "describe",
+      "type": "describe_table",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "social_contri,lending_rate,gdp_growth,fin_cons",
+        "orientation": "transpuesta"
+      },
+      "position": {
+        "x": 330,
+        "y": 800
+      }
+    },
+    {
+      "id": "h1",
+      "type": "two_sample_test",
+      "node_version": "1.0.0",
+      "parameters": {
+        "first": "social_contri",
+        "second": "fin_cons",
+        "method": "welch",
+        "alternative": "two-sided",
+        "alpha": 0.05
+      },
+      "position": {
+        "x": 660,
+        "y": 0
+      }
+    },
+    {
+      "id": "h2",
+      "type": "two_sample_test",
+      "node_version": "1.0.0",
+      "parameters": {
+        "first": "lending_rate",
+        "second": "fin_cons",
+        "method": "welch",
+        "alternative": "two-sided",
+        "alpha": 0.05
+      },
+      "position": {
+        "x": 660,
+        "y": 150
+      }
+    },
+    {
+      "id": "h3",
+      "type": "two_sample_test",
+      "node_version": "1.0.0",
+      "parameters": {
+        "first": "gdp_growth",
+        "second": "fin_cons",
+        "method": "welch",
+        "alternative": "two-sided",
+        "alpha": 0.05
+      },
+      "position": {
+        "x": 660,
+        "y": 300
+      }
+    },
+    {
+      "id": "severa",
+      "type": "eigen_correlation",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "social_contri,lending_rate,gdp_growth",
+        "condition_threshold": 30
+      },
+      "position": {
+        "x": 660,
+        "y": 460
+      }
+    },
+    {
+      "id": "escalar",
+      "type": "standardize",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "social_contri,lending_rate,gdp_growth,fin_cons"
+      },
+      "position": {
+        "x": 660,
+        "y": 620
+      }
+    },
+    {
+      "id": "pca",
+      "type": "pca",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "social_contri,lending_rate,gdp_growth,fin_cons",
+        "components": 2
+      },
+      "position": {
+        "x": 990,
+        "y": 620
+      }
+    },
+    {
+      "id": "particion",
+      "type": "split",
+      "node_version": "1.0.0",
+      "parameters": {
+        "fraction": 0.75,
+        "method": "temporal",
+        "seed": 42
+      },
+      "position": {
+        "x": 660,
+        "y": 800
+      }
+    },
+    {
+      "id": "mco",
+      "type": "multiple_ols",
+      "node_version": "1.0.0",
+      "parameters": {
+        "features": "social_contri,lending_rate,gdp_growth",
+        "y": "fin_cons",
+        "covariance": "HC3"
+      },
+      "position": {
+        "x": 990,
+        "y": 780
+      }
+    },
+    {
+      "id": "evaluar",
+      "type": "evaluate",
+      "node_version": "1.0.0",
+      "parameters": {},
+      "position": {
+        "x": 1320,
+        "y": 780
+      }
+    },
+    {
+      "id": "residuos_mco",
+      "type": "residual_analysis",
+      "node_version": "1.0.0",
+      "parameters": {
+        "alpha": 0.05
+      },
+      "position": {
+        "x": 1320,
+        "y": 620
+      }
+    },
+    {
+      "id": "sklearn",
+      "type": "sklearn_linear",
+      "node_version": "1.0.0",
+      "parameters": {
+        "features": "social_contri,lending_rate,gdp_growth",
+        "y": "fin_cons",
+        "scale": "standard"
+      },
+      "position": {
+        "x": 990,
+        "y": 960
+      }
+    },
+    {
+      "id": "validacion",
+      "type": "cross_validation",
+      "node_version": "1.0.0",
+      "parameters": {
+        "folds": 5,
+        "cv": "timeseries",
+        "seed": 42
+      },
+      "position": {
+        "x": 1320,
+        "y": 960
+      }
+    },
+    {
+      "id": "busqueda",
+      "type": "hyperparameter_search",
+      "node_version": "1.0.0",
+      "parameters": {
+        "features": "social_contri,lending_rate,gdp_growth",
+        "y": "fin_cons",
+        "estimator": "ridge",
+        "alpha_min": 0.0001,
+        "alpha_max": 100,
+        "n_alphas": 20,
+        "folds": 5,
+        "cv": "timeseries",
+        "seed": 42
+      },
+      "position": {
+        "x": 990,
+        "y": 1120
+      }
+    },
+    {
+      "id": "residuos_ridge",
+      "type": "residual_analysis",
+      "node_version": "1.0.0",
+      "parameters": {
+        "alpha": 0.05
+      },
+      "position": {
+        "x": 1320,
+        "y": 1120
+      }
+    },
+    {
+      "id": "reporte",
+      "type": "report",
+      "node_version": "1.0.0",
+      "parameters": {
+        "note": "Interpreta el flujo a–p: qué relaciones encontraste, si hay correlación severa, qué modelo predice mejor fuera de muestra y qué supuestos fallan en los residuos."
+      },
+      "position": {
+        "x": 1650,
+        "y": 1120
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "datos-series-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "series",
+      "target_port": "data"
+    },
+    {
+      "id": "datos-cajas-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "cajas",
+      "target_port": "data"
+    },
+    {
+      "id": "datos-covarianza-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "covarianza",
+      "target_port": "data"
+    },
+    {
+      "id": "datos-correlacion-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "correlacion",
+      "target_port": "data"
+    },
+    {
+      "id": "datos-pares-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "pares",
+      "target_port": "data"
+    },
+    {
+      "id": "datos-describe-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "describe",
+      "target_port": "data"
+    },
+    {
+      "id": "datos-h1-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "h1",
+      "target_port": "data"
+    },
+    {
+      "id": "datos-h2-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "h2",
+      "target_port": "data"
+    },
+    {
+      "id": "datos-h3-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "h3",
+      "target_port": "data"
+    },
+    {
+      "id": "datos-severa-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "severa",
+      "target_port": "data"
+    },
+    {
+      "id": "datos-escalar-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "escalar",
+      "target_port": "data"
+    },
+    {
+      "id": "datos-particion-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "particion",
+      "target_port": "data"
+    },
+    {
+      "id": "escalar-pca-data",
+      "source": "escalar",
+      "source_port": "data",
+      "target": "pca",
+      "target_port": "data"
+    },
+    {
+      "id": "particion-mco-data",
+      "source": "particion",
+      "source_port": "train",
+      "target": "mco",
+      "target_port": "data"
+    },
+    {
+      "id": "mco-evaluar-model",
+      "source": "mco",
+      "source_port": "model",
+      "target": "evaluar",
+      "target_port": "model"
+    },
+    {
+      "id": "particion-evaluar-data",
+      "source": "particion",
+      "source_port": "test",
+      "target": "evaluar",
+      "target_port": "data"
+    },
+    {
+      "id": "mco-residuos_mco-model",
+      "source": "mco",
+      "source_port": "model",
+      "target": "residuos_mco",
+      "target_port": "model"
+    },
+    {
+      "id": "particion-sklearn-data",
+      "source": "particion",
+      "source_port": "train",
+      "target": "sklearn",
+      "target_port": "data"
+    },
+    {
+      "id": "sklearn-validacion-model",
+      "source": "sklearn",
+      "source_port": "model",
+      "target": "validacion",
+      "target_port": "model"
+    },
+    {
+      "id": "particion-validacion-data",
+      "source": "particion",
+      "source_port": "train",
+      "target": "validacion",
+      "target_port": "data"
+    },
+    {
+      "id": "particion-busqueda-data",
+      "source": "particion",
+      "source_port": "train",
+      "target": "busqueda",
+      "target_port": "data"
+    },
+    {
+      "id": "busqueda-residuos_ridge-model",
+      "source": "busqueda",
+      "source_port": "model",
+      "target": "residuos_ridge",
+      "target_port": "model"
+    },
+    {
+      "id": "residuos_ridge-reporte-result",
+      "source": "residuos_ridge",
+      "source_port": "result",
+      "target": "reporte",
+      "target_port": "result"
+    }
+  ],
+  "lesson": {
+    "module": "R01",
+    "title": "Indicadores de EE. UU.: de la lectura a la validación",
+    "objective": "Recorrer el análisis completo de cuatro indicadores del Banco Mundial: lectura, gráficos, relaciones, hipótesis, colinealidad, reducción de dimensión, predicción, validación y residuos.",
+    "references": [
+      "B01",
+      "B13",
+      "B17",
+      "B20",
+      "B31",
+      "B33"
+    ],
+    "steps": [
+      {
+        "node_id": "datos",
+        "title": "a. Leer las 4 variables",
+        "instruction": "Descarga de Banco Mundial cuatro indicadores de EE. UU. con alias, igual que wbdata.get_dataframe({código: alias}, country=[\"USA\"]): contribuciones sociales (moneda local), tasa de interés de préstamos (%), crecimiento del PIB (%) y gasto de consumo final (US$ corrientes).",
+        "expected": "Una tabla con periodo y las columnas social_contri, lending_rate, gdp_growth y fin_cons, 1972–2020.",
+        "question": "¿Qué variables están en porcentaje y cuáles en unidades monetarias? ¿Por qué importa al compararlas?"
+      },
+      {
+        "node_id": "series",
+        "title": "b. Graficarlas",
+        "instruction": "Grafica las cuatro series en el tiempo. En paneles cada una usa su propia escala porque las unidades difieren; cambia a índice base 100 para comparar crecimientos.",
+        "expected": "Cuatro paneles con la trayectoria de cada indicador.",
+        "question": "¿Qué series tienen tendencia y cuáles oscilan alrededor de un nivel?"
+      },
+      {
+        "node_id": "cajas",
+        "title": "c. Boxplot",
+        "instruction": "Compara la distribución de las cuatro variables estandarizadas (z) y localiza atípicos según Tukey.",
+        "expected": "Cuatro cajas comparables; la tabla conserva media y DE originales.",
+        "question": "¿Qué variable es más asimétrica? ¿Los atípicos son errores o episodios económicos?"
+      },
+      {
+        "node_id": "covarianza",
+        "title": "d. Covarianza",
+        "instruction": "Calcula la matriz de covarianza muestral (n−1).",
+        "expected": "Matriz 4×4 en unidades producto de cada par.",
+        "question": "¿Por qué la covarianza no permite comparar la intensidad de las relaciones?"
+      },
+      {
+        "node_id": "correlacion",
+        "title": "e. Correlación",
+        "instruction": "Calcula la correlación de Pearson de las mismas filas completas.",
+        "expected": "Matriz 4×4 sin unidades entre −1 y 1.",
+        "question": "¿Qué pares están muy correlacionados? ¿Implica causalidad?"
+      },
+      {
+        "node_id": "pares",
+        "title": "f. Pairplot",
+        "instruction": "Dibuja la matriz de dispersión: pares bajo la diagonal, histogramas en ella y r encima.",
+        "expected": "Matriz 4×4 con el par más asociado destacado.",
+        "question": "¿Qué relación parece lineal y cuál no?"
+      },
+      {
+        "node_id": "describe",
+        "title": "g. describe + transpose",
+        "instruction": "Resume cada variable con count, mean, std, min, cuartiles y max en una fila por variable (describe().transpose()).",
+        "expected": "Tabla de 4 filas y 8 estadísticos.",
+        "question": "¿Coinciden mediana y media? ¿Qué sugiere sobre la asimetría?"
+      },
+      {
+        "node_id": "h1",
+        "title": "h. Hipótesis 1",
+        "instruction": "H₀: no hay diferencia significativa entre contribuciones sociales de EE. UU. y el gasto de consumo final. Hₐ: sí hay diferencia significativa. Prueba t de Welch (varianzas distintas); puedes cambiar a pareada o Mann-Whitney.",
+        "expected": "Estadístico, p-valor y decisión al 5 %.",
+        "question": "¿Tiene sentido comparar medias de variables en unidades distintas? ¿Qué compararías en su lugar?"
+      },
+      {
+        "node_id": "h2",
+        "title": "h. Hipótesis 2",
+        "instruction": "H₀: no hay diferencia significativa entre tasa de interés de préstamos de EE. UU. y el gasto de consumo final. Hₐ: sí hay diferencia significativa. Prueba t de Welch (varianzas distintas); puedes cambiar a pareada o Mann-Whitney.",
+        "expected": "Estadístico, p-valor y decisión al 5 %.",
+        "question": "¿Tiene sentido comparar medias de variables en unidades distintas? ¿Qué compararías en su lugar?"
+      },
+      {
+        "node_id": "h3",
+        "title": "h. Hipótesis 3",
+        "instruction": "H₀: no hay diferencia significativa entre crecimiento del PIB de EE. UU. y el gasto de consumo final. Hₐ: sí hay diferencia significativa. Prueba t de Welch (varianzas distintas); puedes cambiar a pareada o Mann-Whitney.",
+        "expected": "Estadístico, p-valor y decisión al 5 %.",
+        "question": "¿Tiene sentido comparar medias de variables en unidades distintas? ¿Qué compararías en su lugar?"
+      },
+      {
+        "node_id": "severa",
+        "title": "i. Detección de correlación severa",
+        "instruction": "Calcula valores y vectores propios de la matriz de correlación de los regresores (np.linalg.eig), el índice de condición y el VIF.",
+        "expected": "Matriz propia como en el listado, índice de condición y VIF.",
+        "question": "¿Algún valor propio está cerca de 0? ¿Qué variables combina su vector propio?"
+      },
+      {
+        "node_id": "escalar",
+        "title": "j. Escalar para reducir dimensión",
+        "instruction": "Estandariza las cuatro variables: PCA depende de la escala y fin_cons dominaría sin este paso.",
+        "expected": "Tabla con variables de media 0 y DE 1, más el escalador ajustado.",
+        "question": "¿Qué pasaría con PCA si no estandarizas?"
+      },
+      {
+        "node_id": "pca",
+        "title": "j. Reducción de dimensión",
+        "instruction": "Proyecta las cuatro variables estandarizadas en dos componentes principales.",
+        "expected": "Varianza explicada y cargas por componente.",
+        "question": "¿Cuánta información conservan dos componentes?"
+      },
+      {
+        "node_id": "particion",
+        "title": "k. Separar entrenamiento y prueba",
+        "instruction": "Separa por tiempo: los primeros 75 % de los años entrenan y los últimos evalúan, sin fuga de información.",
+        "expected": "Dos tablas: entrenamiento y prueba.",
+        "question": "¿Por qué no barajar años en un pronóstico?"
+      },
+      {
+        "node_id": "mco",
+        "title": "k. Predicción con MCO (statsmodels)",
+        "instruction": "Estima fin_cons con social_contri, lending_rate y gdp_growth en entrenamiento (errores robustos HC3).",
+        "expected": "Coeficientes con errores estándar y p-valores.",
+        "question": "¿Qué regresor es significativo? ¿Coincide con la correlación?"
+      },
+      {
+        "node_id": "evaluar",
+        "title": "k. Evaluar la predicción",
+        "instruction": "Predice los años de prueba con el modelo entrenado, sin reajustar.",
+        "expected": "RMSE y MAE fuera de muestra, observado frente a predicho.",
+        "question": "¿El error de prueba es mucho mayor que el de ajuste?"
+      },
+      {
+        "node_id": "residuos_mco",
+        "title": "l. Análisis de residuos (MCO)",
+        "instruction": "Revisa residuos frente a predichos, Q–Q, normalidad, heterocedasticidad y Durbin-Watson del modelo de statsmodels.",
+        "expected": "Gráficos de residuos y contrastes con su lectura.",
+        "question": "¿Hay autocorrelación en los residuos? ¿Qué implica para los p-valores?"
+      },
+      {
+        "node_id": "sklearn",
+        "title": "m. MCO con scikit-learn",
+        "instruction": "Ajusta la misma regresión con LinearRegression (con StandardScaler): mismos coeficientes en unidades originales, sin inferencia.",
+        "expected": "Coeficientes estandarizados y originales, R² y RMSE.",
+        "question": "¿Coinciden con statsmodels? ¿Qué no reporta scikit-learn?"
+      },
+      {
+        "node_id": "validacion",
+        "title": "n. Validación cruzada",
+        "instruction": "Reajusta el modelo de scikit-learn en 5 pliegues temporales (TimeSeriesSplit) y mide R², RMSE y MAE fuera de muestra.",
+        "expected": "Puntuación por pliegue y su media.",
+        "question": "¿El R² es estable entre pliegues?"
+      },
+      {
+        "node_id": "busqueda",
+        "title": "o. Optimización de hiperparámetros",
+        "instruction": "Busca el α de Ridge que minimiza el RMSE de validación temporal (GridSearchCV) y reajusta el mejor modelo.",
+        "expected": "α óptimo, curva de validación y coeficientes del mejor modelo.",
+        "question": "¿Cambia mucho el RMSE con α? ¿Qué indica sobre la colinealidad?"
+      },
+      {
+        "node_id": "residuos_ridge",
+        "title": "p. Análisis de residuos (modelo optimizado)",
+        "instruction": "Repite el análisis de residuos para el modelo Ridge optimizado.",
+        "expected": "Mismos contrastes y gráficos para el modelo regularizado.",
+        "question": "¿Mejoran los residuos respecto a MCO?"
+      },
+      {
+        "node_id": "reporte",
+        "title": "Interpretar",
+        "instruction": "Cierra el recorrido con una interpretación conjunta.",
+        "expected": "Una conclusión que cite las salidas anteriores.",
+        "question": "¿Qué recomendarías para un modelo de consumo con estos datos?"
+      }
+    ],
+    "missing_tools": [
+      "Contrastes de hipótesis sobre variables en distintas unidades: conviene transformarlas (tasas, logaritmos) antes de comparar medias",
+      "Validación con efectos de autocorrelación (errores HAC en validación)"
+    ]
+  }
+}

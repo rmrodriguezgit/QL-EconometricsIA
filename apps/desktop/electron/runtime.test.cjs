@@ -27,3 +27,10 @@ test('actualizaciones comparan números y no aceptan URLs del servidor',()=>{
  assert.throws(()=>releaseInfo({tag_name:'malicioso'},'0.5.0'));
  assert.equal(releaseInfo({tag_name:'v1.0.0',html_url:'https://evil.example'},'0.5.0').url,'https://github.com/rmrodriguezgit/QL-EconometricsIA/releases');
 });
+test('el segundo cerebro está permitido y solo brain.plan amplía el tiempo límite',async()=>{
+ const {timeoutFor}=require('./runtime.cjs');
+ assert.equal(timeoutFor('brain.plan'),180_000);
+ assert.equal(timeoutFor('run.start'),60_000);
+ const engine=createEngine(root);
+ try{const response=await engine.request({jsonrpc:'2.0',id:2,method:'brain.gaps',params:{}});assert.ok(Array.isArray(response.result.items));}finally{await engine.stop();}
+});

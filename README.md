@@ -1,8 +1,9 @@
-# Quantlabs · Econometrics
+# Quantlabs · Econometrics IA
 
-**Conecta datos. Estima modelos. Comprende cada resultado.**
+**Describe tu análisis. El segundo cerebro construye el blueprint. Tú compruebas cada resultado.**
 
-[![Versión](https://img.shields.io/badge/versión-0.8.4-6cc9ac)](https://github.com/rmrodriguezgit/Quantlabs-Econometrics/blob/main/VERSION)
+[![Versión](https://img.shields.io/badge/versión-0.9.0-6cc9ac)](VERSION)
+[![Cerebro IA](https://img.shields.io/badge/cerebro-Qwen%20local%20%2B%20RAG-c49af8)](docs/CEREBRO.md)
 [![Escritorio](https://img.shields.io/badge/escritorio-macOS%20%7C%20Windows-79b4ef)](docs/ARRANQUE.md)
 [![Electron](https://img.shields.io/badge/Electron-45.2.1-79b4ef)](apps/desktop/package.json)
 [![React](https://img.shields.io/badge/React-19.3.1-61dafb)](apps/desktop/package.json)
@@ -12,9 +13,26 @@
 [![Recorridos](https://img.shields.io/badge/recorridos-28-c49af8)](docs/EJEMPLOS.md)
 [![Wooldridge](https://img.shields.io/badge/Wooldridge-115%20datasets-6cc9ac)](docs/WOOLDRIDGE.md)
 
-Laboratorio educativo de econometría con programación visual mediante nodos y motor analítico Python. Objetivo de escritorio: macOS y Windows. [Repositorio](https://github.com/rmrodriguezgit/Quantlabs-Econometrics).
+Laboratorio educativo de econometría con programación visual mediante nodos, motor analítico Python y un **segundo cerebro de IA local** que convierte enunciados en flujos conectados y verificados. Objetivo de escritorio: macOS y Windows. [Repositorio](https://github.com/rmrodriguezgit/QL-EconometricsIA) · derivado de [Quantlabs-Econometrics](https://github.com/rmrodriguezgit/Quantlabs-Econometrics) con su historial completo.
 
-**Versión 0.8.4 · 2026-11-03 · Alpha local con escritorio Electron y estudio oscuro. Instaladores independientes y actualización automática pendientes.**
+**Versión 0.9.0 · 2026-11-04 · Alpha local con escritorio Electron, estudio oscuro y segundo cerebro (Ollama/Qwen + reglas). Instaladores independientes y actualización automática pendientes.**
+
+## Segundo cerebro IA
+
+Pulsa **Cerebro IA** en la barra del lienzo y escribe lo que quieres analizar, por ejemplo: *«Analiza la inflación de México 2000-2023 del Banco Mundial con gráfico temporal, raíz unitaria y ARIMA»*.
+
+1. **Recupera** herramientas, recorridos y blueprints valorados con BM25 local.
+2. **Planifica** con Qwen vía Ollama en `127.0.0.1` o, si no está disponible, con un planificador determinista en español.
+3. **Compila** el plan con la mecánica de los recorridos: solo nodos del catálogo, parámetros declarados, puertos tipados y validador DAG del motor.
+4. **Verifica** ejecutando el flujo cuando los datos son locales y repara columnas con las vistas previas reales.
+5. **Registra** lo que falta como ficha de herramienta pendiente, sin simularlo ni generar código.
+
+```sh
+ollama pull qwen3.5:4b                         # opcional: sin modelo se usan reglas
+uv run python -m quantlabs.brain plan "Regresión múltiple con diagnóstico de heterocedasticidad" -o blueprint.json
+```
+
+Guía completa, métodos RPC, variables de entorno y límites: [CEREBRO.md](docs/CEREBRO.md).
 
 ## Abrir en el escritorio
 
@@ -81,6 +99,7 @@ El último comando valida documentación, pruebas y frontend, incorpora rutas pe
 
 | Archivo | Contenido |
 |---|---|
+| [Segundo cerebro](docs/CEREBRO.md) | Enunciado → blueprint: RAG, Ollama/Qwen, compilador, verificación y fichas faltantes |
 | [Herramientas y pendientes](docs/HERRAMIENTAS.md) | Registro de puertos, uso por módulo y carencias identificadas |
 | [Catálogo de ejemplos](docs/EJEMPLOS.md) | Los 28 experimentos y sus archivos JSON |
 | [Auditoría](docs/AUDITORIA.md) | Hallazgos, correcciones y pendientes verificables |

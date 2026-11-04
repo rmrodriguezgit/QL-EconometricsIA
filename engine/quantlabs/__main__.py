@@ -31,6 +31,9 @@ def dispatch(request):
         elif method in ['projects.list', 'projects.read', 'projects.save', 'projects.delete', 'projects.restore', 'examples.list', 'examples.read']:
             from .projects import dispatch_files
             result = dispatch_files(method, params)
+        elif method.startswith('brain.'):
+            from .brain.service import dispatch as brain_dispatch
+            result = brain_dispatch(method, params)
         elif method == 'run.start':
             result = execute(params.get('project'), params.get('target_node'))
         else:

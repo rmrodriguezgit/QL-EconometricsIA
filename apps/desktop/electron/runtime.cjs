@@ -1,7 +1,9 @@
 const { spawn } = require('node:child_process');
 const { resolve } = require('node:path');
 const { existsSync } = require('node:fs');
-const methods = new Set(['engine.health','system.audit','nodes.list','project.validate','worldbank.indicators','projects.list','projects.read','projects.save','projects.delete','projects.restore','examples.list','examples.read','run.start']);
+const methods = new Set(['engine.health','system.audit','nodes.list','project.validate','worldbank.indicators','projects.list','projects.read','projects.save','projects.delete','projects.restore','examples.list','examples.read','run.start','brain.status','brain.plan','brain.history','brain.feedback','brain.gaps','brain.gaps.update']);
+// El cerebro con Qwen local puede tardar más que un cálculo; el resto conserva 60 s.
+const timeoutFor = method => method === 'brain.plan' ? 180_000 : 60_000;
 function createEngine(root) {
   const children = new Set();
   let stopping = false;
@@ -16,7 +18,8 @@ function createEngine(root) {
       children.add(child);
       let output='',bytes=0,failure;
       const stop = message => { failure = new Error(message); child.kill(); hardTimer=setTimeout(()=>child.kill('SIGKILL'),1000); };
-      const timer = setTimeout(()=>stop('El motor superó 60 segundos.'),60_000);
+      const limit=timeoutFor(value.method);
+      const timer = setTimeout(()=>stop(`El motor superó ${limit/1000} segundos.`),limit);
       let hardTimer;
       child.on('exit',()=>clearTimeout(hardTimer));
       child.stdout.setEncoding('utf8');
@@ -51,4 +54,4 @@ function releaseInfo(value,current) {
   for(let i=0;i<3;i++){if(a[i]!==b[i]){available=a[i]>b[i];break;}}
   return {current,latest,available,url:'https://github.com/rmrodriguezgit/QL-EconometricsIA/releases'};
 }
-module.exports={createEngine,releaseInfo};
+module.exports={createEngine,releaseInfo,timeoutFor};

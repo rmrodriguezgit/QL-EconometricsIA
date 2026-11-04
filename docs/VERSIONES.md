@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.8.4**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.9.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -184,3 +184,11 @@ Resultados utiliza el mismo panel de salidas visibles en proyectos libres y reco
 ## 0.8.4 · 2026-11-03
 
 61 tipos: covariance_matrix añade covarianza de variables Dataset → Result. Correlación conserva sus dos matrices y ambas salidas se muestran por defecto. Pearson y covarianza ddof=1 mediante pandas; filas completas comunes y constantes no definidas explícitas. Sin nuevas dependencias. Pruebas numéricas e integración CSV.
+
+## Segundo cerebro (0.9.0)
+
+| Componente | Versión observada | Uso |
+|---|---|---|
+| Ollama | 0.40.6 (Homebrew, runner MLX) | Servidor local del modelo; no admite salida estructurada con MLX, el cliente degrada a texto JSON |
+| Qwen | `qwen3.5:4b` | Modelo por defecto del cerebro; configurable con `QL_BRAIN_MODEL` |
+| Dependencias Python nuevas | Ninguna | Cliente HTTP con `urllib` y BM25 propio |

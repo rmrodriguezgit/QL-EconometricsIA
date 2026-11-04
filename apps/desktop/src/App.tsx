@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ReactFlow, Background, Controls, Handle, Position, addEdge, applyNodeChanges, applyEdgeChanges, type Node, type NodeProps, type Connection, type ReactFlowInstance } from '@xyflow/react';
-import { ArrowDownToLine, ArrowUpFromLine, FolderOpen, Play, Plus, Search, FlaskConical, Database, ChartScatter, ChartNoAxesCombined, Sigma, BookOpen, ChevronRight, CircleCheck, RotateCcw, Undo2, Trash2, Unplug, Network, CircleAlert, Braces, LoaderCircle, Eye, EyeOff, X } from 'lucide-react';
+import { ArrowDownToLine, ArrowUpFromLine, FolderOpen, Play, Plus, Search, FlaskConical, Database, ChartScatter, ChartNoAxesCombined, Sigma, BookOpen, ChevronRight, CircleCheck, RotateCcw, Undo2, Brain, Trash2, Unplug, Network, CircleAlert, Braces, LoaderCircle, Eye, EyeOff, X } from 'lucide-react';
 import OutputDashboard from './OutputDashboard';
 import {nextTools,retainResults} from './flowUi';
 import DataVariables from './DataVariables';
@@ -19,6 +19,7 @@ import IndicatorPicker from './IndicatorPicker';
 import ProjectManager, { type SavedProject } from './ProjectManager';
 import ExperimentReport from './ExperimentReport';
 import LessonGuide from './LessonGuide';
+import BrainPanel from './BrainPanel';
 import Scatter from './ScatterPlot';
 import { catalog, download, parseProject, rpc, starter, version, type Kind, type Project, type Run, type NodeResult } from './model';
 
@@ -65,6 +66,7 @@ export default function App() {
   const [activeRegressionId,setActiveRegressionId]=useState('');
   const [equationOpen, setEquationOpen] = useState(false);
   const [managerOpen, setManagerOpen] = useState(false);
+  const [brainOpen, setBrainOpen] = useState(false);
   const [activeFile, setActiveFile] = useState<SavedProject | null>(null);
   const [stepIndex,setStepIndex]=useState(0);
   const [flow,setFlow]=useState<ReactFlowInstance<CanvasNode>|null>(null);
@@ -194,6 +196,7 @@ export default function App() {
       </aside>
       <section className="center-pane">
         <div className="canvas-toolbar"><div className="project-title"><span className="project-dot" /><input aria-label="Nombre del proyecto" maxLength={120} disabled={busy} value={project.title} onChange={e => update({ ...project, title: e.target.value })} /><span className="draft-tag">{dirty ? "SIN GUARDAR" : activeFile ? "GUARDADO" : "LOCAL"}</span></div><div className="toolbar-buttons"><button className="new-project-button" aria-label="Nuevo proyecto" title="Empezar un flujo vacío" disabled={busy} onClick={newProject}><Plus size={15}/><span>Nuevo proyecto</span></button>
+          <button className="equation-button brain-button" title="Segundo cerebro: construir un blueprint desde un enunciado" aria-label="Segundo cerebro" disabled={busy} onClick={() => setBrainOpen(true)}><Brain size={16} /><span>Cerebro IA</span></button>
           <button className="equation-button" title="Archivos y ejemplos" aria-label="Archivos y ejemplos" disabled={busy} onClick={() => setManagerOpen(true)}><FolderOpen size={16} /><span>Proyectos</span></button>
           {equationNode && <button className="equation-button" title="Ecuación del modelo" aria-label="Ecuación del modelo" onClick={() => setEquationOpen(true)}><Sigma size={16} /><span>Ecuación</span></button>}
           <button className="icon-button" title="Deshacer" aria-label="Deshacer" disabled={!history.length || busy} onClick={() => { const previous = history[history.length - 1]; setHistory(history.slice(0, -1)); setProject(previous);setRun(retainResults(project,previous,run)); }}><Undo2 size={16} /></button>
@@ -233,6 +236,6 @@ export default function App() {
           {selectedResult?.result && <details className="node-details"><summary>Ver resultado del nodo</summary><pre>{JSON.stringify(selectedResult.result, null, 2)}</pre></details>}
           <button className="delete-node" disabled={busy} onClick={() => { update({ ...project, nodes: project.nodes.filter(n => n.id !== selected.id), edges: project.edges.filter(e => e.source !== selected.id && e.target !== selected.id) }); setSelectedId(''); }}><Trash2 size={13} />Eliminar nodo</button>
         </> : <div className="inspector-empty"><Network size={28} /><p>Selecciona un nodo para explorar sus parámetros y fundamentos.</p></div>}</aside>
-    </main>{managerOpen && <ProjectManager project={project} active={activeFile} onOpen={(next, file) => { update(next); setActiveFile(file ?? null); setStepIndex(0); setSelectedId(next.nodes[0]?.id ?? ''); setSelectedEdgeId(''); }} onRun={(next, file) => { update(next); setActiveFile(file ?? null); setStepIndex(0); setSelectedId(next.nodes[0]?.id ?? ''); setManagerOpen(false); void execute(next); }} onDeleted={id => setActiveFile(file => file?.id === id ? null : file)} onClose={() => setManagerOpen(false)} />}{equationOpen && <ModelEquation node={equationNode} result={equationNode ? run?.nodes[equationNode.id] : undefined} onClose={() => setEquationOpen(false)} />}<footer className="app-footer"><span><span className="tiny-dot" /> {Object.keys(catalog).length} herramientas · 28 recorridos · ejecución reproducible</span><span>Motor Python · {window.quantlabsDesktop?'Electron':'Web'} · v{version}</span></footer>
+    </main>{managerOpen && <ProjectManager project={project} active={activeFile} onOpen={(next, file) => { update(next); setActiveFile(file ?? null); setStepIndex(0); setSelectedId(next.nodes[0]?.id ?? ''); setSelectedEdgeId(''); }} onRun={(next, file) => { update(next); setActiveFile(file ?? null); setStepIndex(0); setSelectedId(next.nodes[0]?.id ?? ''); setManagerOpen(false); void execute(next); }} onDeleted={id => setActiveFile(file => file?.id === id ? null : file)} onClose={() => setManagerOpen(false)} />}{brainOpen && <BrainPanel onOpen={next => { if (!dirty || window.confirm('El canvas tiene cambios sin guardar. ¿Reemplazarlo por el blueprint?')) { update(next); setActiveFile(null); setStepIndex(0); setSelectedId(next.nodes[0]?.id ?? ''); setSelectedEdgeId(''); setBrainOpen(false); } }} onRun={next => { if (!dirty || window.confirm('El canvas tiene cambios sin guardar. ¿Reemplazarlo por el blueprint?')) { update(next); setActiveFile(null); setStepIndex(0); setSelectedId(next.nodes[0]?.id ?? ''); setSelectedEdgeId(''); setBrainOpen(false); void execute(next); } }} onClose={() => setBrainOpen(false)} />}{equationOpen && <ModelEquation node={equationNode} result={equationNode ? run?.nodes[equationNode.id] : undefined} onClose={() => setEquationOpen(false)} />}<footer className="app-footer"><span><span className="tiny-dot" /> {Object.keys(catalog).length} herramientas · 28 recorridos · ejecución reproducible</span><span>Motor Python · {window.quantlabsDesktop?'Electron':'Web'} · v{version}</span></footer>
   </div>;
 }

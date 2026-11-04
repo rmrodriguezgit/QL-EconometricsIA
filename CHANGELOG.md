@@ -161,3 +161,12 @@ La aplicación y sus instaladores están pendientes de implementación. Los camb
 - Correlación visible por defecto con matrices de Pearson y covarianza muestral; muestra común, faltantes y constantes explícitos.
 - Nodo Covarianza de variables independiente del ajuste de covarianza del modelo OLS.
 - Ambas herramientas incluidas en N01 antes de imputar; mínimo dos observaciones completas y dos variables.
+
+## 0.9.0 - 2026-11-04
+
+- Nuevo repositorio QL-EconometricsIA con el historial completo de Quantlabs-Econometrics; sincronización y consulta de versiones apuntan al nuevo remoto.
+- Segundo cerebro (`engine/quantlabs/brain`): recuperación BM25 local sobre catálogo, 28 recorridos, bibliografía y memoria; planificación con Qwen vía Ollama local y respaldo determinista en español.
+- Compilador de blueprints con la mecánica existente: parámetros cerrados, puertos tipados, fuente automática, validador DAG, guía de un paso por nodo y verificación por ejecución con reparación de columnas.
+- Fichas de herramientas faltantes deduplicadas con contador, puertos sugeridos y estado; memoria de blueprints con valoraciones que alimentan la recuperación.
+- Métodos JSON-RPC `brain.*`, CLI `python -m quantlabs.brain` y panel **Cerebro IA** en el estudio; `brain.plan` dispone de 180 s.
+- 17 pruebas nuevas del cerebro y una de transporte Electron.

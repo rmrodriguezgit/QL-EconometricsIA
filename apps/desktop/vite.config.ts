@@ -32,7 +32,10 @@ function engineBridge(): Plugin {
             cwd: root, env: { ...process.env, PYTHONPATH: resolve(root, 'engine'), PYTHONUTF8: '1', WBDATA_CACHE_PATH: resolve(root, '.cache/wbdata/cache') },
           });
           let output = '';
-          const timer = setTimeout(() => { child.kill(); res.writeHead(504).end('El motor superó 60 segundos.'); }, 60_000);
+          let method = '';
+          try { method = JSON.parse(Buffer.concat(chunks).toString('utf8')).method ?? ''; } catch { /* el motor responde con error JSON-RPC */ }
+          const limit = method === 'brain.plan' ? 180_000 : 60_000;
+          const timer = setTimeout(() => { child.kill(); res.writeHead(504).end(`El motor superó ${limit / 1000} segundos.`); }, limit);
           child.stdout.setEncoding('utf8').on('data', (chunk: string) => {
             output += chunk;
             if (output.length > 12_000_000) child.kill();

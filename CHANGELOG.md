@@ -211,3 +211,10 @@ La aplicación y sus instaladores están pendientes de implementación. Los camb
 
 - Resultados: botón **Ampliar** junto a *Exportar* que lleva Resultados, Regresión, Descriptivos y Trazabilidad a toda la ventana, con pestañas fijas al desplazarse; **Volver al layout** o `Esc` regresan. Solo una vista ampliada a la vez (lienzo o resultados).
 - Verificado en el navegador (1440×900): ocupa la ventana, el contenido desplaza con la cabecera fija, el cambio de pestaña conserva la ampliación y `Esc` vuelve al layout.
+
+## 0.13.0 - 2026-11-04
+
+- Nueva fuente **Banco Mundial · varios indicadores** (`worldbank_multi`): equivalente a `wbdata.get_dataframe({código: alias, …}, country=[…])`, con columnas por alias, `pais` si hay varios países, descarga en paralelo y error que nombra el indicador que falla. Por defecto, USA con `social_contri`, `lending_rate`, `gdp_growth` y `fin_cons`. Editor en el inspector (países, indicador con buscador y alias validado).
+- Nuevo nodo **Pairplot**: matriz de dispersión con histogramas en la diagonal, r de Pearson por par, color opcional por grupo, tabla de filas completas por par y de correlación dentro de cada grupo, con aviso cuando las unidades pueden diferir entre grupos.
+- Cerebro: dos o más indicadores → `worldbank_multi`; las frases de indicadores ya no activan herramientas ni se cuentan dos veces; intención `pairplot` con «por país».
+- Verificado: pruebas sin red (cliente simulado) y comparación con pandas; consulta real USA/MEX y pairplot abierto y ejecutado desde el Cerebro IA en la interfaz.

@@ -92,3 +92,14 @@ body{background:#0d1118}button:focus-visible,input:focus-visible,select:focus-vi
 .results-focus .results-header{position:sticky;top:0;z-index:5;height:54px;padding:0 24px;box-shadow:0 6px 16px #0005}
 .results-focus .results>*:not(.results-header){max-width:1600px;margin-left:auto;margin-right:auto}
 @media(max-width:720px){.results-zoom kbd{display:none}}
+/* Banco Mundial · varios indicadores */
+.indicator-list{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}.indicator-list h4{margin:6px 0 0;font-size:9px;letter-spacing:1px;color:#8296af}.indicator-list code{font-size:10px;color:#a8e4ca}
+.indicator-row{display:flex;flex-direction:column;gap:5px;padding:8px;border:1px solid #2c394c;border-radius:6px;background:#141c27}
+.indicator-alias{display:flex;gap:6px}.indicator-alias input{flex:1;min-width:0;padding:7px 8px;background:#0d141e;border:1px solid #303d4e;border-radius:5px;color:#c6d3e4;font:11px ui-monospace,monospace}
+.indicator-alias input[aria-invalid=true]{border-color:#f4a3a9}.indicator-error{color:#f4a3a9;font-size:10px}.indicator-add{align-self:flex-start;display:flex;align-items:center;gap:6px}
+/* Pairplot */
+.pair-plot{padding:12px 18px}.pair-scroll{overflow-x:auto}.pair-plot svg{width:100%;height:auto;display:block}
+.pair-cell{fill:#0f1620;stroke:#283548}.pair-name{fill:#c6d3e4;font-size:11px;font-weight:600}.pair-r{fill:#e0e9f5;font-weight:650}.pair-sub{fill:#8297b0;font-size:9px}
+.pair-axis{fill:#a2b5cc;font-size:11px}.pair-tick{fill:#7d91ac;font-size:9px}
+.pair-legend{display:flex;flex-wrap:wrap;gap:12px;margin:4px 0 8px;font-size:11px;color:#c6d3e4}.pair-legend span{display:flex;align-items:center;gap:6px}.pair-legend i{width:10px;height:10px;border-radius:50%;display:inline-block}
+.results-focus .pair-plot svg{max-height:calc(100dvh - 160px)}

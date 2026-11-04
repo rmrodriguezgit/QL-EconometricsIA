@@ -124,6 +124,8 @@
             "simulate",
             "csv",
             "worldbank",
+            "worldbank_multi",
+            "pairplot",
             "describe",
             "scatter",
             "ols",

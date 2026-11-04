@@ -171,3 +171,14 @@ Registro actual: **78 tipos**. Cinco fichas que el cerebro mantenía pendientes 
 | `bootstrap` | Dataset → Result | C09 | Remuestreo de media, mediana, DE o RIC; IC percentil, básico o BCa | B20, B21 | EE bootstrap ≈ σ/√n; reproducible con semilla | Supone independencia (sin bloques) |
 
 El generador sintético añade el escenario `panel` (`entidad`, `periodo`, `x`, `y`) con efecto individual correlacionado con x. El inspector ofrece `entity` como selector de columna. Queda abierta, entre otras, la ficha `mgarch` (volatilidad multivariada).
+
+## Banco Mundial multi-indicador y pairplot · 0.13.0
+
+Registro actual: **80 tipos**. Pruebas sin red en `tests/test_wb_multi_pairplot.py` (cliente wbdata simulado) y ejecución real verificada contra la API del Banco Mundial el 2026-11-04.
+
+| Tipo | Puertos | Módulo | Método | Referencias | Verificación | Límite declarado |
+|---|---|---|---|---|---|---|
+| `worldbank_multi` | — → Dataset | Fuentes | Equivale a `wbdata.get_dataframe({código: alias, …}, country=[…])`: una columna por indicador con su alias, una fila por año (y `pais` si hay varios países). Hasta 12 indicadores y 20 países; descarga en paralelo, un cliente aislado por indicador | B01 | Parser `CÓDIGO: alias` (líneas, comas, `;`, `=` o dict); columnas y orden; error que nombra el código fallido; consulta real USA/MEX | Una sola fuente (`source`) para todos los indicadores; años sin ningún dato se descartan; unidades según metadatos de cada indicador |
+| `pairplot` | Dataset → Plot, Result | C03/C10 | Matriz tipo `seaborn.pairplot`: dispersión por par, histograma en la diagonal (apilado por grupo) y r de Pearson por par; grupo opcional (≤ 8 categorías) | B17 | r por pares = `DataFrame.corr()` de pandas (incluido n por par con faltantes); r dentro de cada grupo; suma de histogramas = n | Muestra hasta `max_points` puntos (histogramas y r usan todo); r combina grupos, con aviso y tabla por grupo |
+
+Valores por defecto de `worldbank_multi`: país `USA` e indicadores `GC.REV.SOCL.CN: social_contri`, `FR.INR.LEND: lending_rate`, `NY.GDP.MKTP.KD.ZG: gdp_growth`, `NE.CON.TOTL.CD: fin_cons`. El inspector edita países y filas indicador → alias con el buscador del catálogo; los alias inválidos o repetidos se marcan antes de ejecutar.

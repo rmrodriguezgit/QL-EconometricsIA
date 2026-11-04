@@ -59,6 +59,27 @@
       "B01"
     ]
   },
+  "worldbank_multi": {
+    "label": "Banco Mundial · varios indicadores",
+    "detail": "Descarga varios indicadores con alias para uno o más países",
+    "category": "Fuentes de datos",
+    "color": "green",
+    "inputs": {},
+    "outputs": {
+      "data": "Dataset"
+    },
+    "defaults": {
+      "countries": "USA",
+      "indicators": "GC.REV.SOCL.CN: social_contri\nFR.INR.LEND: lending_rate\nNY.GDP.MKTP.KD.ZG: gdp_growth\nNE.CON.TOTL.CD: fin_cons",
+      "source": 2,
+      "start": 1960,
+      "end": 2025
+    },
+    "explanation": "Equivale a wbdata.get_dataframe({código: alias, …}, country=[…]): una columna por indicador con el alias elegido, una fila por año (y por país si hay varios). Las consultas se hacen en paralelo y los años sin ningún dato se descartan. Requiere conexión.",
+    "references": [
+      "B01"
+    ]
+  },
   "describe": {
     "label": "Descriptivos",
     "detail": "Cuenta observaciones y faltantes, media, mediana y desviación muestral por colum",
@@ -2016,5 +2037,29 @@
         "BCa": "BCa (sesgo corregido y acelerado)"
       }
     }
+  },
+  "pairplot": {
+    "label": "Pairplot",
+    "detail": "Matriz de dispersión con histogramas y correlación por par",
+    "category": "Exploración",
+    "color": "blue",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "plot": "Plot",
+      "result": "Result"
+    },
+    "defaults": {
+      "columns": "",
+      "group": "",
+      "bins": 15,
+      "max_points": 600,
+      "seed": 42
+    },
+    "explanation": "Como seaborn.pairplot: dispersión de cada par de variables, histograma de cada variable en la diagonal y r de Pearson por par. Vacío en variables = todas las numéricas (sin periodo, hasta 6). Grupo opcional (p. ej. pais) colorea los puntos. Cada par usa sus filas completas. Asociación no implica causalidad.",
+    "references": [
+      "B17"
+    ]
   }
 }

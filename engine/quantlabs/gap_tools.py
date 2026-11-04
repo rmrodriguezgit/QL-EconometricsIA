@@ -6,6 +6,7 @@ dicotómicas (C12), descomposición estacional (C14), SARIMA y VAR (C15), Johans
 (C16), WLS/FGLS (C21), regularización (C22) y selección de k (C25).
 En 0.11.0 se añaden panel con efectos fijos/aleatorios (C02), EGARCH/GJR (C17),
 selección stepwise (C11), efectos marginales (C12) y bootstrap (C09).
+En 0.13.0, pairplot (matriz de dispersión) para explorar varias variables a la vez (C03/C10).
 Cada cálculo consume los artefactos conectados; ninguna acepta expresiones.
 """
 import numpy as np
@@ -18,7 +19,7 @@ from .tools import Fitted, columns, regression_report, report, sample, series, t
 
 GAP_TOOLS = {'sample_size', 'multiple_testing', 'prediction_interval', 'chow', 'dummies', 'seasonal_decompose',
              'sarima', 'var', 'johansen', 'wls', 'regularized', 'cluster_selection',
-             'panel', 'egarch', 'stepwise', 'marginal_effects', 'bootstrap'}
+             'panel', 'egarch', 'stepwise', 'marginal_effects', 'bootstrap', 'pairplot'}
 
 
 def choice(params, key, options):
@@ -512,6 +513,88 @@ def bootstrap(frame, params):
     return result, {'result': result}
 
 
+
+# ------------------------------------------------------------------ 0.13.0
+
+def pairplot(frame, params):
+    """Matriz de dispersión (pairplot): pares por debajo de la diagonal, histogramas en ella y r de Pearson por par."""
+    requested = str(params.get('columns', '') or '').strip()
+    numeric = [c for c in frame.columns if pd.api.types.is_numeric_dtype(frame[c]) and c != 'periodo']
+    names = columns(frame, requested) if requested else numeric[:6]
+    if len(names) < 2:
+        raise EngineError('INVALID_PARAMETERS', 'El pairplot necesita al menos dos variables numéricas.')
+    if len(names) > 8:
+        raise EngineError('INVALID_PARAMETERS', 'Elige como máximo 8 variables para que la matriz sea legible.')
+    group = str(params.get('group', '') or '').strip()
+    if group and group not in frame.columns:
+        raise EngineError('INVALID_PARAMETERS', f'No existe la columna de grupo «{group}».')
+    if group in names:
+        raise EngineError('INVALID_PARAMETERS', 'La columna de grupo no puede ser también una variable de la matriz.')
+    bins = number(params, 'bins', 15, 3, 60, True)
+    limit = number(params, 'max_points', 600, 50, 3000, True)
+    seed = number(params, 'seed', 42, 0, 2**32 - 1, True)
+    data = frame[names + ([group] if group else [])].copy()
+    values = data[names].apply(pd.to_numeric, errors='coerce').replace([np.inf, -np.inf], np.nan)
+    usable = values.notna().sum(axis=1) >= 2  # cada par usa sus filas completas
+    data, values = data[usable], values[usable]
+    if len(data) < 3:
+        raise EngineError('INSUFFICIENT_SAMPLE', 'No hay suficientes filas con datos para comparar variables.')
+    if group:
+        labels = data[group].astype(str).where(data[group].notna(), 'sin dato')
+        groups = list(dict.fromkeys(labels.sort_values()))
+        if len(groups) > 8:
+            raise EngineError('INVALID_PARAMETERS', f'«{group}» tiene {len(groups)} categorías; usa una con 8 o menos.')
+    else:
+        labels, groups = pd.Series('todos', index=data.index), ['todos']
+    shown = values.sample(n=limit, random_state=seed) if len(values) > limit else values
+    points = [[None if pd.isna(v) else float(v) for v in row] + [groups.index(labels[idx])] for idx, row in zip(shown.index, shown.to_numpy())]
+    diagonal, correlation_rows, pairs = [], [], []
+    for name in names:
+        column = values[name].dropna()
+        edges = np.histogram_bin_edges(column, bins=bins) if len(column) else np.array([0.0, 1.0])
+        counts = [np.histogram(values.loc[labels == g, name].dropna(), bins=edges)[0].astype(int).tolist() for g in groups]
+        diagonal.append({'column': name, 'edges': edges.tolist(), 'counts': counts, 'n': int(len(column))})
+    matrix = []
+    for i, a in enumerate(names):
+        row = []
+        for j, b in enumerate(names):
+            both = values[[a] if i == j else [a, b]].dropna()
+            defined = len(both) >= 3 and both[a].nunique() > 1 and both[b].nunique() > 1
+            r = 1.0 if i == j and defined else (float(both[a].corr(both[b])) if defined else None)
+            row.append(r)
+            if i < j:
+                pairs.append((a, b, r, len(both)))
+        matrix.append(row)
+        correlation_rows.append([a, *row])
+    strongest = max((p for p in pairs if p[2] is not None), key=lambda p: abs(p[2]), default=None)
+    note = (f'Matriz de {len(names)} variables con {len(values)} filas' + (f', coloreada por «{group}»' if group else '') + '. '
+            'Cada panel usa las filas completas de su par; los histogramas usan todos los datos de la variable. '
+            'Asociación no implica causalidad.')
+    result = report(note, n=len(values), variables=len(names), puntos_mostrados=len(points),
+                    **({'r_maximo': strongest[2]} if strongest else {}))
+    if strongest:
+        result['teaching_note'] = f'Par más asociado: {strongest[0]} y {strongest[1]} (r = {strongest[2]:.3f}, n = {strongest[3]}).'
+    if len(points) < len(values):
+        result['warnings'].append(f'Se dibujan {len(points)} de {len(values)} filas (muestra aleatoria con semilla {seed}); '
+                                  'histogramas y correlaciones usan todas.')
+    if group and len(groups) > 1:
+        result['warnings'].append('Las correlaciones y los histogramas combinan todos los grupos. Si las unidades difieren entre grupos '
+                                  '(p. ej. indicadores en moneda local, códigos .CN), compara la tabla de correlación por grupo.')
+        by_group = []
+        for g in groups:
+            subset = values[labels == g]
+            for a, b, _, _ in pairs:
+                both = subset[[a, b]].dropna()
+                ok = len(both) >= 3 and both[a].nunique() > 1 and both[b].nunique() > 1
+                by_group.append([g, a, b, len(both), float(both[a].corr(both[b])) if ok else None])
+    result['pairplot'] = {'columns': names, 'group': group or None, 'groups': groups, 'points': points,
+                          'diagonal': diagonal, 'correlation': matrix}
+    result['tables'] = [table('Correlación de Pearson por pares', ['Variable', *names], correlation_rows),
+                        table('Filas completas por par', ['Variable A', 'Variable B', 'n', 'r'], [[a, b, n, r] for a, b, r, n in pairs])]
+    if group and len(groups) > 1:
+        result['tables'].append(table(f'Correlación dentro de cada grupo ({group})', ['Grupo', 'Variable A', 'Variable B', 'n', 'r'], by_group))
+    return result, {'result': result, 'plot': result}
+
 def run_gap_tool(kind, inputs, params):
     if kind == 'sample_size':
         return sample_size(params)
@@ -521,5 +604,5 @@ def run_gap_tool(kind, inputs, params):
     handler = {'multiple_testing': multiple_testing, 'prediction_interval': prediction_interval, 'chow': chow, 'dummies': dummies,
                'seasonal_decompose': seasonal_decompose, 'sarima': sarima, 'var': var_model, 'johansen': johansen, 'wls': wls,
                'regularized': regularized, 'cluster_selection': cluster_selection, 'panel': panel, 'egarch': egarch,
-               'stepwise': stepwise, 'bootstrap': bootstrap}[kind]
+               'stepwise': stepwise, 'bootstrap': bootstrap, 'pairplot': pairplot}[kind]
     return handler(frame, params)

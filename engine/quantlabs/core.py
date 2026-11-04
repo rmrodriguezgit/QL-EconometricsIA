@@ -18,7 +18,7 @@ import pandas as pd
 import statsmodels.api as sm
 
 ROOT = Path(__file__).resolve().parents[2]
-VERSION = (ROOT / 'VERSION').read_text().strip() if (ROOT / 'VERSION').exists() else '0.12.1'
+VERSION = (ROOT / 'VERSION').read_text().strip() if (ROOT / 'VERSION').exists() else '0.13.0'
 SCHEMA = '1.0.0'
 
 class EngineError(ValueError):
@@ -225,6 +225,111 @@ def world_bank(parameters):
                    'source_id': source_id, 'start': start, 'end': end, 'units': 'consultar metadatos del indicador; no inferidas'}
 
 
+
+WB_MULTI_DEFAULT = ('GC.REV.SOCL.CN: social_contri\nFR.INR.LEND: lending_rate\n'
+                    'NY.GDP.MKTP.KD.ZG: gdp_growth\nNE.CON.TOTL.CD: fin_cons')
+WB_CODE = re.compile(r'[A-Za-z0-9_.-]{1,200}')
+WB_ALIAS = re.compile(r'[A-Za-z_][A-Za-z0-9_]{0,40}')
+
+
+def parse_indicator_map(value):
+    """Lista «CÓDIGO: alias» (líneas, comas o punto y coma) o dict → dict ordenado código → alias."""
+    if isinstance(value, dict):
+        pairs = [(str(code).strip(), str(alias).strip()) for code, alias in value.items()]
+    elif isinstance(value, str):
+        pairs = []
+        for item in re.split(r'[\n;,]+', value):
+            item = item.strip()
+            if not item:
+                continue
+            code, _, alias = item.partition(':') if ':' in item else item.partition('=')
+            pairs.append((code.strip(), alias.strip()))
+    else:
+        fail('Indica los indicadores como «CÓDIGO: alias», uno por línea.', 'INVALID_PARAMETERS')
+    mapping = {}
+    for code, alias in pairs:
+        if not WB_CODE.fullmatch(code):
+            fail(f'Código de indicador no válido: «{code}».', 'INVALID_PARAMETERS')
+        # Sin alias se usa el código en minúsculas con «_» (columna válida en fórmulas y selectores).
+        alias = alias or re.sub(r'[^a-z0-9_]', '_', code.lower())
+        if not WB_ALIAS.fullmatch(alias) or alias in ('periodo', 'pais', 'iso3'):
+            fail(f'Alias no válido: «{alias}». Usa letras, números y «_», sin empezar por número.', 'INVALID_PARAMETERS')
+        if code in mapping:
+            fail(f'El indicador {code} está repetido.', 'INVALID_PARAMETERS')
+        mapping[code] = alias
+    if not mapping:
+        fail('Añade al menos un indicador.', 'INVALID_PARAMETERS')
+    if len(mapping) > 12:
+        fail('Como máximo 12 indicadores por consulta.', 'INVALID_PARAMETERS')
+    if len(set(mapping.values())) != len(mapping):
+        fail('Cada indicador necesita un alias distinto.', 'INVALID_PARAMETERS')
+    return mapping
+
+
+def parse_countries(value):
+    items = value if isinstance(value, list) else re.split(r'[\s,;]+', str(value or ''))
+    codes = []
+    for item in items:
+        code = str(item).strip().upper()
+        if not code:
+            continue
+        if len(code) != 3 or not code.isalpha():
+            fail(f'Usa códigos de país de tres letras (p. ej. USA, MEX); «{item}» no es válido.', 'INVALID_PARAMETERS')
+        if code not in codes:
+            codes.append(code)
+    if not codes:
+        fail('Indica al menos un país, p. ej. USA.', 'INVALID_PARAMETERS')
+    if len(codes) > 20:
+        fail('Como máximo 20 países por consulta.', 'INVALID_PARAMETERS')
+    return codes
+
+
+def world_bank_multi(parameters, client=None):
+    """Equivale a wbdata.get_dataframe({código: alias, …}, country=[…]) en una tabla larga país × año."""
+    countries = parse_countries(parameters.get('countries', 'USA'))
+    mapping = parse_indicator_map(parameters.get('indicators', WB_MULTI_DEFAULT))
+    source_id = number(parameters, 'source', 2, 1, 100000, True)
+    start = number(parameters, 'start', 1960, 1960, datetime.now().year, True)
+    end = number(parameters, 'end', datetime.now().year, start, datetime.now().year, True)
+    from concurrent.futures import ThreadPoolExecutor
+
+    def fetch(item):
+        code, alias = item
+        # Un cliente por indicador: sesiones y cachés separadas permiten consultar en paralelo sin compartir estado.
+        if client is None:
+            from .wb_client import fresh_client
+            worker = fresh_client()
+        else:
+            worker = client
+        try:
+            return worker.get_series(code, country=countries, date=(str(start), str(end)), source=source_id,
+                                     parse_dates=False, name=alias, keep_levels=True, skip_cache=True)
+        except Exception as exc:
+            raise EngineError('DATA_UNAVAILABLE', f'Banco Mundial no devolvió {code} ({alias}). Revisa la conexión, '
+                              'el código y la fuente; prueba de nuevo si el servicio está lento.') from exc
+
+    with ThreadPoolExecutor(max_workers=min(6, len(mapping))) as pool:
+        series = list(pool.map(fetch, mapping.items()))
+    frame = pd.concat(series, axis=1).reset_index()
+    if frame.empty or 'date' not in frame.columns:
+        fail('La consulta no devolvió períodos disponibles.', 'DATA_UNAVAILABLE')
+    frame = frame.rename(columns={'date': 'periodo', 'country': 'pais'})
+    frame['periodo'] = pd.to_numeric(frame['periodo'], errors='raise').astype(int)
+    for alias in mapping.values():
+        if alias not in frame.columns:
+            frame[alias] = np.nan
+        frame[alias] = pd.to_numeric(frame[alias], errors='coerce')
+    # Filas sin ningún indicador (años sin publicar) no aportan información.
+    frame = frame.dropna(subset=list(mapping.values()), how='all')
+    if frame.empty:
+        fail('Ningún indicador tiene datos en el rango de años elegido.', 'DATA_UNAVAILABLE')
+    keys = ['pais', 'periodo'] if 'pais' in frame.columns and len(countries) > 1 else ['periodo']
+    frame = frame[keys + list(mapping.values())].sort_values(keys).reset_index(drop=True)
+    coverage = {alias: int(frame[alias].notna().sum()) for alias in mapping.values()}
+    return frame, {'provider': 'World Bank', 'countries': countries, 'indicators': mapping, 'source_id': source_id,
+                   'start': start, 'end': end, 'observations_per_indicator': coverage,
+                   'units': 'consultar metadatos de cada indicador; no inferidas'}
+
 def numeric(frame, columns):
     if not columns or any(not isinstance(col, str) or col not in frame.columns for col in columns):
         fail(f'Selecciona columnas existentes en los datos. Disponibles: {", ".join(map(str, frame.columns))}.', 'INVALID_PARAMETERS')
@@ -324,9 +429,9 @@ def execute(project, target_node=None):
             if kind == 'experiment':
                 from .experiments import run_experiment
                 result = run_experiment(params)
-            elif kind in ['simulate', 'csv', 'worldbank', 'wooldridge']:
+            elif kind in ['simulate', 'csv', 'worldbank', 'worldbank_multi', 'wooldridge']:
                 from .wooldridge_source import wooldridge_data
-                frame, source = {'simulate': simulate, 'csv': csv_data, 'worldbank': world_bank, 'wooldridge':wooldridge_data}[kind](params)
+                frame, source = {'simulate': simulate, 'csv': csv_data, 'worldbank': world_bank, 'worldbank_multi': world_bank_multi, 'wooldridge':wooldridge_data}[kind](params)
                 result = frame_result(frame,'Datos de origen; revisa unidades y faltantes.')
                 source.update({'retrieved_at': datetime.now(timezone.utc).isoformat(), 'data_sha256': result['data_sha256'], 'n': len(frame)})
                 sources[key] = source

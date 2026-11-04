@@ -37,6 +37,8 @@ INTENTS = [
     (r'serie[s]? de tiempo|serie temporal|evolucion|grafic[ao] temporal', 'time_plot', 2, None),
     (r'intervalo de confianza', 'mean_ci', 2, None),
     (r'normalidad|shapiro|jarque', 'normality', 2, None),
+    (r'pair ?plot|matriz de (dispersion|graficos)|graficos? (de dispersion )?por pares|scatter ?matrix', 'pairplot', 2,
+     {'name': 'Pairplot', 'module': 'C03', 'inputs': {'data': 'Dataset'}, 'outputs': {'plot': 'Plot', 'result': 'Result'}}),
     (r'autocorrelacion|\bacf\b|correlograma', 'acf', 2, None),
     (r'raiz unitaria|estacionari|dickey|\badf\b', 'unit_root', 2, None),
     (r'monte ?carlo', 'monte_carlo', 2, None),
@@ -120,6 +122,7 @@ PARAM_HINTS = {
     'covariance': [(r'\bhac\b|newey|autocorrelacion', {'method': 'HAC'})],
     'wls': [(r'1/x|inversa', {'method': 'inversa_x2'})],
     'split': [(r'aleatori', {'method': 'aleatorio'})],
+    'pairplot': [(r'por pais|color(ead[oa])? por pais', {'group': 'pais'})],
     'seasonal_decompose': [(r'multiplicativ', {'model': 'multiplicative'})],
     'egarch': [(r'\bgjr\b|apalancamiento', {'vol': 'GJR-GARCH'}), (r'\bt de student|colas pesadas', {'dist': 't'})],
     'stepwise': [(r'backward|hacia atras|eliminacion', {'direction': 'backward'}), (r'\bbic\b', {'criterion': 'bic'})],
@@ -148,10 +151,20 @@ INDICATORS = [
     (r'importacion', 'NE.IMP.GNFS.ZS'),
     (r'tasa de interes|interes real', 'FR.INR.RINR'),
     (r'tasa de prestamo|interes de (los )?prestamos', 'FR.INR.LEND'),
-    (r'consumo final', 'NE.CON.TOTL.KD'),
     (r'esperanza de vida', 'SP.DYN.LE00.IN'),
     (r'emisiones|co2', 'EN.GHG.CO2.PC.CE.AR5'),
+    (r'contribuciones sociales', 'GC.REV.SOCL.CN'),
+    (r'gasto de consumo final|consumo final total', 'NE.CON.TOTL.CD'),
+    (r'consumo final', 'NE.CON.TOTL.KD'),
 ]
+
+# Alias de columna para la fuente de varios indicadores (wbdata.get_dataframe({código: alias})).
+INDICATOR_ALIAS = {
+    'NY.GDP.PCAP.KD': 'gdp_pc', 'NY.GDP.MKTP.KD.ZG': 'gdp_growth', 'NY.GDP.MKTP.KD': 'gdp', 'FP.CPI.TOTL.ZG': 'inflation',
+    'SL.UEM.TOTL.ZS': 'unemployment', 'SP.POP.TOTL': 'population', 'NE.EXP.GNFS.ZS': 'exports', 'NE.IMP.GNFS.ZS': 'imports',
+    'FR.INR.RINR': 'real_rate', 'FR.INR.LEND': 'lending_rate', 'NE.CON.TOTL.KD': 'fin_cons_real', 'SP.DYN.LE00.IN': 'life_exp',
+    'EN.GHG.CO2.PC.CE.AR5': 'co2_pc', 'GC.REV.SOCL.CN': 'social_contri', 'NE.CON.TOTL.CD': 'fin_cons',
+}
 
 
 @lru_cache(maxsize=1)
@@ -190,7 +203,25 @@ def detect_source(text):
         if len(name) > 3 and re.search(r'\b' + re.escape(name) + r'\b', folded):
             country = code
             break
-    indicator = next((code for pattern, code in INDICATORS if re.search(pattern, folded)), None)
+    found, rest = [], folded
+    for pattern, code in INDICATORS:
+        # Cada frase reconocida se consume: «PIB» dentro de «crecimiento del PIB» o «consumo final»
+        # dentro de «gasto de consumo final total» no cuentan como indicadores adicionales.
+        if re.search(pattern, rest) and code not in found:
+            found.append(code)
+            rest = re.sub(pattern, ' ', rest)
+    indicator = found[0] if found else None
+    wants_many = len(found) >= 2 or re.search(r'varios indicadores|multiples indicadores|varios paises', folded)
+    if wants_many and ('banco mundial' in folded or 'world bank' in folded or country or len(found) >= 2):
+        codes = found or ['NY.GDP.MKTP.KD.ZG', 'FR.INR.LEND']
+        named = [code for name, code in sorted(countries().items(), key=lambda pair: -len(pair[0]))
+                 if len(name) > 3 and re.search(r'\b' + re.escape(name) + r'\b', folded)]
+        params = {'countries': ', '.join(dict.fromkeys(named or [country or 'USA'])),
+                  'indicators': '\n'.join(f'{code}: {INDICATOR_ALIAS.get(code, code.lower().replace(".", "_"))}' for code in codes)}
+        years = [int(y) for y in re.findall(r'\b(19[6-9]\d|20[0-4]\d)\b', folded)]
+        if len(years) >= 2:
+            params.update({'start': min(years), 'end': max(years)})
+        return 'worldbank_multi', params, f"Varios indicadores del Banco Mundial ({', '.join(codes)}) para {params['countries']}."
     if 'banco mundial' in folded or 'world bank' in folded or (country and indicator):
         params = {'country': country or 'MEX', 'indicator': indicator or 'NY.GDP.PCAP.KD'}
         years = [int(y) for y in re.findall(r'\b(19[6-9]\d|20[0-4]\d)\b', folded)]
@@ -238,7 +269,13 @@ def scenario_for(kinds):
 def rules_plan(prompt, retrieved_tools=()):
     """Plan determinista con la misma estructura que devuelve el modelo de lenguaje."""
     source, source_params, source_reason = detect_source(prompt)
-    kinds, gaps = detect_tools(prompt)
+    text = prompt
+    if source in ('worldbank', 'worldbank_multi'):
+        # Los nombres de indicadores («crecimiento del PIB», «tasa de interés») describen datos, no herramientas.
+        text = fold(prompt)
+        for pattern, _ in INDICATORS:
+            text = re.sub(pattern, ' ', text)
+    kinds, gaps = detect_tools(text)
     if not kinds:
         # Sin palabras clave: usar las herramientas mejor recuperadas por BM25.
         kinds = [kind for kind in retrieved_tools if NODE_CATALOG.get(kind, {}).get('inputs') == {'data': 'Dataset'}][:2]

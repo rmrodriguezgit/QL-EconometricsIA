@@ -26,3 +26,24 @@ def client():
             os.environ.pop('WBDATA_CACHE_PATH', None)
         else:
             os.environ['WBDATA_CACHE_PATH'] = previous
+
+
+def fresh_client(timeout=(5, 30)):
+    """Cliente independiente (caché propia y sesión con tiempo límite) para consultas en paralelo."""
+    from requests import Session
+
+    class BoundedSession(Session):
+        def request(self, method, url, **kwargs):
+            kwargs.setdefault('timeout', timeout)
+            response = super().request(method, url, **kwargs)
+            response.raise_for_status()
+            return response
+
+    temporary = tempfile.TemporaryDirectory(prefix='quantlabs-wbdata-')
+    atexit.register(temporary.cleanup)
+    client()  # importa wbdata con la caché por defecto ya aislada
+    import wbdata
+    instance = wbdata.Client(cache_path=str(Path(temporary.name) / 'cache'))
+    # wbdata 1.1.0 acepta session pero no la reenvía al Fetcher.
+    instance.fetcher.session = BoundedSession()
+    return instance

@@ -103,8 +103,9 @@ class CompilerTests(BrainCase):
         raw = {'steps': [{'id': 'd', 'tool': 'synthetic', 'parameters': {'scenario': 'hetero'}, 'why': ''},
                          {'id': 'mco', 'tool': 'ols', 'why': ''}, {'id': 'pond', 'tool': 'wls', 'why': ''},
                          {'id': 'diag', 'tool': 'diagnostics', 'why': ''}]}
-        project, _ = compile_plan(raw)
+        project, report = compile_plan(raw)
         self.assertEqual(next(e['source'] for e in project['edges'] if e['target'] == 'diag'), 'mco')
+        self.assertTrue(any('«pond»' in note for note in report['notes']))
 
     def test_rules_translate_prompt_nuances_to_parameters(self):
         project, _ = compile_plan(rules_plan('tamaño de muestra para una proporción con Bonferroni en contrastes múltiples'))

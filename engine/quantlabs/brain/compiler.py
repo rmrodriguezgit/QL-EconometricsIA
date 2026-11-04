@@ -104,6 +104,11 @@ def compile_plan(plan, prompt=''):
                             (accepted is None or node_types[candidate[0]] in accepted):
                         choice = candidate
                         break
+            if choice is not None and expected == 'FittedModel':
+                latest = next((p for p in reversed(produced) if p[2] == expected), None)
+                if latest and latest[0] != choice[0]:
+                    report['notes'].append(f'{kind} se conectó a «{choice[0]}» ({node_types[choice[0]]}) porque no admite '
+                                           f'el modelo más reciente «{latest[0]}» ({node_types[latest[0]]}).')
             if choice is None:
                 missing.append(f'{port} ({expected})')
             else:

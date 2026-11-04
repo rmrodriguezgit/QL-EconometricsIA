@@ -178,3 +178,11 @@ La aplicación y sus instaladores están pendientes de implementación. Los camb
 - El cerebro conecta los consumidores de modelos solo con productores compatibles y traslada matices del enunciado (proporción, Bonferroni, ridge, probit, HAC…) a parámetros.
 - Etiquetas en español de los nuevos parámetros en el inspector; inventario de pendientes anotado sin borrar subtemas abiertos.
 - 16 pruebas numéricas nuevas y 2 del cerebro (118 en total).
+
+## 0.10.1 - 2026-11-04
+
+- El cerebro informa cuando un diagnóstico se conecta a un modelo distinto del más reciente por compatibilidad; el panel lo muestra como aviso.
+- El indicador del motor muestra «Consultando…» hasta recibir el estado real de Ollama.
+- Auditoría del sistema incluye el estado del segundo cerebro y las fichas pendientes.
+- Documentación: arquitectura del cerebro, instrucciones para agentes sobre cómo implementar fichas y novedades en README.
+- Verificado en navegador: Qwen `qwen3.5:4b` construyó un blueprint de 6 nodos en 48 s, verificado 6/6 y abierto y ejecutado en el canvas.

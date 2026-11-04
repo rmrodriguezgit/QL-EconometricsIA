@@ -33,6 +33,12 @@ def system_audit():
     checks.append({'id':'files','title':'Integridad de archivos guardados','status':'ok' if not files['unreadable'] and not trash['unreadable'] else 'pending','detail':f"{len(files['items'])} proyectos; {len(trash['items'])} en papelera; {len(files['unreadable'])+len(trash['unreadable'])} archivos no legibles conservados sin modificación."})
     checks.append({'id':'draft','title':'Separación entre guardar y ejecutar','status':'ok','detail':'Los borradores vacíos o sin conectar pueden guardarse; ejecutar exige fuentes y conexiones válidas.'})
     checks.append({'id':'sample','title':'Coherencia entre gráfico y estimación','status':'ok','detail':'La recta OLS solo se superpone cuando coincide la fuente de datos y los nombres de variables.'})
+    try:
+        from .brain import llm as brain_llm, store as brain_store
+        ollama=brain_llm.status();pending=len(brain_store.list_gaps('pending'))
+        checks.append({'id':'brain','title':'Segundo cerebro','status':'ok' if ollama['ready'] else 'pending','detail':(f"Qwen local disponible ({ollama['model']})." if ollama['ready'] else 'Ollama o el modelo no están disponibles: el cerebro usa el planificador determinista.')+f' {pending} fichas de herramientas pendientes. Los blueprints se validan con el motor; no se ejecuta código generado.'})
+    except Exception:
+        checks.append({'id':'brain','title':'Segundo cerebro','status':'pending','detail':'No se pudo consultar el estado del cerebro.'})
     checks.append({'id':'curriculum','title':'Cobertura científica exhaustiva','status':'pending','detail':'Los 28 recorridos ya utilizan herramientas reutilizables, pero aún faltan subtemas. Cada guía enumera sus pendientes: por ejemplo volatilidad multivariada, panel y GMM de momentos general.'})
     checks.append({'id':'desktop','title':'Instaladores de macOS y Windows','status':'pending','detail':'Tauri sigue sin compilar en este equipo; faltan Cargo.lock, empaquetado científico, firma y verificación por plataforma.'})
     checks.append({'id':'engine','title':'Motor persistente y ejecución larga','status':'pending','detail':'El transporte limita cada ejecución a 60 segundos. Faltan sidecar persistente, progreso incremental, cancelación y caché del DAG.'})

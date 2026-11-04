@@ -121,3 +121,17 @@ La ejecución transporta artefactos por pares nodo/puerto, incluidos modelos y t
 ## Ruta de escritorio activa en 0.5.0
 
 Electron + React → preload aislado → IPC validado → Python stdio. El estudio carga dist mediante quantlabs://studio; no requiere Rust ni puertos de servidor. El proceso principal administra la terminación de Python al cerrar. Tauri queda como alternativa anterior sin verificar. Empaquetado independiente y autoactualización firmada pendientes: [ELECTRON.md](ELECTRON.md).
+
+## Segundo cerebro (0.9.0+)
+
+Capa opcional sobre el motor que traduce enunciados a proyectos. Recupera conocimiento local (BM25 sobre catálogo, recorridos, bibliografía y memoria), planifica con un LLM local vía Ollama o con reglas deterministas, y compila el plan con las mismas reglas del DAG: catálogo cerrado, parámetros declarados, puertos tipados y `validate_project`. Se comunica por los métodos JSON-RPC `brain.*` del mismo sidecar; no abre puertos propios ni ejecuta código generado. Detalle: [CEREBRO.md](CEREBRO.md).
+
+```mermaid
+flowchart LR
+  UI[Panel Cerebro IA] -->|brain.plan| S[Sidecar Python]
+  S --> K[Conocimiento BM25]
+  S --> O[Ollama 127.0.0.1]
+  S --> C[Compilador de blueprints]
+  C --> V[Validador y ejecución DAG]
+  C --> T[Fichas de herramientas faltantes]
+```

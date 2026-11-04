@@ -5,7 +5,7 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
-EXPECTED_REMOTE = 'https://github.com/rmrodriguezgit/Quantlabs-Econometrics.git'
+EXPECTED_REMOTE = 'https://github.com/rmrodriguezgit/QL-EconometricsIA.git'
 FILES = {'README.md', 'AGENTS.md', 'CHANGELOG.md', 'VERSION', '.gitignore', 'pyproject.toml', 'uv.lock', 'Arrancar-Quantlabs.command', 'Arrancar-Quantlabs.cmd'}
 DIRECTORIES = {'docs', 'scripts', 'tests', '.github', 'apps', 'engine', 'packages', 'examples'}
 SUFFIXES = {'.md', '.json', '.py', '.yml', '.yaml', '.toml', '.txt', '.ts', '.tsx', '.css', '.html', '.rs', '.lock', '.cjs', '.command', '.cmd'}

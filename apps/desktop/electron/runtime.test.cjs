@@ -25,5 +25,5 @@ test('actualizaciones comparan números y no aceptan URLs del servidor',()=>{
  assert.equal(releaseInfo({tag_name:'v0.4.0'},'0.5.0').available,false);
  assert.equal(releaseInfo({tag_name:'v0.5.0'},'0.5.0').available,false);
  assert.throws(()=>releaseInfo({tag_name:'malicioso'},'0.5.0'));
- assert.equal(releaseInfo({tag_name:'v1.0.0',html_url:'https://evil.example'},'0.5.0').url,'https://github.com/rmrodriguezgit/Quantlabs-Econometrics/releases');
+ assert.equal(releaseInfo({tag_name:'v1.0.0',html_url:'https://evil.example'},'0.5.0').url,'https://github.com/rmrodriguezgit/QL-EconometricsIA/releases');
 });

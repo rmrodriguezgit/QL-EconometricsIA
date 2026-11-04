@@ -24,12 +24,12 @@ else {
   ipcMain.handle('desktop:updates',async event=>{
     trusted(event);
     const current=require('../package.json').version;
-    const response=await net.fetch('https://api.github.com/repos/rmrodriguezgit/Quantlabs-Econometrics/releases/latest',{headers:{Accept:'application/vnd.github+json'},signal:AbortSignal.timeout(10000)});
+    const response=await net.fetch('https://api.github.com/repos/rmrodriguezgit/QL-EconometricsIA/releases/latest',{headers:{Accept:'application/vnd.github+json'},signal:AbortSignal.timeout(10000)});
     if(response.status===404)return {current,latest:null,available:false,message:'Todavía no hay versiones empaquetadas publicadas. Usa git pull --ff-only y npm ci para actualizar este checkout.'};
     if(!response.ok)throw new Error('No se pudieron consultar las versiones publicadas.');
     return releaseInfo(await response.json(),current);
   });
-  ipcMain.handle('desktop:releases',event=>{trusted(event);return shell.openExternal('https://github.com/rmrodriguezgit/Quantlabs-Econometrics/releases');});
+  ipcMain.handle('desktop:releases',event=>{trusted(event);return shell.openExternal('https://github.com/rmrodriguezgit/QL-EconometricsIA/releases');});
   app.whenReady().then(()=>{
     protocol.handle('quantlabs',request=>{
       const url=new URL(request.url);

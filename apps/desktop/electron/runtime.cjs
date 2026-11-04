@@ -49,6 +49,6 @@ function releaseInfo(value,current) {
   const a=latest.split('.').map(Number),b=current.split('.').map(Number);
   let available=false;
   for(let i=0;i<3;i++){if(a[i]!==b[i]){available=a[i]>b[i];break;}}
-  return {current,latest,available,url:'https://github.com/rmrodriguezgit/Quantlabs-Econometrics/releases'};
+  return {current,latest,available,url:'https://github.com/rmrodriguezgit/QL-EconometricsIA/releases'};
 }
 module.exports={createEngine,releaseInfo};

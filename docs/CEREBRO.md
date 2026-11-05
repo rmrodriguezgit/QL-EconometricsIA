@@ -1,6 +1,6 @@
 # Segundo cerebro · del enunciado al blueprint
 
-Versión del cerebro: 1.0.0 · aplicación 0.14.0 · 2026-11-04. Estado: **implementado y verificado con pruebas automáticas**; la calidad de los planes con Qwen depende del modelo local instalado y se evalúa caso a caso.
+Versión del cerebro: 1.0.0 · aplicación 0.15.0 · 2026-11-05. Estado: **implementado y verificado con pruebas automáticas**; la calidad de los planes con Qwen depende del modelo local instalado y se evalúa caso a caso.
 
 El segundo cerebro convierte una petición en lenguaje natural («estima el consumo sobre el ingreso con errores robustos y revisa heterocedasticidad») en un **blueprint**: un proyecto Quantlabs con nodos conectados, parámetros, guía paso a paso y lista de herramientas que faltan. Usa la misma mecánica de construcción que los 28 recorridos: catálogo cerrado de nodos, puertos tipados, validador DAG del motor y una guía con un paso por nodo.
 
@@ -94,7 +94,7 @@ Variables opcionales: `QL_BRAIN_MODEL` (nombre exacto), `QL_BRAIN_OLLAMA_URL`, `
 
 1. **Fuente primero.** Si el plan no tiene fuente se añade `synthetic` con un escenario coherente (p. ej. `cointegrated` para cointegración, `clusters` para k-means).
 2. **Parámetros cerrados.** Solo claves de `defaults`; números convertidos al tipo del valor por defecto; opciones validadas con `choices`.
-3. **Puertos tipados.** Cada entrada recibe exactamente una conexión del mismo tipo; `compare_models` y otros nodos con varias entradas usan `inputs` explícitos del plan o los productores más recientes distintos.
+3. **Puertos tipados.** Cada entrada recibe exactamente una conexión del mismo tipo; `compare_models` y otros nodos con varias entradas usan `inputs` explícitos del plan o los productores más recientes distintos. Las entradas adicionales del botón «+» (`serie_3…`, `modelo_3…`, parámetro `extra_inputs`) solo se crean en la interfaz; el cerebro planifica con los puertos fijos.
 4. **DAG válido.** El proyecto pasa `validate_project` (sin ciclos, ≤100 nodos, IDs únicos).
 5. **Guía completa.** Un paso por nodo con instrucción (el «por qué» del plan), resultado esperado y pregunta final; `missing_tools` enumera los huecos.
 6. **Verificación.** Con datos locales se ejecuta el flujo hasta cuatro rondas; los fallos de columnas se reparan con las columnas numéricas reales del puerto de entrada.

@@ -18,7 +18,7 @@ import pandas as pd
 import statsmodels.api as sm
 
 ROOT = Path(__file__).resolve().parents[2]
-VERSION = (ROOT / 'VERSION').read_text().strip() if (ROOT / 'VERSION').exists() else '0.14.0'
+VERSION = (ROOT / 'VERSION').read_text().strip() if (ROOT / 'VERSION').exists() else '0.15.0'
 SCHEMA = '1.0.0'
 
 class EngineError(ValueError):
@@ -27,9 +27,30 @@ class EngineError(ValueError):
         self.code = code
         self.node_id = node_id
 
-# port name -> scientific type; each input currently has arity exactly one.
+# port name -> scientific type; each input port admits exactly one connection.
 NODE_CATALOG = json.loads((ROOT / 'packages/contracts/nodeCatalog.json').read_text(encoding='utf-8'))
 NODES = {key: {field: definition[field] for field in ['label','inputs','outputs','references']} for key, definition in NODE_CATALOG.items()}
+
+
+def extra_inputs(kind, parameters):
+    """Puertos adicionales declarados por el nodo (botón «+»): prefijo + número, en orden."""
+    variadic = NODE_CATALOG[kind].get('variadic')
+    count = (parameters or {}).get('extra_inputs', 0)
+    if not variadic:
+        if count not in (0, None):
+            fail('Este nodo no admite entradas adicionales.', 'INVALID_PARAMETERS')
+        return []
+    if isinstance(count, bool) or not isinstance(count, (int, float)) or int(count) != count or not 0 <= count <= variadic['max_extra']:
+        fail(f"extra_inputs debe ser un entero entre 0 y {variadic['max_extra']}.", 'INVALID_PARAMETERS')
+    return [f"{variadic['prefix']}{variadic['start'] + k}" for k in range(int(count))]
+
+
+def node_inputs(node):
+    """Puertos de entrada fijos del catálogo más los adicionales que el nodo declara."""
+    variadic = NODE_CATALOG[node['type']].get('variadic')
+    ports = dict(NODES[node['type']]['inputs'])
+    ports.update({port: variadic['type'] for port in extra_inputs(node['type'], node.get('parameters'))})
+    return ports
 
 
 
@@ -119,7 +140,7 @@ def validate_project(project, require_connected=True):
             fail('Una conexión apunta a un nodo inexistente.')
         source_port, target_port = edge.get('source_port'), edge.get('target_port')
         output = NODES[ids[source]['type']]['outputs'].get(source_port)
-        expected = NODES[ids[target]['type']]['inputs'].get(target_port)
+        expected = node_inputs(ids[target]).get(target_port)
         if output is None or expected is None or output != expected:
             fail('Los puertos no existen o sus tipos no son compatibles.', 'TYPE_MISMATCH', target)
         if target_port in incoming[target]:
@@ -139,7 +160,7 @@ def validate_project(project, require_connected=True):
     if len(ordered) != len(nodes):
         fail('El flujo contiene un ciclo.')
     for key, node in ids.items():
-        missing = set(NODES[node['type']]['inputs']) - set(incoming[key])
+        missing = set(node_inputs(node)) - set(incoming[key])
         if missing and require_connected:
             fail('Conecta la entrada de datos antes de ejecutar.', node_id=key)
     return ids, ordered, incoming
@@ -409,7 +430,7 @@ def execute(project, target_node=None):
             for parent in incoming[key].values(): include(parent)
         include(target_node)
         for key in active:
-            if set(NODES[ids[key]['type']]['inputs']) - set(incoming[key]):
+            if set(node_inputs(ids[key])) - set(incoming[key]):
                 fail('Conecta las entradas de este paso y sus dependencias.', node_id=key)
     results, artifacts, sources = {}, {}, {}
     started = datetime.now(timezone.utc).isoformat()

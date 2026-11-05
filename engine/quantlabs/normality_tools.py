@@ -8,19 +8,25 @@ from .core import EngineError,number
 def run_normality_tool(kind,inputs,params):
     from .tools import columns,frame_result,report,table
     if kind=='join_series':
-        left,right=inputs['left'],inputs['right'];parts=[]
-        for side,frame in [('left',left),('right',right)]:
+        # left, right y las series añadidas con «+» (serie_3, serie_4, …) en orden numérico.
+        extra=sorted((port for port in inputs if port.startswith('serie_')),key=lambda port:int(port[6:]))
+        sides=['left','right',*extra];parts=[];names=[]
+        labels={'left':'primera','right':'segunda'}
+        for side in sides:
+            frame=inputs[side];label=labels.get(side,side.replace('_',' '))
             key=params.get(side+'_key','periodo');value=params.get(side+'_value','valor');alias=params.get(side+'_name',side)
-            if key==value or key not in frame or value not in frame:raise EngineError('INVALID_PARAMETERS',f'Selecciona tiempo y valor existentes y distintos en la tabla {side}.')
+            if key==value or key not in frame or value not in frame:raise EngineError('INVALID_PARAMETERS',f'Selecciona tiempo y valor existentes y distintos en la tabla {label} ({side}).')
             if not isinstance(alias,str) or not re.fullmatch(r'[A-Za-z][A-Za-z0-9_]{0,49}',alias) or alias=='periodo':raise EngineError('INVALID_PARAMETERS','Los nombres de salida deben ser distintos de periodo y usar letras, números o guion bajo.')
-            if frame[key].isna().any() or frame[key].duplicated().any():raise EngineError('INVALID_PARAMETERS','Las claves deben ser únicas y no vacías en cada tabla; separa países antes de unir.')
-            if not pd.api.types.is_numeric_dtype(frame[value]):raise EngineError('INVALID_PARAMETERS','Los valores de ambas series deben ser numéricos.')
-            part=frame[[key,value]].copy();part.columns=['periodo',alias];parts.append(part)
-        if params.get('left_name','left')==params.get('right_name','right'):raise EngineError('INVALID_PARAMETERS','Los nombres de las dos variables deben ser distintos.')
+            if frame[key].isna().any() or frame[key].duplicated().any():raise EngineError('INVALID_PARAMETERS',f'Las claves deben ser únicas y no vacías en cada tabla ({side}); separa países antes de unir.')
+            if not pd.api.types.is_numeric_dtype(frame[value]):raise EngineError('INVALID_PARAMETERS',f'Los valores de la serie {side} deben ser numéricos.')
+            part=frame[[key,value]].copy();part.columns=['periodo',alias];parts.append(part);names.append(alias)
+        if len(set(names))!=len(names):raise EngineError('INVALID_PARAMETERS','Los nombres de las variables unidas deben ser distintos.')
         # Explicit outer alignment; no row-position joins and no silent aggregation.
-        if pd.api.types.is_numeric_dtype(parts[0].periodo)!=pd.api.types.is_numeric_dtype(parts[1].periodo):raise EngineError('INVALID_PARAMETERS','Las claves temporales deben tener el mismo tipo en ambas tablas.')
-        data=parts[0].merge(parts[1],on='periodo',how='outer',validate='one_to_one',sort=True)
-        result=frame_result(data,'Unión exterior por período: conserva todos los años y los faltantes. Sin imputación ni agregación.');result['alignment']={'left_rows':len(left),'right_rows':len(right),'rows':len(data),'how':'outer','key':'periodo'}
+        if len({pd.api.types.is_numeric_dtype(part.periodo) for part in parts})>1:raise EngineError('INVALID_PARAMETERS','Las claves temporales deben tener el mismo tipo en todas las tablas.')
+        data=parts[0]
+        for part in parts[1:]:data=data.merge(part,on='periodo',how='outer',validate='one_to_one',sort=True)
+        result=frame_result(data,f'Unión exterior de {len(parts)} series por período: conserva todos los años y los faltantes. Sin imputación ni agregación.')
+        result['alignment']={'left_rows':len(inputs['left']),'right_rows':len(inputs['right']),'rows':len(data),'how':'outer','key':'periodo','inputs':[{'port':side,'name':name,'rows':len(inputs[side])} for side,name in zip(sides,names)]}
         return result,{'data':data}
     if kind=='impute_mean':
         frame=inputs['data'];names=columns(frame,params.get('columns','lending_rate,final_consumption'));data=frame.copy();audit=[]

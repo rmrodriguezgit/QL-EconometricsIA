@@ -59,7 +59,7 @@ La definición compartida es [nodeCatalog.json](../packages/contracts/nodeCatalo
 | Diagnóstico del modelo (`diagnostics`) | Diagnósticos | model: FittedModel | result: Result | C10, C11, C17 |
 | Cambiar covarianza (`covariance`) | Diagnósticos | model: FittedModel | model: FittedModel, result: Result | C11 |
 | Evaluar predicciones (`evaluate`) | Diagnósticos | model: FittedModel, data: Dataset | result: Result | C12, C15 |
-| Comparar modelos (`compare_models`) | Diagnósticos | first: FittedModel, second: FittedModel, data: Dataset | result: Result | C19, C21, C22, C24, C26 |
+| Comparar modelos (`compare_models`) | Diagnósticos | first: FittedModel, second: FittedModel, data: Dataset; con «+»: modelo_3…modelo_6 | result: Result | C19, C21, C22, C24, C26 |
 | Calidad de grupos (`silhouette`) | Diagnósticos | model: FittedModel, data: Dataset | result: Result | C25 |
 | Cointegración (`cointegration`) | Modelos | data: Dataset | data: Dataset, result: Result | C16 |
 | Corrección de errores (`ecm`) | Modelos | data: Dataset | model: FittedModel, result: Result | C16 |
@@ -127,7 +127,7 @@ Wooldridge → salida data:Dataset, 115 conjuntos clásicos seleccionables. Aña
 
 ## Normalidad y faltantes · 0.8.0
 
-Registro actual: 59 tipos. `join_series` consume left/right Dataset y produce data Dataset mediante unión exterior uno a uno; `impute_mean` transforma columnas elegidas y registra medias y reemplazos; `normality` consume Dataset y `residual_normality` consume FittedModel, ambos producen Result con descriptivos, pruebas y gráficos. Referencias B16/B18/B19/B22/B24/B31. [Guía](NORMALIDAD.md).
+Registro actual: 59 tipos. `join_series` consume left/right Dataset (y serie_3…serie_8 añadidas con el botón «+» de la tarjeta) y produce data Dataset mediante unión exterior uno a uno sucesiva por `periodo`; `impute_mean` transforma columnas elegidas y registra medias y reemplazos; `normality` consume Dataset y `residual_normality` consume FittedModel, ambos producen Result con descriptivos, pruebas y gráficos. Referencias B16/B18/B19/B22/B24/B31. [Guía](NORMALIDAD.md).
 
 ## Boxplot · 0.8.1
 

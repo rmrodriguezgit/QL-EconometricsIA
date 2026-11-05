@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.14.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.15.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -216,3 +216,7 @@ Sin dependencias nuevas: modo ampliado con CSS (`position: fixed`) e iconos `Max
 ## Herramientas 0.14.0
 
 89 tipos. Sin dependencias nuevas: scikit-learn 1.9.1 (LinearRegression, Ridge, Lasso, ElasticNet, GridSearchCV, KFold, TimeSeriesSplit), scipy (ttest_ind, ttest_rel, mannwhitneyu, shapiro) y statsmodels 0.15.0 (Jarque-Bera, Breusch-Pagan, Durbin-Watson). Los ejemplos admiten recorridos aplicados (`R…`) con `network: true` además de los 28 curriculares.
+
+## Entradas variables 0.15.0
+
+Sin dependencias nuevas. Decisión: un nodo puede declarar en el catálogo `variadic` (`prefix`, `type`, `start`, `max_extra`, `label`); el número de entradas añadidas se guarda como parámetro `extra_inputs` del nodo, de modo que los proyectos JSON siguen siendo válidos con el esquema existente y cada puerto conserva una sola conexión. El motor (`node_inputs`) y la interfaz (`nodeInputs`) derivan los mismos puertos. Se aplicó solo a `join_series` (hasta 8 series) y `compare_models` (hasta 6 modelos): son los únicos nodos cuyas entradas repiten el mismo papel. Los demás nodos con varias entradas (`sampling_audit`, `evaluate`, `apply_scaler`, `silhouette`, `cross_validation`) tienen papeles distintos por puerto y no se ampliaron.

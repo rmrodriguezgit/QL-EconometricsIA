@@ -2,7 +2,7 @@ import wooldridge from '../../../packages/contracts/wooldridgeCatalog.json' with
 import type {ProjectNode} from './model';
 export function knownSourceColumns(source:ProjectNode|undefined):string[]{
  if(!source)return [];
- if(source.type==='join_series')return ['periodo',String(source.parameters.left_name??'lending_rate'),String(source.parameters.right_name??'final_consumption')];
+ if(source.type==='join_series')return ['periodo',String(source.parameters.left_name??'lending_rate'),String(source.parameters.right_name??'final_consumption'),...Array.from({length:Math.max(0,Math.min(6,Number(source.parameters.extra_inputs??0)||0))},(_,k)=>String(source.parameters[`serie_${k+3}_name`]??`serie_${k+3}`))];
  if(source.type==='worldbank')return ['periodo','valor'];
  if(source.type==='worldbank_multi')return ['periodo',...String(source.parameters.indicators??'').split(/[\n;,]+/).map(item=>item.trim()).filter(Boolean).map(item=>{const [code,...alias]=item.split(item.includes(':')?':':'=');return alias.join('').trim()||code.trim().toLowerCase().replace(/[^a-z0-9_]/g,'_');})];
  if(source.type==='simulate')return ['ingreso','consumo'];

@@ -1175,11 +1175,18 @@
     "defaults": {
       "evaluation": "muestra_comun"
     },
-    "explanation": "Compara modelos sobre datos comunes. AIC/BIC solo se muestran como comparables cuando coinciden sus muestras de ajuste.",
+    "explanation": "Compara modelos sobre datos comunes. AIC/BIC solo se muestran como comparables cuando coinciden sus muestras de ajuste. Usa «+» en la tarjeta para comparar hasta 6 modelos.",
     "references": [
       "B13"
     ],
-    "scope": "multivariada"
+    "scope": "multivariada",
+    "variadic": {
+      "prefix": "modelo_",
+      "type": "FittedModel",
+      "start": 3,
+      "max_extra": 4,
+      "label": "Modelo"
+    }
   },
   "silhouette": {
     "label": "Calidad de grupos",
@@ -1419,7 +1426,7 @@
   },
   "join_series": {
     "label": "Unir series por período",
-    "detail": "Alinea dos tablas por año o fecha, conservando faltantes",
+    "detail": "Alinea dos o más tablas por año o fecha, conservando faltantes",
     "category": "Transformaciones",
     "color": "blue",
     "inputs": {
@@ -1437,11 +1444,18 @@
       "right_value": "valor",
       "right_name": "final_consumption"
     },
-    "explanation": "Alinea dos tablas por año o fecha, conservando faltantes",
+    "explanation": "Alinea dos o más tablas por año o fecha con unión exterior, conservando faltantes. Usa «+» en la tarjeta para añadir hasta 8 series.",
     "references": [
       "B16",
       "B32"
-    ]
+    ],
+    "variadic": {
+      "prefix": "serie_",
+      "type": "Dataset",
+      "start": 3,
+      "max_extra": 6,
+      "label": "Serie"
+    }
   },
   "impute_mean": {
     "label": "Imputar con la media",

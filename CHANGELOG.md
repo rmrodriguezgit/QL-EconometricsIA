@@ -227,3 +227,11 @@ La aplicación y sus instaladores están pendientes de implementación. Los camb
 - Cerebro: intenciones para las nuevas herramientas y conexión de modelos de scikit-learn.
 - Pruebas: 145 en total; las nuevas comparan con pandas, scipy, numpy y statsmodels. La prueba de Banco Mundial limpia el cliente en caché para no depender del orden.
 - Verificado en la interfaz: R01 abierto desde Ejemplos y ejecutado con datos reales (22/22 nodos), y apartados de la biblioteca.
+
+## 0.15.0 - 2026-11-05
+
+- Entradas variables: **Unir series por período** muestra un botón **+** en la tarjeta para añadir series (serie_3…serie_8) y **−** para quitar la última junto con su conexión. Cada serie nueva tiene clave, valor y nombre propios en el inspector; la unión exterior se aplica en orden y rechaza nombres repetidos.
+- **Comparar modelos** admite el mismo mecanismo (modelo_3…modelo_6); AIC/BIC solo se muestran como comparables si todos los modelos comparten muestra y tipo lineal.
+- Catálogo: campo `variadic` y parámetro `extra_inputs`; el motor valida el límite, exige conectar cada entrada declarada y rechaza puertos no declarados. Revisados los demás nodos con varias entradas: tienen papeles distintos por puerto y se mantienen fijos.
+- Pruebas: `tests/test_variadic_inputs.py` (unión de 4 series frente a pandas, límites, nombres repetidos, compatibilidad con 2 entradas y RMSE de 3 modelos frente a mínimos cuadrados de numpy).
+- Verificado en la interfaz: botones + y − en ambos nodos, conectores creados y conexión arrastrada a serie_3. No verificado en la interfaz: una ejecución completa con tres fuentes reales (cubierta por las pruebas del motor).

@@ -312,17 +312,20 @@ def calculate(kind,inputs,params):
         if model.kind=='logit':result['metrics'].append({'label':'exactitud_umbral_0.5','value':np.mean((predicted>=.5)==actual)})
         result['series']=[series('Observado',actual),series('Predicho',predicted)];result['n']=len(data)
     elif kind=='compare_models':
-        first,second=inputs['first'],inputs['second'];same=model_sample(first)==model_sample(second) and first.kind in ['ols','multiple_ols','covariance'] and second.kind in ['ols','multiple_ols','covariance']
+        # first, second y los modelos añadidos con «+» (modelo_3, …), en orden numérico.
+        extra=sorted((port for port in inputs if port.startswith('modelo_')),key=lambda port:int(port[7:]))
+        models=[inputs['first'],inputs['second'],*(inputs[port] for port in extra)]
+        same=len({model_sample(model) for model in models})==1 and all(model.kind in ['ols','multiple_ols','covariance'] for model in models)
         rows=[]
-        for model in [first,second]:
+        for model in models:
             if model.kind in ['hmm','gmm']:
                 data=sample(frame,columns(frame,','.join(model.features)));values=data.to_numpy();score=model.fit.score(values)*(len(data) if model.kind=='gmm' else 1)
                 rows.append([model.label,len(model.frame),len(data),score,None,None])
             else:
                 predicted,actual,data=predict(model,frame);error=np.sqrt(np.mean((predicted-actual)**2))
                 rows.append([model.label,len(model.frame),len(data),error,getattr(model.fit,'aic',None) if same else None,getattr(model.fit,'bic',None) if same else None])
-        temporal_models={first.kind,second.kind}.issubset({'hmm','gmm'})
-        result=report('Comparación sobre los mismos datos conectados. '+('Las verosimilitudes tienen supuestos temporales distintos; no bastan para escoger un modelo.' if temporal_models else 'Revisa si son datos de prueba o del propio ajuste.'))
+        temporal_models={model.kind for model in models}.issubset({'hmm','gmm'})
+        result=report(f'Comparación de {len(models)} modelos sobre los mismos datos conectados. '+('Las verosimilitudes tienen supuestos temporales distintos; no bastan para escoger un modelo.' if temporal_models else 'Revisa si son datos de prueba o del propio ajuste.'))
         result['tables']=[table('Comparación',['Modelo','n ajuste','n evaluación','Loglik' if temporal_models else 'RMSE','AIC misma muestra','BIC misma muestra'],rows)]
         if not same:result['limitations'].append('Las muestras o especificaciones de ajuste difieren: AIC/BIC no se presentan como comparables.')
         result['limitations'].append('Evaluación declarada: '+str(params.get('evaluation','muestra_comun')))

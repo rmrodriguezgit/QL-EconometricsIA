@@ -7,9 +7,22 @@ export type Lesson = { module: string; title: string; objective: string; referen
 export type Project = { lesson?: Lesson; schema_version: '1.0.0'; app_version: string; title: string; nodes: ProjectNode[]; edges: { id: string; source: string; target: string; source_port: string; target_port: string }[] };
 export type NodeResult = { status: 'succeeded' | 'failed' | 'skipped'; result?: Record<string, unknown>; error?: { code: string; message: string }; message?: string };
 export type Run = { run_id: string; status: string; nodes: Record<string, NodeResult>; manifest: { graph_sha256: string; [key: string]: unknown } };
-export const version = '0.14.0';
-export type ToolDefinition = { label: string; detail: string; category: string; color: string; references: string; explanation: string; defaults: Parameters; inputs: Record<string,string>; outputs: Record<string,string>; choices?: Record<string,string[]>; choice_labels?: Record<string,Record<string,string>>; scope?: 'univariada'|'multivariada'|'ambas' };
+export const version = '0.15.0';
+export type ToolDefinition = { label: string; detail: string; category: string; color: string; references: string; explanation: string; defaults: Parameters; inputs: Record<string,string>; outputs: Record<string,string>; choices?: Record<string,string[]>; choice_labels?: Record<string,Record<string,string>>; scope?: 'univariada'|'multivariada'|'ambas'; variadic?: { prefix: string; type: string; start: number; max_extra: number; label: string } };
 export const catalog = Object.fromEntries(Object.entries(nodeCatalog).map(([key,value]) => [key,{...value,references:value.references.join(' · ')}])) as unknown as Record<Kind,ToolDefinition>;
+
+/** Número de entradas añadidas con «+» (parámetro extra_inputs, acotado por el catálogo). */
+export function extraInputCount(node: { type: string; parameters: Record<string, unknown> }): number {
+  const variadic = catalog[node.type as Kind]?.variadic, raw = Number(node.parameters.extra_inputs ?? 0);
+  return variadic && Number.isInteger(raw) ? Math.max(0, Math.min(variadic.max_extra, raw)) : 0;
+}
+
+/** Puertos de entrada de un nodo: los fijos del catálogo más serie_3, serie_4… (o modelo_3…). */
+export function nodeInputs(node: { type: string; parameters: Record<string, unknown> }): Record<string, string> {
+  const definition = catalog[node.type as Kind], variadic = definition.variadic, ports = { ...definition.inputs };
+  if (variadic) for (let k = 0; k < extraInputCount(node); k++) ports[`${variadic.prefix}${variadic.start + k}`] = variadic.type;
+  return ports;
+}
 
 export function starter(): Project {
   return { schema_version: '1.0.0', app_version: version, title: 'Ingreso y consumo', nodes: [

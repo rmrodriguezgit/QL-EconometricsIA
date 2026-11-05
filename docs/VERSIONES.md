@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.16.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.17.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -224,3 +224,7 @@ Sin dependencias nuevas. Decisión: un nodo puede declarar en el catálogo `vari
 ## Reparación del flujo 0.16.0
 
 Sin dependencias nuevas. Decisión: `brain.repair` corrige el proyecto del canvas con reglas deterministas comprobadas por ejecución en lugar de pedir a Qwen un plan nuevo; así no cambia la composición del flujo, no se genera código y cada cambio es reproducible. Solo conecta productores distintos de los que ya alimentan el nodo y deja al usuario las decisiones ambiguas (clave temporal inexistente, entradas sin productor).
+
+## Paralelismo 0.17.0
+
+Sin dependencias nuevas: `concurrent.futures.ThreadPoolExecutor` (biblioteca estándar), joblib/loky (ya incluido con scikit-learn 1.9.1) y `child_process` de Node. Decisiones: (1) la mayor parte del tiempo era arrancar Python e importar librerías, así que se mantienen procesos persistentes en lugar de uno por solicitud; (2) los nodos del grafo se paralelizan con hilos y no con procesos, porque pasar DataFrame y modelos ajustados entre procesos costaría más que el cálculo y no todos los modelos se serializan bien. pandas 3.1 copia al escribir, así que los consumidores de una misma tabla no se afectan; (3) los procesos internos (loky) solo se usan por encima de un umbral de trabajo medido. Con datos pequeños el GIL limita la ganancia de los hilos; se documenta en ELECTRON.md.

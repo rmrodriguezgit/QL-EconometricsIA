@@ -483,8 +483,8 @@ def run_tool(kind,inputs,params):
         from .time_plot import time_plot
         result=time_plot(inputs['data'],params)
         return finite_json(result),{'result':result}
-    with warnings.catch_warnings(record=True) as messages:
-        warnings.simplefilter('always')
+    from .parallel import capture_warnings
+    with capture_warnings() as messages:
         try:
             from .gap_tools import GAP_TOOLS, run_gap_tool
             from .multivariate_tools import MULTIVARIATE_TOOLS, run_multivariate_tool

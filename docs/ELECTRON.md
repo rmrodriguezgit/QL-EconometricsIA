@@ -58,6 +58,29 @@ Referencia revisada: [Quantlabs-Blueprints](https://github.com/rmrodriguezgit/Qu
 
 La recta OLS es amarilla brillante (#ffd166), de 3 px y con leyenda; los puntos permanecen verdes. La cuadrícula se atenúa. Se eliminaron fuentes remotas para que el escritorio funcione sin descargarlas.
 
+## Rendimiento: multiproceso e hilos (0.17.0)
+
+Antes, cada solicitud arrancaba un Python nuevo y volvía a cargar pandas, statsmodels y scikit-learn (~1,1 s por clic) aunque el cálculo durase milisegundos. Ahora hay tres niveles de paralelismo:
+
+| Nivel | Qué hace | Ajuste |
+|---|---|---|
+| **Procesos persistentes** (`electron/runtime.cjs`) | Grupo de trabajadores `python -m quantlabs` que atienden una solicitud tras otra por stdin/stdout. Al abrir la app se precargan 2 (`engine.warmup`); crecen bajo demanda hasta el máximo, y los extra se cierran tras 60 s ociosos. Cada proceso se reemplaza tras 200 solicitudes. Varias solicitudes (ejecutar, buscar indicadores, Cerebro IA) corren a la vez en procesos distintos. | `QL_ENGINE_WORKERS` (por defecto núcleos − 1, máximo 4) |
+| **Hilos por ejecución** (`engine/quantlabs/core.py`, `parallel.py`) | Los nodos sin dependencia entre sí se calculan a la vez; el orden del informe y las huellas no cambian. Los avisos se capturan por hilo para no mezclarse. | `QL_ENGINE_THREADS` (por defecto núcleos, máximo 8; `1` = secuencial) |
+| **Procesos dentro de un nodo** | `GridSearchCV` de la optimización de hiperparámetros usa varios procesos solo cuando filas × variables × ajustes supera 2 millones; con muestras de clase sigue en uno, porque arrancar procesos costaría más. | `QL_ENGINE_PROCESSES` (`1` = desactivado) |
+
+Mediciones en este equipo (macOS, 8 núcleos):
+
+| Caso | Antes | Ahora |
+|---|---|---|
+| Ejecutar el ejemplo C22 desde la interfaz (puente) | 1,03–1,10 s | 0,033 s (primera solicitud tras arrancar Vite: 1,15 s; en Electron ya está precargado) |
+| Flujo inicial (4 nodos) desde la interfaz | — | 66–69 ms |
+| Ramas pesadas (n = 10 000: 2 MLP, cuantiles, k-means, búsqueda lasso) | 3,15 s | 2,29 s con hilos |
+| Cuatro series del Banco Mundial en paralelo (sin caché) | 13,9 s | 8,4 s con hilos |
+| GridSearchCV elastic net (20 000 filas, 120 candidatos × 5 pliegues) | 1,18 s | 0,55 s con 7 procesos (la primera vez 2,7 s por el arranque de los procesos) |
+| 28 ejemplos curriculares con librerías ya cargadas | 0,82 s | 0,84 s con hilos: son tan pequeños que el GIL de Python anula la ganancia |
+
+Los resultados son idénticos con y sin hilos (`tests/test_parallel.py` compara los 28 ejemplos). Los procesos no quedan en memoria: al salir se detienen, y si Electron muere a la fuerza cada trabajador termina al cerrarse su entrada. En desarrollo, un cambio en `engine/quantlabs` o `packages/contracts` reemplaza los procesos sin reiniciar la app. El puente de Vite usa el mismo grupo, pero lo abre al primer uso para no duplicar procesos con Electron.
+
 ## Arquitectura y límites
 
 Electron 45.2.1 instalado y fijado en package-lock.json. Renderer aislado y sandbox, sin Node; preload expone solo RPC y acciones concretas. El proceso principal valida ventana/frame/origen y métodos RPC. Protocolo quantlabs://studio sirve únicamente dist; CSP restringe scripts a recursos locales. Navegación y ventanas externas bloqueadas; el enlace a Releases usa una URL fija.

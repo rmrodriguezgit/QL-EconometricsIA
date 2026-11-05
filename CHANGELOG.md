@@ -243,3 +243,12 @@ La aplicación y sus instaladores están pendientes de implementación. Los camb
 - Nuevo método RPC `brain.repair` (180 s de límite, permitido en Electron y en el puente de desarrollo).
 - Pruebas: `tests/test_brain_repair.py` (8 casos); 160 pruebas Python en total.
 - Verificado en la interfaz: reparación de un nodo Unir series sin conectar (cambios aplicados al canvas) y caso parcial que pide decisión al usuario. El caso de nombres inválidos está verificado por pruebas del motor, no a mano en la interfaz.
+
+## 0.17.0 - 2026-11-05
+
+- **Multiproceso**: el escritorio y el puente de desarrollo usan un grupo de procesos Python persistentes (2 precargados al abrir, hasta `QL_ENGINE_WORKERS`, por defecto núcleos − 1 con máximo 4) en lugar de arrancar Python en cada solicitud. Ejecutar C22 desde la interfaz pasa de ~1,06 s a ~0,033 s; varias solicitudes corren en paralelo.
+- **Multihilo**: los nodos independientes del grafo se calculan a la vez (`QL_ENGINE_THREADS`), con resultados, orden y huellas idénticos a la ejecución secuencial. Avisos capturados por hilo (`parallel.capture_warnings`) en lugar de `warnings.catch_warnings`, que no es seguro entre hilos.
+- **Procesos dentro de un nodo**: GridSearchCV usa varios procesos solo con trabajo grande (`QL_ENGINE_PROCESSES`).
+- Canal JSON-RPC protegido: lo que impriman las librerías va a stderr. Nuevo método interno `engine.warmup`. En desarrollo, cambiar el motor reemplaza los procesos sin reiniciar la app.
+- Pruebas: `tests/test_parallel.py` (los 28 ejemplos idénticos con y sin hilos, solapamiento real de nodos, avisos por hilo, canal limpio) y pruebas del grupo de procesos en `runtime.test.cjs` (reutilización, paralelo, recuperación tras un proceso muerto, recarga). 165 pruebas Python y 32 de escritorio.
+- Mediciones y límites en docs/ELECTRON.md: con muestras de clase el GIL anula la ganancia de los hilos; la mejora principal es no volver a arrancar Python.

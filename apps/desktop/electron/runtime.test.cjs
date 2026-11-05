@@ -34,3 +34,28 @@ test('el segundo cerebro está permitido y solo brain.plan amplía el tiempo lí
  const engine=createEngine(root);
  try{const response=await engine.request({jsonrpc:'2.0',id:2,method:'brain.gaps',params:{}});assert.ok(Array.isArray(response.result.items));}finally{await engine.stop();}
 });
+test('grupo de procesos: reutiliza Python, atiende en paralelo y se recupera si un proceso muere',async()=>{
+ const engine=createEngine(root,{workers:3,warm:1});
+ try{
+  const health={jsonrpc:'2.0',method:'engine.health',params:{}};
+  await engine.request({...health,id:1});await engine.request({...health,id:2});
+  assert.equal(engine.workers(),1,'dos solicitudes seguidas usan el mismo proceso');
+  const [first]=engine.pids();
+  const replies=await Promise.all([1,2,3].map(id=>engine.request({...health,id})));
+  assert.deepEqual(replies.map(reply=>reply.id),[1,2,3]);
+  assert.equal(engine.workers(),3,'tres solicitudes simultáneas abren tres procesos');
+  assert.equal(engine.active(),0);
+  process.kill(first,'SIGKILL');
+  await new Promise(done=>setTimeout(done,300));
+  assert.ok(!engine.pids().includes(first));
+  const again=await engine.request({...health,id:9});assert.equal(again.id,9);
+  engine.reload();await new Promise(done=>setTimeout(done,300));
+  assert.ok(engine.pids().every(pid=>pid!==first));
+  assert.equal((await engine.request({...health,id:10})).id,10);
+ }finally{await engine.stop();}
+ assert.equal(engine.workers(),0);
+});
+test('warm carga las librerías antes del primer cálculo',async()=>{
+ const engine=createEngine(root,{workers:2,warm:2});
+ try{const results=await engine.warm();assert.equal(results.length,2);assert.ok(results.every(item=>item.status==='fulfilled'&&item.value.result.ready));assert.equal(engine.workers(),2);}finally{await engine.stop();}
+});

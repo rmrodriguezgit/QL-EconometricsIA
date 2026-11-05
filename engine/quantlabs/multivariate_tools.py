@@ -337,7 +337,11 @@ def hyperparameter_search(frame, params):
     from sklearn.preprocessing import StandardScaler
     pipeline = Pipeline([('scale', StandardScaler()), ('model', estimator)])
     splitter, method, folds = _splitter(params, len(data))
-    search = GridSearchCV(pipeline, grid, cv=splitter, scoring='neg_root_mean_squared_error', refit=True).fit(data[features], data[target])
+    from .parallel import jobs_for
+    candidates = count * (3 if kind == 'elasticnet' else 1)
+    # Varios procesos solo si compensa: filas × variables × ajustes grande. Con muestras de clase, uno.
+    n_jobs = jobs_for(len(data) * len(features) * candidates * folds)
+    search = GridSearchCV(pipeline, grid, cv=splitter, scoring='neg_root_mean_squared_error', refit=True, n_jobs=n_jobs).fit(data[features], data[target])
     best = search.best_estimator_
     rows, intercept, intercept_original = _coefficients(best, features)
     r2, rmse, mae = _fit_metrics(best, data, features, target)
@@ -357,6 +361,7 @@ def hyperparameter_search(frame, params):
     result['series'] = [series('RMSE de validación por α', -curve['mean_test_score'].to_numpy())]
     if best_alpha in (alphas[0], alphas[-1]):
         result['warnings'].append('El α óptimo está en el borde de la rejilla: amplía alpha_min o alpha_max.')
+    result['execution'] = {'processes': n_jobs}
     model = Fitted('sklearn_search', best, data, features, target, f'{kind} (α = {best_alpha:.4g})')
     return result, {'result': result, 'model': model}
 

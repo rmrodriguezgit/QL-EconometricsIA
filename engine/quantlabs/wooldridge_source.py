@@ -12,8 +12,8 @@ def load_wooldridge(name: str) -> pd.DataFrame:
     if not isinstance(name,str) or name not in DATASETS:
         raise EngineError('INVALID_DATASET','Selecciona un conjunto del catálogo Wooldridge, por ejemplo wage1 o card.')
     import wooldridge as wd
-    with warnings.catch_warnings(record=True):
-        warnings.simplefilter('always',pd.errors.DtypeWarning)
+    from .parallel import capture_warnings
+    with capture_warnings():  # descarta DtypeWarning sin tocar el estado global de avisos
         frame=wd.data(name).copy()
     if frame.empty or len(frame)>50000 or len(frame.columns)>100:
         raise EngineError('DATASET_LIMIT','El conjunto supera el límite de 50.000 filas o 100 columnas.')

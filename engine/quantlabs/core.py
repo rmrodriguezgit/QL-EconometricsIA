@@ -18,7 +18,7 @@ import pandas as pd
 import statsmodels.api as sm
 
 ROOT = Path(__file__).resolve().parents[2]
-VERSION = (ROOT / 'VERSION').read_text().strip() if (ROOT / 'VERSION').exists() else '0.16.0'
+VERSION = (ROOT / 'VERSION').read_text().strip() if (ROOT / 'VERSION').exists() else '0.17.0'
 SCHEMA = '1.0.0'
 
 class EngineError(ValueError):
@@ -434,13 +434,11 @@ def execute(project, target_node=None):
                 fail('Conecta las entradas de este paso y sus dependencias.', node_id=key)
     results, artifacts, sources = {}, {}, {}
     started = datetime.now(timezone.utc).isoformat()
-    for key in ordered:
-        if key not in active: continue
+
+    def run_node(key):
+        """Calcula un nodo con las salidas ya listas de sus padres. Devuelve (estado, salidas, fuentes nuevas)."""
         node = ids[key]
-        parents = list(incoming[key].values())
-        if any(results[parent]['status'] != 'succeeded' for parent in parents):
-            results[key] = {'status': 'skipped', 'message': 'Una dependencia no produjo un resultado válido.'}
-            continue
+        sources = {}
         try:
             from .tools import run_tool, Fitted, frame_result
             kind = node['type']
@@ -481,12 +479,59 @@ def execute(project, target_node=None):
                         sources[source_key] = {'provider': 'synthetic' if kind == 'synthetic' else 'transformation', 'node_type': kind, 'parameters': params, 'parents': links[key], 'data_sha256':preview['data_sha256'],'n':len(artifact),'retrieved_at':datetime.now(timezone.utc).isoformat()}
             if previews: result['output_previews'] = previews
             result['tool_type'] = kind
-            artifacts[key] = outputs
-            results[key] = {'status': 'succeeded', 'result': finite_json(result)}
+            return {'status': 'succeeded', 'result': finite_json(result)}, outputs, sources
         except EngineError as exc:
-            results[key] = {'status': 'failed', 'error': {'code': exc.code, 'message': str(exc)}}
+            return {'status': 'failed', 'error': {'code': exc.code, 'message': str(exc)}}, {}, sources
         except Exception:
-            results[key] = {'status': 'failed', 'error': {'code': 'INTERNAL_ERROR', 'message': 'No se pudo calcular el nodo; revisa los datos y parámetros.'}}
+            return {'status': 'failed', 'error': {'code': 'INTERNAL_ERROR', 'message': 'No se pudo calcular el nodo; revisa los datos y parámetros.'}}, {}, sources
+
+    jobs = [key for key in ordered if key in active]
+    from .parallel import install, workers
+    install()  # captura de avisos por hilo antes de lanzar hilos
+    threads = min(workers(), len(jobs)) if jobs else 1
+    done = {}
+
+    def finish(key, outcome):
+        state, outputs, new_sources = outcome
+        results[key], artifacts[key], done[key] = state, outputs, new_sources
+
+    def ready(key):
+        return all(parent in results for parent in incoming[key].values())
+
+    def blocked(key):
+        return any(results[parent]['status'] != 'succeeded' for parent in incoming[key].values())
+
+    skipped = {'status': 'skipped', 'message': 'Una dependencia no produjo un resultado válido.'}
+    if threads <= 1:
+        for key in jobs:
+            finish(key, (dict(skipped), {}, {}) if blocked(key) else run_node(key))
+    else:
+        # Nodos sin dependencia entre sí corren a la vez (descargas, modelos y diagnósticos en ramas
+        # distintas). Cada nodo solo lee las salidas de sus padres; pandas 3 copia al escribir.
+        from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
+        waiting, running = list(jobs), {}
+        with ThreadPoolExecutor(max_workers=threads, thread_name_prefix='quantlabs-nodo') as pool:
+            while waiting or running:
+                progressed = True
+                while progressed:
+                    progressed = False
+                    for key in list(waiting):
+                        if ready(key):
+                            waiting.remove(key)
+                            progressed = True
+                            if blocked(key):
+                                finish(key, (dict(skipped), {}, {}))
+                            else:
+                                running[pool.submit(run_node, key)] = key
+                if not running:
+                    break
+                finished, _ = wait(running, return_when=FIRST_COMPLETED)
+                for future in finished:
+                    finish(running.pop(future), future.result())
+    # Resultados y fuentes en orden topológico: el informe no depende de qué hilo terminó antes.
+    results = {key: results[key] for key in jobs if key in results}
+    for key in jobs:
+        sources.update(done.get(key, {}))
     try:
         commit = subprocess.run(['git', 'rev-parse', 'HEAD'], cwd=ROOT, capture_output=True, text=True, timeout=2).stdout.strip() or None
     except (OSError, subprocess.TimeoutExpired): commit = None

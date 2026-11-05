@@ -34,6 +34,13 @@ else {
   });
   ipcMain.handle('desktop:releases',event=>{trusted(event);return shell.openExternal('https://github.com/rmrodriguezgit/QL-EconometricsIA/releases');});
   app.whenReady().then(()=>{
+    // Procesos Python listos (librerías cargadas) antes del primer cálculo.
+    void engine.warm();
+    if(dev){
+      // En desarrollo, un cambio en el motor o en los contratos reemplaza los procesos Python sin reiniciar la app.
+      const {watch}=require('node:fs');let pending;
+      for(const folder of ['engine/quantlabs','packages/contracts'])try{watch(resolve(root,folder),{recursive:true},(_event,file)=>{if(!file||!/\.(py|json)$/.test(String(file)))return;clearTimeout(pending);pending=setTimeout(()=>{engine.reload();void engine.warm();},300);}).unref?.();}catch{/* sin vigilancia: basta con Reiniciar aplicación */}
+    }
     protocol.handle('quantlabs',request=>{
       const url=new URL(request.url);
       const dist=resolve(__dirname,'../dist');

@@ -2,7 +2,7 @@
 
 **Describe tu análisis. El segundo cerebro construye el blueprint. Tú compruebas cada resultado.**
 
-[![Versión](https://img.shields.io/badge/versión-0.16.0-6cc9ac)](VERSION)
+[![Versión](https://img.shields.io/badge/versión-0.17.0-6cc9ac)](VERSION)
 [![Cerebro IA](https://img.shields.io/badge/cerebro-Qwen%20local%20%2B%20RAG-c49af8)](docs/CEREBRO.md)
 [![Escritorio](https://img.shields.io/badge/escritorio-macOS%20%7C%20Windows-79b4ef)](docs/ARRANQUE.md)
 [![Electron](https://img.shields.io/badge/Electron-45.2.1-79b4ef)](apps/desktop/package.json)
@@ -15,7 +15,7 @@
 
 Laboratorio educativo de econometría con programación visual mediante nodos, motor analítico Python y un **segundo cerebro de IA local** que convierte enunciados en flujos conectados y verificados. Objetivo de escritorio: macOS y Windows. [Repositorio](https://github.com/rmrodriguezgit/QL-EconometricsIA) · derivado de [Quantlabs-Econometrics](https://github.com/rmrodriguezgit/Quantlabs-Econometrics) con su historial completo.
 
-**Versión 0.16.0 · 2026-11-05 · Alpha local con escritorio Electron, estudio oscuro y segundo cerebro (Ollama/Qwen + reglas). Instaladores independientes y actualización automática pendientes.**
+**Versión 0.17.0 · 2026-11-05 · Alpha local con escritorio Electron, estudio oscuro y segundo cerebro (Ollama/Qwen + reglas). Instaladores independientes y actualización automática pendientes.**
 
 ## Segundo cerebro IA
 
@@ -66,6 +66,7 @@ Abre [el laboratorio local](http://127.0.0.1:1420) y pulsa **Ejecutar flujo**. C
 
 ## Ya funciona
 
+- **Motor rápido y en paralelo (0.17.0)**: el escritorio mantiene un grupo de procesos Python ya cargados (multiproceso; hasta 4, configurable con `QL_ENGINE_WORKERS`) y cada ejecución corre en hilos los nodos independientes del grafo (`QL_ENGINE_THREADS`). Una ejecución típica pasa de ~1 s a ~0,03 s; las descargas del Banco Mundial y las ramas pesadas se solapan. [Detalles](docs/ELECTRON.md#rendimiento-multiproceso-e-hilos-0170).
 - **Segundo cerebro IA**: enunciado → blueprint conectado, verificado por ejecución y con guía paso a paso; Qwen local con respaldo determinista, memoria valorable y cola de herramientas faltantes. Cuando un nodo falla, **Reparar con Cerebro IA** corrige el flujo del canvas (nombres de salida, columnas, rangos, opciones y conexiones), muestra cada cambio y te deja aplicarlo, sin crear un blueprint nuevo. [Guía](docs/CEREBRO.md).
 - **Archivos y ejemplos**: 28 recorridos construidos con herramientas conectadas, uno por módulo, con objetivos y referencias a los 36 capítulos. Cada nodo tiene un paso explicativo.
 - **Guía paso a paso**: instrucciones, resultado esperado, ejecución de dependencias, inspección de salidas, Anterior/Siguiente y vista del flujo completo.

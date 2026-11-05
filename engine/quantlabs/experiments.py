@@ -18,8 +18,8 @@ def run_experiment(parameters):
         raise EngineError('INVALID_PARAMETERS', 'Selecciona un tema C01-C28.')
     seed = number(parameters, 'seed', 42, 0, 2**32 - 1, True)
     n = number(parameters, 'n', 300, 100, 1200, True)
-    with warnings.catch_warnings(record=True) as messages:
-        warnings.simplefilter('always')
+    from .parallel import capture_warnings
+    with capture_warnings() as messages:
         result = calculate(topic, n, seed)
     result.update({'kind': 'experiment', 'topic': topic, 'n': n, 'seed': seed,
                    'warnings': list(dict.fromkeys(str(message.message) for message in messages))[:8],

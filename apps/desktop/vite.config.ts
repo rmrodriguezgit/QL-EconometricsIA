@@ -1,15 +1,24 @@
 import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
-import { spawn } from 'node:child_process';
+import { createRequire } from 'node:module';
 import { resolve } from 'node:path';
-import { existsSync } from 'node:fs';
+import { watch } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
+const { createEngine } = createRequire(import.meta.url)('./electron/runtime.cjs') as { createEngine: (root: string) => { request: (value: unknown) => Promise<unknown>; warm: () => Promise<unknown>; reload: () => void; stop: () => Promise<void> } };
 function engineBridge(): Plugin {
   return {
     name: 'quantlabs-local-engine',
     configureServer(server) {
+      // Mismo grupo de procesos Python persistentes que Electron (electron/runtime.cjs).
+      // Sin precarga: en Electron la interfaz usa IPC y este puente queda sin uso; los procesos se abren al primer uso.
+      const engine = createEngine(root);
+      let pending: ReturnType<typeof setTimeout> | undefined;
+      for (const folder of ['engine/quantlabs', 'packages/contracts']) {
+        try { watch(resolve(root, folder), { recursive: true }, (_event, file) => { if (!file || !/\.(py|json)$/.test(String(file))) return; clearTimeout(pending); pending = setTimeout(() => engine.reload(), 300); }); } catch { /* sin vigilancia */ }
+      }
+      server.httpServer?.on('close', () => { void engine.stop(); });
       server.middlewares.use('/api/rpc', (req, res) => {
         // Development transport only. Desktop uses the Rust command and stdio.
         const allowed = new Set(['http://127.0.0.1:1420', 'http://localhost:1420']);
@@ -26,31 +35,17 @@ function engineBridge(): Plugin {
         });
         req.on('end', () => {
           if (size > 4_000_000) return;
-          const python = resolve(root, process.platform === 'win32' ? '.venv/Scripts/python.exe' : '.venv/bin/python');
-          if (!existsSync(python)) { res.writeHead(503).end('Ejecuta uv sync en la raíz del proyecto.'); return; }
-          const child = spawn(python, ['-m', 'quantlabs'], {
-            cwd: root, env: { ...process.env, PYTHONPATH: resolve(root, 'engine'), PYTHONUTF8: '1', WBDATA_CACHE_PATH: resolve(root, '.cache/wbdata/cache') },
-          });
-          let output = '';
-          let method = '';
-          try { method = JSON.parse(Buffer.concat(chunks).toString('utf8')).method ?? ''; } catch { /* el motor responde con error JSON-RPC */ }
-          const limit = method === 'brain.plan' || method === 'brain.repair' ? 180_000 : 60_000;
-          const timer = setTimeout(() => { child.kill(); res.writeHead(504).end(`El motor superó ${limit / 1000} segundos.`); }, limit);
-          child.stdout.setEncoding('utf8').on('data', (chunk: string) => {
-            output += chunk;
-            if (output.length > 12_000_000) child.kill();
-          });
-          child.stderr.on('data', (chunk: Buffer) => process.stderr.write(chunk));
-          child.on('error', () => { clearTimeout(timer); if (!res.writableEnded) res.writeHead(503).end('No se pudo iniciar Python.'); });
-          child.on('close', (code) => {
-            clearTimeout(timer);
+          let value: unknown;
+          try { value = JSON.parse(Buffer.concat(chunks).toString('utf8')); } catch { res.writeHead(400).end('JSON inválido.'); return; }
+          engine.request(value).then(response => {
             if (res.writableEnded) return;
-            if (code !== 0 || !output.trim()) { res.writeHead(500).end('El motor se detuvo.'); return; }
             res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
-            res.end(output.trim());
+            res.end(JSON.stringify(response));
+          }, (error: Error) => {
+            if (res.writableEnded) return;
+            const status = /superó/.test(error.message) ? 504 : /no permitida/.test(error.message) ? 403 : /Falta Python/.test(error.message) ? 503 : 500;
+            res.writeHead(status).end(error.message);
           });
-          res.on('close', () => { if (!child.killed) child.kill(); clearTimeout(timer); });
-          child.stdin.end(Buffer.concat(chunks).toString('utf8') + '\n');
         });
       });
     },

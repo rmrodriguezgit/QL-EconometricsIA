@@ -49,8 +49,11 @@ test('grupo de procesos: reutiliza Python, atiende en paralelo y se recupera si 
   await new Promise(done=>setTimeout(done,300));
   assert.ok(!engine.pids().includes(first));
   const again=await engine.request({...health,id:9});assert.equal(again.id,9);
-  engine.reload();await new Promise(done=>setTimeout(done,300));
-  assert.ok(engine.pids().every(pid=>pid!==first));
+  const before=engine.pids();
+  engine.reload();
+  assert.equal(engine.workers(),0,'tras recargar, los procesos viejos no reciben trabajo');
+  const warmed=await engine.warm();assert.equal(warmed.length,1,'warm repone los procesos mínimos aunque los viejos sigan cerrándose');
+  assert.ok(engine.pids().every(pid=>!before.includes(pid)));
   assert.equal((await engine.request({...health,id:10})).id,10);
  }finally{await engine.stop();}
  assert.equal(engine.workers(),0);

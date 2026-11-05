@@ -251,4 +251,5 @@ La aplicación y sus instaladores están pendientes de implementación. Los camb
 - **Procesos dentro de un nodo**: GridSearchCV usa varios procesos solo con trabajo grande (`QL_ENGINE_PROCESSES`).
 - Canal JSON-RPC protegido: lo que impriman las librerías va a stderr. Nuevo método interno `engine.warmup`. En desarrollo, cambiar el motor reemplaza los procesos sin reiniciar la app.
 - Pruebas: `tests/test_parallel.py` (los 28 ejemplos idénticos con y sin hilos, solapamiento real de nodos, avisos por hilo, canal limpio) y pruebas del grupo de procesos en `runtime.test.cjs` (reutilización, paralelo, recuperación tras un proceso muerto, recarga). 165 pruebas Python y 32 de escritorio.
+- Un proceso que se está cerrando (recarga, reciclaje u ocio) ya no recibe trabajo ni cuenta como precargado; `warm` repone los mínimos de inmediato. Verificado en Electron: 2 procesos al abrir y reemplazo al editar el motor.
 - Mediciones y límites en docs/ELECTRON.md: con muestras de clase el GIL anula la ganancia de los hilos; la mejora principal es no volver a arrancar Python.

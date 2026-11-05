@@ -27,7 +27,7 @@ function createEngine(root, options = {}) {
   let stopping = false, generation = 0;
   function spawnWorker() {
     const child = spawn(python, ['-m', 'quantlabs'], { cwd: root, windowsHide: true, env: { ...process.env, PYTHONPATH: resolve(root, 'engine'), PYTHONUTF8: '1', WBDATA_CACHE_PATH: resolve(root, '.cache/wbdata/cache') } });
-    const worker = { child, job: null, buffer: '', served: 0, idleTimer: null, generation, closed: false };
+    const worker = { child, job: null, buffer: '', served: 0, idleTimer: null, generation, closed: false, retiring: false };
     workers.add(worker);
     child.stdout.setEncoding('utf8');
     child.stdout.on('data', chunk => {
@@ -49,7 +49,16 @@ function createEngine(root, options = {}) {
     });
     return worker;
   }
+  const live = () => [...workers].filter(item => !item.closed && !item.retiring);
+  /** Cierra un proceso; desde ese momento no recibe trabajo aunque aún no haya terminado. */
+  function retire(worker) {
+    if (worker.retiring) return;
+    worker.retiring = true; clearTimeout(worker.idleTimer);
+    if (!worker.closed) worker.child.stdin.end();
+    kill(worker);
+  }
   function kill(worker) {
+    worker.retiring = true;
     if (worker.closed) return;
     worker.child.kill();
     const hard = setTimeout(() => worker.child.kill('SIGKILL'), 1000);
@@ -61,13 +70,13 @@ function createEngine(root, options = {}) {
     if (!job) return;
     clearTimeout(job.timer); worker.served += 1;
     try { job.accept(JSON.parse(line)); } catch { job.reject(new Error('Respuesta inválida de Python.')); }
-    if (worker.served >= RECYCLE_AFTER || worker.generation !== generation) { worker.child.stdin.end(); kill(worker); }
+    if (worker.served >= RECYCLE_AFTER || worker.generation !== generation) retire(worker);
     else idle(worker);
     pump();
   }
   function idle(worker) {
     clearTimeout(worker.idleTimer);
-    worker.idleTimer = setTimeout(() => { if (!worker.job && workers.size > warmCount) { worker.child.stdin.end(); kill(worker); } }, IDLE_MS);
+    worker.idleTimer = setTimeout(() => { if (!worker.job && live().length > warmCount) retire(worker); }, IDLE_MS);
     worker.idleTimer.unref?.();
   }
   function assign(worker, job) {
@@ -79,8 +88,8 @@ function createEngine(root, options = {}) {
   function pump() {
     if (stopping) return;
     while (queue.length) {
-      let worker = [...workers].find(item => !item.job && !item.closed);
-      if (!worker && workers.size < size) worker = spawnWorker();
+      let worker = live().find(item => !item.job);
+      if (!worker && live().length < size) worker = spawnWorker();
       if (!worker) break;
       assign(worker, queue.shift());
     }
@@ -98,7 +107,7 @@ function createEngine(root, options = {}) {
   /** Arranca los procesos mínimos y carga las librerías antes del primer cálculo. */
   function warm() {
     if (stopping || !existsSync(python)) return Promise.resolve([]);
-    const missing = Math.max(0, warmCount - workers.size);
+    const missing = Math.max(0, warmCount - live().length);
     return Promise.allSettled(Array.from({ length: missing }, (_, i) => {
       const worker = spawnWorker();
       return new Promise((accept, reject) => assign(worker, { payload: JSON.stringify({ jsonrpc: '2.0', id: `warmup-${i}`, method: 'engine.warmup', params: {} }), limit: 60_000, accept, reject }));
@@ -107,7 +116,7 @@ function createEngine(root, options = {}) {
   /** Tras cambiar el código Python: los procesos actuales terminan su trabajo y se reemplazan. */
   function reload() {
     generation += 1;
-    for (const worker of workers) if (!worker.job) { worker.child.stdin.end(); kill(worker); }
+    for (const worker of workers) if (!worker.job) retire(worker);
   }
   async function stop() {
     stopping = true;
@@ -119,7 +128,7 @@ function createEngine(root, options = {}) {
     })));
     stopping = false;
   }
-  return { request, warm, reload, stop, active: () => queue.length + [...workers].filter(item => item.job).length, workers: () => workers.size, pids: () => [...workers].map(item => item.child.pid), size };
+  return { request, warm, reload, stop, active: () => queue.length + [...workers].filter(item => item.job).length, workers: () => live().length, pids: () => live().map(item => item.child.pid), size };
 }
 function releaseInfo(value,current) {
   if(!value || typeof value.tag_name!=='string' || !/^v?\d+\.\d+\.\d+$/.test(value.tag_name)) throw new Error('Versión publicada no válida.');

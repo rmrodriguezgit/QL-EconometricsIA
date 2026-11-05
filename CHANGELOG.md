@@ -261,3 +261,10 @@ La aplicación y sus instaladores están pendientes de implementación. Los camb
 - Cambiar el formato no invalida resultados: los parámetros de presentación se excluyen de la firma de cada nodo.
 - Pruebas: `electron/axisFormat.test.ts` (exponentes, modos, marcas distinguibles y conservación de resultados).
 - Verificado en la interfaz con valores de billones (fin_cons ≈ 10¹³): serie temporal y dispersión en ×10ⁿ, boxplot en números completos, varias series y pairplot en Automático, y cambio de formato desde el inspector sin recalcular.
+
+## 0.19.0 - 2026-11-05
+
+- **Plano de regresión 3D** en el resultado del OLS múltiple: puntos, plano ajustado y residuos como líneas verticales; giro con ratón o teclado, vistas predefinidas, giro automático y zoom. Con más de dos regresores se eligen los ejes y la respuesta se ajusta por los demás (y*), de modo que la distancia al plano es el residuo exacto.
+- **Gráficos de variable añadida** (regresión parcial), uno por regresor, con pendiente igual al coeficiente (Frisch–Waugh–Lovell), EE, p y r parcial.
+- Pruebas: `tests/test_regression_views.py` frente a statsmodels y `electron/regressionGeometry.test.ts`.
+- Verificado en la interfaz: modelo con 2 regresores (plano, giro por arrastre, residuos, paneles con pendientes iguales a la tabla de coeficientes) y con 3 regresores (selector de ejes y nota del corte).

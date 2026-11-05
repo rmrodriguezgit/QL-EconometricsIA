@@ -221,3 +221,18 @@ Parámetros de presentación `y_axis` y `x_axis` con tres opciones:
 | Pairplot (`pairplot`) | ✓ etiquetas de fila | ✓ etiquetas de columna |
 
 En las vistas con varios paneles (varias series, pairplot) cada variable calcula su propio exponente. Son parámetros solo de presentación: el motor los ignora y cambiarlos conserva los resultados calculados. Implementación: `apps/desktop/src/axisFormat.ts`; pruebas en `apps/desktop/electron/axisFormat.test.ts`.
+
+## OLS múltiple: plano 3D y variable añadida (0.19.0)
+
+El nodo **OLS múltiple** (`multiple_ols`) añade dos vistas a su resultado, sin parámetros nuevos:
+
+**Plano de regresión 3D** (`result.plane3d`, componente `RegressionPlane3D`)
+- Puntos en el espacio (x₁, x₂, y), el plano ajustado ŷ = β₀ + β₁x₁ + β₂x₂ y una línea vertical de cada punto al plano (su residuo). Verde = sobre el plano, rosa = debajo.
+- Se gira arrastrando o con las flechas del teclado; botones *Vista inicial*, *De frente a x₁/x₂*, *Desde arriba*, *Girar*, *Residuos* y zoom. Proyección ortográfica en SVG propio, sin librerías nuevas.
+- Con más de dos regresores eliges los dos ejes; los demás se fijan en su media y la respuesta se muestra ajustada, y* = y − Σ βⱼ(xⱼ − x̄ⱼ), de modo que la distancia vertical al plano sigue siendo el residuo exacto del modelo completo.
+- Límite: la perspectiva 3D puede engañar y, con más de dos regresores, es un corte del modelo. Se muestran hasta 1.500 puntos (muestra fija con semilla 0).
+
+**Gráficos de variable añadida** (`result.partial_regression`, componente `AddedVariablePlots`)
+- Un panel por regresor: residuos de y frente a residuos de xⱼ, ambos tras regresar sobre los demás regresores con constante. La pendiente es exactamente βⱼ (teorema de Frisch–Waugh–Lovell); cada panel muestra β, EE, p y la correlación parcial, y los puntos alejados de la recta son los que más influyen en ese coeficiente.
+
+Pruebas: `tests/test_regression_views.py` (pendientes parciales = coeficientes de statsmodels con regresores correlacionados, filas del plano = valores ajustados, límite de puntos) y `apps/desktop/electron/regressionGeometry.test.ts` (residuo exacto al plano para cualquier par de ejes). Referencia: B13 (Wooldridge, partialling out).

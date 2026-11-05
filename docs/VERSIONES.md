@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.18.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.19.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -232,3 +232,7 @@ Sin dependencias nuevas: `concurrent.futures.ThreadPoolExecutor` (biblioteca est
 ## Formato de ejes 0.18.0
 
 Sin dependencias nuevas (Intl.NumberFormat y superíndices Unicode). Decisión: el formato del eje es un parámetro del nodo guardado en el proyecto, pero de solo presentación: se excluye de la firma que decide qué resultados conservar, así que cambiarlo no exige recalcular. Se sustituye la notación `compact` de Intl (p. ej. «18 B»), ambigua entre idiomas, por el factor ×10ⁿ explícito.
+
+## OLS múltiple en 3D 0.19.0
+
+Sin dependencias nuevas: la vista 3D es una proyección ortográfica propia en SVG (rotación yaw/pitch, orden de pintado por profundidad) en lugar de three.js o Plotly, para no añadir varios MB al escritorio y mantener el estilo y la accesibilidad (teclado, `aria-label`) de los demás gráficos. El motor envía las filas, coeficientes y medias; la interfaz recalcula el corte al cambiar de ejes sin volver a ejecutar.

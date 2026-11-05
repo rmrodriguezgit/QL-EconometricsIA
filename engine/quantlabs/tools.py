@@ -267,6 +267,7 @@ def calculate(kind,inputs,params):
             interval=fit.conf_int()
             result['regression']={'y':target,'features':features,'n':len(data),'dropped':len(frame)-len(data),'r_squared':float(fit.rsquared),'r_squared_adj':float(fit.rsquared_adj),'aic':float(fit.aic),'bic':float(fit.bic),'covariance':cov,'coefficients':[{'term':name,'estimate':float(fit.params[name]),'std_error':float(fit.bse[name]),'p_value':float(fit.pvalues[name]),'ci_low':float(interval.loc[name,0]),'ci_high':float(interval.loc[name,1])} for name in fit.params.index]}
             result['metrics'].extend([{'label':'R²','value':fit.rsquared},{'label':'R² ajustado','value':fit.rsquared_adj}])
+            result.update(regression_views(data,features,target,fit))
     elif kind in ['arima','garch']:
         name=columns(frame,params.get('column','y' if kind=='arima' else 'retorno'))[0];data=sample(time_order(frame),[name],20);ensure_contiguous(data)
         if kind=='arima':
@@ -466,6 +467,36 @@ def analyze(kind,inputs,params):
         result=report('La primera carga fija la escala del factor. El ajuste no demuestra causalidad.',n=len(data),CFI=indices.loc['Value','CFI'],RMSEA=indices.loc['Value','RMSEA'])
         result['tables']=[table('Medición y trayectoria',['Respuesta','Operador','Predictor','Estimación'],estimates[['lval','op','rval','Estimate']].values.tolist())];result['limitations']=['Plantilla registrada: factor =~ x1 + x2 + x3; y ~ factor. No acepta expresiones Python.']
     return result,outputs
+
+
+MAX_VIEW_POINTS=1500
+
+
+def regression_views(data,features,target,fit):
+    """Datos para graficar el OLS múltiple: plano 3D y gráficos de variable añadida (Frisch–Waugh–Lovell)."""
+    rows=data[[*features,target]]
+    if len(rows)>MAX_VIEW_POINTS:rows=rows.sample(MAX_VIEW_POINTS,random_state=0).sort_index()
+    fitted=np.asarray(fit.fittedvalues.loc[rows.index],dtype=float)
+    views={'plane3d':{'features':features,'y':target,'n':len(data),'shown':len(rows),
+                      'coefficients':{name:float(value) for name,value in fit.params.items()},
+                      'means':{name:float(data[name].mean()) for name in features},
+                      'rows':[[*map(float,values),float(f)] for values,f in zip(rows.to_numpy(),fitted)]}}
+    # Variable añadida: residuos de y y de x_j sobre los demás regresores; su pendiente es exactamente β_j.
+    partial=[]
+    y=data[target].to_numpy(dtype=float)
+    for name in features:
+        others=sm.add_constant(data[[f for f in features if f!=name]],has_constant='add').to_numpy(dtype=float)
+        x=data[name].to_numpy(dtype=float)
+        ey=y-others@np.linalg.lstsq(others,y,rcond=None)[0]
+        ex=x-others@np.linalg.lstsq(others,x,rcond=None)[0]
+        denominator=float(ex@ex)
+        slope=float(ex@ey/denominator) if denominator>0 else float('nan')
+        keep=np.arange(len(ex)) if len(ex)<=MAX_VIEW_POINTS else np.sort(np.random.default_rng(0).choice(len(ex),MAX_VIEW_POINTS,replace=False))
+        correlation=float(np.corrcoef(ex,ey)[0,1]) if np.std(ex)>0 and np.std(ey)>0 else float('nan')
+        partial.append({'feature':name,'slope':slope,'coefficient':float(fit.params[name]),'std_error':float(fit.bse[name]),
+                        'p_value':float(fit.pvalues[name]),'partial_r':correlation,'points':[[float(a),float(b)] for a,b in zip(ex[keep],ey[keep])]})
+    views['partial_regression']={'y':target,'n':len(data),'items':partial}
+    return views
 
 
 def run_tool(kind,inputs,params):

@@ -235,3 +235,11 @@ La aplicación y sus instaladores están pendientes de implementación. Los camb
 - Catálogo: campo `variadic` y parámetro `extra_inputs`; el motor valida el límite, exige conectar cada entrada declarada y rechaza puertos no declarados. Revisados los demás nodos con varias entradas: tienen papeles distintos por puerto y se mantienen fijos.
 - Pruebas: `tests/test_variadic_inputs.py` (unión de 4 series frente a pandas, límites, nombres repetidos, compatibilidad con 2 entradas y RMSE de 3 modelos frente a mínimos cuadrados de numpy).
 - Verificado en la interfaz: botones + y − en ambos nodos, conectores creados y conexión arrastrada a serie_3. No verificado en la interfaz: una ejecución completa con tres fuentes reales (cubierta por las pruebas del motor).
+
+## 0.16.0 - 2026-11-05
+
+- **Reparar con Cerebro IA**: botón en el aviso de error, en el error del nodo y en el panel del cerebro. Repara el flujo actual sin crear un blueprint: nombres de salida inválidos o repetidos (p. ej. «Los nombres de salida deben ser distintos de periodo…»), columnas inexistentes, valores fuera de rango, opciones no válidas, conexiones incompatibles o duplicadas, entradas «+» vacías y entradas sin conectar.
+- Diálogo con tabla de cambios (nodo, campo, antes, después, motivo), lista **Necesita tu decisión** y botones **Aplicar cambios** / **Aplicar y ejecutar**; Deshacer revierte.
+- Nuevo método RPC `brain.repair` (180 s de límite, permitido en Electron y en el puente de desarrollo).
+- Pruebas: `tests/test_brain_repair.py` (8 casos); 160 pruebas Python en total.
+- Verificado en la interfaz: reparación de un nodo Unir series sin conectar (cambios aplicados al canvas) y caso parcial que pide decisión al usuario. El caso de nombres inválidos está verificado por pruebas del motor, no a mano en la interfaz.

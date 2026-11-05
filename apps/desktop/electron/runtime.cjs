@@ -1,9 +1,9 @@
 const { spawn } = require('node:child_process');
 const { resolve } = require('node:path');
 const { existsSync } = require('node:fs');
-const methods = new Set(['engine.health','system.audit','nodes.list','project.validate','worldbank.indicators','projects.list','projects.read','projects.save','projects.delete','projects.restore','examples.list','examples.read','run.start','brain.status','brain.plan','brain.history','brain.feedback','brain.gaps','brain.gaps.update']);
+const methods = new Set(['engine.health','system.audit','nodes.list','project.validate','worldbank.indicators','projects.list','projects.read','projects.save','projects.delete','projects.restore','examples.list','examples.read','run.start','brain.status','brain.plan','brain.repair','brain.history','brain.feedback','brain.gaps','brain.gaps.update']);
 // El cerebro con Qwen local puede tardar más que un cálculo; el resto conserva 60 s.
-const timeoutFor = method => method === 'brain.plan' ? 180_000 : 60_000;
+const timeoutFor = method => method === 'brain.plan' || method === 'brain.repair' ? 180_000 : 60_000;
 function createEngine(root) {
   const children = new Set();
   let stopping = false;

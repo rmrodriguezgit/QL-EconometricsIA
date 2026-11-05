@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.15.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.16.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -220,3 +220,7 @@ Sin dependencias nuevas: modo ampliado con CSS (`position: fixed`) e iconos `Max
 ## Entradas variables 0.15.0
 
 Sin dependencias nuevas. Decisión: un nodo puede declarar en el catálogo `variadic` (`prefix`, `type`, `start`, `max_extra`, `label`); el número de entradas añadidas se guarda como parámetro `extra_inputs` del nodo, de modo que los proyectos JSON siguen siendo válidos con el esquema existente y cada puerto conserva una sola conexión. El motor (`node_inputs`) y la interfaz (`nodeInputs`) derivan los mismos puertos. Se aplicó solo a `join_series` (hasta 8 series) y `compare_models` (hasta 6 modelos): son los únicos nodos cuyas entradas repiten el mismo papel. Los demás nodos con varias entradas (`sampling_audit`, `evaluate`, `apply_scaler`, `silhouette`, `cross_validation`) tienen papeles distintos por puerto y no se ampliaron.
+
+## Reparación del flujo 0.16.0
+
+Sin dependencias nuevas. Decisión: `brain.repair` corrige el proyecto del canvas con reglas deterministas comprobadas por ejecución en lugar de pedir a Qwen un plan nuevo; así no cambia la composición del flujo, no se genera código y cada cambio es reproducible. Solo conecta productores distintos de los que ya alimentan el nodo y deja al usuario las decisiones ambiguas (clave temporal inexistente, entradas sin productor).

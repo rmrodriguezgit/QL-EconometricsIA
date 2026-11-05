@@ -1,6 +1,6 @@
 # Segundo cerebro · del enunciado al blueprint
 
-Versión del cerebro: 1.0.0 · aplicación 0.15.0 · 2026-11-05. Estado: **implementado y verificado con pruebas automáticas**; la calidad de los planes con Qwen depende del modelo local instalado y se evalúa caso a caso.
+Versión del cerebro: 1.0.0 · aplicación 0.16.0 · 2026-11-05. Estado: **implementado y verificado con pruebas automáticas**; la calidad de los planes con Qwen depende del modelo local instalado y se evalúa caso a caso.
 
 El segundo cerebro convierte una petición en lenguaje natural («estima el consumo sobre el ingreso con errores robustos y revisa heterocedasticidad») en un **blueprint**: un proyecto Quantlabs con nodos conectados, parámetros, guía paso a paso y lista de herramientas que faltan. Usa la misma mecánica de construcción que los 28 recorridos: catálogo cerrado de nodos, puertos tipados, validador DAG del motor y una guía con un paso por nodo.
 
@@ -53,6 +53,16 @@ Código en `engine/quantlabs/brain/`:
 4. **Abrir en canvas** o **Abrir y ejecutar**. La guía paso a paso aparece con el módulo `IA`.
 5. Valora con 👍/👎. Los blueprints útiles alimentan la recuperación de futuros enunciados.
 
+### Reparar el flujo actual (0.16.0)
+
+Cuando un nodo falla, pulsa **Reparar con Cerebro IA** en el aviso de error, **Que Cerebro IA lo arregle** en el error del nodo seleccionado, o **Reparar el flujo del canvas** en el panel del cerebro. `brain/repair.py` trabaja sobre una copia del proyecto, sin crear blueprint ni nodos nuevos:
+
+1. **Estructura**: retira conexiones con puertos inexistentes, tipos incompatibles o duplicadas; quita entradas «+» vacías al final; conecta entradas vacías con el productor del mismo tipo más cercano que **aún no alimente** ese nodo (nunca une una tabla consigo misma ni compara un modelo consigo mismo).
+2. **Ejecuta** el flujo y, para cada nodo fallido con error de parámetros: nombres de salida válidos (sin acentos ni espacios, empiezan por letra, distintos de `periodo` y entre sí; también alias de `worldbank_multi` y `output`), columnas reales de cada puerto (clave de año/fecha y variable numérica en **Unir series**; `assign_columns` en el resto), valores numéricos al rango declarado y opciones del catálogo.
+3. **Vuelve a ejecutar** (hasta 5 rondas) y devuelve cada cambio con su motivo. Lo que no puede decidir con seguridad (por ejemplo, una tabla sin columna de año) queda en **Necesita tu decisión**.
+
+Tú eliges **Aplicar cambios** o **Aplicar y ejecutar**; **Deshacer** revierte la aplicación. La reparación usa reglas deterministas, no Qwen, para que cada corrección sea reproducible y comprobada por ejecución.
+
 Las pestañas **Herramientas faltantes** y **Memoria** muestran las fichas pendientes (con estado pendiente/planificada/descartada) y el historial reutilizable.
 
 ### Línea de órdenes
@@ -73,12 +83,13 @@ Ejecuta con `PYTHONPATH=engine` si no usas los arrancadores. `blueprint.json` se
 |---|---|---|
 | `brain.status` | — | Versión, herramientas, estado de Ollama, memoria y fichas pendientes |
 | `brain.plan` | `prompt`, `engine` (`auto`/`ollama`/`rules`), `allow_network`, `verify` | `project`, `plan`, `engine`, `model`, `verification`, `gaps`, `dropped`, `notes`, `trace` |
+| `brain.repair` | `project` (el del canvas), `allow_network` | `project` reparado, `changes` (nodo, campo, antes, después, motivo), `unresolved`, `status`, `nodes` |
 | `brain.history` | `limit` | Últimos blueprints con valoración |
 | `brain.feedback` | `id`, `value` (`up`/`down`/`null`) | Valoración guardada |
 | `brain.gaps` | `status` opcional | Fichas ordenadas por número de solicitudes |
 | `brain.gaps.update` | `id`, `status` | Ficha actualizada |
 
-`brain.plan` dispone de 180 s en Electron y en el puente de desarrollo; el resto de métodos conserva 60 s.
+`brain.plan` y `brain.repair` disponen de 180 s en Electron y en el puente de desarrollo; el resto de métodos conserva 60 s.
 
 ## Instalar el modelo local
 

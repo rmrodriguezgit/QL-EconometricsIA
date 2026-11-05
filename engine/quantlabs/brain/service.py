@@ -106,6 +106,9 @@ def dispatch(method, params):
         return status()
     if method == 'brain.plan':
         return plan(params)
+    if method == 'brain.repair':
+        from .repair import repair
+        return repair(params)
     if method == 'brain.history':
         return {'items': store.history(int(params.get('limit', 30)) if isinstance(params.get('limit', 30), int) else 30)}
     if method == 'brain.feedback':

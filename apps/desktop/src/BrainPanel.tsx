@@ -17,7 +17,7 @@ const EXAMPLES = [
 ];
 const label = (kind: string) => (catalog as Record<string, { label: string }>)[kind]?.label ?? kind;
 
-export default function BrainPanel({ onOpen, onRun, onClose }: { onOpen: (project: Project) => void; onRun: (project: Project) => void; onClose: () => void }) {
+export default function BrainPanel({ onOpen, onRun, onClose, onRepair }: { onOpen: (project: Project) => void; onRun: (project: Project) => void; onClose: () => void; onRepair?: () => void }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const [prompt, setPrompt] = useState('');
   const [engine, setEngine] = useState<'auto' | 'ollama' | 'rules'>('auto');
@@ -71,6 +71,7 @@ export default function BrainPanel({ onOpen, onRun, onClose }: { onOpen: (projec
       </div>
       <button className="manager-primary brain-build" disabled={pending || prompt.trim().length < 3} onClick={() => void build()}>{pending ? <><LoaderCircle className="spin" size={14} />Construyendo… {elapsed}s</> : <><Brain size={14} />Construir blueprint</>}</button>
       <div className="manager-list brain-examples">{EXAMPLES.map(text => <button key={text} className="example-entry" disabled={pending} onClick={() => setPrompt(text)}><span>EJEMPLO</span><strong>{text}</strong></button>)}</div>
+      {onRepair && <button className="manager-secondary brain-repair" disabled={pending} onClick={onRepair}><Wrench size={14} />Reparar el flujo del canvas</button>}
       <div className="manager-local-note">El cerebro solo usa herramientas registradas y valida el grafo con el motor. Lo que falta queda como ficha pendiente; nunca se ejecuta código generado.</div>
     </aside><section className="manager-main brain-main">
       {view === 'plan' && (!result ? <div className="brain-empty"><Brain size={34} /><h3>Escribe un enunciado y construye su blueprint</h3><p>El cerebro recupera herramientas y recorridos similares, planifica con Qwen (o reglas si no está disponible), conecta los puertos por tipo, ejecuta el flujo para reparar columnas y te entrega una guía paso a paso.</p></div> : <div className="brain-result">

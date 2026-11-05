@@ -253,3 +253,11 @@ La aplicación y sus instaladores están pendientes de implementación. Los camb
 - Pruebas: `tests/test_parallel.py` (los 28 ejemplos idénticos con y sin hilos, solapamiento real de nodos, avisos por hilo, canal limpio) y pruebas del grupo de procesos en `runtime.test.cjs` (reutilización, paralelo, recuperación tras un proceso muerto, recarga). 165 pruebas Python y 32 de escritorio.
 - Un proceso que se está cerrando (recarga, reciclaje u ocio) ya no recibe trabajo ni cuenta como precargado; `warm` repone los mínimos de inmediato. Verificado en Electron: 2 procesos al abrir y reemplazo al editar el motor.
 - Mediciones y límites en docs/ELECTRON.md: con muestras de clase el GIL anula la ganancia de los hilos; la mejora principal es no volver a arrancar Python.
+
+## 0.18.0 - 2026-11-05
+
+- **Ejes en notación científica ×10ⁿ**: «Formato del eje Y» (y «del eje X» cuando es numérico) en serie temporal, dispersión, boxplot, histograma, normalidad, normalidad de residuos, varias series, boxplots, análisis de residuos y pairplot. Opciones: Automático, Notación científica ×10ⁿ y Números completos. Mantisas en las marcas y factor en el nombre del eje; el pairplot añade marcas en el eje Y de cada fila.
+- El modo Automático sustituye la notación compacta anterior (p. ej. «18 B») por ×10ⁿ cuando los valores son ≥ 10⁴ o < 10⁻².
+- Cambiar el formato no invalida resultados: los parámetros de presentación se excluyen de la firma de cada nodo.
+- Pruebas: `electron/axisFormat.test.ts` (exponentes, modos, marcas distinguibles y conservación de resultados).
+- Verificado en la interfaz con valores de billones (fin_cons ≈ 10¹³): serie temporal y dispersión en ×10ⁿ, boxplot en números completos, varias series y pairplot en Automático, y cambio de formato desde el inspector sin recalcular.

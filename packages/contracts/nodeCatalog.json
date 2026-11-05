@@ -113,13 +113,39 @@
     },
     "defaults": {
       "x": "ingreso",
-      "y": "consumo"
+      "y": "consumo",
+      "y_axis": "auto",
+      "x_axis": "auto"
     },
     "explanation": "Representa pares completos de las variables elegidas. Asociación no implica causalidad.",
     "references": [
       "B17"
     ],
-    "scope": "ambas"
+    "scope": "ambas",
+    "choices": {
+      "y_axis": [
+        "auto",
+        "cientifica",
+        "normal"
+      ],
+      "x_axis": [
+        "auto",
+        "cientifica",
+        "normal"
+      ]
+    },
+    "choice_labels": {
+      "y_axis": {
+        "auto": "Automático (×10ⁿ si los valores son muy grandes o pequeños)",
+        "cientifica": "Notación científica ×10ⁿ",
+        "normal": "Números completos"
+      },
+      "x_axis": {
+        "auto": "Automático (×10ⁿ si los valores son muy grandes o pequeños)",
+        "cientifica": "Notación científica ×10ⁿ",
+        "normal": "Números completos"
+      }
+    }
   },
   "ols": {
     "label": "Regresión OLS",
@@ -671,13 +697,39 @@
     },
     "defaults": {
       "column": "y",
-      "bins": 8
+      "bins": 8,
+      "y_axis": "auto",
+      "x_axis": "auto"
     },
     "explanation": "Construye intervalos y cuenta filas. La suma de frecuencias debe coincidir con la muestra observada.",
     "references": [
       "B17"
     ],
-    "scope": "univariada"
+    "scope": "univariada",
+    "choices": {
+      "y_axis": [
+        "auto",
+        "cientifica",
+        "normal"
+      ],
+      "x_axis": [
+        "auto",
+        "cientifica",
+        "normal"
+      ]
+    },
+    "choice_labels": {
+      "y_axis": {
+        "auto": "Automático (×10ⁿ si los valores son muy grandes o pequeños)",
+        "cientifica": "Notación científica ×10ⁿ",
+        "normal": "Números completos"
+      },
+      "x_axis": {
+        "auto": "Automático (×10ⁿ si los valores son muy grandes o pequeños)",
+        "cientifica": "Notación científica ×10ⁿ",
+        "normal": "Números completos"
+      }
+    }
   },
   "correlation": {
     "label": "Correlación",
@@ -1415,14 +1467,29 @@
       "title": "Serie temporal",
       "x_label": "Fecha",
       "y_label": "Valor",
-      "color": "#51df83"
+      "color": "#51df83",
+      "y_axis": "auto"
     },
     "explanation": "Ordena el tiempo y dibuja una línea. Selecciona tiempo y valor; los años ausentes y valores faltantes interrumpen la línea. No mezcla países con períodos repetidos.",
     "references": [
       "B17",
       "B32"
     ],
-    "scope": "univariada"
+    "scope": "univariada",
+    "choices": {
+      "y_axis": [
+        "auto",
+        "cientifica",
+        "normal"
+      ]
+    },
+    "choice_labels": {
+      "y_axis": {
+        "auto": "Automático (×10ⁿ si los valores son muy grandes o pequeños)",
+        "cientifica": "Notación científica ×10ⁿ",
+        "normal": "Números completos"
+      }
+    }
   },
   "join_series": {
     "label": "Unir series por período",
@@ -1490,7 +1557,9 @@
     },
     "defaults": {
       "columns": "lending_rate,final_consumption",
-      "alpha": 0.05
+      "alpha": 0.05,
+      "y_axis": "auto",
+      "x_axis": "auto"
     },
     "explanation": "Descriptivos, histograma, Q–Q, Shapiro–Wilk y Jarque–Bera; no es un requisito para estimar OLS",
     "references": [
@@ -1498,7 +1567,31 @@
       "B19",
       "B22"
     ],
-    "scope": "ambas"
+    "scope": "ambas",
+    "choices": {
+      "y_axis": [
+        "auto",
+        "cientifica",
+        "normal"
+      ],
+      "x_axis": [
+        "auto",
+        "cientifica",
+        "normal"
+      ]
+    },
+    "choice_labels": {
+      "y_axis": {
+        "auto": "Automático (×10ⁿ si los valores son muy grandes o pequeños)",
+        "cientifica": "Notación científica ×10ⁿ",
+        "normal": "Números completos"
+      },
+      "x_axis": {
+        "auto": "Automático (×10ⁿ si los valores son muy grandes o pequeños)",
+        "cientifica": "Notación científica ×10ⁿ",
+        "normal": "Números completos"
+      }
+    }
   },
   "residual_normality": {
     "label": "Normalidad de residuos",
@@ -1512,7 +1605,9 @@
       "result": "Result"
     },
     "defaults": {
-      "alpha": 0.05
+      "alpha": 0.05,
+      "y_axis": "auto",
+      "x_axis": "auto"
     },
     "explanation": "Diagnostica residuos del modelo lineal conectado; no equivale a normalidad de las variables",
     "references": [
@@ -1520,7 +1615,31 @@
       "B24",
       "B31"
     ],
-    "scope": "ambas"
+    "scope": "ambas",
+    "choices": {
+      "y_axis": [
+        "auto",
+        "cientifica",
+        "normal"
+      ],
+      "x_axis": [
+        "auto",
+        "cientifica",
+        "normal"
+      ]
+    },
+    "choice_labels": {
+      "y_axis": {
+        "auto": "Automático (×10ⁿ si los valores son muy grandes o pequeños)",
+        "cientifica": "Notación científica ×10ⁿ",
+        "normal": "Números completos"
+      },
+      "x_axis": {
+        "auto": "Automático (×10ⁿ si los valores son muy grandes o pequeños)",
+        "cientifica": "Notación científica ×10ⁿ",
+        "normal": "Números completos"
+      }
+    }
   },
   "boxplot": {
     "label": "Boxplot",
@@ -1540,14 +1659,29 @@
       "y_label": "Valores",
       "color": "#51df83",
       "operator": "none",
-      "threshold": 14.5
+      "threshold": 14.5,
+      "y_axis": "auto"
     },
     "explanation": "Resume una variable numérica con caja Q1–Q3, mediana y bigotes de Tukey (1,5×RIC). Muestra atípicos sin eliminarlos. Selecciona una columna y ajusta título, eje y color. No prueba normalidad. Opcionalmente reemplaza valores por su media original según >, >=, <, <=, == o !=; se conserva la fuente y se ofrece una tabla de salida.",
     "references": [
       "B17",
       "B18"
     ],
-    "scope": "univariada"
+    "scope": "univariada",
+    "choices": {
+      "y_axis": [
+        "auto",
+        "cientifica",
+        "normal"
+      ]
+    },
+    "choice_labels": {
+      "y_axis": {
+        "auto": "Automático (×10ⁿ si los valores son muy grandes o pequeños)",
+        "cientifica": "Notación científica ×10ⁿ",
+        "normal": "Números completos"
+      }
+    }
   },
   "covariance_matrix": {
     "label": "Covarianza de variables",
@@ -2120,13 +2254,39 @@
       "group": "",
       "bins": 15,
       "max_points": 600,
-      "seed": 42
+      "seed": 42,
+      "y_axis": "auto",
+      "x_axis": "auto"
     },
     "explanation": "Como seaborn.pairplot: dispersión de cada par de variables, histograma de cada variable en la diagonal y r de Pearson por par. Vacío en variables = todas las numéricas (sin periodo, hasta 6). Grupo opcional (p. ej. pais) colorea los puntos. Cada par usa sus filas completas. Asociación no implica causalidad.",
     "references": [
       "B17"
     ],
-    "scope": "multivariada"
+    "scope": "multivariada",
+    "choices": {
+      "y_axis": [
+        "auto",
+        "cientifica",
+        "normal"
+      ],
+      "x_axis": [
+        "auto",
+        "cientifica",
+        "normal"
+      ]
+    },
+    "choice_labels": {
+      "y_axis": {
+        "auto": "Automático (×10ⁿ si los valores son muy grandes o pequeños)",
+        "cientifica": "Notación científica ×10ⁿ",
+        "normal": "Números completos"
+      },
+      "x_axis": {
+        "auto": "Automático (×10ⁿ si los valores son muy grandes o pequeños)",
+        "cientifica": "Notación científica ×10ⁿ",
+        "normal": "Números completos"
+      }
+    }
   },
   "series_plot": {
     "label": "Gráfico de varias series",
@@ -2143,13 +2303,19 @@
     "defaults": {
       "columns": "",
       "time": "periodo",
-      "mode": "paneles"
+      "mode": "paneles",
+      "y_axis": "auto"
     },
     "choices": {
       "mode": [
         "paneles",
         "indice",
         "original"
+      ],
+      "y_axis": [
+        "auto",
+        "cientifica",
+        "normal"
       ]
     },
     "choice_labels": {
@@ -2157,6 +2323,11 @@
         "paneles": "Un panel por variable",
         "indice": "Índice (primer año = 100)",
         "original": "Mismo eje, escala original"
+      },
+      "y_axis": {
+        "auto": "Automático (×10ⁿ si los valores son muy grandes o pequeños)",
+        "cientifica": "Notación científica ×10ⁿ",
+        "normal": "Números completos"
       }
     },
     "explanation": "Grafica varias series de la tabla contra el periodo. En paneles cada variable usa su propia escala (útil con unidades distintas); el índice compara crecimientos relativos. Vacío en variables = todas las numéricas.",
@@ -2179,18 +2350,29 @@
     },
     "defaults": {
       "columns": "",
-      "scale": "zscore"
+      "scale": "zscore",
+      "y_axis": "auto"
     },
     "choices": {
       "scale": [
         "zscore",
         "original"
+      ],
+      "y_axis": [
+        "auto",
+        "cientifica",
+        "normal"
       ]
     },
     "choice_labels": {
       "scale": {
         "zscore": "Estandarizado (z)",
         "original": "Escala original"
+      },
+      "y_axis": {
+        "auto": "Automático (×10ⁿ si los valores son muy grandes o pequeños)",
+        "cientifica": "Notación científica ×10ⁿ",
+        "normal": "Números completos"
       }
     },
     "explanation": "Un boxplot de Tukey por variable. Estandarizar (z) permite comparar la forma de variables con unidades muy distintas; la tabla conserva media y DE originales.",
@@ -2443,13 +2625,39 @@
       "result": "Result"
     },
     "defaults": {
-      "alpha": 0.05
+      "alpha": 0.05,
+      "y_axis": "auto",
+      "x_axis": "auto"
     },
     "explanation": "Para cualquier regresión con respuesta (statsmodels o scikit-learn): residuos frente a predichos, histograma y Q–Q, Jarque-Bera, Shapiro-Wilk, Breusch-Pagan y Durbin-Watson sobre la muestra de ajuste.",
     "references": [
       "B13",
       "B31"
     ],
-    "scope": "ambas"
+    "scope": "ambas",
+    "choices": {
+      "y_axis": [
+        "auto",
+        "cientifica",
+        "normal"
+      ],
+      "x_axis": [
+        "auto",
+        "cientifica",
+        "normal"
+      ]
+    },
+    "choice_labels": {
+      "y_axis": {
+        "auto": "Automático (×10ⁿ si los valores son muy grandes o pequeños)",
+        "cientifica": "Notación científica ×10ⁿ",
+        "normal": "Números completos"
+      },
+      "x_axis": {
+        "auto": "Automático (×10ⁿ si los valores son muy grandes o pequeños)",
+        "cientifica": "Notación científica ×10ⁿ",
+        "normal": "Números completos"
+      }
+    }
   }
 }

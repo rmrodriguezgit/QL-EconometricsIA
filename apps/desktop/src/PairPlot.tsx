@@ -6,11 +6,13 @@ export type PairPlotData = {
   correlation: (number | null)[][];
 };
 const palette = ['#6cc9ac', '#79b4ef', '#ffd166', '#f4a3a9', '#b295ee', '#8adde4', '#f6a96b', '#c6d3e4'];
-const format = (value: number) => new Intl.NumberFormat('es-MX', { maximumSignificantDigits: 3, notation: Math.abs(value) >= 1e5 || (value !== 0 && Math.abs(value) < 1e-3) ? 'compact' : 'standard' }).format(value);
+import { axisScale, scientificValue, useAxis } from './axisFormat';
+const plain = (value: number) => new Intl.NumberFormat('es-MX', { maximumSignificantDigits: 3 }).format(value);
+const format = (value: number) => scientificValue(value, 'auto', plain);
 
 export default function PairPlot({ data }: { data: PairPlotData }) {
   const k = data.columns.length;
-  const cell = k <= 3 ? 170 : k <= 5 ? 135 : 105, pad = 8, left = 54, top = 10, bottom = 40;
+  const cell = k <= 3 ? 170 : k <= 5 ? 135 : 105, pad = 8, left = 70, top = 10, bottom = 40;
   const size = left + k * cell, height = top + k * cell + bottom;
   const ranges = data.columns.map((_, c) => {
     const values = data.points.map(row => row[c]).filter((v): v is number => v !== null);
@@ -21,6 +23,8 @@ export default function PairPlot({ data }: { data: PairPlotData }) {
   const sx = (c: number, v: number) => left + c * cell + pad + (v - ranges[c][0]) / (ranges[c][1] - ranges[c][0]) * (cell - 2 * pad);
   const sy = (r: number, v: number) => top + r * cell + cell - pad - (v - ranges[r][0]) / (ranges[r][1] - ranges[r][0]) * (cell - 2 * pad);
   const color = (g: number) => palette[g % palette.length];
+  const axis = useAxis();
+  const xScales = ranges.map(range => axisScale([...range], axis.x, plain)), yScales = ranges.map(range => axisScale([...range], axis.y, plain));
   return <section className="pair-plot">
     <div className="result-title"><h3>Pairplot · {k} variables</h3><span>{data.points.length} puntos{data.group ? ` · color por ${data.group}` : ''}</span></div>
     {data.groups.length > 1 && <div className="pair-legend">{data.groups.map((g, i) => <span key={g}><i style={{ background: color(i) }} />{g}</span>)}</div>}
@@ -52,10 +56,12 @@ export default function PairPlot({ data }: { data: PairPlotData }) {
           <circle key={i} cx={sx(c, row[c]!)} cy={sy(r, row[r]!)} r={k > 5 ? 1.6 : 2.2} fill={color(Number(row[k]))} opacity=".7" />)}</g>;
       }))}
       {data.columns.map((name, c) => <g key={`ax-${name}`}>
-        <text x={left + c * cell + cell / 2} y={top + k * cell + 26} textAnchor="middle" className="pair-axis">{name}</text>
-        <text x={left + c * cell + pad} y={top + k * cell + 12} className="pair-tick">{format(ranges[c][0])}</text>
-        <text x={left + (c + 1) * cell - pad} y={top + k * cell + 12} textAnchor="end" className="pair-tick">{format(ranges[c][1])}</text>
-        <text transform={`translate(${left - 30},${top + c * cell + cell / 2}) rotate(-90)`} textAnchor="middle" className="pair-axis">{name}</text>
+        <text x={left + c * cell + cell / 2} y={top + k * cell + 26} textAnchor="middle" className="pair-axis">{xScales[c].label(name)}</text>
+        <text x={left + c * cell + pad} y={top + k * cell + 12} className="pair-tick">{xScales[c].tick(ranges[c][0])}</text>
+        <text x={left + (c + 1) * cell - pad} y={top + k * cell + 12} textAnchor="end" className="pair-tick">{xScales[c].tick(ranges[c][1])}</text>
+        <text transform={`translate(${left - 56},${top + c * cell + cell / 2}) rotate(-90)`} textAnchor="middle" className="pair-axis">{yScales[c].label(name)}</text>
+        <text x={left - 4} y={sy(c, ranges[c][0])} textAnchor="end" className="pair-tick">{yScales[c].tick(ranges[c][0])}</text>
+        <text x={left - 4} y={sy(c, ranges[c][1]) + 8} textAnchor="end" className="pair-tick">{yScales[c].tick(ranges[c][1])}</text>
       </g>)}
     </svg></div>
     <p className="result-footnote">Bajo la diagonal: dispersión de cada par (filas completas del par). Diagonal: histograma{data.groups.length > 1 ? ' apilado por grupo' : ''}. Sobre la diagonal: correlación de Pearson; color verde positivo, rojo negativo, más intenso cuanto más fuerte.</p>

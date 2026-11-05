@@ -200,3 +200,24 @@ Registro actual: **89 tipos**. Módulo `engine/quantlabs/multivariate_tools.py`;
 | `residual_analysis` | FittedModel → Result | Residuos vs predichos, histograma y Q–Q, Jarque-Bera, Shapiro, Breusch-Pagan, Durbin-Watson | Media ≈ 0; rechaza logit | Sobre la muestra de ajuste |
 
 **Apartados de la biblioteca.** Cada herramienta de análisis declara `scope` en el catálogo (`univariada`, `multivariada` o `ambas`). La biblioteca ofrece **Todas · Univariadas · Multivariadas**; las fuentes de datos aparecen siempre. Transformaciones y experimentos solo en *Todas*.
+
+## Formato de ejes (0.18.0)
+
+Parámetros de presentación `y_axis` y `x_axis` con tres opciones:
+
+| Opción | Efecto |
+|---|---|
+| `auto` (por defecto) | Usa ×10ⁿ solo si el mayor valor absoluto visible es ≥ 10⁴ o < 10⁻²; si no, números completos. |
+| `cientifica` | Siempre ×10ⁿ, con n = orden de magnitud del mayor valor absoluto (sin factor si n = 0). Las marcas muestran la mantisa (`1.57`) y el factor aparece en el nombre del eje (`fin_cons (US$) (×10¹³)`). |
+| `normal` | Números completos (`15,866,800,000,000`). |
+
+| Nodo | Eje Y | Eje X |
+|---|---|---|
+| Serie temporal (`time_plot`), Boxplot (`boxplot`), Varias series (`series_plot`), Boxplots (`boxplots`) | ✓ | — (tiempo o categorías) |
+| Dispersión (`scatter`) | ✓ | ✓ |
+| Histograma (`histogram`) | ✓ frecuencia | ✓ valores |
+| Normalidad y normalidad de residuos | ✓ Q–Q | ✓ histograma |
+| Análisis de residuos (`residual_analysis`) | ✓ residuos | ✓ predichos |
+| Pairplot (`pairplot`) | ✓ etiquetas de fila | ✓ etiquetas de columna |
+
+En las vistas con varios paneles (varias series, pairplot) cada variable calcula su propio exponente. Son parámetros solo de presentación: el motor los ignora y cambiarlos conserva los resultados calculados. Implementación: `apps/desktop/src/axisFormat.ts`; pruebas en `apps/desktop/electron/axisFormat.test.ts`.

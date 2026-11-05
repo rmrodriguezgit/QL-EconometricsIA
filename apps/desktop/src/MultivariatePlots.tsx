@@ -1,6 +1,8 @@
 // Gráficos de las herramientas multivariadas: varias series, boxplots, residuos e hipótesis.
 const palette = ['#6cc9ac', '#79b4ef', '#ffd166', '#f4a3a9', '#b295ee', '#8adde4', '#f6a96b', '#c6d3e4'];
-const format = (value: number) => new Intl.NumberFormat('es-MX', { maximumSignificantDigits: 3, notation: Math.abs(value) >= 1e5 || (value !== 0 && Math.abs(value) < 1e-3) ? 'compact' : 'standard' }).format(value);
+import { axisScale, scientificValue, useAxis } from './axisFormat';
+const plain = (value: number) => new Intl.NumberFormat('es-MX', { maximumSignificantDigits: 3 }).format(value);
+const format = (value: number) => scientificValue(value, 'auto', plain);
 const extent = (values: number[]) => { const min = Math.min(...values), max = Math.max(...values); return min === max ? [min - 1, max + 1] : [min, max]; };
 
 export type SeriesPlotData = { time: string; mode: 'paneles' | 'indice' | 'original'; lines: { name: string; points: [number, number | null][]; n: number }[] };
@@ -21,6 +23,7 @@ export function SeriesPlot({ data }: { data: SeriesPlotData }) {
   const width = 640, left = 62, right = 16, panelH = data.mode === 'paneles' ? 120 : 260, gap = 18;
   const height = panels.length * (panelH + gap) + 30;
   const x = (t: number) => left + (t - t0) / (t1 - t0) * (width - left - right);
+  const axis = useAxis();
   return <section className="multi-plot">
     <div className="result-title"><h3>{data.mode === 'indice' ? 'Series como índice (primer año = 100)' : data.mode === 'paneles' ? 'Series por panel' : 'Series en el mismo eje'}</h3><span>{data.lines.length} variables · eje x: {data.time}</span></div>
     {data.mode !== 'paneles' && <div className="pair-legend">{data.lines.map((line, i) => <span key={line.name}><i style={{ background: palette[i % 8] }} />{line.name}</span>)}</div>}
@@ -29,11 +32,13 @@ export function SeriesPlot({ data }: { data: SeriesPlotData }) {
         const top = p * (panelH + gap) + 8;
         const [v0, v1] = extent(lines.flatMap(line => line.points.map(pt => pt[1]).filter((v): v is number => v !== null)));
         const y = (v: number) => top + panelH - (v - v0) / (v1 - v0) * panelH;
+        const sy = axisScale([v0, v1], axis.y, plain);
         return <g key={p}>
           <rect x={left} y={top} width={width - left - right} height={panelH} className="multi-frame" />
-          {[v0, (v0 + v1) / 2, v1].map(v => <g key={v}><line x1={left} x2={width - right} y1={y(v)} y2={y(v)} className="multi-grid" /><text x={left - 6} y={y(v) + 3} textAnchor="end" className="pair-tick">{format(v)}</text></g>)}
+          {[v0, (v0 + v1) / 2, v1].map(v => <g key={v}><line x1={left} x2={width - right} y1={y(v)} y2={y(v)} className="multi-grid" /><text x={left - 6} y={y(v) + 3} textAnchor="end" className="pair-tick">{sy.tick(v)}</text></g>)}
+          {sy.factor && data.mode !== 'paneles' && <text x={left + 8} y={top + 15} className="axis-factor">{sy.factor}</text>}
           {lines.map(line => { const i = data.lines.indexOf(line); return <path key={line.name} d={path(line.points, x, y)} fill="none" stroke={palette[i % 8]} strokeWidth="2"><title>{line.name}</title></path>; })}
-          {data.mode === 'paneles' && <text x={left + 8} y={top + 15} className="pair-name">{lines[0].name}</text>}
+          {data.mode === 'paneles' && <text x={left + 8} y={top + 15} className="pair-name">{lines[0].name}{sy.factor && <tspan className="axis-factor"> ({sy.factor})</tspan>}</text>}
         </g>;
       })}
       {[t0, (t0 + t1) / 2, t1].map(t => <text key={t} x={x(t)} y={height - 8} textAnchor="middle" className="pair-tick">{Math.round(t)}</text>)}
@@ -49,10 +54,12 @@ export function MultiBoxPlot({ data }: { data: BoxplotsData }) {
   const [v0, v1] = extent(all);
   const y = (v: number) => top + (1 - (v - v0) / (v1 - v0)) * (height - top - bottom);
   const slot = (width - left - 10) / data.boxes.length, box = Math.min(60, slot * .5);
+  const sy = axisScale([v0, v1], useAxis().y, plain);
   return <section className="multi-plot">
     <div className="result-title"><h3>Boxplots · {data.boxes.length} variables</h3><span>{data.scale === 'zscore' ? 'Valores estandarizados (z)' : 'Escala original'}</span></div>
     <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Boxplots de varias variables; valores exactos en la tabla.">
-      {[v0, (v0 + v1) / 2, v1, ...(v0 < 0 && v1 > 0 ? [0] : [])].map(v => <g key={v}><line x1={left} x2={width - 10} y1={y(v)} y2={y(v)} className="multi-grid" /><text x={left - 6} y={y(v) + 3} textAnchor="end" className="pair-tick">{format(v)}</text></g>)}
+      {[v0, (v0 + v1) / 2, v1, ...(v0 < 0 && v1 > 0 ? [0] : [])].map(v => <g key={v}><line x1={left} x2={width - 10} y1={y(v)} y2={y(v)} className="multi-grid" /><text x={left - 6} y={y(v) + 3} textAnchor="end" className="pair-tick">{sy.tick(v)}</text></g>)}
+      {sy.factor && <text x={left + 4} y={top + 10} className="axis-factor">{sy.factor}</text>}
       {data.boxes.map((b, i) => {
         const cx = left + slot * (i + .5), color = palette[i % 8];
         return <g key={b.column}>
@@ -76,15 +83,17 @@ export function ResidualPlot({ data }: { data: { points: [number, number][]; sd:
   const limit = Math.max(3 * data.sd, ...data.points.map(p => Math.abs(p[1])));
   const x = (v: number) => left + (v - x0) / (x1 - x0) * (width - left - 12);
   const y = (v: number) => top + (1 - (v + limit) / (2 * limit)) * (height - top - bottom);
+  const axis = useAxis(), sy = axisScale([-limit, limit], axis.y, plain), sx = axisScale([x0, x1], axis.x, plain);
   return <section className="multi-plot">
     <div className="result-title"><h3>Residuos frente a predichos</h3><span>Banda = ±2 DE · se busca una nube sin patrón alrededor de 0</span></div>
     <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Residuos frente a valores predichos.">
       <rect x={left} y={y(2 * data.sd)} width={width - left - 12} height={y(-2 * data.sd) - y(2 * data.sd)} fill="#79b4ef" opacity=".07" />
       <line x1={left} x2={width - 12} y1={y(0)} y2={y(0)} stroke="#ffd166" strokeWidth="1.5" />
-      {[-limit, 0, limit].map(v => <text key={v} x={left - 6} y={y(v) + 3} textAnchor="end" className="pair-tick">{format(v)}</text>)}
+      {[-limit, 0, limit].map(v => <text key={v} x={left - 6} y={y(v) + 3} textAnchor="end" className="pair-tick">{sy.tick(v)}</text>)}
+      {sy.factor && <text x={left + 4} y={top + 10} className="axis-factor">Residuo {sy.factor}</text>}
       {data.points.map(([p, r], i) => <circle key={i} cx={x(p)} cy={y(r)} r="2.6" fill={Math.abs(r) > 3 * data.sd ? '#f4a3a9' : '#6cc9ac'} opacity=".8" />)}
-      {[x0, (x0 + x1) / 2, x1].map(v => <text key={v} x={x(v)} y={height - 14} textAnchor="middle" className="pair-tick">{format(v)}</text>)}
-      <text x={(width + left) / 2} y={height - 1} textAnchor="middle" className="pair-axis">Valor predicho</text>
+      {[x0, (x0 + x1) / 2, x1].map(v => <text key={v} x={x(v)} y={height - 14} textAnchor="middle" className="pair-tick">{sx.tick(v)}</text>)}
+      <text x={(width + left) / 2} y={height - 1} textAnchor="middle" className="pair-axis">{sx.label('Valor predicho')}</text>
     </svg>
   </section>;
 }

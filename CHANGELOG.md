@@ -284,3 +284,11 @@ La aplicación y sus instaladores están pendientes de implementación. Los camb
 - **Cinco ejemplos econométricos con FRED** (requieren conexión): F01 curva de rendimientos → recesión (logit), F02 curva de Phillips, F03 ley de Okun, F04 estructura temporal con DGS3MO/DGS10 (ADF, Engle-Granger, ECM) y F05 regla de Taylor (MCO múltiple con plano 3D). Ejecutados con datos reales el 2026-11-05.
 - Cerebro IA: detecta FRED («FRED», «Reserva Federal de St. Louis» o un ID del catálogo) y traduce frases como «desempleo», «inflación», «bono a 10 años» o «fondos federales» a series; FRED cuenta como red en la verificación y en la reparación, que también corrige sus alias.
 - Pruebas: `tests/test_fred_source.py` (parseo, remuestreo, 404, fechas ISO, `growth` con períodos y los cinco ejemplos sin red con series inyectadas).
+
+## 0.21.1 - 2026-11-05
+
+- **Catálogo de identificadores FRED**: `packages/contracts/fredCatalog.json` pasa de 33 a 226 series en 13 temas (tasas y curva, precios, actividad, mercado laboral, dinero y crédito, vivienda, mercados, tipos de cambio, comercio exterior, finanzas públicas, ciclo y recesiones, estados de EE. UU. e internacional con México y la OCDE). Cada una con alias sugerido, título en español y en inglés, unidades, frecuencia, ajuste estacional y última observación.
+- Verificado con red el 2026-11-05: de 236 candidatos se comprobó el CSV de `fredgraph.csv` y la ficha de cada serie; se descartaron 10 (2 sin CSV, 2 descontinuadas, 4 sin datos recientes y 2 por no corresponder o ser poco relevantes). Unidades, frecuencia y ajuste estacional se tomaron de la ficha de FRED.
+- Inspector: selector con buscador (ID, título sin acentos, alias, unidades o tema) y filtro por tema, al estilo del de Banco Mundial; sigue aceptando cualquier ID escrito a mano.
+- Cerebro IA: reconoce títulos y alias del catálogo («tasa de desempleo de Texas», «petróleo Brent», `tc_peso_dolar`) en enunciados que mencionan FRED, en el orden en que aparecen.
+- Pruebas: estructura del catálogo sin red (IDs y alias únicos y válidos, temas conocidos, registro de verificación coherente), reconocimiento del cerebro y `electron/fredSearch.test.ts`.

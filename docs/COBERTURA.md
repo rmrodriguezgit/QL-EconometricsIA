@@ -89,7 +89,7 @@ C07, C08, C09, C12, C14, C15, C16, C21, C22 y C25: doce herramientas nuevas (ver
 
 ### Evidencia adicional · 0.21.0
 
-Fuentes, C09, C10, C11, C12, C14, C15 y C16 (aplicado): FRED como fuente sin clave (`fred`) y cinco recorridos con datos reales (logit de recesión, Phillips, Okun, cointegración y ECM de tasas, regla de Taylor), con pruebas sin red en tests/test_fred_source.py. Siguen abiertos la API oficial con clave, las revisiones en tiempo real (ALFRED), Johansen con varias tasas, efectos marginales y ROC del logit y el suavizamiento en la regla de Taylor.
+Fuentes, C09, C10, C11, C12, C14, C15 y C16 (aplicado): FRED como fuente sin clave (`fred`) y cinco recorridos con datos reales (logit de recesión, Phillips, Okun, cointegración y ECM de tasas, regla de Taylor), con pruebas sin red en tests/test_fred_source.py. En 0.21.1 el catálogo de identificadores crece a 226 series verificadas en 13 temas, con prueba de estructura sin red. Siguen abiertos la API oficial con clave, las revisiones en tiempo real (ALFRED), Johansen con varias tasas, efectos marginales y ROC del logit y el suavizamiento en la regla de Taylor.
 
 ### Evidencia adicional · 0.14.0
 

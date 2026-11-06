@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.21.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.21.1**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -250,3 +250,7 @@ Sin dependencias nuevas: la descarga usa `requests` 2.34.2 (ya instalado como de
 - **User-Agent**: con un User-Agent propio («QuantLabs-…») FRED retuvo la respuesta hasta agotar el tiempo (observado el 2026-11-05); con el de `requests` responde en < 1 s. Se usa el predeterminado. Tiempo límite (5 s, 40 s) y un reintento.
 - **Fechas**: se conservan las de FRED (inicio del período). Con frecuencia anual `periodo` es el año entero; si no, texto AAAA-MM-DD. `time_order` acepta fechas ISO regulares (mismo día del mes → índice año·12+mes; si no, días consecutivos).
 - **Caché** en memoria por proceso de 6 h (no en disco) para no repetir descargas al re-ejecutar.
+
+## Catálogo de identificadores FRED 0.21.1
+
+Sin dependencias nuevas. El catálogo es un JSON estático generado una vez (no se consulta FRED al abrir el selector). Proceso del 2026-11-05: 236 IDs candidatos; para cada uno, `fredgraph.csv?id=ID&cosd=2018-01-01` (200 con cabecera `observation_date`) y la ficha `fred.stlouisfed.org/series/ID`, de la que se leyeron título, unidades, frecuencia y ajuste estacional; después, la última observación desde 2015. Quedan 226; los 10 descartados y el método constan en `verification` dentro del propio JSON. Los títulos en español son traducciones propias; las unidades se tradujeron con una tabla fija y el script falla si aparece una sin traducir.

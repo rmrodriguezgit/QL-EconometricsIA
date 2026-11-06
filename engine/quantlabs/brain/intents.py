@@ -223,14 +223,39 @@ def fred_catalog():
     return {item['id']: item for item in json.loads(path.read_text(encoding='utf-8'))['items']} if path.exists() else {}
 
 
+@lru_cache(maxsize=1)
+def fred_names():
+    """(frase, ID) del catálogo: título sin paréntesis y alias con espacios, de más a menos palabras."""
+    pairs = {}
+    for code, item in fred_catalog().items():
+        for phrase in (re.sub(r'\s*\([^)]*\)', '', item['title']), item['alias'].replace('_', ' '), item['alias']):
+            phrase = re.sub(r'\s+', ' ', fold(phrase)).strip(' ,.')
+            if (len(phrase.split()) >= 2 or '_' in phrase) and phrase not in pairs:
+                pairs[phrase] = code
+    return sorted(pairs.items(), key=lambda pair: (-len(pair[0]), pair[0]))
+
+
 def detect_fred(text, folded):
     """FRED solo si se nombra (FRED, Reserva Federal de St. Louis) o se escribe un identificador del catálogo."""
     known = fred_catalog()
     ids = [code for code in known if len(code) >= 4 and re.search(r'\b' + re.escape(code) + r'\b', text)]
     if not ids and not re.search(r'\bfred\b|reserva federal de (st\.? |san )?louis', folded):
         return None
+    rest, found = folded, []
+    # Títulos y alias del catálogo («tasa de desempleo de texas», «petroleo brent»): primero los más largos,
+    # y cada coincidencia se consume (con espacios del mismo largo, para conservar posiciones) para que
+    # «desempleo» no añada también la tasa nacional. Se ordenan por su posición en el enunciado.
+    for phrase, code in fred_names():
+        pattern = r'\b' + re.escape(phrase) + r'\b'
+        match = re.search(pattern, rest)
+        if match:
+            found.append((match.start(), code))
+            rest = re.sub(pattern, lambda m: ' ' * len(m.group(0)), rest)
+    for _, code in sorted(found):
+        if code not in ids:
+            ids.append(code)
     for pattern, code in FRED_PHRASES:
-        if code not in ids and re.search(pattern, folded):
+        if code not in ids and re.search(pattern, rest):
             ids.append(code)
     ids = ids[:12] or ['DGS3MO', 'DGS10']
     params = {'series': '\n'.join(f"{code}: {known.get(code, {}).get('alias', code.lower())}" for code in ids)}

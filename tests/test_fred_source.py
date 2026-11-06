@@ -117,6 +117,45 @@ class TimeToolTests(unittest.TestCase):
             time_order(frame.drop(index=1))
 
 
+class CatalogTests(unittest.TestCase):
+    """Estructura del catálogo curado, sin red (la verificación con red queda registrada en el propio JSON)."""
+    def setUp(self):
+        self.catalog = json.loads((ROOT / 'packages/contracts/fredCatalog.json').read_text(encoding='utf-8'))
+        self.items = self.catalog['items']
+
+    def test_ids_aliases_and_groups(self):
+        ids = [item['id'] for item in self.items]
+        aliases = [item['alias'] for item in self.items]
+        self.assertGreaterEqual(len(ids), 150)
+        self.assertEqual(len(ids), len(set(ids)))
+        self.assertEqual(len(aliases), len(set(aliases)))
+        for item in self.items:
+            with self.subTest(id=item['id']):
+                self.assertTrue(fred_source.SERIES_ID.fullmatch(item['id']))
+                self.assertTrue(fred_source.ALIAS.fullmatch(item['alias']) and item['alias'] not in ('periodo', 'fecha'))
+                self.assertIn(item['group'], self.catalog['groups'])
+                self.assertIn(item['frequency'], ['diaria', 'semanal', 'mensual', 'trimestral', 'anual'])
+                self.assertTrue(item['title'] and item['units'] and item['seasonal'])
+        self.assertEqual(set(self.catalog['groups']), {item['group'] for item in self.items})
+
+    def test_verification_record_matches_items(self):
+        record = self.catalog['verification']
+        self.assertEqual(record['kept'], len(self.items))
+        self.assertFalse(set(record['dropped']) & {item['id'] for item in self.items})
+
+    def test_catalog_alias_is_the_default_alias(self):
+        self.assertEqual(parse_series('DEXMXUS\nTXUR'), {'DEXMXUS': 'tc_peso_dolar', 'TXUR': 'desempleo_texas'})
+
+    def test_brain_recognises_titles_and_aliases(self):
+        from quantlabs.brain.intents import detect_source
+        kind, params, _ = detect_source('Con datos de FRED, la tasa de desempleo de Texas y el precio del petróleo Brent mensual desde 2010')
+        self.assertEqual(kind, 'fred')
+        self.assertEqual(params['series'].splitlines(), ['TXUR: desempleo_texas', 'DCOILBRENTEU: petroleo_brent'])
+        kind, params, _ = detect_source('FRED: tc_peso_dolar y bono_10y_mexico')
+        self.assertEqual([line.split(':')[0] for line in params['series'].splitlines()], ['DEXMXUS', 'IRLTLT01MXM156N'])
+        self.assertEqual(detect_source('Tasa de desempleo de Texas del Banco Mundial')[0], 'worldbank')
+
+
 class ExampleTests(unittest.TestCase):
     def test_fred_node_is_registered(self):
         self.assertIn('fred', NODE_CATALOG)

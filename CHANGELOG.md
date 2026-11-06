@@ -360,3 +360,11 @@ La aplicación y sus instaladores están pendientes de implementación. Los camb
 - Métricas nuevas: silueta media, Calinski-Harabasz y Davies-Bouldin; tablas de resumen por grupo (tamaño, suma de cuadrados intra, silueta media, siluetas negativas) y de elección de k.
 - Avisos cuando las variables tienen escalas muy distintas (sin estandarizar) o cuando otro k da mayor silueta. Tablas grandes: se dibujan 2500 puntos y la silueta se calcula con 2000 observaciones al azar.
 - Pruebas `tests/test_cluster_views.py`: la silueta coincide con el nodo Silueta en C25, la suma de cuadrados por grupo suma la inercia, el perfil coincide con el cálculo manual, la proyección PCA con 4 variables, los avisos y el muestreo.
+
+## 0.27.1 - 2026-11-06
+
+- Corrección: **Señal de momentum** rechazaba los datos diarios de Yahoo Finance («Hay períodos ausentes o frecuencia irregular») por los fines de semana y feriados, y con datos semanales o mensuales buscaba una columna `retorno` inexistente.
+- La señal y el **Backtest temporal** aceptan ahora calendarios bursátiles: fechas de lunes a viernes con, a lo sumo, feriados sueltos (hasta 3 días hábiles entre filas, mediana 1). Un hueco mayor sigue rechazándose. Rezagos, diferencias, crecimiento, raíz unitaria, ARIMA y cointegración mantienen la exigencia de calendario regular.
+- Parámetros visibles con etiquetas: variable (selector de columnas; si queda vacía o en `retorno` y no existe, se usa la primera numérica y se avisa), ventana del pasado (hasta 250), tipo de posición (largo/fuera 1·0 o largo/corto 1·−1), umbral de la media pasada y nombre de la columna de señal.
+- La salida añade la media pasada (`<salida>_media_pasada`) y un resumen en Resultados: % de períodos en cada posición, cambios de posición y gráfico de la media pasada y la posición. El backtest acepta señales −1/0/1.
+- El mensaje de calendario irregular sugiere también el intervalo semanal o mensual de Yahoo Finance o «Cambiar frecuencia».

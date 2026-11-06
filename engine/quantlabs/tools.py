@@ -139,7 +139,18 @@ def calendar_steps(values):
     return dates.map(lambda item:float(item.toordinal())).to_numpy(dtype=float)
 
 
-def time_order(frame):
+def trading_calendar(values):
+    """True si son fechas ISO de días hábiles consecutivos (lunes a viernes) con, a lo sumo, feriados sueltos: calendario bursátil."""
+    text=values.astype(str)
+    if not text.str.fullmatch(r'\d{4}-\d{2}-\d{2}').all():return False
+    dates=pd.to_datetime(text,format='%Y-%m-%d',errors='coerce')
+    if dates.isna().any() or (dates.dt.dayofweek>4).any():return False
+    days=dates.to_numpy(dtype='datetime64[D]');gaps=np.busday_count(days[:-1],days[1:])
+    return bool(len(gaps)) and gaps.min()>=1 and gaps.max()<=3 and np.median(gaps)==1
+
+
+def time_order(frame,trading=False):
+    """Comprueba períodos únicos, ordenados y regulares. Con trading=True acepta además días hábiles con feriados (series bursátiles diarias)."""
     if 'periodo' in frame:
         if frame['periodo'].duplicated().any() or not frame['periodo'].is_monotonic_increasing:
             raise EngineError('INVALID_PARAMETERS','Se requieren períodos únicos y ordenados. Separa los países de un panel y revisa la frecuencia antes de transformar.')
@@ -147,7 +158,9 @@ def time_order(frame):
         steps=frame['periodo'].to_numpy(dtype=float) if pd.api.types.is_numeric_dtype(frame['periodo']) else calendar_steps(frame['periodo'])
         if steps is None:raise EngineError('IRREGULAR_PERIOD','periodo debe ser numérico o fechas ISO AAAA-MM-DD regulares.')
         spacing=np.diff(steps)
-        if not np.allclose(spacing,spacing[0]):raise EngineError('IRREGULAR_PERIOD','Hay períodos ausentes o frecuencia irregular. Regulariza el calendario explícitamente antes de usar esta herramienta temporal (en FRED, elige frecuencia mensual, trimestral o anual).')
+        if not np.allclose(spacing,spacing[0]) and not (trading and trading_calendar(frame['periodo'])):
+            raise EngineError('IRREGULAR_PERIOD','Hay períodos ausentes o frecuencia irregular. Regulariza el calendario explícitamente antes de usar esta herramienta temporal '
+                              '(en FRED, elige frecuencia mensual, trimestral o anual; en Yahoo Finance, intervalo semanal o mensual, o usa «Cambiar frecuencia»).')
     return frame
 
 
@@ -213,9 +226,34 @@ def calculate(kind,inputs,params):
             if (data[names].dropna()<=-1).any().any():raise EngineError('INVALID_PARAMETERS','Las tasas deben ser mayores a -1.')
             data[params.get('output','precio')]=number(params,'initial',100,.001,1e9)*(1+data[names]).prod(axis=1,skipna=False)
         elif kind=='signal':
-            time_order(data);name=columns(data,params.get('column','retorno'))[0];window=number(params,'lookback',5,1,100,True)
+            time_order(data,trading=True)
+            numeric=[c for c in data.columns if c!='periodo' and pd.api.types.is_numeric_dtype(data[c])]
+            wanted=str(params.get('column','retorno') or '').strip()
+            if wanted not in data and wanted in ('','retorno') and numeric:
+                # «retorno» es el nombre del escenario sintético; con otras fuentes (Yahoo, FRED) se toma la primera columna numérica.
+                note_column=f'No hay columna «{wanted or "retorno"}»; se usó {numeric[0]}. Elige otra en «Variable».';wanted=numeric[0]
+            else:note_column=None
+            name=columns(data,wanted)[0];window=number(params,'lookback',5,1,250,True)
+            mode=str(params.get('mode','largo'))
+            if mode not in ('largo','largo_corto'):raise EngineError('INVALID_PARAMETERS','mode: elige largo o largo_corto.')
+            threshold=number(params,'threshold',0,-1e9,1e9);output=str(params.get('output','senal') or 'senal').strip()
+            if output==name or output=='periodo':raise EngineError('INVALID_PARAMETERS',f'La salida no puede llamarse «{output}»: sobrescribiría la columna de entrada.')
+            # Media de los «window» rendimientos anteriores, desplazada un período: la posición de t solo usa datos hasta t−1.
             past=data[name].rolling(window).mean().shift(1)
-            data[params.get('output','senal')]=np.where(past.isna(),0.,(past>0).astype(float))
+            low=-1. if mode=='largo_corto' else 0.
+            position=np.where(past.isna(),0.,np.where(past>threshold,1.,low))
+            data[output]=position;data[f'{output}_media_pasada']=past
+            valid=past.notna();changes=int(np.abs(np.diff(np.r_[0.,position])).astype(bool).sum())
+            note=f'Señal de momentum sobre {name}: posición 1 si la media de los {window} valores anteriores supera {threshold:g}; si no, {low:g}. La posición de cada fila usa solo datos anteriores.'
+            stats=report(note,observaciones=len(data),con_senal=int(valid.sum()),pct_largo=float((position[valid]==1).mean()*100) if valid.any() else None,
+                         **({'pct_corto':float((position[valid]==-1).mean()*100) if valid.any() else None} if mode=='largo_corto' else {}),cambios_de_posicion=changes)
+            stats['tables']=[table('Resumen de la señal',['Posición','Períodos','% de los períodos con señal'],
+                                   [[label,int((position[valid]==value).sum()),float((position[valid]==value).mean()*100) if valid.any() else None] for label,value in ([('Largo (1)',1.),('Corto (−1)',-1.)] if mode=='largo_corto' else [('Largo (1)',1.),('Fuera (0)',0.)])])]
+            stats['series']=[series(f'Media de {window} valores anteriores de {name} (últimos 200)',past.fillna(0).to_numpy()[-200:]),series('Posición (últimos 200)',position[-200:])]
+            if note_column:stats['warnings'].append(note_column)
+            if window>len(data)/2:stats['warnings'].append(f'La ventana ({window}) es mayor que la mitad de la tabla: pocas filas tienen señal.')
+            stats['limitations']=['La señal no considera costos; evalúala con Backtest temporal, que descuenta un costo por cambio de posición.']
+            extra['result']=stats;stats['topic']='Señal de momentum';stats['scope']='Uso educativo; no es una recomendación de inversión.'
         elif kind=='standardize':
             from sklearn.preprocessing import StandardScaler
             names=columns(data,params.get('columns','x'));scaler=StandardScaler().fit(sample(data,names))
@@ -232,7 +270,9 @@ def calculate(kind,inputs,params):
             if len(data)<n:raise EngineError('INSUFFICIENT_SAMPLE','La población elegible es menor que la muestra solicitada.')
             data=data.sample(n=n,random_state=seed).sort_index().copy();note='Muestreo sin reemplazo; se conserva el orden de las filas seleccionadas.'
         if len(data.columns)>50:raise EngineError('INVALID_PARAMETERS','La transformación supera 50 columnas.')
-        return frame_result(data,note),{'data':data,**extra}
+        report_extra=extra.pop('result',None);out=frame_result(data,note)
+        if report_extra is not None:out['note']=report_extra['interpretation'];out['report']=report_extra
+        return out,{'data':data,**extra}
     if kind=='split':
         fraction=number(params,'fraction',.75,.1,.9);cut=int(len(frame)*fraction)
         if cut<4 or len(frame)-cut<4:raise EngineError('INSUFFICIENT_SAMPLE','Cada partición necesita al menos cuatro filas.')
@@ -447,8 +487,8 @@ def analyze(kind,inputs,params):
         result=report('Resumen de las trayectorias conectadas; no vuelve a simularlas.',replicas=len(data),media=data.mean(),percentil_5=data.quantile(.05),percentil_95=data.quantile(.95),error_Monte_Carlo=data.std(ddof=1)/np.sqrt(len(data)),probabilidad_superar_umbral=np.mean(data>threshold))
     elif kind=='backtest':
         ret,signal=columns(frame,','.join([params.get('returns','retorno'),params.get('signal','senal')]))
-        data=sample(time_order(frame),[ret,signal],10);ensure_contiguous(data);cost=number(params,'cost',.0005,0,.1)
-        if not set(data[signal].unique()).issubset({0,1}):raise EngineError('INVALID_PARAMETERS','La señal debe ser 0 o 1.')
+        data=sample(time_order(frame,trading=True),[ret,signal],10);ensure_contiguous(data);cost=number(params,'cost',.0005,0,.1)
+        if not set(data[signal].unique()).issubset({-1,0,1}):raise EngineError('INVALID_PARAMETERS','La señal debe ser 0 o 1 (o −1 para posiciones cortas).')
         turnover=np.abs(np.diff(np.r_[0.,data[signal].to_numpy()]));gross=data[ret].to_numpy()*data[signal].to_numpy();net=gross-turnover*cost
         result=report('Costos por cambio de posición. La entrada debe contener una señal causal; la herramienta no conoce cómo fue creada.',retorno_bruto=np.prod(1+gross)-1,retorno_neto=np.prod(1+net)-1,baseline=np.prod(1+data[ret])-1,n=len(data))
         result['series']=[series('Capital neto',np.cumprod(1+net))];result['limitations']=['Datos sintéticos; sin operaciones reales ni garantía de rentabilidad. La posición inicial se abre desde cero.']

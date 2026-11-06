@@ -732,14 +732,28 @@
       "data": "Dataset"
     },
     "defaults": {
-      "column": "retorno",
+      "column": "",
       "lookback": 5,
+      "mode": "largo",
+      "threshold": 0,
       "output": "senal"
     },
-    "explanation": "Usa únicamente rendimientos anteriores para decidir una posición. Incluye un rezago para evitar mirar el futuro.",
+    "explanation": "Usa únicamente rendimientos anteriores para decidir una posición: 1 si la media de los últimos «ventana» valores (sin incluir el actual) supera el umbral; si no, 0 o −1. Acepta series diarias bursátiles (días hábiles con feriados), semanales o mensuales. Añade la columna de señal y la media pasada, con un resumen de la posición y los cambios.",
     "references": [
       "B27"
-    ]
+    ],
+    "choices": {
+      "mode": [
+        "largo",
+        "largo_corto"
+      ]
+    },
+    "choice_labels": {
+      "mode": {
+        "largo": "Largo o fuera (1 / 0)",
+        "largo_corto": "Largo o corto (1 / −1)"
+      }
+    }
   },
   "standardize": {
     "label": "Estandarizar",

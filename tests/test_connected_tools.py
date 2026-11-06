@@ -130,6 +130,28 @@ class ConnectedToolsTests(unittest.TestCase):
         second=execute(p)['nodes']['signal']['result']['records']
         self.assertEqual([v['senal'] for v in first[:6]],[v['senal'] for v in second[:6]])
 
+    def test_momentum_signal_accepts_trading_days_and_picks_column(self):
+        # Días hábiles con un feriado (2024-01-15) y fin de semana: calendario bursátil válido para la señal.
+        days=[d for d in __import__('pandas').bdate_range('2024-01-02','2024-03-29').strftime('%Y-%m-%d') if d!='2024-01-15']
+        values=[(-1)**i*(i%7)+.5 for i in range(len(days))]
+        csv='periodo,aapl\n'+'\n'.join(f'{d},{v}' for d,v in zip(days,values))
+        p=project([node('data','csv',{'content':csv}),node('signal','signal',{'column':'','lookback':4,'mode':'largo_corto','threshold':0})],[edge('data','data','signal','data')])
+        out=execute(p)['nodes']['signal']
+        self.assertEqual(out['status'],'succeeded',out.get('error'))
+        records=out['result']['records'];report=out['result']['report']
+        past=__import__('pandas').Series(values).rolling(4).mean().shift(1)
+        expected=[0. if __import__('math').isnan(m) else (1. if m>0 else -1.) for m in past]
+        self.assertEqual([r['senal'] for r in records],expected[:len(records)])
+        self.assertTrue(any('se usó aapl' in w for w in report['warnings']))
+        self.assertEqual({m['label'] for m in report['metrics']}>={'pct_largo','pct_corto','cambios_de_posicion'},True)
+        # Un hueco de dos semanas no es un calendario bursátil.
+        gap=[d for d in days if not '2024-02-05'<=d<='2024-02-16']
+        p['nodes'][0]['parameters']['content']='periodo,aapl\n'+'\n'.join(f'{d},1' for d in gap)
+        self.assertEqual(execute(p)['nodes']['signal']['error']['code'],'IRREGULAR_PERIOD')
+        # Los rezagos siguen exigiendo un calendario regular.
+        p=project([node('data','csv',{'content':csv}),node('lag','lag',{'column':'aapl'})],[edge('data','data','lag','data')])
+        self.assertEqual(execute(p)['nodes']['lag']['error']['code'],'IRREGULAR_PERIOD')
+
     def test_covariance_change_preserves_coefficients(self):
         r=execute(example_get('C11')['project'])
         original=[row['estimate'] for row in r['nodes']['modelo']['result']['coefficients']]

@@ -272,7 +272,7 @@ Catálogo (0.21.1): 226 identificadores verificados el 2026-11-05 en 13 temas, c
 
 Parámetros: `series` («ID: alias» por línea; sin alias se usa el del catálogo o el ID en minúsculas), `start_date` y `end_date` (AAAA-MM-DD o año; vacía = hoy), `frequency` (`original`, `semanal`, `mensual`, `trimestral`, `anual`) y `aggregation` (`media`, `ultimo`, `suma`). Con `original` y series de distinta frecuencia las filas de una quedan vacías en las fechas de la otra; la procedencia lo advierte.
 
-Cambios en herramientas existentes: `time_order` acepta `periodo` con fechas ISO regulares, así que `lag`, `growth`, `difference`, `unit_root`, `cointegration`, `ecm`, `arima` y `backtest` funcionan con datos mensuales o trimestrales de FRED. Los datos diarios con huecos de fin de semana siguen rechazándose como calendario irregular, con la sugerencia de convertir la frecuencia. `growth` respeta `periods` (antes se ignoraba y siempre usaba 1). `series_plot` dibuja fechas ISO como año decimal y muestra en la tabla la primera y última fecha.
+Cambios en herramientas existentes: `time_order` acepta `periodo` con fechas ISO regulares, así que `lag`, `growth`, `difference`, `unit_root`, `cointegration`, `ecm`, `arima` y `backtest` funcionan con datos mensuales o trimestrales de FRED. Los datos diarios con huecos de fin de semana siguen rechazándose como calendario irregular, con la sugerencia de convertir la frecuencia; desde 0.27.1 la señal de momentum y el backtest aceptan días hábiles con feriados sueltos (calendario bursátil). `growth` respeta `periods` (antes se ignoraba y siempre usaba 1). `series_plot` dibuja fechas ISO como año decimal y muestra en la tabla la primera y última fecha.
 
 ## Deep learning capa por capa y aprendizaje por refuerzo (0.23.0)
 

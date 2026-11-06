@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.27.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.27.1**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -297,3 +297,7 @@ Sin dependencias nuevas. Decisión: con rendimientos se reconstruye un índice b
 ## Gráficos de k-means 0.27.0
 
 Sin dependencias nuevas (scikit-learn: `silhouette_samples`, `calinski_harabasz_score`, `davies_bouldin_score`; numpy para la proyección por SVD). Decisión: con más de dos variables el mapa usa componentes principales de las variables estandarizadas solo para dibujar; los grupos y centroides siguen en la escala de entrada que usó el ajuste. La curva de elección de k reajusta k-means para k = 2 … 8 con la misma semilla y 10 inicios; la silueta usa una muestra fija de hasta 2000 filas para acotar el tiempo.
+
+## Señal de momentum con calendario bursátil 0.27.1
+
+Sin dependencias nuevas (`numpy.busday_count`). Decisión: la regla de 0.21 que rechaza datos diarios con huecos de fin de semana se mantiene para las herramientas de series de tiempo (rezagos, diferencias, raíz unitaria, ARIMA, cointegración), donde «un período» debe tener la misma duración; la señal de momentum y el backtest operan por sesión de mercado, así que aceptan días hábiles con feriados sueltos (`time_order(frame, trading=True)`).

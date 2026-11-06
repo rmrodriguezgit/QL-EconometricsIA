@@ -361,7 +361,7 @@ def _analysis_rules(d, metrics, alpha, summary, findings, cautions, steps, param
             findings.append(f'CFI = {num(value, 3)}: ' + ('ajuste aceptable (≥ 0.95).' if value >= 0.95 else 'ajuste mejorable (< 0.95).'))
         elif key in ('rmsea',) and finite(value):
             findings.append(f'RMSEA = {num(value, 3)}: ' + ('ajuste bueno (≤ 0.06).' if value <= 0.06 else 'ajuste deficiente (> 0.08).' if value > 0.08 else 'ajuste aceptable.'))
-        elif key == 'silueta' and finite(value):
+        elif key in ('silueta', 'silueta_media') and finite(value):
             findings.append(f'Silueta = {num(value, 3)}: ' + ('grupos bien separados.' if value > 0.5 else 'separación moderada.' if value > 0.25 else 'grupos poco definidos.'))
     for table in d['tables']:
         columns = [fold(c) for c in table['columns']]

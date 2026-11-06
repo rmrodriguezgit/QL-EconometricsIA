@@ -142,3 +142,12 @@ body{background:#0d1118}button:focus-visible,input:focus-visible,select:focus-vi
 .portfolio-bars{display:grid;gap:4px;margin-top:8px}.portfolio-bars div{display:grid;grid-template-columns:minmax(60px,110px) 1fr 52px;align-items:center;gap:8px;font-size:10px;color:#b8cfe2}.portfolio-bars span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.portfolio-bars i{height:10px;background:#172839;border-radius:3px;overflow:hidden}.portfolio-bars b{display:block;height:100%}.portfolio-bars em{font-style:normal;text-align:right;color:#d5e4f5}
 .portfolio-stack{display:grid;gap:7px;margin:4px 0 8px}.portfolio-stack div{display:grid;grid-template-columns:minmax(90px,120px) 1fr;align-items:center;gap:8px;font-size:10px}.portfolio-stack i{display:flex;height:18px;border-radius:3px;overflow:hidden;background:#172839}.portfolio-stack b{display:flex;align-items:center;justify-content:center;color:#0d1622;font-size:9px;font-weight:650;white-space:nowrap;overflow:hidden}
 .portfolio-figure .table-wrap{margin-top:6px}
+/* Gráficos de k-means (0.27.0) */
+.cluster-centroid-label{font-size:10px;font-weight:700}
+.cluster-right-tick{fill:#e3c27a}
+.cluster-profile{display:grid;gap:8px}
+.cluster-heat td{text-align:center;color:#e6eef8;border-color:#223246}.cluster-heat td small{display:block;font-size:9px;color:#c5d4e4;opacity:.85}
+.cluster-heat td:first-child,.cluster-heat td:nth-child(2){background:#111c2a;text-align:left}
+.cluster-swatch{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+.cluster-size{display:grid;gap:3px;min-width:90px}.cluster-size i{display:block;height:6px;border-radius:3px}.cluster-size span{font-size:10px;color:#b8cfe2}
+.cluster-halo{paint-order:stroke;stroke:#0d1622;stroke-width:3px;stroke-linejoin:round}.cluster-group-tick{font-size:11px;font-weight:700}

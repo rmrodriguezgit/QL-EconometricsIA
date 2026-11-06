@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.26.1**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.27.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -293,3 +293,7 @@ Sin dependencias nuevas. La frontera usa `scipy.optimize.linprog` (método HiGHS
 ## Indicadores con Yahoo Finance 0.26.1
 
 Sin dependencias nuevas. Decisión: con rendimientos se reconstruye un índice base 100 en lugar de rechazar la tabla, porque medias móviles, RSI, MACD y Bollinger necesitan un nivel; el índice da los mismos RSI y caídas que los precios originales (los indicadores en nivel, como medias y bandas, quedan en la escala del índice). La detección automática no cambia `periods_per_year`: solo avisa, para no alterar resultados de proyectos guardados.
+
+## Gráficos de k-means 0.27.0
+
+Sin dependencias nuevas (scikit-learn: `silhouette_samples`, `calinski_harabasz_score`, `davies_bouldin_score`; numpy para la proyección por SVD). Decisión: con más de dos variables el mapa usa componentes principales de las variables estandarizadas solo para dibujar; los grupos y centroides siguen en la escala de entrada que usó el ajuste. La curva de elección de k reajusta k-means para k = 2 … 8 con la misma semilla y 10 inicios; la silueta usa una muestra fija de hasta 2000 filas para acotar el tiempo.

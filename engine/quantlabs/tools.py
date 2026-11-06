@@ -313,8 +313,17 @@ def calculate(kind,inputs,params):
         else:
             from sklearn.cluster import KMeans
             fit=KMeans(n_clusters=number(params,'clusters',3,2,min(10,len(data)-1),True),n_init=10,random_state=seed).fit(data.to_numpy())
-            result=report('Agrupación por distancia sobre las columnas conectadas.',inercia=fit.inertia_)
-            result['tables']=[table('Centroides en escala de entrada',['Grupo',*names],[[i,*row] for i,row in enumerate(fit.cluster_centers_)])]
+            from .cluster_views import kmeans_views
+            plot,quality,notes=kmeans_views(data,names,fit,seed)
+            result=report(f'Agrupación por distancia euclídea en {len(names)} variable(s) con k = {fit.n_clusters} grupos (10 inicios, semilla {seed}). '
+                          +('Los gráficos usan las dos variables originales.' if len(names)==2 else 'El diagrama de grupos proyecta los datos en los dos primeros componentes principales (solo para dibujar).'),
+                          inercia=fit.inertia_,**quality)
+            result['tables']=[table('Centroides en escala de entrada',['Grupo',*names],[[i,*row] for i,row in enumerate(fit.cluster_centers_)]),
+                              table('Resumen por grupo',['Grupo','Observaciones','% del total','Suma de cuadrados intra','Silueta media','Siluetas negativas'],
+                                    [[g['group'],g['n'],g['share'],g['sse'],g['silhouette'],g['negative']] for g in plot['groups']]),
+                              table('Elección de k (codo y silueta)',['k','Inercia','Silueta media'],[[c['k'],c['inertia'],c['silhouette']] for c in plot['curve']])]
+            result['cluster_plot']=plot;result['warnings']+=notes
+            result['limitations']+=['k-means supone grupos compactos y de tamaño parecido; no detecta formas alargadas ni grupos anidados.','Las etiquetas de grupo son arbitrarias: cambian con la semilla.']
         outputs['model']=Fitted(kind,fit,data,names,None,kind);result['n']=len(data)
     elif kind=='evaluate':
         model=inputs['model']

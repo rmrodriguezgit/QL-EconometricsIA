@@ -349,3 +349,14 @@ La aplicación y sus instaladores están pendientes de implementación. Los camb
 - Nuevo parámetro «tipo de valores» (`values`: detectar, precios, rendimientos en %, decimales o logarítmicos). Con rendimientos se reconstruye un índice base 100 (`<columna>_indice`) sobre el que se calculan medias, RSI, MACD y Bollinger; los rendimientos de entrada se conservan tal cual en `<columna>_rend`. «Detectar» trata como rendimientos en % una columna con ceros o negativos y lo indica en las advertencias.
 - Aviso cuando la separación de las fechas no coincide con los períodos por año usados para anualizar (p. ej. datos mensuales de Yahoo con 252).
 - Q02 declara `values: precios`. Verificado en la interfaz: Q02 con Yahoo en «rendimientos» completa los 7 pasos y da el mismo RSI final y la misma caída máxima que con precios.
+
+## 0.27.0 - 2026-11-06
+
+- **Agrupar con k-means** muestra cuatro gráficos (`ClusterPlots.tsx`, datos en `engine/quantlabs/cluster_views.py`):
+  - **Mapa de grupos**: puntos coloreados por grupo, envolvente convexa de cada grupo y centroides numerados. Con más de dos variables, proyección en los dos primeros componentes principales de las variables estandarizadas, con la varianza explicada en los ejes.
+  - **Silueta por observación**: barras ordenadas por grupo con la silueta media.
+  - **Elección de k**: inercia (codo) y silueta media para k = 2 … 8 con la misma semilla, con el k elegido resaltado.
+  - **Perfil de los grupos**: centroides en escala de entrada coloreados por su distancia a la media en desviaciones estándar, con el tamaño de cada grupo.
+- Métricas nuevas: silueta media, Calinski-Harabasz y Davies-Bouldin; tablas de resumen por grupo (tamaño, suma de cuadrados intra, silueta media, siluetas negativas) y de elección de k.
+- Avisos cuando las variables tienen escalas muy distintas (sin estandarizar) o cuando otro k da mayor silueta. Tablas grandes: se dibujan 2500 puntos y la silueta se calcula con 2000 observaciones al azar.
+- Pruebas `tests/test_cluster_views.py`: la silueta coincide con el nodo Silueta en C25, la suma de cuadrados por grupo suma la inercia, el perfil coincide con el cálculo manual, la proyección PCA con 4 variables, los avisos y el muestreo.

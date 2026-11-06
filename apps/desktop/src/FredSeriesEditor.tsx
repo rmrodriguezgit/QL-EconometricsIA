@@ -3,6 +3,7 @@ import { parseIndicatorList, serializeIndicatorList, type IndicatorRow } from '.
 import { fredAlias } from './sourceColumns';
 import { fredItems } from './fredSearch';
 import FredSeriesPicker from './FredSeriesPicker';
+import ErrorBoundary from './ErrorBoundary';
 
 type Props = { series: string; disabled: boolean; onPatch: (parameters: Record<string, string | number>) => void };
 
@@ -30,7 +31,7 @@ export default function FredSeriesEditor({ series, disabled, onPatch }: Props) {
       const alias = aliases[index], meta = known.get(row.code.toUpperCase());
       const invalid = !validAlias(alias) || duplicated(alias);
       return <div className="indicator-row" key={index}>
-        <FredSeriesPicker value={row.code} disabled={disabled} onChange={code => setCode(index, code)} />
+        <ErrorBoundary area="el catálogo de FRED" resetKey={row.code} compact><FredSeriesPicker value={row.code} disabled={disabled} onChange={code => setCode(index, code)} /></ErrorBoundary>
         <input aria-label={`Identificador FRED ${index + 1}`} disabled={disabled} value={row.code} placeholder="ID, p. ej. DGS10"
           style={idStyle} onChange={event => setCode(index, event.target.value.toUpperCase().replace(/[^A-Z0-9_]/g, ''))} />
         {meta ? <small style={metaStyle}>{meta.units} · {meta.frequency} · {meta.seasonal}</small> : row.code && <small style={metaStyle}>Serie fuera del catálogo curado: revisa sus unidades en fred.stlouisfed.org/series/{row.code}</small>}
@@ -43,6 +44,6 @@ export default function FredSeriesEditor({ series, disabled, onPatch }: Props) {
       </div>;
     })}
     <button className="text-button indicator-add" type="button" disabled={disabled || rows.length >= 12}
-      onClick={() => { const next = fredItems.find(item => !rows.some(row => row.code === item.id)) ?? fredItems[0]; save([...rows, { code: next.id, alias: next.alias }]); }}><Plus size={13} /> Añadir serie</button>
+      onClick={() => { const next = fredItems.find(item => !rows.some(row => row.code === item.id)) ?? fredItems[0]; save([...rows, next ? { code: next.id, alias: next.alias } : { code: 'DGS10', alias: 'bono_10y' }]); }}><Plus size={13} /> Añadir serie</button>
   </section>;
 }

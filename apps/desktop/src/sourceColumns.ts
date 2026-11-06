@@ -1,7 +1,8 @@
 import wooldridge from '../../../packages/contracts/wooldridgeCatalog.json' with {type:'json'};
 import type {ProjectNode} from './model';
 import fred from '../../../packages/contracts/fredCatalog.json' with {type:'json'};
-const fredKnown=new Map(fred.items.map(item=>[item.id,item]));
+// Tolerante a un catálogo incompleto (p. ej. mientras se regenera): sin items no hay alias sugeridos.
+const fredKnown=new Map((Array.isArray(fred?.items)?fred.items:[]).map(item=>[item.id,item]));
 /** Alias de una serie FRED: el del catálogo curado o el ID en minúsculas (igual que el motor). */
 export const fredAlias=(code:string)=>fredKnown.get(code.toUpperCase())?.alias??code.toLowerCase().replace(/[^a-z0-9_]/g,'_').replace(/^(\d)/,'_$1');
 /** Columnas que producirá el nodo FRED: periodo y un alias por serie. */

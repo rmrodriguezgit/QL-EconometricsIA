@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.21.1**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.21.2**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -254,3 +254,7 @@ Sin dependencias nuevas: la descarga usa `requests` 2.34.2 (ya instalado como de
 ## Catálogo de identificadores FRED 0.21.1
 
 Sin dependencias nuevas. El catálogo es un JSON estático generado una vez (no se consulta FRED al abrir el selector). Proceso del 2026-11-05: 236 IDs candidatos; para cada uno, `fredgraph.csv?id=ID&cosd=2018-01-01` (200 con cabecera `observation_date`) y la ficha `fred.stlouisfed.org/series/ID`, de la que se leyeron título, unidades, frecuencia y ajuste estacional; después, la última observación desde 2015. Quedan 226; los 10 descartados y el método constan en `verification` dentro del propio JSON. Los títulos en español son traducciones propias; las unidades se tradujeron con una tabla fija y el script falla si aparece una sin traducir.
+
+## Selector FRED robusto 0.21.2
+
+Sin dependencias nuevas. `ErrorBoundary` es un componente de clase de React 19 (`getDerivedStateFromError` y `componentDidCatch`) que registra el error en la consola y se reinicia cuando cambia su `resetKey` (nodo seleccionado o ID de la serie). Rodea el contenido del inspector y cada selector de FRED; no cubre aún el lienzo ni el panel de resultados.

@@ -292,3 +292,9 @@ La aplicación y sus instaladores están pendientes de implementación. Los camb
 - Inspector: selector con buscador (ID, título sin acentos, alias, unidades o tema) y filtro por tema, al estilo del de Banco Mundial; sigue aceptando cualquier ID escrito a mano.
 - Cerebro IA: reconoce títulos y alias del catálogo («tasa de desempleo de Texas», «petróleo Brent», `tc_peso_dolar`) en enunciados que mencionan FRED, en el orden en que aparecen.
 - Pruebas: estructura del catálogo sin red (IDs y alias únicos y válidos, temas conocidos, registro de verificación coherente), reconocimiento del cerebro y `electron/fredSearch.test.ts`.
+
+## 0.21.2 - 2026-11-05
+
+- **Corrección**: abrir el selector del catálogo FRED podía dejar la pantalla en negro («Cannot convert undefined or null to object» en `Object.entries`) si `fredCatalog.json` no tenía `groups`, como ocurrió mientras se regeneraba. Ahora `normalizeCatalog` tolera un catálogo sin `items` o sin `groups` (los temas salen de los items) y «Añadir serie» funciona con el catálogo vacío.
+- **Aislamiento de fallos**: el inspector y cada selector de FRED están dentro de un `ErrorBoundary`. Un error de render muestra «No se pudo mostrar …» con el mensaje y **Reintentar**; el resto de la aplicación y el flujo siguen intactos. Al cambiar de nodo o de ID se reintenta solo.
+- Pruebas: `electron/fredSearch.test.ts` cubre catálogos sin `groups`, sin `items` o con tipos inesperados. Verificado en la interfaz forzando un error temporal en el selector (eliminado después).

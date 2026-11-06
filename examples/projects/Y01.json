@@ -1,0 +1,238 @@
+{
+  "schema_version": "1.0.0",
+  "app_version": "0.22.0",
+  "title": "Y01 · Beta de mercado: Apple y Microsoft frente al S&P 500",
+  "nodes": [
+    {
+      "id": "datos",
+      "type": "yfinance",
+      "node_version": "1.0.0",
+      "parameters": {
+        "tickers": "AAPL: aapl\nMSFT: msft",
+        "index": "^GSPC",
+        "start_date": "2015-01-01",
+        "end_date": "2024-12-31",
+        "interval": "mensual",
+        "values": "rendimientos"
+      },
+      "position": {
+        "x": 0,
+        "y": 170
+      }
+    },
+    {
+      "id": "series",
+      "type": "series_plot",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "aapl,msft,sp500",
+        "time": "periodo",
+        "mode": "paneles",
+        "y_axis": "auto"
+      },
+      "position": {
+        "x": 320,
+        "y": 510
+      }
+    },
+    {
+      "id": "correlacion",
+      "type": "correlation",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "aapl,msft,sp500"
+      },
+      "position": {
+        "x": 320,
+        "y": 0
+      }
+    },
+    {
+      "id": "beta_aapl",
+      "type": "ols",
+      "node_version": "1.0.0",
+      "parameters": {
+        "x": "sp500",
+        "y": "aapl",
+        "covariance": "HC3"
+      },
+      "position": {
+        "x": 640,
+        "y": 170
+      }
+    },
+    {
+      "id": "beta_msft",
+      "type": "ols",
+      "node_version": "1.0.0",
+      "parameters": {
+        "x": "sp500",
+        "y": "msft",
+        "covariance": "HC3"
+      },
+      "position": {
+        "x": 640,
+        "y": 340
+      }
+    },
+    {
+      "id": "diagnostico",
+      "type": "diagnostics",
+      "node_version": "1.0.0",
+      "parameters": {},
+      "position": {
+        "x": 960,
+        "y": 170
+      }
+    },
+    {
+      "id": "residuos",
+      "type": "residual_analysis",
+      "node_version": "1.0.0",
+      "parameters": {
+        "alpha": 0.05,
+        "y_axis": "auto",
+        "x_axis": "auto"
+      },
+      "position": {
+        "x": 960,
+        "y": 340
+      }
+    },
+    {
+      "id": "reporte",
+      "type": "report",
+      "node_version": "1.0.0",
+      "parameters": {
+        "note": "¿Apple y Microsoft son más o menos riesgosas que el mercado? Usa la beta, su intervalo, α y R², y separa el riesgo sistemático del específico."
+      },
+      "position": {
+        "x": 1280,
+        "y": 170
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "datos-data-series-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "series",
+      "target_port": "data"
+    },
+    {
+      "id": "datos-data-correlacion-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "correlacion",
+      "target_port": "data"
+    },
+    {
+      "id": "datos-data-beta_aapl-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "beta_aapl",
+      "target_port": "data"
+    },
+    {
+      "id": "datos-data-beta_msft-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "beta_msft",
+      "target_port": "data"
+    },
+    {
+      "id": "beta_aapl-model-diagnostico-model",
+      "source": "beta_aapl",
+      "source_port": "model",
+      "target": "diagnostico",
+      "target_port": "model"
+    },
+    {
+      "id": "beta_aapl-model-residuos-model",
+      "source": "beta_aapl",
+      "source_port": "model",
+      "target": "residuos",
+      "target_port": "model"
+    },
+    {
+      "id": "beta_aapl-result-reporte-result",
+      "source": "beta_aapl",
+      "source_port": "result",
+      "target": "reporte",
+      "target_port": "result"
+    }
+  ],
+  "lesson": {
+    "module": "Y01",
+    "title": "Beta de mercado: Apple y Microsoft frente al S&P 500",
+    "objective": "Estimar la beta de mercado (CAPM) de aapl, msft frente al S&P 500 con rendimientos mensuales de Yahoo Finance.",
+    "references": [
+      "B27",
+      "B29",
+      "B35"
+    ],
+    "steps": [
+      {
+        "node_id": "datos",
+        "title": "1. Rendimientos mensuales",
+        "instruction": "Descarga con yfinance los cierres ajustados de AAPL, MSFT y del índice ^GSPC, mensuales 2015–2024, como rendimientos simples (%). La salida incluye la tabla de comparación frente al índice.",
+        "expected": "Tabla con periodo, un rendimiento por activo y el del índice; tabla de comparación con volatilidad, caída máxima y beta.",
+        "question": "¿Qué activo fue más volátil que el índice? ¿Cuál tuvo la mayor caída máxima?"
+      },
+      {
+        "node_id": "series",
+        "title": "2. Graficar",
+        "instruction": "Dibuja los rendimientos mensuales en paneles, uno por serie. Para ver trayectorias, cambia «Valores entregados» del nodo de datos a base 100 y vuelve a ejecutar.",
+        "expected": "Un panel por serie con rendimientos alrededor de cero.",
+        "question": "¿En qué meses todos caen a la vez?"
+      },
+      {
+        "node_id": "correlacion",
+        "title": "3. Correlación",
+        "instruction": "Calcula la correlación de los rendimientos.",
+        "expected": "Matriz de correlación con el índice.",
+        "question": "¿Qué activo se mueve más con el mercado?"
+      },
+      {
+        "node_id": "beta_aapl",
+        "title": "4. Beta de aapl",
+        "instruction": "Estima el modelo de mercado aapl = α + β·sp500 + ε con errores HC3. La pendiente es la beta del CAPM.",
+        "expected": "β cercana a la beta de la tabla de comparación (misma muestra).",
+        "question": "¿aapl es defensivo (β < 1) o agresivo (β > 1)? ¿α es distinto de cero?"
+      },
+      {
+        "node_id": "beta_msft",
+        "title": "5. Beta de msft",
+        "instruction": "Estima el modelo de mercado msft = α + β·sp500 + ε con errores HC3. La pendiente es la beta del CAPM.",
+        "expected": "β cercana a la beta de la tabla de comparación (misma muestra).",
+        "question": "¿msft es defensivo (β < 1) o agresivo (β > 1)? ¿α es distinto de cero?"
+      },
+      {
+        "node_id": "diagnostico",
+        "title": "6. Diagnósticos",
+        "instruction": "Revisa heterocedasticidad, autocorrelación y normalidad de los residuos del modelo de aapl.",
+        "expected": "Tabla de pruebas.",
+        "question": "¿Los rendimientos tienen colas más pesadas que la normal?"
+      },
+      {
+        "node_id": "residuos",
+        "title": "7. Residuos",
+        "instruction": "Analiza el riesgo específico: la parte del rendimiento que el índice no explica.",
+        "expected": "Gráficos de residuos.",
+        "question": "¿Qué fracción del riesgo es diversificable (1 − R²)?"
+      },
+      {
+        "node_id": "reporte",
+        "title": "8. Interpretar",
+        "instruction": "Concluye con β, α, R² y las limitaciones.",
+        "expected": "Una conclusión que distingue riesgo sistemático de específico.",
+        "question": "¿Una beta histórica predice la del próximo año?"
+      }
+    ],
+    "missing_tools": [
+      "Rendimientos en exceso sobre la tasa libre de riesgo (combinar con FRED TB3MS)",
+      "Betas móviles (ventanas rodantes)"
+    ]
+  }
+}

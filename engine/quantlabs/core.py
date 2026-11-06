@@ -18,7 +18,7 @@ import pandas as pd
 import statsmodels.api as sm
 
 ROOT = Path(__file__).resolve().parents[2]
-VERSION = (ROOT / 'VERSION').read_text().strip() if (ROOT / 'VERSION').exists() else '0.21.2'
+VERSION = (ROOT / 'VERSION').read_text().strip() if (ROOT / 'VERSION').exists() else '0.22.0'
 SCHEMA = '1.0.0'
 
 class EngineError(ValueError):
@@ -478,11 +478,14 @@ def execute(project, target_node=None):
             if kind == 'experiment':
                 from .experiments import run_experiment
                 result = run_experiment(params)
-            elif kind in ['simulate', 'csv', 'worldbank', 'worldbank_multi', 'wooldridge', 'fred']:
+            elif kind in ['simulate', 'csv', 'worldbank', 'worldbank_multi', 'wooldridge', 'fred', 'yfinance']:
                 from .wooldridge_source import wooldridge_data
                 if kind == 'fred':
                     from .fred_source import fred_data
                     frame, source = fred_data(params)
+                elif kind == 'yfinance':
+                    from .yfinance_source import yfinance_data
+                    frame, source = yfinance_data(params)
                 else:
                     frame, source = {'simulate': simulate, 'csv': csv_data, 'worldbank': world_bank, 'worldbank_multi': world_bank_multi, 'wooldridge':wooldridge_data}[kind](params)
                 result = frame_result(frame,'Datos de origen; revisa unidades y faltantes.')
@@ -574,5 +577,5 @@ def execute(project, target_node=None):
             'protocol_version': '1.0.0', 'target_node':target_node, 'execution_order':[key for key in ordered if key in active], 'started_at': started,
             'finished_at': datetime.now(timezone.utc).isoformat(), 'graph_sha256': digest({'schema_version': project['schema_version'], 'nodes': [{k: node[k] for k in ['id', 'type', 'node_version', 'parameters']} for node in project['nodes']], 'edges': project['edges']}),
             'python': platform.python_version(), 'platform': platform.platform(),
-            'dependencies': {name: package_version(name) for name in ['numpy', 'pandas', 'scipy', 'statsmodels', 'wbdata', 'arch', 'scikit-learn', 'hmmlearn', 'semopy', 'wooldridge']},
+            'dependencies': {name: package_version(name) for name in ['numpy', 'pandas', 'scipy', 'statsmodels', 'wbdata', 'arch', 'scikit-learn', 'hmmlearn', 'semopy', 'yfinance', 'wooldridge']},
             'git_commit': commit, 'sources': sources}}

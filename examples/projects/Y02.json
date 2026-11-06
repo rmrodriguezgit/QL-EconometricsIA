@@ -1,0 +1,268 @@
+{
+  "schema_version": "1.0.0",
+  "app_version": "0.22.0",
+  "title": "Y02 · Beta de emisoras mexicanas frente al IPC",
+  "nodes": [
+    {
+      "id": "datos",
+      "type": "yfinance",
+      "node_version": "1.0.0",
+      "parameters": {
+        "tickers": "WALMEX.MX: walmex\nAMXB.MX: america_movil\nGFNORTEO.MX: banorte",
+        "index": "^MXX",
+        "start_date": "2015-01-01",
+        "end_date": "2024-12-31",
+        "interval": "mensual",
+        "values": "rendimientos"
+      },
+      "position": {
+        "x": 0,
+        "y": 170
+      }
+    },
+    {
+      "id": "series",
+      "type": "series_plot",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "walmex,america_movil,banorte,ipc_mexico",
+        "time": "periodo",
+        "mode": "paneles",
+        "y_axis": "auto"
+      },
+      "position": {
+        "x": 320,
+        "y": 510
+      }
+    },
+    {
+      "id": "correlacion",
+      "type": "correlation",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "walmex,america_movil,banorte,ipc_mexico"
+      },
+      "position": {
+        "x": 320,
+        "y": 0
+      }
+    },
+    {
+      "id": "beta_walmex",
+      "type": "ols",
+      "node_version": "1.0.0",
+      "parameters": {
+        "x": "ipc_mexico",
+        "y": "walmex",
+        "covariance": "HC3"
+      },
+      "position": {
+        "x": 640,
+        "y": 170
+      }
+    },
+    {
+      "id": "beta_america_movil",
+      "type": "ols",
+      "node_version": "1.0.0",
+      "parameters": {
+        "x": "ipc_mexico",
+        "y": "america_movil",
+        "covariance": "HC3"
+      },
+      "position": {
+        "x": 640,
+        "y": 340
+      }
+    },
+    {
+      "id": "beta_banorte",
+      "type": "ols",
+      "node_version": "1.0.0",
+      "parameters": {
+        "x": "ipc_mexico",
+        "y": "banorte",
+        "covariance": "HC3"
+      },
+      "position": {
+        "x": 640,
+        "y": 510
+      }
+    },
+    {
+      "id": "diagnostico",
+      "type": "diagnostics",
+      "node_version": "1.0.0",
+      "parameters": {},
+      "position": {
+        "x": 960,
+        "y": 170
+      }
+    },
+    {
+      "id": "residuos",
+      "type": "residual_analysis",
+      "node_version": "1.0.0",
+      "parameters": {
+        "alpha": 0.05,
+        "y_axis": "auto",
+        "x_axis": "auto"
+      },
+      "position": {
+        "x": 960,
+        "y": 340
+      }
+    },
+    {
+      "id": "reporte",
+      "type": "report",
+      "node_version": "1.0.0",
+      "parameters": {
+        "note": "¿Qué emisora mexicana es más sensible al IPC? Compara las betas, su significancia y el R² de cada modelo de mercado."
+      },
+      "position": {
+        "x": 1280,
+        "y": 170
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "datos-data-series-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "series",
+      "target_port": "data"
+    },
+    {
+      "id": "datos-data-correlacion-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "correlacion",
+      "target_port": "data"
+    },
+    {
+      "id": "datos-data-beta_walmex-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "beta_walmex",
+      "target_port": "data"
+    },
+    {
+      "id": "datos-data-beta_america_movil-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "beta_america_movil",
+      "target_port": "data"
+    },
+    {
+      "id": "datos-data-beta_banorte-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "beta_banorte",
+      "target_port": "data"
+    },
+    {
+      "id": "beta_walmex-model-diagnostico-model",
+      "source": "beta_walmex",
+      "source_port": "model",
+      "target": "diagnostico",
+      "target_port": "model"
+    },
+    {
+      "id": "beta_walmex-model-residuos-model",
+      "source": "beta_walmex",
+      "source_port": "model",
+      "target": "residuos",
+      "target_port": "model"
+    },
+    {
+      "id": "beta_walmex-result-reporte-result",
+      "source": "beta_walmex",
+      "source_port": "result",
+      "target": "reporte",
+      "target_port": "result"
+    }
+  ],
+  "lesson": {
+    "module": "Y02",
+    "title": "Beta de emisoras mexicanas frente al IPC",
+    "objective": "Estimar la beta de mercado (CAPM) de walmex, america_movil, banorte frente al IPC de la BMV con rendimientos mensuales de Yahoo Finance.",
+    "references": [
+      "B27",
+      "B29",
+      "B35"
+    ],
+    "steps": [
+      {
+        "node_id": "datos",
+        "title": "1. Rendimientos mensuales",
+        "instruction": "Descarga con yfinance los cierres ajustados de WALMEX.MX, AMXB.MX, GFNORTEO.MX y del índice ^MXX, mensuales 2015–2024, como rendimientos simples (%). La salida incluye la tabla de comparación frente al índice.",
+        "expected": "Tabla con periodo, un rendimiento por activo y el del índice; tabla de comparación con volatilidad, caída máxima y beta.",
+        "question": "¿Qué activo fue más volátil que el índice? ¿Cuál tuvo la mayor caída máxima?"
+      },
+      {
+        "node_id": "series",
+        "title": "2. Graficar",
+        "instruction": "Dibuja los rendimientos mensuales en paneles, uno por serie. Para ver trayectorias, cambia «Valores entregados» del nodo de datos a base 100 y vuelve a ejecutar.",
+        "expected": "Un panel por serie con rendimientos alrededor de cero.",
+        "question": "¿En qué meses todos caen a la vez?"
+      },
+      {
+        "node_id": "correlacion",
+        "title": "3. Correlación",
+        "instruction": "Calcula la correlación de los rendimientos.",
+        "expected": "Matriz de correlación con el índice.",
+        "question": "¿Qué activo se mueve más con el mercado?"
+      },
+      {
+        "node_id": "beta_walmex",
+        "title": "4. Beta de walmex",
+        "instruction": "Estima el modelo de mercado walmex = α + β·ipc_mexico + ε con errores HC3. La pendiente es la beta del CAPM.",
+        "expected": "β cercana a la beta de la tabla de comparación (misma muestra).",
+        "question": "¿walmex es defensivo (β < 1) o agresivo (β > 1)? ¿α es distinto de cero?"
+      },
+      {
+        "node_id": "beta_america_movil",
+        "title": "5. Beta de america_movil",
+        "instruction": "Estima el modelo de mercado america_movil = α + β·ipc_mexico + ε con errores HC3. La pendiente es la beta del CAPM.",
+        "expected": "β cercana a la beta de la tabla de comparación (misma muestra).",
+        "question": "¿america_movil es defensivo (β < 1) o agresivo (β > 1)? ¿α es distinto de cero?"
+      },
+      {
+        "node_id": "beta_banorte",
+        "title": "6. Beta de banorte",
+        "instruction": "Estima el modelo de mercado banorte = α + β·ipc_mexico + ε con errores HC3. La pendiente es la beta del CAPM.",
+        "expected": "β cercana a la beta de la tabla de comparación (misma muestra).",
+        "question": "¿banorte es defensivo (β < 1) o agresivo (β > 1)? ¿α es distinto de cero?"
+      },
+      {
+        "node_id": "diagnostico",
+        "title": "7. Diagnósticos",
+        "instruction": "Revisa heterocedasticidad, autocorrelación y normalidad de los residuos del modelo de walmex.",
+        "expected": "Tabla de pruebas.",
+        "question": "¿Los rendimientos tienen colas más pesadas que la normal?"
+      },
+      {
+        "node_id": "residuos",
+        "title": "8. Residuos",
+        "instruction": "Analiza el riesgo específico: la parte del rendimiento que el índice no explica.",
+        "expected": "Gráficos de residuos.",
+        "question": "¿Qué fracción del riesgo es diversificable (1 − R²)?"
+      },
+      {
+        "node_id": "reporte",
+        "title": "9. Interpretar",
+        "instruction": "Concluye con β, α, R² y las limitaciones.",
+        "expected": "Una conclusión que distingue riesgo sistemático de específico.",
+        "question": "¿Una beta histórica predice la del próximo año?"
+      }
+    ],
+    "missing_tools": [
+      "Rendimientos en exceso sobre la tasa libre de riesgo (combinar con FRED TB3MS)",
+      "Betas móviles (ventanas rodantes)",
+      "Efecto del tipo de cambio en emisoras con ingresos en dólares",
+      "Calidad de datos: en Yahoo Finance AMXB.MX repite su precio en 6 meses (rendimiento 0; 2015-02, 2020-04 y cuatro meses de 2023). Revisa esas filas antes de interpretar su beta"
+    ]
+  }
+}

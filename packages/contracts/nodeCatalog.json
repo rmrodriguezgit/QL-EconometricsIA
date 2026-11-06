@@ -130,6 +130,104 @@
       }
     }
   },
+  "yfinance": {
+    "label": "Yahoo Finance · activos e índice",
+    "detail": "Descarga precios de uno o más activos con yfinance y los compara con un índice",
+    "category": "Fuentes de datos",
+    "color": "green",
+    "inputs": {},
+    "outputs": {
+      "data": "Dataset"
+    },
+    "defaults": {
+      "tickers": "AAPL\nMSFT",
+      "index": "^GSPC",
+      "start_date": "2020-01-01",
+      "end_date": "",
+      "interval": "mensual",
+      "values": "rendimientos"
+    },
+    "explanation": "Descarga con yfinance los cierres ajustados de uno o más activos («TICKER: alias», p. ej. AAPL o WALMEX.MX) y del índice elegido para compararlos; conserva solo las fechas en que cotizan todos. Entrega precios, rendimientos simples o logarítmicos (%) o índice base 100, y una tabla con rendimiento, volatilidad, caída máxima y beta, correlación y R² frente al índice. Requiere conexión; uso educativo, no asesoría financiera.",
+    "references": [
+      "B27",
+      "B29",
+      "B26"
+    ],
+    "choices": {
+      "index": [
+        "^GSPC",
+        "^IXIC",
+        "^DJI",
+        "^RUT",
+        "^MXX",
+        "^GSPTSE",
+        "^BVSP",
+        "^MERV",
+        "^STOXX50E",
+        "^GDAXI",
+        "^FTSE",
+        "^FCHI",
+        "^IBEX",
+        "^N225",
+        "^HSI",
+        "000001.SS",
+        "^BSESN",
+        "^AXJO",
+        "ACWI",
+        "URTH",
+        "EEM",
+        "ninguno"
+      ],
+      "interval": [
+        "diario",
+        "semanal",
+        "mensual"
+      ],
+      "values": [
+        "precios",
+        "rendimientos",
+        "log",
+        "base100"
+      ]
+    },
+    "choice_labels": {
+      "index": {
+        "^GSPC": "S&P 500 (^GSPC) · EE. UU.",
+        "^IXIC": "NASDAQ Composite (^IXIC) · EE. UU.",
+        "^DJI": "Dow Jones Industrial Average (^DJI) · EE. UU.",
+        "^RUT": "Russell 2000 (^RUT) · EE. UU.",
+        "^MXX": "S&P/BMV IPC (^MXX) · México",
+        "^GSPTSE": "S&P/TSX Composite (^GSPTSE) · Canadá",
+        "^BVSP": "Ibovespa (^BVSP) · Brasil",
+        "^MERV": "S&P Merval (^MERV) · Argentina",
+        "^STOXX50E": "Euro Stoxx 50 (^STOXX50E) · Zona del euro",
+        "^GDAXI": "DAX (^GDAXI) · Alemania",
+        "^FTSE": "FTSE 100 (^FTSE) · Reino Unido",
+        "^FCHI": "CAC 40 (^FCHI) · Francia",
+        "^IBEX": "IBEX 35 (^IBEX) · España",
+        "^N225": "Nikkei 225 (^N225) · Japón",
+        "^HSI": "Hang Seng (^HSI) · Hong Kong",
+        "000001.SS": "SSE Composite (000001.SS) · China",
+        "^BSESN": "BSE Sensex (^BSESN) · India",
+        "^AXJO": "S&P/ASX 200 (^AXJO) · Australia",
+        "ACWI": "iShares MSCI ACWI (mercado mundial) (ACWI) · Mundial",
+        "URTH": "iShares MSCI World (desarrollados) (URTH) · Mundial",
+        "EEM": "iShares MSCI Emerging Markets (EEM) · Emergentes",
+        "ninguno": "Sin índice de comparación"
+      },
+      "interval": {
+        "diario": "Diario (días hábiles)",
+        "semanal": "Semanal",
+        "mensual": "Mensual"
+      },
+      "values": {
+        "precios": "Precios de cierre ajustados",
+        "rendimientos": "Rendimientos simples (%)",
+        "log": "Rendimientos logarítmicos (%)",
+        "base100": "Índice base 100"
+      }
+    }
+  },
   "describe": {
     "label": "Descriptivos",
     "detail": "Cuenta observaciones y faltantes, media, mediana y desviación muestral por colum",

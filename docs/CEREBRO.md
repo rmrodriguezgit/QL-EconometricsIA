@@ -126,6 +126,10 @@ En 0.10.0 se implementaron así doce fichas (Chow, VAR, Johansen, SARIMA, WLS, r
 - La recuperación es léxica (BM25); no hay embeddings.
 - Un blueprint verificado es ejecutable, no una validación científica de la especificación.
 
+## Yahoo Finance (0.22.0)
+
+`detect_yahoo` elige el nodo `yfinance` si el enunciado dice «yahoo» o «yfinance», o si habla de acciones, bolsa, cotizaciones, beta, CAPM, ETF o bitcoin y nombra un activo o índice conocido (tickers de la lista sugerida, nombres como «Apple», «Bimbo» o «América Móvil», e índices como «S&P 500», «Nasdaq», «IPC», «Ibovespa» o «Nikkei»). Sin índice explícito usa el IPC si hay emisoras `.MX` y el S&P 500 en otro caso. «Diario» o «semanal» cambian el intervalo (mensual por defecto); «base 100», «precios» o «logarítmicos» cambian los valores (rendimientos por defecto). Si se pide la beta o el CAPM, añade un MCO con y = primer activo y x = índice. Los nombres de activos e índices se retiran del texto antes de buscar herramientas. Va antes que FRED en la detección. Yahoo Finance cuenta como red en la verificación y en la reparación, que corrige los alias de `tickers` (sin partir en «=», como en `MXN=X`).
+
 ## FRED (0.21.0)
 
 `detect_fred` elige el nodo `fred` solo si el enunciado nombra FRED o la Reserva Federal de St. Louis, o escribe un identificador del catálogo curado (p. ej. `DGS10`, `UNRATE`). Las frases «curva de rendimientos», «bono a 10 años», «letra a 3 meses», «fondos federales», «desempleo», «inflación/IPC», «PIB real», «recesión», «tipo de cambio», «petróleo», «hipotecas» y «M2» se traducen a series y se retiran del texto antes de buscar herramientas. Desde 0.21.1 también reconoce los títulos y alias del catálogo curado (226 series: «tasa de desempleo de Texas», «petróleo Brent», `tc_peso_dolar`…), de más largo a más corto y consumiendo cada coincidencia, y conserva el orden del enunciado. Años → `start_date`/`end_date`; «anual» o «trimestral» → `frequency` (mensual por defecto). FRED cuenta como red: la verificación del blueprint y la reparación la consultan solo con la red permitida. La reparación también corrige alias inválidos o repetidos de `series`.

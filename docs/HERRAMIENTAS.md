@@ -250,6 +250,16 @@ El nodo **OLS múltiple** (`multiple_ols`) añade dos vistas a su resultado, sin
 
 Pruebas: `tests/test_regression_views.py` (pendientes parciales = coeficientes de statsmodels con regresores correlacionados, filas del plano = valores ajustados, límite de puntos) y `apps/desktop/electron/regressionGeometry.test.ts` (residuo exacto al plano para cualquier par de ejes). Referencia: B13 (Wooldridge, partialling out).
 
+## Yahoo Finance con índice de comparación (0.22.0)
+
+Registro actual: **91 tipos**. Módulo `engine/quantlabs/yfinance_source.py`; catálogo de tickers sugeridos `packages/contracts/yfinanceCatalog.json`; pruebas sin red en `tests/test_yfinance_source.py`.
+
+| Tipo | Puertos | Método | Verificación | Límite declarado |
+|---|---|---|---|---|
+| `yfinance` | — → Dataset | `yfinance.download` de los cierres ajustados de los activos y del índice elegido; alinea las fechas comunes; entrega precios, rendimientos simples o logarítmicos (%) o base 100; tabla de comparación (rendimiento total y anualizado, volatilidad anualizada, caída máxima, beta, correlación y R² frente al índice) | Rendimientos, logaritmos, base 100, beta, correlación y volatilidad comparados con numpy/pandas sin red; ejemplos Y01–Y02 ejecutados con datos reales el 2026-11-05 (la beta de MCO coincide con la de la tabla) | Máx. 10 activos; índice de la lista o ninguno; intervalo diario sin calendario regular (para rezagos o raíz unitaria, semanal o mensual); sin rendimientos en exceso sobre la tasa libre de riesgo; uso educativo |
+
+Parámetros: `tickers` («TICKER: alias» por línea; sin alias se usa el de la lista sugerida o el ticker en minúsculas con «_»), `index` (p. ej. `^GSPC`, `^MXX`, `ninguno`), `start_date` y `end_date` (AAAA-MM-DD o año; vacía = hoy), `interval` (`diario`, `semanal`, `mensual`) y `values` (`precios`, `rendimientos`, `log`, `base100`). La columna del índice usa su alias (`sp500`, `ipc_mexico`, `nasdaq`…).
+
 ## FRED como fuente de datos (0.21.0)
 
 Registro actual: **90 tipos**. Módulo `engine/quantlabs/fred_source.py`; catálogo curado `packages/contracts/fredCatalog.json`; pruebas sin red en `tests/test_fred_source.py`.

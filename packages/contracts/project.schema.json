@@ -126,6 +126,7 @@
             "worldbank",
             "worldbank_multi",
             "fred",
+            "yfinance",
             "pairplot",
             "series_plot",
             "boxplots",

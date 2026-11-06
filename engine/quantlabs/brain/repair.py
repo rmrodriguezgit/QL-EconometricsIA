@@ -193,6 +193,20 @@ class Repairer:
         if 'output' in params and isinstance(params['output'], str):
             name = safe_name(params['output'], NODE_CATALOG[node['type']]['defaults'].get('output', 'variable'))
             changed |= self.set(node, 'output', name, 'Nombre de salida con espacios, acentos o símbolos.')
+        if node['type'] == 'yfinance' and isinstance(params.get('tickers'), str):
+            # Los tickers pueden llevar «=» (MXN=X): solo «:» separa el alias. El alias del índice también está ocupado.
+            from ..yfinance_source import INDICES, suggest_alias
+            index = params.get('index', '^GSPC')
+            used = {'periodo'} | ({INDICES[index]['alias']} if index in INDICES else set())
+            lines = []
+            for item in re.split(r'[\n;,]+', params['tickers']):
+                if not item.strip():
+                    continue
+                code, _, alias = item.partition(':')
+                code = code.strip().upper()
+                alias = unique(safe_name(alias.strip() or suggest_alias(code), 'activo').lower(), used)
+                lines.append(f'{code}: {alias}')
+            changed |= self.set(node, 'tickers', '\n'.join(lines), 'Alias de activos convertidos en nombres de columna válidos y distintos.')
         key = {'worldbank_multi': 'indicators', 'fred': 'series'}.get(node['type'])
         if key and isinstance(params.get(key), str):
             used, lines = {'periodo', 'fecha', 'pais', 'iso3'}, []
@@ -292,6 +306,6 @@ def repair(params):
     for node in project['nodes']:
         if not isinstance(node.get('parameters'), dict):
             node['parameters'] = {}
-    if not params.get('allow_network', True) and any(node['type'] in ('worldbank', 'worldbank_multi', 'fred') for node in project['nodes']):
-        raise EngineError('INVALID_PARAMETERS', 'El flujo consulta el Banco Mundial o FRED; permite la red para repararlo.')
+    if not params.get('allow_network', True) and any(node['type'] in ('worldbank', 'worldbank_multi', 'fred', 'yfinance') for node in project['nodes']):
+        raise EngineError('INVALID_PARAMETERS', 'El flujo consulta el Banco Mundial, FRED o Yahoo Finance; permite la red para repararlo.')
     return Repairer(project).run()

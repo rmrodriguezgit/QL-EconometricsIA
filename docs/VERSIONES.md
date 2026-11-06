@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.21.2**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.22.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -258,3 +258,14 @@ Sin dependencias nuevas. El catálogo es un JSON estático generado una vez (no 
 ## Selector FRED robusto 0.21.2
 
 Sin dependencias nuevas. `ErrorBoundary` es un componente de clase de React 19 (`getDerivedStateFromError` y `componentDidCatch`) que registra el error en la consola y se reinicia cuando cambia su `resetKey` (nodo seleccionado o ID de la serie). Rodea el contenido del inspector y cada selector de FRED; no cubre aún el lienzo ni el panel de resultados.
+
+## Yahoo Finance 0.22.0
+
+Nueva dependencia directa **yfinance 1.8.0** (Apache-2.0), fijada en `pyproject.toml` y `uv.lock`. Dependencias transitivas nuevas instaladas por `uv add`: curl-cffi 0.17.0 (MIT), beautifulsoup4 4.15.0 (MIT), lxml 6.1.3 (BSD-3-Clause), peewee 4.5.3 (MIT), platformdirs 4.14.5 (MIT), protobuf 7.36.2 (BSD-3-Clause), websockets 17.4 (BSD-3-Clause), cffi 2.1.1 (MIT-0), pycparser 3.12 (BSD-3-Clause) y soupsieve 4.0.1 (MIT). yfinance no es una API oficial de Yahoo: su disponibilidad y sus términos dependen de Yahoo Finance.
+
+Decisiones:
+
+- **Una descarga a la vez por proceso** (`threading.Lock`) y `threads=False`: yfinance guarda zonas horarias en SQLite y, con dos nodos descargando en paralelo, falló con «database is locked» (observado el 2026-11-05). La caché de zonas horarias se aísla en un directorio temporal por proceso.
+- **Cierres ajustados** (`auto_adjust=True`). Las fechas se alinean con `dropna(how='any')`: bolsas con feriados distintos pierden esas fechas, y la procedencia lo informa.
+- La tabla de comparación usa siempre rendimientos simples de la muestra alineada, sin importar los valores entregados. La beta es cov/var con n−1; coincide con la pendiente del MCO del activo sobre el índice en la misma muestra.
+- Caché en memoria de 1 h por proceso.

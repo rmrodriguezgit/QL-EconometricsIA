@@ -235,6 +235,69 @@ def fred_names():
     return sorted(pairs.items(), key=lambda pair: (-len(pair[0]), pair[0]))
 
 
+YAHOO_INDEX_PHRASES = [
+    (r's ?& ?p ?500|\bsp ?500\b', '^GSPC'), (r'nasdaq', '^IXIC'), (r'dow jones', '^DJI'), (r'russell', '^RUT'),
+    (r'\bipc\b|bolsa mexicana|\bbmv\b', '^MXX'), (r'\btsx\b', '^GSPTSE'), (r'bovespa|ibovespa', '^BVSP'), (r'merval', '^MERV'),
+    (r'euro ?stoxx', '^STOXX50E'), (r'\bdax\b', '^GDAXI'), (r'\bftse\b', '^FTSE'), (r'\bcac\b', '^FCHI'), (r'\bibex\b', '^IBEX'),
+    (r'nikkei', '^N225'), (r'hang seng', '^HSI'), (r'shanghai', '000001.SS'), (r'sensex', '^BSESN'), (r'\basx\b', '^AXJO'),
+    (r'msci (acwi|mundial)', 'ACWI'), (r'msci world', 'URTH'), (r'(msci )?emergentes', 'EEM'),
+]
+YAHOO_CONTEXT = r'yahoo|yfinance|\bacciones?\b|\bbolsa\b|cotizaci|\bbeta\b|\bcapm\b|\betf\b|criptomoneda|bitcoin'
+
+
+@lru_cache(maxsize=1)
+def yahoo_catalog():
+    path = ROOT / 'packages/contracts/yfinanceCatalog.json'
+    return json.loads(path.read_text(encoding='utf-8')) if path.exists() else {'indices': [], 'assets': []}
+
+
+def yahoo_asset_names():
+    """(nombre plegado, ticker) de la lista sugerida, de más largo a más corto («walmart de mexico» antes que «walmart»)."""
+    pairs = {}
+    for item in yahoo_catalog()['assets']:
+        # Nombre («grupo bimbo») y alias («bimbo», «america movil»); los alias tipo ticker («aapl») ya se cubren con el ticker.
+        for name in (re.sub(r'\s*\([^)]*\)', '', item['name']), item['alias'].replace('_', ' ')):
+            name = fold(name).strip()
+            if len(name) >= 4 and name != item['ticker'].lower():
+                pairs.setdefault(name, item['ticker'])
+    return sorted(pairs.items(), key=lambda pair: -len(pair[0]))
+
+
+def yahoo_phrases():
+    """Frases que describen datos de Yahoo Finance (activos e índices): se retiran antes de buscar herramientas."""
+    return [pattern for pattern, _ in YAHOO_INDEX_PHRASES] + [r'\b' + re.escape(name) + r'\b' for name, _ in yahoo_asset_names()]
+
+
+def detect_yahoo(text, folded):
+    """Yahoo Finance si se nombra (yahoo, yfinance) o si se habla de acciones/bolsa/beta y aparece un activo o índice conocido."""
+    catalog = yahoo_catalog()
+    named = re.search(r'yahoo|yfinance', folded)
+    tickers = [item['ticker'] for item in catalog['assets'] if re.search(r'(?<![A-Za-z0-9^=.-])' + re.escape(item['ticker']) + r'(?![A-Za-z0-9=-])', text)]
+    rest, found = folded, []
+    for name, ticker in yahoo_asset_names():
+        match = re.search(r'\b' + re.escape(name) + r'\b', rest)
+        if match:
+            found.append((match.start(), ticker))
+            rest = re.sub(r'\b' + re.escape(name) + r'\b', lambda m: ' ' * len(m.group(0)), rest)
+    for _, ticker in sorted(found):
+        if ticker not in tickers:
+            tickers.append(ticker)
+    index = next((ticker for pattern, ticker in YAHOO_INDEX_PHRASES if re.search(pattern, rest)), None)
+    if not named and not (re.search(YAHOO_CONTEXT, folded) and (tickers or index)):
+        return None
+    index = index or ('^MXX' if any(t.endswith('.MX') for t in tickers) else '^GSPC')
+    tickers = [t for t in tickers if t != index][:10] or (['WALMEX.MX', 'AMXB.MX'] if index == '^MXX' else ['AAPL', 'MSFT'])
+    params = {'tickers': '\n'.join(tickers), 'index': index,
+              'interval': 'diario' if re.search(r'diari', folded) else 'semanal' if re.search(r'semanal', folded) else 'mensual',
+              'values': 'base100' if re.search(r'base ?100', folded) else 'precios' if re.search(r'\bprecios?\b', folded) and not re.search(r'rendimiento|beta|capm|retorno', folded) else 'log' if re.search(r'logaritm', folded) else 'rendimientos'}
+    years = [int(y) for y in re.findall(r'\b(19[89]\d|20[0-4]\d)\b', folded)]
+    if years:
+        params['start_date'] = f'{min(years)}-01-01'
+        if len(years) >= 2:
+            params['end_date'] = f'{max(years)}-12-31'
+    return 'yfinance', params, f"Yahoo Finance: {', '.join(tickers)} frente a {index}, {params['values']} con intervalo {params['interval']}."
+
+
 def detect_fred(text, folded):
     """FRED solo si se nombra (FRED, Reserva Federal de St. Louis) o se escribe un identificador del catálogo."""
     known = fred_catalog()
@@ -280,6 +343,9 @@ def detect_source(text):
             return 'wooldridge', {'dataset': name}, f'Se usa el conjunto {name} de Wooldridge.'
     if 'wooldridge' in folded:
         return 'wooldridge', {'dataset': 'wage1'}, 'Wooldridge sin conjunto explícito: se usa wage1.'
+    yahoo = detect_yahoo(text, folded)
+    if yahoo:
+        return yahoo
     fred = detect_fred(text, folded)
     if fred:
         return fred
@@ -360,10 +426,11 @@ def rules_plan(prompt, retrieved_tools=()):
     """Plan determinista con la misma estructura que devuelve el modelo de lenguaje."""
     source, source_params, source_reason = detect_source(prompt)
     text = prompt
-    if source in ('worldbank', 'worldbank_multi', 'fred'):
+    if source in ('worldbank', 'worldbank_multi', 'fred', 'yfinance'):
         # Los nombres de indicadores («crecimiento del PIB», «tasa de interés») describen datos, no herramientas.
         text = fold(prompt)
-        for pattern, _ in (FRED_PHRASES if source == 'fred' else INDICATORS):
+        patterns = yahoo_phrases() if source == 'yfinance' else [p for p, _ in (FRED_PHRASES if source == 'fred' else INDICATORS)]
+        for pattern in patterns:
             text = re.sub(pattern, ' ', text)
     kinds, gaps = detect_tools(text)
     if not kinds:
@@ -380,8 +447,15 @@ def rules_plan(prompt, retrieved_tools=()):
     steps = [{'id': 'datos', 'tool': source, 'parameters': source_params, 'why': source_reason}]
     if 'describe' not in kinds and 'describe_table' not in kinds and source != 'csv':
         kinds.insert(0, 'describe')
+    if source == 'yfinance' and re.search(r'\bbeta\b|\bcapm\b|frente al? (indice|mercado)', fold(prompt)) and 'ols' not in kinds and 'multiple_ols' not in kinds:
+        kinds.append('ols')  # beta = pendiente del rendimiento del activo sobre el del índice
     for kind in kinds:
-        steps.append({'id': kind, 'tool': kind, 'parameters': hints(kind, fold(prompt)), 'why': NODE_CATALOG[kind].get('explanation', '')})
+        params = hints(kind, fold(prompt))
+        if source == 'yfinance' and kind in ('ols', 'scatter'):
+            from ..yfinance_source import INDICES, suggest_alias
+            first = source_params['tickers'].splitlines()[0].split(':')[0]
+            params.update({'x': INDICES[source_params['index']]['alias'], 'y': suggest_alias(first)})
+        steps.append({'id': kind, 'tool': kind, 'parameters': params, 'why': NODE_CATALOG[kind].get('explanation', '')})
     if any(NODE_CATALOG[k]['outputs'].get('result') == 'Result' for k in kinds):
         steps.append({'id': 'reporte', 'tool': 'report', 'parameters': {'note': f'Interpreta el resultado para responder: {prompt[:300]}'},
                       'why': 'Cierra el flujo con una pregunta de interpretación.'})

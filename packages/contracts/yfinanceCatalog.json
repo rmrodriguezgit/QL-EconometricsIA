@@ -1,0 +1,320 @@
+{
+ "source_url": "https://finance.yahoo.com",
+ "note": "Selección de tickers comprobados con yfinance el 2026-11-05 (^IPSA se descartó: Yahoo no devuelve datos). Cualquier otro ticker de Yahoo Finance puede escribirse a mano.",
+ "indices": [
+  {
+   "ticker": "^GSPC",
+   "alias": "sp500",
+   "name": "S&P 500",
+   "region": "EE. UU."
+  },
+  {
+   "ticker": "^IXIC",
+   "alias": "nasdaq",
+   "name": "NASDAQ Composite",
+   "region": "EE. UU."
+  },
+  {
+   "ticker": "^DJI",
+   "alias": "dow_jones",
+   "name": "Dow Jones Industrial Average",
+   "region": "EE. UU."
+  },
+  {
+   "ticker": "^RUT",
+   "alias": "russell2000",
+   "name": "Russell 2000",
+   "region": "EE. UU."
+  },
+  {
+   "ticker": "^MXX",
+   "alias": "ipc_mexico",
+   "name": "S&P/BMV IPC",
+   "region": "México"
+  },
+  {
+   "ticker": "^GSPTSE",
+   "alias": "tsx",
+   "name": "S&P/TSX Composite",
+   "region": "Canadá"
+  },
+  {
+   "ticker": "^BVSP",
+   "alias": "bovespa",
+   "name": "Ibovespa",
+   "region": "Brasil"
+  },
+  {
+   "ticker": "^MERV",
+   "alias": "merval",
+   "name": "S&P Merval",
+   "region": "Argentina"
+  },
+  {
+   "ticker": "^STOXX50E",
+   "alias": "euro_stoxx50",
+   "name": "Euro Stoxx 50",
+   "region": "Zona del euro"
+  },
+  {
+   "ticker": "^GDAXI",
+   "alias": "dax",
+   "name": "DAX",
+   "region": "Alemania"
+  },
+  {
+   "ticker": "^FTSE",
+   "alias": "ftse100",
+   "name": "FTSE 100",
+   "region": "Reino Unido"
+  },
+  {
+   "ticker": "^FCHI",
+   "alias": "cac40",
+   "name": "CAC 40",
+   "region": "Francia"
+  },
+  {
+   "ticker": "^IBEX",
+   "alias": "ibex35",
+   "name": "IBEX 35",
+   "region": "España"
+  },
+  {
+   "ticker": "^N225",
+   "alias": "nikkei225",
+   "name": "Nikkei 225",
+   "region": "Japón"
+  },
+  {
+   "ticker": "^HSI",
+   "alias": "hang_seng",
+   "name": "Hang Seng",
+   "region": "Hong Kong"
+  },
+  {
+   "ticker": "000001.SS",
+   "alias": "shanghai",
+   "name": "SSE Composite",
+   "region": "China"
+  },
+  {
+   "ticker": "^BSESN",
+   "alias": "sensex",
+   "name": "BSE Sensex",
+   "region": "India"
+  },
+  {
+   "ticker": "^AXJO",
+   "alias": "asx200",
+   "name": "S&P/ASX 200",
+   "region": "Australia"
+  },
+  {
+   "ticker": "ACWI",
+   "alias": "msci_acwi",
+   "name": "iShares MSCI ACWI (mercado mundial)",
+   "region": "Mundial"
+  },
+  {
+   "ticker": "URTH",
+   "alias": "msci_world",
+   "name": "iShares MSCI World (desarrollados)",
+   "region": "Mundial"
+  },
+  {
+   "ticker": "EEM",
+   "alias": "msci_emergentes",
+   "name": "iShares MSCI Emerging Markets",
+   "region": "Emergentes"
+  }
+ ],
+ "assets": [
+  {
+   "ticker": "AAPL",
+   "alias": "aapl",
+   "name": "Apple",
+   "group": "Acciones EE. UU."
+  },
+  {
+   "ticker": "MSFT",
+   "alias": "msft",
+   "name": "Microsoft",
+   "group": "Acciones EE. UU."
+  },
+  {
+   "ticker": "GOOGL",
+   "alias": "googl",
+   "name": "Alphabet (clase A)",
+   "group": "Acciones EE. UU."
+  },
+  {
+   "ticker": "AMZN",
+   "alias": "amzn",
+   "name": "Amazon",
+   "group": "Acciones EE. UU."
+  },
+  {
+   "ticker": "NVDA",
+   "alias": "nvda",
+   "name": "NVIDIA",
+   "group": "Acciones EE. UU."
+  },
+  {
+   "ticker": "META",
+   "alias": "meta",
+   "name": "Meta Platforms",
+   "group": "Acciones EE. UU."
+  },
+  {
+   "ticker": "TSLA",
+   "alias": "tsla",
+   "name": "Tesla",
+   "group": "Acciones EE. UU."
+  },
+  {
+   "ticker": "JPM",
+   "alias": "jpm",
+   "name": "JPMorgan Chase",
+   "group": "Acciones EE. UU."
+  },
+  {
+   "ticker": "KO",
+   "alias": "ko",
+   "name": "Coca-Cola",
+   "group": "Acciones EE. UU."
+  },
+  {
+   "ticker": "WMT",
+   "alias": "wmt",
+   "name": "Walmart",
+   "group": "Acciones EE. UU."
+  },
+  {
+   "ticker": "XOM",
+   "alias": "xom",
+   "name": "Exxon Mobil",
+   "group": "Acciones EE. UU."
+  },
+  {
+   "ticker": "JNJ",
+   "alias": "jnj",
+   "name": "Johnson & Johnson",
+   "group": "Acciones EE. UU."
+  },
+  {
+   "ticker": "WALMEX.MX",
+   "alias": "walmex",
+   "name": "Walmart de México",
+   "group": "Acciones México (BMV)"
+  },
+  {
+   "ticker": "AMXB.MX",
+   "alias": "america_movil",
+   "name": "América Móvil",
+   "group": "Acciones México (BMV)"
+  },
+  {
+   "ticker": "FEMSAUBD.MX",
+   "alias": "femsa",
+   "name": "FEMSA",
+   "group": "Acciones México (BMV)"
+  },
+  {
+   "ticker": "GFNORTEO.MX",
+   "alias": "banorte",
+   "name": "Grupo Financiero Banorte",
+   "group": "Acciones México (BMV)"
+  },
+  {
+   "ticker": "CEMEXCPO.MX",
+   "alias": "cemex",
+   "name": "Cemex",
+   "group": "Acciones México (BMV)"
+  },
+  {
+   "ticker": "BIMBOA.MX",
+   "alias": "bimbo",
+   "name": "Grupo Bimbo",
+   "group": "Acciones México (BMV)"
+  },
+  {
+   "ticker": "GMEXICOB.MX",
+   "alias": "grupo_mexico",
+   "name": "Grupo México",
+   "group": "Acciones México (BMV)"
+  },
+  {
+   "ticker": "TLEVISACPO.MX",
+   "alias": "televisa",
+   "name": "Televisa",
+   "group": "Acciones México (BMV)"
+  },
+  {
+   "ticker": "SPY",
+   "alias": "spy",
+   "name": "SPDR S&P 500 ETF",
+   "group": "ETF"
+  },
+  {
+   "ticker": "QQQ",
+   "alias": "qqq",
+   "name": "Invesco QQQ (NASDAQ-100)",
+   "group": "ETF"
+  },
+  {
+   "ticker": "GLD",
+   "alias": "oro_etf",
+   "name": "SPDR Gold Shares",
+   "group": "ETF"
+  },
+  {
+   "ticker": "TLT",
+   "alias": "bonos_20y_etf",
+   "name": "iShares Bonos del Tesoro 20+ años",
+   "group": "ETF"
+  },
+  {
+   "ticker": "NAFTRAC.MX",
+   "alias": "naftrac",
+   "name": "NAFTRAC (réplica del IPC)",
+   "group": "ETF"
+  },
+  {
+   "ticker": "BTC-USD",
+   "alias": "bitcoin",
+   "name": "Bitcoin en dólares",
+   "group": "Cripto"
+  },
+  {
+   "ticker": "ETH-USD",
+   "alias": "ether",
+   "name": "Ether en dólares",
+   "group": "Cripto"
+  },
+  {
+   "ticker": "MXN=X",
+   "alias": "usd_mxn",
+   "name": "Pesos mexicanos por dólar",
+   "group": "Divisas"
+  },
+  {
+   "ticker": "EURUSD=X",
+   "alias": "eur_usd",
+   "name": "Dólares por euro",
+   "group": "Divisas"
+  },
+  {
+   "ticker": "CL=F",
+   "alias": "petroleo_wti_fut",
+   "name": "Futuro de petróleo WTI",
+   "group": "Materias primas"
+  },
+  {
+   "ticker": "GC=F",
+   "alias": "oro_fut",
+   "name": "Futuro de oro",
+   "group": "Materias primas"
+  }
+ ]
+}

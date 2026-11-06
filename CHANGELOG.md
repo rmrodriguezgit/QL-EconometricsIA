@@ -298,3 +298,13 @@ La aplicación y sus instaladores están pendientes de implementación. Los camb
 - **Corrección**: abrir el selector del catálogo FRED podía dejar la pantalla en negro («Cannot convert undefined or null to object» en `Object.entries`) si `fredCatalog.json` no tenía `groups`, como ocurrió mientras se regeneraba. Ahora `normalizeCatalog` tolera un catálogo sin `items` o sin `groups` (los temas salen de los items) y «Añadir serie» funciona con el catálogo vacío.
 - **Aislamiento de fallos**: el inspector y cada selector de FRED están dentro de un `ErrorBoundary`. Un error de render muestra «No se pudo mostrar …» con el mensaje y **Reintentar**; el resto de la aplicación y el flujo siguen intactos. Al cambiar de nodo o de ID se reintenta solo.
 - Pruebas: `electron/fredSearch.test.ts` cubre catálogos sin `groups`, sin `items` o con tipos inesperados. Verificado en la interfaz forzando un error temporal en el selector (eliminado después).
+
+## 0.22.0 - 2026-11-05
+
+- **Nueva fuente Yahoo Finance** (`yfinance`): uno o más activos («TICKER: alias», máx. 10: acciones, ETF, cripto, divisas, futuros) y un índice de comparación elegido de una lista de 21 (S&P 500, Nasdaq, Dow Jones, Russell 2000, IPC de la BMV, TSX, Ibovespa, Merval, Euro Stoxx 50, DAX, FTSE 100, CAC 40, IBEX 35, Nikkei 225, Hang Seng, Shanghai, Sensex, ASX 200 y tres ETF MSCI) o ninguno. Intervalo diario, semanal o mensual; valores en precios de cierre ajustados, rendimientos simples o logarítmicos (%) o base 100. Solo se conservan las fechas en que cotizan todas las series y se informa cuántas se descartan.
+- **Tabla de comparación** en la salida del nodo: rendimiento total y anualizado, volatilidad anualizada, caída máxima y, frente al índice, beta, correlación y R².
+- Catálogo `packages/contracts/yfinanceCatalog.json` con 21 índices y 31 activos sugeridos (EE. UU., BMV, ETF, cripto, divisas y materias primas), comprobados con yfinance el 2026-11-05 (^IPSA descartado: sin datos).
+- **Ejemplos Y01 y Y02** (requieren conexión): beta del CAPM de Apple y Microsoft frente al S&P 500, y de Walmex, América Móvil y Banorte frente al IPC, con rendimientos mensuales 2015–2024. Ejecutados con datos reales.
+- Cerebro IA: detecta Yahoo Finance («yahoo», «yfinance», o «acciones/bolsa/beta/CAPM» con un activo o índice conocido), elige el índice por su nombre y, si se pide la beta, añade un MCO activo ~ índice. Cuenta como red en la verificación y la reparación, que también corrige los alias de `tickers`.
+- Inspector: editor de activos con sugerencias y el índice de comparación como lista desplegable.
+- Pruebas: `tests/test_yfinance_source.py` (sin red, con precios inyectados) y `electron/yahooColumns.test.ts`.

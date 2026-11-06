@@ -41,6 +41,20 @@ Cada proyecto incluye lesson: objetivo, referencias, pasos, instrucciones, resul
 
 El catálogo conserva todos los temas de cada módulo como guía curricular, pero estos recorridos no completan cada sección de los libros. Los métodos y herramientas todavía pendientes están enumerados en [HERRAMIENTAS.md](HERRAMIENTAS.md). La definición del catálogo se guarda en [catalog.json](../examples/catalog.json). Los archivos personales 0.3.0 con experiment siguen admitidos como compatibilidad; el catálogo nuevo no los utiliza.
 
+## Recorridos aplicados con Yahoo Finance Y01–Y02 (0.22.0)
+
+Requieren conexión; uso educativo, no asesoría financiera. Cada uno descarga los rendimientos mensuales 2015–2024 (nodo `datos`), los grafica en paneles, calcula la correlación y estima el modelo de mercado activo = α + β·índice + ε con errores HC3 para cada activo, con diagnósticos y residuos del primero. La suite los ejecuta sin red con precios inyectados (`tests/test_yfinance_source.py`). Resultados de la ejecución real del 2026-11-05 (119 meses comunes, ninguna fecha descartada; Yahoo ajusta precios históricos al pagarse dividendos, así que pueden variar):
+
+| Ejemplo | Activos vs índice | β (IC 95 % HC3) | α mensual (p) | R² |
+|---|---|---|---|---|
+| Y01 | AAPL vs S&P 500 | 1,23 (1,04–1,43) | 0,99 % (0,064) | 0,47 |
+| Y01 | MSFT vs S&P 500 | 0,97 (0,79–1,16) | 1,32 % (0,001) | 0,49 |
+| Y02 | WALMEX.MX vs IPC | 0,69 (0,42–0,96) | 0,81 % (0,057) | 0,32 |
+| Y02 | AMXB.MX vs IPC | 0,76 (0,56–0,95) | 0,21 % (0,66) | 0,30 |
+| Y02 | GFNORTEO.MX vs IPC | 1,37 (1,00–1,73) | 0,89 % (0,092) | 0,56 |
+
+La beta de cada MCO coincide con la de la tabla de comparación del nodo de datos (misma muestra). Diagnósticos del primer modelo: Y01 sin evidencia de heterocedasticidad ni autocorrelación (Breusch-Pagan p = 0,36; Breusch-Godfrey p = 0,78); Y02 White p = 0,029. Calidad de datos observada: Yahoo Finance repite el precio de AMXB.MX en 6 meses (rendimiento exactamente 0 en 2015-02, 2020-04, 2023-04, 2023-05, 2023-06 y 2023-08); la herramienta no lo corrige y Y02 lo declara como pendiente. Pendientes declarados en cada guía: rendimientos en exceso sobre la tasa libre de riesgo y betas móviles.
+
 ## Recorridos aplicados con FRED F01–F05 (0.21.0)
 
 Requieren conexión. Se descargan con el nodo `fred` y se abren desde **Ejemplos → F01…F05**. La suite los ejecuta sin red inyectando series sintéticas (`tests/test_fred_source.py`). Resultados de la ejecución real del 2026-11-05 (no son valores esperados fijos: FRED revisa sus series):

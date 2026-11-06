@@ -936,6 +936,72 @@
         "Brecha del producto en lugar del desempleo",
         "Datos en tiempo real (ALFRED)"
       ]
+    },
+    {
+      "id": "Y01",
+      "title": "Beta de mercado: Apple y Microsoft frente al S&P 500",
+      "topics": "Yahoo Finance, rendimientos, CAPM, beta, modelo de mercado, MCO con HC3",
+      "references": [
+        "B27",
+        "B29",
+        "B35"
+      ],
+      "phase": "P2",
+      "status": "executable",
+      "network": true,
+      "objective": "Estimar la beta de mercado (CAPM) de aapl, msft frente al S&P 500 con rendimientos mensuales de Yahoo Finance.",
+      "question": "¿Apple y Microsoft son más o menos riesgosas que el mercado? Usa la beta, su intervalo, α y R², y separa el riesgo sistemático del específico.",
+      "acceptance": "El estudiante interpreta β, α y R² del modelo de mercado y compara la beta de MCO con la de la tabla de comparación",
+      "scope": "Recorrido aplicado con datos reales de Yahoo Finance (requiere conexión). Uso educativo; no es asesoría financiera.",
+      "tools": [
+        "correlation",
+        "diagnostics",
+        "ols",
+        "report",
+        "residual_analysis",
+        "series_plot",
+        "yfinance"
+      ],
+      "steps": 8,
+      "format": "connected",
+      "missing_tools": [
+        "Rendimientos en exceso sobre la tasa libre de riesgo (combinar con FRED TB3MS)",
+        "Betas móviles (ventanas rodantes)"
+      ]
+    },
+    {
+      "id": "Y02",
+      "title": "Beta de emisoras mexicanas frente al IPC",
+      "topics": "Yahoo Finance, BMV, rendimientos, CAPM, beta, modelo de mercado",
+      "references": [
+        "B27",
+        "B29",
+        "B35"
+      ],
+      "phase": "P2",
+      "status": "executable",
+      "network": true,
+      "objective": "Estimar la beta de mercado (CAPM) de walmex, america_movil, banorte frente al IPC de la BMV con rendimientos mensuales de Yahoo Finance.",
+      "question": "¿Qué emisora mexicana es más sensible al IPC? Compara las betas, su significancia y el R² de cada modelo de mercado.",
+      "acceptance": "El estudiante interpreta β, α y R² del modelo de mercado y compara la beta de MCO con la de la tabla de comparación",
+      "scope": "Recorrido aplicado con datos reales de Yahoo Finance (requiere conexión). Uso educativo; no es asesoría financiera.",
+      "tools": [
+        "correlation",
+        "diagnostics",
+        "ols",
+        "report",
+        "residual_analysis",
+        "series_plot",
+        "yfinance"
+      ],
+      "steps": 9,
+      "format": "connected",
+      "missing_tools": [
+        "Rendimientos en exceso sobre la tasa libre de riesgo (combinar con FRED TB3MS)",
+        "Betas móviles (ventanas rodantes)",
+        "Efecto del tipo de cambio en emisoras con ingresos en dólares",
+        "Calidad de datos: en Yahoo Finance AMXB.MX repite su precio en 6 meses (rendimiento 0; 2015-02, 2020-04 y cuatro meses de 2023). Revisa esas filas antes de interpretar su beta"
+      ]
     }
   ]
 }

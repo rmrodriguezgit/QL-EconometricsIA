@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.26.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.26.1**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -289,3 +289,7 @@ Sin dependencias nuevas. `brain.interpret` reutiliza el cliente de Ollama del ce
 ## Portafolio de Markowitz ampliado 0.26.0
 
 Sin dependencias nuevas. La frontera usa `scipy.optimize.linprog` (método HiGHS) para el rendimiento mínimo y máximo alcanzable con tope por activo y SLSQP para cada punto; el máximo Sortino se optimiza con SLSQP desde pesos iguales, el mejor punto de la frontera por Sharpe y el mejor portafolio aleatorio por Sortino, y se conserva el mejor. Decisión: volatilidad y Sharpe esperados usan la covarianza elegida (contracción o muestral); Sortino, VaR, CVaR y caída máxima de estimación usan los rendimientos históricos del bloque de estimación, porque dependen de la forma de la distribución y no solo de la covarianza. La nube de 600 portafolios usa semilla fija (7) para que el gráfico sea reproducible.
+
+## Indicadores con Yahoo Finance 0.26.1
+
+Sin dependencias nuevas. Decisión: con rendimientos se reconstruye un índice base 100 en lugar de rechazar la tabla, porque medias móviles, RSI, MACD y Bollinger necesitan un nivel; el índice da los mismos RSI y caídas que los precios originales (los indicadores en nivel, como medias y bandas, quedan en la escala del índice). La detección automática no cambia `periods_per_year`: solo avisa, para no alterar resultados de proyectos guardados.

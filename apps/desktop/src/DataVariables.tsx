@@ -1,7 +1,7 @@
 import {knownSourceColumns,sourceName} from './sourceColumns';
 import {scatterInput,toggleColumns,isColumnParameter,multipleColumnKeys,type ColumnSchema} from './scatterInput';
 import type {Project,ProjectNode} from './model';
-const labels:Record<string,string>={x:'Variable explicativa (X)',y:'Variable respuesta (Y)',column:'Variable',value:'Columna de valores',nominal:'Valor nominal',index:'Índice de precios',population:'Población',returns:'Retornos',signal:'Señal',before:'Antes',after:'Después',error:'Error de equilibrio',columns:'Variables seleccionadas',features:'Variables explicativas',instruments:'Instrumentos',entity:'Unidad del panel (entidad)',first:'Primera variable',second:'Segunda variable'};
+const labels:Record<string,string>={x:'Variable explicativa (X)',y:'Variable respuesta (Y)',column:'Variable',value:'Columna de valores',nominal:'Valor nominal',index:'Índice de precios',population:'Población',returns:'Retornos',signal:'Señal',before:'Antes',after:'Después',error:'Error de equilibrio',columns:'Variables seleccionadas',features:'Variables explicativas',instruments:'Instrumentos',entity:'Unidad del panel (entidad)',first:'Primera variable',second:'Segunda variable',price:'Columna de precios o rendimientos'};
 export default function DataVariables({project,node,schemas,busy,onChange,onLoad,onPatch}:{project:Project;node:ProjectNode;schemas:Record<string,ColumnSchema>;busy:boolean;onChange:(key:string,value:string)=>void;onLoad:(id:string)=>void;onPatch:(parameters:Record<string,string|number>)=>void}){
  const fields=Object.entries(node.parameters).filter(([key])=>isColumnParameter(key)).sort((a,b)=>a[0]==='y'?-1:b[0]==='y'?1:0);
  if(!fields.length)return null;

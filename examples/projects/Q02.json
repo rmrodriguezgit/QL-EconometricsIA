@@ -41,6 +41,7 @@
       "node_version": "1.0.0",
       "parameters": {
         "price": "aapl",
+        "values": "precios",
         "window": 20,
         "periods_per_year": 252,
         "risk_free": 0.02

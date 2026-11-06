@@ -83,7 +83,28 @@ class IndicatorAndRiskTests(unittest.TestCase):
         _, again = quant_features(changed, {'price': 'precio', 'window': 10})
         pd.testing.assert_frame_equal(data.iloc[:300].drop(columns='precio'), again['data'].iloc[:300].drop(columns='precio'))
         with self.assertRaises(EngineError):
-            quant_features(frame.assign(precio=-frame['precio']), {'price': 'precio'})
+            quant_features(frame.assign(precio=-frame['precio']), {'price': 'precio', 'values': 'precios'})
+
+    def test_indicators_from_returns_like_yahoo_finance(self):
+        # Yahoo Finance con «rendimientos» entrega columnas por ticker en %, con negativos; antes el nodo fallaba.
+        rng = np.random.default_rng(5)
+        returns = rng.normal(.8, 4, 120)
+        frame = pd.DataFrame({'periodo': pd.date_range('2014-01-01', periods=120, freq='MS').strftime('%Y-%m-%d'), 'spy': returns, 'qqq': returns * 1.2})
+        result, out = quant_features(frame, {'price': 'precio', 'window': 12, 'periods_per_year': 12})
+        data = out['data']
+        np.testing.assert_allclose(data['spy_indice'], 100 * np.cumprod(1 + returns / 100))
+        np.testing.assert_allclose(data['spy_rend'], returns)
+        np.testing.assert_allclose(data['spy_sma'].iloc[11], data['spy_indice'].iloc[:12].mean())
+        np.testing.assert_allclose(data['spy_vol_movil'].iloc[-1], np.std(returns[-12:] / 100, ddof=1) * np.sqrt(12) * 100)
+        self.assertTrue(any('se usó spy' in w for w in result['warnings']))
+        self.assertTrue(any('rendimientos en %' in w for w in result['warnings']))
+        self.assertFalse(any('mal escalados' in w for w in result['warnings']))
+        monthly_as_daily = quant_features(frame, {'price': 'spy', 'periods_per_year': 252})[0]
+        self.assertTrue(any('≈ 12 períodos por año' in w for w in monthly_as_daily['warnings']))
+        chosen = quant_features(frame.assign(qqq=frame['qqq'] / 100), {'price': 'qqq', 'values': 'decimal'})[1]['data']
+        np.testing.assert_allclose(chosen['qqq_indice'], 100 * np.cumprod(1 + returns * 1.2 / 100))
+        with self.assertRaises(EngineError):
+            quant_features(frame, {'price': 'spy', 'values': 'precios'})
 
     def test_risk_metrics_against_manual_formulas(self):
         rng = np.random.default_rng(3)

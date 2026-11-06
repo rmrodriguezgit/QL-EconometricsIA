@@ -3189,12 +3189,31 @@
       "result": "Result"
     },
     "defaults": {
-      "price": "precio",
+      "price": "",
+      "values": "auto",
       "window": 20,
       "periods_per_year": 252,
       "risk_free": 0.02
     },
-    "explanation": "Añade a la tabla indicadores calculados solo con datos pasados de la columna de precios: rendimiento simple y logarítmico, volatilidad y Sharpe anualizados móviles, caída desde el máximo, medias móviles simple y exponencial, RSI(14), MACD(12,26,9) y bandas de Bollinger (±2 DE). Integrada desde Quantlabs-Blueprints.",
+    "choices": {
+      "values": [
+        "auto",
+        "precios",
+        "porcentaje",
+        "decimal",
+        "log"
+      ]
+    },
+    "choice_labels": {
+      "values": {
+        "auto": "Detectar (precios si todos son positivos; si no, rendimientos en %)",
+        "precios": "Precios o niveles",
+        "porcentaje": "Rendimientos en % (1 = 1 %)",
+        "decimal": "Rendimientos en decimales (0.01 = 1 %)",
+        "log": "Rendimientos logarítmicos en %"
+      }
+    },
+    "explanation": "Añade a la tabla indicadores calculados solo con datos pasados de la columna de precios (o de un índice base 100 reconstruido si la columna trae rendimientos, como Yahoo Finance con «rendimientos»): rendimiento simple y logarítmico, volatilidad y Sharpe anualizados móviles, caída desde el máximo, medias móviles simple y exponencial, RSI(14), MACD(12,26,9) y bandas de Bollinger (±2 DE). Integrada desde Quantlabs-Blueprints.",
     "references": [
       "B27",
       "B32"

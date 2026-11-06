@@ -195,9 +195,16 @@ def rsi(price, window):
 
 
 def quant_features(frame, params):
-    column = str(params.get('price', 'precio'))
+    numeric = [c for c in frame.columns if c != 'periodo' and pd.api.types.is_numeric_dtype(frame[c])]
+    column = str(params.get('price', '') or '').strip()
+    notes = []
+    if column not in frame.columns and column in ('', 'precio') and numeric:
+        # El valor por defecto «precio» no existe en tablas como Yahoo Finance o FRED: se usa la primera columna numérica.
+        notes.append(f'No hay columna «{column or "precio"}»; se usó {numeric[0]}. Elige otra en «Columna de precios o rendimientos».')
+        column = numeric[0]
     if column not in frame.columns or not pd.api.types.is_numeric_dtype(frame[column]):
-        fail(f'Elige una columna de precios numérica. Disponibles: {", ".join(map(str, frame.columns))}.')
+        fail(f'Elige una columna de precios numérica. Disponibles: {", ".join(map(str, numeric or frame.columns))}.')
+    values = choice(params, 'values', ['auto', 'precios', 'porcentaje', 'decimal', 'log'], 'auto')
     window = number(params, 'window', 20, 2, 252, True)
     annual = number(params, 'periods_per_year', 252, 1, 366, True)
     rf = number(params, 'risk_free', .02, -.99, 1)
@@ -206,13 +213,38 @@ def quant_features(frame, params):
         # Periodo numérico (años o índice) se ordena tal cual; si no, como fechas ISO.
         key = data['periodo'] if pd.api.types.is_numeric_dtype(data['periodo']) else dates(data)
         data = data.iloc[key.argsort(kind='stable').to_numpy()].reset_index(drop=True)
-    price = data[column].astype(float)
-    if (price.dropna() <= 0).any():
-        fail('Los indicadores requieren precios positivos.')
+        stamps = key if pd.api.types.is_datetime64_any_dtype(key) else None
+        if stamps is not None and len(stamps) > 3:
+            gap = float(stamps.sort_values().diff().dt.days.median())
+            guess = 252 if gap <= 4 else 52 if gap <= 10 else 12 if gap <= 45 else 4 if gap <= 135 else 1
+            if guess != annual:
+                notes.append(f'Las fechas están separadas unos {gap:.0f} días (≈ {guess} períodos por año) pero se anualiza con {annual}: '
+                             f'volatilidad y Sharpe móviles quedan mal escalados. Ajusta «periods_per_year» a {guess}.')
+    raw = data[column].astype(float)
+    if values == 'auto':
+        values = 'precios' if (raw.dropna() > 0).all() else 'porcentaje'
+        if values == 'porcentaje':
+            notes.append(f'{column} tiene valores cero o negativos: se interpretó como rendimientos en % (1 = 1 %) y se construyó un índice base 100. '
+                         'Si son decimales o logarítmicos, elige el tipo de valores.')
+    if values == 'precios':
+        price = raw
+        given = None
+        if (price.dropna() <= 0).any():
+            fail(f'{column} tiene valores cero o negativos: no son precios. Si son rendimientos, elige el tipo de valores correspondiente.')
+    else:
+        r = to_returns(data, [column], values)[column]
+        if (r.dropna() <= -1).any():
+            fail(f'{column} tiene rendimientos de −100 % o menos: revisa el tipo de valores (¿son decimales?).')
+        # Índice de precios base 100 reconstruido con los rendimientos (el primer rendimiento se aplica sobre 100).
+        price = 100 * (1 + r.fillna(0)).cumprod()
+        price[r.isna() & r.notna().cummax()] = np.nan
+        data[f'{column}_indice'] = price
+        given = r
     p = column
-    r = price.pct_change(fill_method=None)
+    # Con rendimientos de entrada se usan tal cual (no se pierde el primero al reconstruir el índice).
+    r = price.pct_change(fill_method=None) if given is None else given
     data[f'{p}_rend'] = r * 100
-    data[f'{p}_rend_log'] = np.log(price / price.shift(1)) * 100
+    data[f'{p}_rend_log'] = np.log1p(r) * 100
     data[f'{p}_vol_movil'] = r.rolling(window).std(ddof=1) * np.sqrt(annual) * 100
     excess = r - ((1 + rf) ** (1 / annual) - 1)
     data[f'{p}_sharpe_movil'] = excess.rolling(window).mean() / r.rolling(window).std(ddof=1).replace(0, np.nan) * np.sqrt(annual)
@@ -227,7 +259,8 @@ def quant_features(frame, params):
     data[f'{p}_boll_sup'], data[f'{p}_boll_inf'] = mid + 2 * sd, mid - 2 * sd
     added = [c for c in data.columns if c.startswith(f'{p}_') and c not in frame.columns]
     last = data.iloc[-1]
-    result = report(f'Indicadores de {p} con ventana {window} y {annual} períodos por año. Cada valor usa solo datos hasta su fila (sin mirar el futuro); '
+    source = 'precios' if values == 'precios' else f'un índice base 100 construido con sus rendimientos ({values})'
+    result = report(f'Indicadores de {p} calculados sobre {source}, con ventana {window} y {annual} períodos por año. Cada valor usa solo datos hasta su fila (sin mirar el futuro); '
                     'las primeras filas quedan vacías hasta completar la ventana.', columnas_nuevas=len(added), filas=len(data),
                     rsi_final=float(last[f'{p}_rsi']) if pd.notna(last[f'{p}_rsi']) else None, caida_maxima_pct=float(data[f'{p}_caida'].min()))
     result['tables'] = [table('Columnas añadidas', ['Columna', 'Qué mide'], [
@@ -235,8 +268,10 @@ def quant_features(frame, params):
         [f'{p}_vol_movil', f'Volatilidad anualizada de {window} períodos (%)'], [f'{p}_sharpe_movil', f'Sharpe anualizado móvil (tasa libre {rf:.1%})'],
         [f'{p}_caida', 'Caída desde el máximo previo (%)'], [f'{p}_sma', f'Media móvil simple de {window}'], [f'{p}_ema', f'Media móvil exponencial de {window}'],
         [f'{p}_rsi', 'RSI de 14 (Wilder)'], [f'{p}_macd', 'MACD 12-26'], [f'{p}_macd_senal', 'Señal del MACD (9)'],
-        [f'{p}_boll_sup', 'Banda de Bollinger superior (±2 DE)'], [f'{p}_boll_inf', 'Banda de Bollinger inferior']])]
-    result['series'] = [{'label': p, 'points': [[i, float(v)] for i, v in enumerate(price) if pd.notna(v)][-1500:]},
+        [f'{p}_boll_sup', 'Banda de Bollinger superior (±2 DE)'], [f'{p}_boll_inf', 'Banda de Bollinger inferior']]
+        + ([[f'{p}_indice', 'Índice base 100 reconstruido con los rendimientos (sobre él se calculan medias, RSI, MACD y Bollinger)']] if values != 'precios' else []))]
+    result['warnings'] += notes
+    result['series'] = [{'label': p if values == 'precios' else f'{p} (índice base 100)', 'points': [[i, float(v)] for i, v in enumerate(price) if pd.notna(v)][-1500:]},
                         {'label': f'{p} media móvil', 'points': [[i, float(v)] for i, v in enumerate(data[f'{p}_sma']) if pd.notna(v)][-1500:]}]
     return result, {'result': result, 'data': data}
 

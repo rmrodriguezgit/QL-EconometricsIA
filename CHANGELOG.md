@@ -341,3 +341,11 @@ La aplicación y sus instaladores están pendientes de implementación. Los camb
 - La salida de datos añade la columna `maximo_sortino`; Q01 la pasa a Medidas de riesgo.
 - «Explicar este resultado» tiene reglas propias para Markowitz: compara Sharpe y Sortino esperados con los obtenidos en la prueba, señala qué portafolio ganó fuera de muestra, la concentración (activos efectivos, activos excluidos, riesgo > 60 % en un activo) y el tope de peso activo.
 - Pruebas: pesos válidos, mínima varianza con la menor volatilidad, máximo Sharpe/Sortino como los mayores de su ratio, frontera monótona sin puntos por debajo de la mínima varianza, contribuciones al riesgo que suman 100 %, métricas de pesos iguales contra un cálculo manual y lectura por reglas de Q01.
+
+## 0.26.1 - 2026-11-06
+
+- Corrección: **Indicadores cuantitativos** fallaba conectado a **Yahoo Finance** con sus valores por defecto. Buscaba una columna `precio` (Yahoo nombra las columnas por ticker) y exigía precios positivos (Yahoo entrega por defecto rendimientos en %, con negativos).
+- La columna se elige ahora con un selector de las columnas de la tabla conectada («Columna de precios o rendimientos»); si queda vacía o en `precio` y no existe, se usa la primera columna numérica y se avisa.
+- Nuevo parámetro «tipo de valores» (`values`: detectar, precios, rendimientos en %, decimales o logarítmicos). Con rendimientos se reconstruye un índice base 100 (`<columna>_indice`) sobre el que se calculan medias, RSI, MACD y Bollinger; los rendimientos de entrada se conservan tal cual en `<columna>_rend`. «Detectar» trata como rendimientos en % una columna con ceros o negativos y lo indica en las advertencias.
+- Aviso cuando la separación de las fechas no coincide con los períodos por año usados para anualizar (p. ej. datos mensuales de Yahoo con 252).
+- Q02 declara `values: precios`. Verificado en la interfaz: Q02 con Yahoo en «rendimientos» completa los 7 pasos y da el mismo RSI final y la misma caída máxima que con precios.

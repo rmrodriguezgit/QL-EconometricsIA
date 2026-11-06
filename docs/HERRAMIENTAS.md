@@ -287,3 +287,17 @@ Registro actual: **96 tipos**. Módulo `engine/quantlabs/deep_tools.py`; pruebas
 | `rl_agent` | Dataset → Result, Dataset | Q-learning o SARSA tabular: estado = cuantiles de las variables de estado; acciones corto/efectivo/largo; recompensa = posición × rendimiento siguiente − costo | Con rendimientos alternos aprende «corto tras alza»; costos altos reducen los cambios | Tabular (≤ 5000 estados); un activo; sin DQN |
 
 Resultados de los ejemplos (ejecución del 2026-11-05, semilla 42): en DL01 la red 32-dropout-16 logra un RMSE de prueba de 0,106 frente a 0,374 de MCO (ruido verdadero 0,1; 93 épocas, mejor 63, 609 parámetros). En DL02, con un proceso logístico, red y logit empatan (RMSE de prueba 0,444 y 0,445). En RL01 el agente aprende corto en el tercil bajo y largo en el alto; en RL02, con ruido puro y 5 pb por cambio, se queda en efectivo en todos los estados.
+
+## Biblioteca por áreas y herramientas de Quantlabs-Blueprints (0.24.0)
+
+Registro: **103 tipos** (94 ofrecidos en la biblioteca, 8 reemplazados y 1 heredado). La organización vive en `packages/contracts/toolAreas.json`; una prueba exige que cada herramienta ofrecida esté en un solo grupo. Reemplazos y su migración en `packages/contracts/toolMigrations.json`.
+
+| Tipo | Área | Qué hace |
+|---|---|---|
+| `data_quality` | Preparar datos | Duplicados de periodo, infinitos, faltantes (informar, eliminar, arrastrar) y atípicos contados |
+| `resample` | Preparar datos | Frecuencia semanal, mensual, trimestral o anual (último, media, suma, primero), excluye período incompleto |
+| `select_columns` | Preparar datos | Elegir, ordenar y renombrar columnas |
+| `quant_features` | Finanzas cuantitativas | Rendimientos, volatilidad y Sharpe móviles, caída, SMA, EMA, RSI(14), MACD(12,26,9), Bollinger |
+| `risk_metrics` | Finanzas cuantitativas | Sharpe, Sortino, caída máxima, Calmar, VaR/CVaR históricos, beta, alfa, ratio de información |
+| `portfolio` | Finanzas cuantitativas | Markowitz: pesos iguales, mínima varianza y máximo Sharpe; frontera eficiente; prueba fuera de muestra |
+| `ml_compare` | Machine learning | Compara 7 modelos de scikit-learn por validación temporal; el elegido es evaluable |

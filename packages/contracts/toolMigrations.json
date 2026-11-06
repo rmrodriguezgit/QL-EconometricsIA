@@ -1,0 +1,78 @@
+{
+ "note": "Cómo convertir una herramienta reemplazada en la recomendada. params: clave nueva → clave antigua (texto) o {\"value\": constante}. Lo usan el inspector («Cambiar a …») y el Cerebro IA.",
+ "migrations": {
+  "worldbank": {
+   "to": "worldbank_multi",
+   "params": {
+    "countries": "country",
+    "start": "start",
+    "end": "end",
+    "source": "source",
+    "indicators": {
+     "template": "{indicator}: valor"
+    }
+   }
+  },
+  "paired_test": {
+   "to": "two_sample_test",
+   "params": {
+    "first": "before",
+    "second": "after",
+    "method": {
+     "value": "paired"
+    }
+   }
+  },
+  "covariance_matrix": {
+   "to": "correlation",
+   "params": {
+    "columns": "columns"
+   }
+  },
+  "regularized": {
+   "to": "hyperparameter_search",
+   "params": {
+    "features": "features",
+    "y": "y",
+    "estimator": "method",
+    "folds": "folds",
+    "seed": "seed",
+    "cv": {
+     "value": "kfold"
+    }
+   }
+  },
+  "sklearn_linear": {
+   "to": "multiple_ols",
+   "params": {
+    "features": "features",
+    "y": "y",
+    "covariance": {
+     "value": "nonrobust"
+    }
+   }
+  },
+  "time_plot": {
+   "to": "series_plot",
+   "params": {
+    "columns": "value",
+    "time": "time",
+    "y_axis": "y_axis",
+    "mode": {
+     "value": "original"
+    }
+   }
+  },
+  "describe_table": {
+   "to": "describe",
+   "params": {
+    "columns": "columns"
+   }
+  },
+  "mlp": {
+   "to": "nn_train",
+   "chain": true,
+   "params": {}
+  }
+ }
+}

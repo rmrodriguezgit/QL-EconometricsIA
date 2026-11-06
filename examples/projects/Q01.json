@@ -1,0 +1,193 @@
+{
+  "schema_version": "1.0.0",
+  "app_version": "0.24.0",
+  "title": "Q01 · Portafolio de Markowitz con ETF",
+  "nodes": [
+    {
+      "id": "datos",
+      "type": "yfinance",
+      "node_version": "1.0.0",
+      "parameters": {
+        "tickers": "SPY\nQQQ\nTLT\nGLD: oro",
+        "index": "ninguno",
+        "start_date": "2012-01-01",
+        "end_date": "2024-12-31",
+        "interval": "mensual",
+        "values": "rendimientos"
+      },
+      "position": {
+        "x": 0,
+        "y": 170
+      }
+    },
+    {
+      "id": "series",
+      "type": "series_plot",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "spy,qqq,bonos_20y_etf,oro",
+        "time": "periodo",
+        "mode": "paneles",
+        "y_axis": "auto"
+      },
+      "position": {
+        "x": 320,
+        "y": 0
+      }
+    },
+    {
+      "id": "correlacion",
+      "type": "correlation",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "spy,qqq,bonos_20y_etf,oro"
+      },
+      "position": {
+        "x": 320,
+        "y": 340
+      }
+    },
+    {
+      "id": "portafolio",
+      "type": "portfolio",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "spy,qqq,bonos_20y_etf,oro",
+        "values": "porcentaje",
+        "periods_per_year": 12,
+        "risk_free": 0.02,
+        "max_weight": 0.6,
+        "fraction": 0.7,
+        "covariance": "contraccion"
+      },
+      "position": {
+        "x": 640,
+        "y": 170
+      }
+    },
+    {
+      "id": "riesgo",
+      "type": "risk_metrics",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "pesos_iguales,minima_varianza,maximo_sharpe",
+        "values": "porcentaje",
+        "benchmark": "",
+        "periods_per_year": 12,
+        "risk_free": 0.02,
+        "confidence": 0.95
+      },
+      "position": {
+        "x": 960,
+        "y": 170
+      }
+    },
+    {
+      "id": "reporte",
+      "type": "report",
+      "node_version": "1.0.0",
+      "parameters": {
+        "note": "¿Qué portafolio fue mejor fuera de muestra y por qué el de máximo Sharpe estimado no siempre gana? Usa los pesos, la frontera y las métricas de riesgo de la prueba."
+      },
+      "position": {
+        "x": 1280,
+        "y": 170
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "datos-data-series-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "series",
+      "target_port": "data"
+    },
+    {
+      "id": "datos-data-correlacion-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "correlacion",
+      "target_port": "data"
+    },
+    {
+      "id": "datos-data-portafolio-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "portafolio",
+      "target_port": "data"
+    },
+    {
+      "id": "portafolio-data-riesgo-data",
+      "source": "portafolio",
+      "source_port": "data",
+      "target": "riesgo",
+      "target_port": "data"
+    },
+    {
+      "id": "portafolio-result-reporte-result",
+      "source": "portafolio",
+      "source_port": "result",
+      "target": "reporte",
+      "target_port": "result"
+    }
+  ],
+  "lesson": {
+    "module": "Q01",
+    "title": "Portafolio de Markowitz con ETF",
+    "objective": "Construir con cuatro ETF (acciones de EE. UU., tecnología, bonos largos y oro) los portafolios de pesos iguales, mínima varianza y máximo Sharpe, y medir su riesgo fuera de muestra.",
+    "references": [
+      "B27",
+      "B11"
+    ],
+    "steps": [
+      {
+        "node_id": "datos",
+        "title": "1. Descargar ETF",
+        "instruction": "Descarga con Yahoo Finance los rendimientos mensuales (%) de SPY, QQQ, TLT y GLD, 2012–2024.",
+        "expected": "Tabla mensual con spy, qqq, bonos_20y_etf y oro.",
+        "question": "¿Qué activo esperas que diversifique mejor a las acciones?"
+      },
+      {
+        "node_id": "series",
+        "title": "2. Graficar",
+        "instruction": "Dibuja los rendimientos de cada ETF en paneles.",
+        "expected": "Cuatro paneles; QQQ es el más volátil.",
+        "question": "¿En qué años caen a la vez acciones y bonos?"
+      },
+      {
+        "node_id": "correlacion",
+        "title": "3. Correlación",
+        "instruction": "Calcula la correlación y la covarianza de los rendimientos.",
+        "expected": "SPY y QQQ muy correlacionados; TLT y GLD menos.",
+        "question": "¿Por qué importa la correlación para diversificar?"
+      },
+      {
+        "node_id": "portafolio",
+        "title": "4. Markowitz",
+        "instruction": "Estima pesos con el 70 % inicial: iguales, mínima varianza y máximo Sharpe (tope 60 % por activo, covarianza de Ledoit-Wolf). Revisa la frontera eficiente.",
+        "expected": "Tabla de pesos, frontera y desempeño en el 30 % final.",
+        "question": "¿Qué activo domina la mínima varianza?"
+      },
+      {
+        "node_id": "riesgo",
+        "title": "5. Riesgo de los portafolios",
+        "instruction": "Calcula Sharpe, Sortino, caída máxima y VaR/CVaR de los tres portafolios en la prueba.",
+        "expected": "Una fila por portafolio.",
+        "question": "¿Cuál tuvo la menor caída máxima?"
+      },
+      {
+        "node_id": "reporte",
+        "title": "6. Interpretar",
+        "instruction": "Compara los portafolios con la evidencia de las tablas.",
+        "expected": "Conclusión que distingue lo esperado de lo realizado.",
+        "question": "¿Confiarías en las medias estimadas para invertir?"
+      }
+    ],
+    "missing_tools": [
+      "Rebalanceo periódico con costos",
+      "Restricciones por sector y ventas en corto",
+      "Black-Litterman"
+    ]
+  }
+}

@@ -8,7 +8,7 @@ from .intents import INTENTS, detect_tools, rules_plan
 from .knowledge import EXCLUDED_TOOLS, build_index, fold
 
 ENGINES = ['auto', 'ollama', 'rules']
-ALWAYS = ['synthetic', 'simulate', 'worldbank', 'worldbank_multi', 'wooldridge', 'fred', 'yfinance', 'csv', 'describe', 'report']
+ALWAYS = ['synthetic', 'simulate', 'worldbank_multi', 'wooldridge', 'fred', 'yfinance', 'csv', 'describe', 'report']
 
 
 def retrieve(prompt, limit=18):

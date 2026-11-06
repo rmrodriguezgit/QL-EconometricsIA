@@ -1,0 +1,319 @@
+{
+ "note": "Organización de la biblioteca: cada herramienta visible aparece en un solo grupo de una sola área. Las reemplazadas (superseded_by en nodeCatalog.json) no se listan, pero siguen ejecutándose en proyectos existentes.",
+ "areas": [
+  {
+   "id": "datos",
+   "label": "Datos",
+   "icon": "database",
+   "description": "Fuentes locales, sintéticas y en línea",
+   "groups": [
+    {
+     "label": "Sin conexión",
+     "tools": [
+      "synthetic",
+      "simulate",
+      "csv",
+      "wooldridge"
+     ]
+    },
+    {
+     "label": "En línea",
+     "tools": [
+      "worldbank_multi",
+      "fred",
+      "yfinance"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "preparar",
+   "label": "Preparar datos",
+   "icon": "wand",
+   "description": "Limpiar, unir, transformar y separar",
+   "groups": [
+    {
+     "label": "Limpiar y ordenar",
+     "tools": [
+      "data_quality",
+      "select_columns",
+      "impute_mean",
+      "join_series",
+      "resample",
+      "sample"
+     ]
+    },
+    {
+     "label": "Transformar",
+     "tools": [
+      "log",
+      "deflate",
+      "per_capita",
+      "growth",
+      "lag",
+      "difference",
+      "polynomial",
+      "dummies",
+      "compound",
+      "standardize",
+      "apply_scaler"
+     ]
+    },
+    {
+     "label": "Separar",
+     "tools": [
+      "split"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "explorar",
+   "label": "Explorar y graficar",
+   "icon": "chart",
+   "description": "Resúmenes, gráficos y relaciones",
+   "groups": [
+    {
+     "label": "Resúmenes",
+     "tools": [
+      "describe"
+     ]
+    },
+    {
+     "label": "Gráficos",
+     "tools": [
+      "scatter",
+      "histogram",
+      "boxplot",
+      "boxplots",
+      "pairplot",
+      "series_plot"
+     ]
+    },
+    {
+     "label": "Relaciones",
+     "tools": [
+      "correlation",
+      "eigen_correlation"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "inferencia",
+   "label": "Estadística e inferencia",
+   "icon": "sigma",
+   "description": "Probabilidad, muestreo, intervalos y contrastes",
+   "groups": [
+    {
+     "label": "Probabilidad y muestreo",
+     "tools": [
+      "probability",
+      "sample_size",
+      "sampling_audit",
+      "bootstrap",
+      "monte_carlo"
+     ]
+    },
+    {
+     "label": "Intervalos y contrastes",
+     "tools": [
+      "mean_ci",
+      "two_sample_test",
+      "multiple_testing",
+      "normality"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "regresion",
+   "label": "Regresión y econometría",
+   "icon": "line",
+   "description": "Modelos lineales, identificación y respuesta binaria",
+   "groups": [
+    {
+     "label": "Regresión lineal",
+     "tools": [
+      "ols",
+      "multiple_ols",
+      "prediction_interval",
+      "quantile",
+      "robust",
+      "wls",
+      "stepwise"
+     ]
+    },
+    {
+     "label": "Identificación y estructura",
+     "tools": [
+      "iv2sls",
+      "panel",
+      "chow"
+     ]
+    },
+    {
+     "label": "Respuesta binaria",
+     "tools": [
+      "logit",
+      "marginal_effects"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "series",
+   "label": "Series de tiempo",
+   "icon": "clock",
+   "description": "Dependencia, modelos, cointegración y volatilidad",
+   "groups": [
+    {
+     "label": "Diagnóstico temporal",
+     "tools": [
+      "acf",
+      "unit_root",
+      "seasonal_decompose"
+     ]
+    },
+    {
+     "label": "Modelos y pronóstico",
+     "tools": [
+      "arima",
+      "sarima",
+      "var"
+     ]
+    },
+    {
+     "label": "Cointegración",
+     "tools": [
+      "cointegration",
+      "johansen",
+      "ecm"
+     ]
+    },
+    {
+     "label": "Volatilidad",
+     "tools": [
+      "garch",
+      "egarch"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "ml",
+   "label": "Machine learning y multivariado",
+   "icon": "layers",
+   "description": "Modelos de ML, validación, reducción y grupos",
+   "groups": [
+    {
+     "label": "Modelos y validación",
+     "tools": [
+      "ml_compare",
+      "hyperparameter_search",
+      "cross_validation"
+     ]
+    },
+    {
+     "label": "Reducción de dimensión",
+     "tools": [
+      "pca",
+      "factor_analysis",
+      "sem"
+     ]
+    },
+    {
+     "label": "Grupos y regímenes",
+     "tools": [
+      "kmeans",
+      "cluster_selection",
+      "silhouette",
+      "gmm",
+      "hmm"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "deep",
+   "label": "Deep learning y RL",
+   "icon": "brain",
+   "description": "Redes por capas y aprendizaje por refuerzo",
+   "groups": [
+    {
+     "label": "Red multicapa",
+     "tools": [
+      "nn_input",
+      "nn_layer",
+      "nn_output",
+      "nn_train"
+     ]
+    },
+    {
+     "label": "Aprendizaje por refuerzo",
+     "tools": [
+      "rl_agent"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "finanzas",
+   "label": "Finanzas cuantitativas",
+   "icon": "trending",
+   "description": "Indicadores, estrategias, riesgo y portafolios",
+   "groups": [
+    {
+     "label": "Indicadores",
+     "tools": [
+      "quant_features"
+     ]
+    },
+    {
+     "label": "Estrategias",
+     "tools": [
+      "signal",
+      "backtest"
+     ]
+    },
+    {
+     "label": "Riesgo y portafolio",
+     "tools": [
+      "risk_metrics",
+      "portfolio"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "resultados",
+   "label": "Diagnóstico y resultados",
+   "icon": "check",
+   "description": "Revisar, evaluar, comparar e interpretar modelos",
+   "groups": [
+    {
+     "label": "Diagnóstico del modelo",
+     "tools": [
+      "diagnostics",
+      "residual_analysis",
+      "residual_normality",
+      "covariance"
+     ]
+    },
+    {
+     "label": "Evaluar y comparar",
+     "tools": [
+      "evaluate",
+      "compare_models"
+     ]
+    },
+    {
+     "label": "Salida",
+     "tools": [
+      "report"
+     ]
+    }
+   ]
+  }
+ ]
+}

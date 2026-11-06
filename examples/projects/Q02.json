@@ -1,0 +1,221 @@
+{
+  "schema_version": "1.0.0",
+  "app_version": "0.24.0",
+  "title": "Q02 · Indicadores cuantitativos y riesgo de una acción",
+  "nodes": [
+    {
+      "id": "datos",
+      "type": "yfinance",
+      "node_version": "1.0.0",
+      "parameters": {
+        "tickers": "AAPL",
+        "index": "^GSPC",
+        "start_date": "2015-01-01",
+        "end_date": "2024-12-31",
+        "interval": "diario",
+        "values": "precios"
+      },
+      "position": {
+        "x": 0,
+        "y": 170
+      }
+    },
+    {
+      "id": "calidad",
+      "type": "data_quality",
+      "node_version": "1.0.0",
+      "parameters": {
+        "duplicates": "ultimo",
+        "missing": "eliminar",
+        "ffill_limit": 3,
+        "outlier_z": 4
+      },
+      "position": {
+        "x": 320,
+        "y": 170
+      }
+    },
+    {
+      "id": "indicadores",
+      "type": "quant_features",
+      "node_version": "1.0.0",
+      "parameters": {
+        "price": "aapl",
+        "window": 20,
+        "periods_per_year": 252,
+        "risk_free": 0.02
+      },
+      "position": {
+        "x": 640,
+        "y": 170
+      }
+    },
+    {
+      "id": "mensual",
+      "type": "resample",
+      "node_version": "1.0.0",
+      "parameters": {
+        "frequency": "mensual",
+        "aggregation": "ultimo",
+        "incomplete": "excluir",
+        "columns": "aapl,sp500,aapl_rsi,aapl_vol_movil"
+      },
+      "position": {
+        "x": 960,
+        "y": 0
+      }
+    },
+    {
+      "id": "series",
+      "type": "series_plot",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "aapl,aapl_rsi,aapl_vol_movil",
+        "time": "periodo",
+        "mode": "paneles",
+        "y_axis": "auto"
+      },
+      "position": {
+        "x": 1280,
+        "y": 0
+      }
+    },
+    {
+      "id": "riesgo",
+      "type": "risk_metrics",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "aapl,sp500",
+        "values": "precios",
+        "benchmark": "sp500",
+        "periods_per_year": 252,
+        "risk_free": 0.02,
+        "confidence": 0.95
+      },
+      "position": {
+        "x": 960,
+        "y": 340
+      }
+    },
+    {
+      "id": "reporte",
+      "type": "report",
+      "node_version": "1.0.0",
+      "parameters": {
+        "note": "¿Qué dicen la volatilidad, la caída máxima y la beta sobre el riesgo de Apple frente al mercado? Usa las métricas de riesgo y los indicadores."
+      },
+      "position": {
+        "x": 1280,
+        "y": 340
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "datos-data-calidad-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "calidad",
+      "target_port": "data"
+    },
+    {
+      "id": "calidad-data-indicadores-data",
+      "source": "calidad",
+      "source_port": "data",
+      "target": "indicadores",
+      "target_port": "data"
+    },
+    {
+      "id": "indicadores-data-mensual-data",
+      "source": "indicadores",
+      "source_port": "data",
+      "target": "mensual",
+      "target_port": "data"
+    },
+    {
+      "id": "mensual-data-series-data",
+      "source": "mensual",
+      "source_port": "data",
+      "target": "series",
+      "target_port": "data"
+    },
+    {
+      "id": "calidad-data-riesgo-data",
+      "source": "calidad",
+      "source_port": "data",
+      "target": "riesgo",
+      "target_port": "data"
+    },
+    {
+      "id": "riesgo-result-reporte-result",
+      "source": "riesgo",
+      "source_port": "result",
+      "target": "reporte",
+      "target_port": "result"
+    }
+  ],
+  "lesson": {
+    "module": "Q02",
+    "title": "Indicadores cuantitativos y riesgo de una acción",
+    "objective": "Descargar precios diarios de Apple, revisar su calidad, calcular indicadores, pasarlos a frecuencia mensual y medir riesgo y beta frente al S&P 500.",
+    "references": [
+      "B27",
+      "B32",
+      "B16"
+    ],
+    "steps": [
+      {
+        "node_id": "datos",
+        "title": "1. Descargar precios",
+        "instruction": "Descarga con Yahoo Finance los cierres ajustados diarios de Apple y del S&P 500, 2015–2024.",
+        "expected": "Tabla diaria con aapl y sp500.",
+        "question": "¿Por qué usar cierres ajustados?"
+      },
+      {
+        "node_id": "calidad",
+        "title": "2. Calidad de datos",
+        "instruction": "Revisa duplicados, infinitos, faltantes y atípicos; conserva la última fila de cada fecha y elimina faltantes.",
+        "expected": "Tabla de calidad por columna; atípicos contados, no borrados.",
+        "question": "¿Los atípicos son errores o días extremos reales?"
+      },
+      {
+        "node_id": "indicadores",
+        "title": "3. Indicadores",
+        "instruction": "Calcula rendimientos, volatilidad y Sharpe móviles de 20 días, caída, medias, RSI, MACD y Bollinger de aapl.",
+        "expected": "Doce columnas nuevas con prefijo aapl_.",
+        "question": "¿Por qué las primeras 20 filas quedan vacías?"
+      },
+      {
+        "node_id": "mensual",
+        "title": "4. Frecuencia mensual",
+        "instruction": "Pasa precio, índice, RSI y volatilidad a fin de mes (último valor), excluyendo un mes incompleto.",
+        "expected": "Unos 120 meses con fechas regulares.",
+        "question": "¿Qué cambia al usar el último valor y no la media?"
+      },
+      {
+        "node_id": "series",
+        "title": "5. Graficar",
+        "instruction": "Dibuja precio, RSI y volatilidad mensuales en paneles.",
+        "expected": "Tres paneles; picos de volatilidad en 2020 y 2022.",
+        "question": "¿El RSI anticipa las caídas?"
+      },
+      {
+        "node_id": "riesgo",
+        "title": "6. Riesgo y beta",
+        "instruction": "Calcula con los precios diarios el desempeño y el riesgo de Apple y del S&P 500, con el índice como referencia.",
+        "expected": "Sharpe, Sortino, caída máxima, VaR/CVaR y beta de Apple.",
+        "question": "¿Qué significa una beta mayor que 1?"
+      },
+      {
+        "node_id": "reporte",
+        "title": "7. Interpretar",
+        "instruction": "Concluye sobre el riesgo de Apple frente al mercado.",
+        "expected": "Conclusión con volatilidad, caída, VaR y beta.",
+        "question": "¿Basta la beta para describir el riesgo de una acción?"
+      }
+    ],
+    "missing_tools": [
+      "Señales de trading a partir de los indicadores y su backtest con costos"
+    ]
+  }
+}

@@ -13,7 +13,8 @@ import unicodedata
 from ..core import NODE_CATALOG, ROOT
 
 # Herramientas que el cerebro no debe proponer: compatibilidad anterior o entradas manuales.
-EXCLUDED_TOOLS = {'experiment'}
+# Recetas antiguas y herramientas reemplazadas: siguen en el catálogo para proyectos guardados, pero el cerebro no las ofrece.
+EXCLUDED_TOOLS = {'experiment'} | {kind for kind, item in NODE_CATALOG.items() if item.get('superseded_by') or item.get('legacy')}
 STOPWORDS = set('a al con de del el en es la las lo los o para por que se su sus un una y como entre sobre the of and to in'.split())
 
 

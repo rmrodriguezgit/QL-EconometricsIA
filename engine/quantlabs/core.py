@@ -18,7 +18,7 @@ import pandas as pd
 import statsmodels.api as sm
 
 ROOT = Path(__file__).resolve().parents[2]
-VERSION = (ROOT / 'VERSION').read_text().strip() if (ROOT / 'VERSION').exists() else '0.23.0'
+VERSION = (ROOT / 'VERSION').read_text().strip() if (ROOT / 'VERSION').exists() else '0.24.0'
 SCHEMA = '1.0.0'
 
 class EngineError(ValueError):
@@ -363,7 +363,8 @@ def numeric(frame, columns):
 
 
 def describe(frame, parameters):
-    columns = frame.select_dtypes(include='number').columns.tolist()
+    chosen = [name.strip() for name in str(parameters.get('columns', '') or '').split(',') if name.strip()]
+    columns = chosen or frame.select_dtypes(include='number').columns.tolist()
     if not columns:
         fail('No hay columnas numéricas para resumir.', 'INVALID_PARAMETERS')
     values = numeric(frame, columns)
@@ -372,9 +373,9 @@ def describe(frame, parameters):
         s = values[col]
         rows.append({'variable': col, 'n': int(s.count()), 'missing': int(s.isna().sum()),
                      'mean': s.mean(), 'median': s.median(), 'std': s.std(ddof=1),
-                     'min': s.min(), 'max': s.max()})
+                     'min': s.min(), 'q1': s.quantile(.25), 'q3': s.quantile(.75), 'max': s.max()})
     return {'kind': 'summary', 'rows': finite_json(rows), 'n_total': len(frame),
-            'note': 'Desviación estándar muestral (ddof=1); faltantes excluidos por columna.'}
+            'note': 'Desviación estándar muestral (ddof=1); cuartiles por interpolación lineal (como pandas describe); faltantes excluidos por columna.'}
 
 
 def scatter(frame, parameters):

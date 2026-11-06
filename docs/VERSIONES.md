@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.23.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.24.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -277,3 +277,7 @@ Sin dependencias nuevas. La red multicapa y el agente de refuerzo están escrito
 - **Diseño por capas** tomado de Quantlabs-Blueprints (`Network Input → Network Layer → … → Network Output → entrenador`), con un puerto `Network` que transporta la especificación (JSON) y no pesos; los pesos solo existen en el `FittedModel` del entrenador.
 - **Verificación**: los gradientes de la retropropagación se comparan con diferencias finitas en las pruebas (tolerancia relativa 1e-4). La validación es la última fracción de filas para no mezclar el orden temporal.
 - **Fuera de alcance** por ahora: capas convolucionales, recurrentes (LSTM/GRU), normalización por lotes, softmax multiclase y DQN con redes; el agente de refuerzo es tabular.
+
+## Biblioteca por áreas e integración de Blueprints 0.24.0
+
+Sin dependencias nuevas: las herramientas de Blueprints se reescribieron sobre pandas, scipy (SLSQP para Markowitz) y scikit-learn (Ledoit-Wolf, modelos de ML) ya instalados; no se usa PyTorch. Las herramientas reemplazadas no se borran del catálogo para no romper proyectos guardados.

@@ -60,12 +60,19 @@ INTENTS = [
     (r'logit|probit|clasific|probabilidad de (que|ser)', 'logit', 3, None),
     (r'sarima|estacional[a-z]* arima', 'sarima', 3,
      {'name': 'SARIMA con intervalos de pronóstico', 'module': 'C15', 'inputs': {'data': 'Dataset'}, 'outputs': {'result': 'Result'}}),
-    (r'arima|\barma\b|autorregresiv|pronostic', 'arima', 3, None),
+    (r'arima|\barma ?\(|modelos? arma\b|\barma\b(?! (un|una|el|la|los|las|tu|mi)\b)|autorregresiv|pronostic', 'arima', 3, None),
     (r'\bvar\b|vector autorregresiv|causalidad de granger', 'var', 3,
      {'name': 'Vector autorregresivo (VAR)', 'module': 'C15', 'inputs': {'data': 'Dataset'}, 'outputs': {'result': 'Result'}}),
     (r'johansen|vecm', 'johansen', 3,
      {'name': 'Contraste de Johansen', 'module': 'C16', 'inputs': {'data': 'Dataset'}, 'outputs': {'result': 'Result'}}),
-    (r'(?<!e)(?<!gjr-)(?<!gjr )garch|volatilidad(?! asimetrica)(?! multivariada)', 'garch', 3, None),
+    (r'calidad de (los )?datos|limpi(a|ar|e|eza)( de)? (los |la )?(datos|tabla)|datos duplicados|valores infinitos', 'data_quality', 1, None),
+    (r'cambi(a|ar|e) (la )?frecuencia|remuestre|resample|(pasa|pasar|convierte|convertir|agrega|agregar) a (frecuencia )?(semanal|mensual|trimestral|anual)|frecuencia (semanal|mensual|trimestral|anual)', 'resample', 1, None),
+    (r'seleccionar columnas|renombrar columnas|quedarme con las columnas', 'select_columns', 1, None),
+    (r'\brsi\b|\bmacd\b|bollinger|media(s)? movil(es)?|indicadores (tecnicos|cuantitativos)|volatilidad movil|sharpe movil', 'quant_features', 1, None),
+    (r'portafolio|cartera de inversion|markowitz|frontera eficiente|minima varianza|maximo sharpe', 'portfolio', 3, None),
+    (r'\bsharpe\b|sortino|value at risk|\bvar historico|\bcvar\b|metricas de riesgo|caida maxima|drawdown|ratio de informacion', 'risk_metrics', 4, None),
+    (r'random forest|bosque(s)? aleatorio|boosting|\bsvr\b|vectores de soporte|\bknn\b|vecinos mas cercanos|machine learning|aprendizaje automatico', 'ml_compare', 3, None),
+    (r'(?<!e)(?<!gjr-)(?<!gjr )garch|volatilidad(?! asimetrica)(?! multivariada)(?! movil)', 'garch', 3, None),
     (r'cointegra', 'cointegration', 3, None),
     (r'correccion de error|\becm\b', 'ecm', 3, None),
     (r'cuantil|mediana condicional', 'quantile', 3, None),
@@ -117,7 +124,7 @@ SCENARIO_FOR = {
     'pca': 'factors', 'factor_analysis': 'factors', 'sem': 'sem', 'iv2sls': 'endogenous', 'polynomial': 'polynomial',
     'robust': 'outliers', 'quantile': 'hetero', 'diagnostics': 'hetero', 'covariance': 'hetero', 'wls': 'hetero',
     'paired_test': 'pairs', 'hmm': 'regimes', 'gmm': 'regimes', 'deflate': 'prices', 'per_capita': 'prices',
-    'log': 'cobb', 'compound': 'inflation', 'monte_carlo': 'inflation', 'signal': 'returns', 'mlp': 'nonlinear', 'nn_train': 'nonlinear', 'rl_agent': 'returns',
+    'log': 'cobb', 'compound': 'inflation', 'monte_carlo': 'inflation', 'signal': 'returns', 'mlp': 'nonlinear', 'nn_train': 'nonlinear', 'rl_agent': 'returns', 'ml_compare': 'nonlinear', 'portfolio': 'inflation', 'risk_metrics': 'inflation', 'quant_features': 'positive',
     'mean_ci': 'normal', 'histogram': 'normal', 'normality': 'normal', 'growth': 'positive', 'time_plot': 'positive',
     'regularized': 'multiple', 'chow': 'regression', 'prediction_interval': 'regression', 'multiple_testing': 'factors',
     'seasonal_decompose': 'seasonal', 'sarima': 'seasonal', 'dummies': 'multiple', 'boxplot': 'outliers',
@@ -396,6 +403,9 @@ def detect_tools(text):
             continue
         if kind == 'arima' and 'sarima' in seen and 'sarima' in NODE_CATALOG:
             continue
+        # «VaR» de riesgo (value at risk) no es un vector autorregresivo.
+        if kind == 'var' and re.search(r'riesgo|value at risk|cvar|sharpe|perdida|portafolio|cartera', folded) and not re.search(r'vector autorregresiv|granger', folded):
+            continue
         # La red multicapa capa por capa sustituye a la red neuronal simple.
         if kind == 'mlp' and 'nn_train' in seen:
             continue
@@ -420,6 +430,8 @@ STAGE = {kind: stage for _, kind, stage, _ in INTENTS}
 
 def scenario_for(kinds):
     """Escenario sintético guiado por la herramienta principal (modelo antes que exploración)."""
+    if 'quant_features' in kinds:
+        return 'positive'  # los indicadores necesitan precios positivos; el resto del flujo usa sus rendimientos
     priority = {3: 0, 4: 1, 1: 2, 2: 3}
     for kind in sorted(kinds, key=lambda k: priority.get(STAGE.get(k, 2), 4)):
         if kind in SCENARIO_FOR:
@@ -473,6 +485,16 @@ def rules_plan(prompt, retrieved_tools=()):
         kinds.insert(0, 'describe')
     if source == 'yfinance' and re.search(r'\bbeta\b|\bcapm\b|frente al? (indice|mercado)', fold(prompt)) and 'ols' not in kinds and 'multiple_ols' not in kinds:
         kinds.append('ols')  # beta = pendiente del rendimiento del activo sobre el del índice
+    from ..migrations import MIGRATIONS
+    if source in (None, 'synthetic', 'simulate', 'wooldridge') and 'resample' in kinds:
+        kinds = [kind for kind in kinds if kind != 'resample']  # cambiar frecuencia necesita fechas reales (FRED, Yahoo, CSV)
+    replaced = []
+    for kind in kinds:
+        rule = MIGRATIONS.get(kind)
+        kind = 'nn_train' if rule and rule.get('chain') else rule['to'] if rule else kind
+        if kind not in replaced:
+            replaced.append(kind)
+    kinds = replaced
     for kind in kinds:
         if kind == 'nn_train':
             steps.extend(network_steps(fold(prompt)))

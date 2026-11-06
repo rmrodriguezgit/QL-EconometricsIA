@@ -1123,6 +1123,98 @@
         "Pruebas de significancia del rendimiento de una estrategia",
         "Validación con varias semillas"
       ]
+    },
+    {
+      "id": "Q01",
+      "title": "Portafolio de Markowitz con ETF",
+      "topics": "Portafolios, Markowitz, mínima varianza, máximo Sharpe, frontera eficiente, contracción de Ledoit-Wolf, riesgo fuera de muestra",
+      "references": [
+        "B27",
+        "B11"
+      ],
+      "phase": "P2",
+      "status": "executable",
+      "network": true,
+      "objective": "Construir con cuatro ETF (acciones de EE. UU., tecnología, bonos largos y oro) los portafolios de pesos iguales, mínima varianza y máximo Sharpe, y medir su riesgo fuera de muestra.",
+      "question": "¿Qué portafolio fue mejor fuera de muestra y por qué el de máximo Sharpe estimado no siempre gana?",
+      "acceptance": "El estudiante compara pesos, frontera y desempeño de prueba, y explica el error de estimación de las medias",
+      "scope": "Recorrido aplicado con datos reales de Yahoo Finance (requiere conexión). Usa herramientas integradas desde Quantlabs-Blueprints; no sustituye los módulos C01–C28.",
+      "tools": [
+        "correlation",
+        "portfolio",
+        "report",
+        "risk_metrics",
+        "series_plot",
+        "yfinance"
+      ],
+      "steps": 6,
+      "format": "connected",
+      "missing_tools": [
+        "Rebalanceo periódico con costos",
+        "Restricciones por sector y ventas en corto",
+        "Black-Litterman"
+      ]
+    },
+    {
+      "id": "Q02",
+      "title": "Indicadores cuantitativos y riesgo de una acción",
+      "topics": "Calidad de datos, indicadores técnicos, RSI, MACD, Bollinger, cambio de frecuencia, Sharpe, VaR, beta",
+      "references": [
+        "B27",
+        "B32",
+        "B16"
+      ],
+      "phase": "P2",
+      "status": "executable",
+      "network": true,
+      "objective": "Descargar precios diarios de Apple, revisar su calidad, calcular indicadores, pasarlos a frecuencia mensual y medir riesgo y beta frente al S&P 500.",
+      "question": "¿Qué dicen la volatilidad, la caída máxima y la beta sobre el riesgo de Apple frente al mercado?",
+      "acceptance": "El estudiante encadena limpieza, indicadores, remuestreo y métricas, e interpreta beta y VaR",
+      "scope": "Recorrido aplicado con datos reales de Yahoo Finance (requiere conexión). Usa herramientas integradas desde Quantlabs-Blueprints; no sustituye los módulos C01–C28.",
+      "tools": [
+        "data_quality",
+        "quant_features",
+        "report",
+        "resample",
+        "risk_metrics",
+        "series_plot",
+        "yfinance"
+      ],
+      "steps": 7,
+      "format": "connected",
+      "missing_tools": [
+        "Señales de trading a partir de los indicadores y su backtest con costos"
+      ]
+    },
+    {
+      "id": "ML01",
+      "title": "Machine learning clásico frente a MCO y a una red",
+      "topics": "Machine learning, bosque aleatorio, boosting, SVR, KNN, Ridge, validación temporal, sobreajuste",
+      "references": [
+        "B09",
+        "B13"
+      ],
+      "phase": "P2",
+      "status": "executable",
+      "network": false,
+      "objective": "Comparar modelos clásicos de aprendizaje automático con MCO en una relación no lineal y elegir el mejor por validación antes de evaluar en prueba.",
+      "question": "¿Qué modelo gana en validación y se sostiene en la prueba? ¿Qué modelos sobreajustan?",
+      "acceptance": "El estudiante compara RMSE de ajuste, validación y prueba, y detecta sobreajuste",
+      "scope": "Recorrido aplicado con datos sintéticos (sin conexión). Usa herramientas integradas desde Quantlabs-Blueprints; no sustituye los módulos C01–C28.",
+      "tools": [
+        "evaluate",
+        "ml_compare",
+        "multiple_ols",
+        "report",
+        "split",
+        "synthetic"
+      ],
+      "steps": 7,
+      "format": "connected",
+      "missing_tools": [
+        "Búsqueda de hiperparámetros del bosque y del boosting",
+        "Importancia de variables"
+      ]
     }
   ]
 }

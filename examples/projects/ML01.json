@@ -1,0 +1,223 @@
+{
+  "schema_version": "1.0.0",
+  "app_version": "0.24.0",
+  "title": "ML01 · Machine learning clásico frente a MCO y a una red",
+  "nodes": [
+    {
+      "id": "datos",
+      "type": "synthetic",
+      "node_version": "1.0.0",
+      "parameters": {
+        "scenario": "nonlinear",
+        "n": 600,
+        "seed": 42
+      },
+      "position": {
+        "x": 0,
+        "y": 170
+      }
+    },
+    {
+      "id": "particion",
+      "type": "split",
+      "node_version": "1.0.0",
+      "parameters": {
+        "fraction": 0.75,
+        "method": "aleatorio",
+        "seed": 42
+      },
+      "position": {
+        "x": 320,
+        "y": 170
+      }
+    },
+    {
+      "id": "ml",
+      "type": "ml_compare",
+      "node_version": "1.0.0",
+      "parameters": {
+        "features": "x",
+        "y": "y",
+        "algorithm": "comparar",
+        "validation": 0.2,
+        "estimators": 200,
+        "max_depth": 6,
+        "alpha": 1,
+        "neighbors": 5,
+        "seed": 42
+      },
+      "position": {
+        "x": 640,
+        "y": 0
+      }
+    },
+    {
+      "id": "evaluar_ml",
+      "type": "evaluate",
+      "node_version": "1.0.0",
+      "parameters": {},
+      "position": {
+        "x": 960,
+        "y": 0
+      }
+    },
+    {
+      "id": "mco",
+      "type": "multiple_ols",
+      "node_version": "1.0.0",
+      "parameters": {
+        "features": "x",
+        "y": "y",
+        "covariance": "nonrobust"
+      },
+      "position": {
+        "x": 640,
+        "y": 340
+      }
+    },
+    {
+      "id": "evaluar_mco",
+      "type": "evaluate",
+      "node_version": "1.0.0",
+      "parameters": {},
+      "position": {
+        "x": 960,
+        "y": 340
+      }
+    },
+    {
+      "id": "reporte",
+      "type": "report",
+      "node_version": "1.0.0",
+      "parameters": {
+        "note": "¿Qué modelo gana en validación y se sostiene en la prueba? Compara el RMSE de ajuste y de validación de cada modelo y el RMSE de prueba del elegido frente a MCO."
+      },
+      "position": {
+        "x": 1280,
+        "y": 170
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "datos-data-particion-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "particion",
+      "target_port": "data"
+    },
+    {
+      "id": "particion-train-ml-data",
+      "source": "particion",
+      "source_port": "train",
+      "target": "ml",
+      "target_port": "data"
+    },
+    {
+      "id": "ml-model-evaluar_ml-model",
+      "source": "ml",
+      "source_port": "model",
+      "target": "evaluar_ml",
+      "target_port": "model"
+    },
+    {
+      "id": "particion-test-evaluar_ml-data",
+      "source": "particion",
+      "source_port": "test",
+      "target": "evaluar_ml",
+      "target_port": "data"
+    },
+    {
+      "id": "particion-train-mco-data",
+      "source": "particion",
+      "source_port": "train",
+      "target": "mco",
+      "target_port": "data"
+    },
+    {
+      "id": "mco-model-evaluar_mco-model",
+      "source": "mco",
+      "source_port": "model",
+      "target": "evaluar_mco",
+      "target_port": "model"
+    },
+    {
+      "id": "particion-test-evaluar_mco-data",
+      "source": "particion",
+      "source_port": "test",
+      "target": "evaluar_mco",
+      "target_port": "data"
+    },
+    {
+      "id": "ml-result-reporte-result",
+      "source": "ml",
+      "source_port": "result",
+      "target": "reporte",
+      "target_port": "result"
+    }
+  ],
+  "lesson": {
+    "module": "ML01",
+    "title": "Machine learning clásico frente a MCO y a una red",
+    "objective": "Comparar modelos clásicos de aprendizaje automático con MCO en una relación no lineal y elegir el mejor por validación antes de evaluar en prueba.",
+    "references": [
+      "B09",
+      "B13"
+    ],
+    "steps": [
+      {
+        "node_id": "datos",
+        "title": "1. Datos no lineales",
+        "instruction": "Genera y = sen(x) + ruido.",
+        "expected": "600 filas con x e y.",
+        "question": "¿Qué modelo lineal podría captar esta forma?"
+      },
+      {
+        "node_id": "particion",
+        "title": "2. Entrenamiento y prueba",
+        "instruction": "Separa 75 % y 25 %.",
+        "expected": "450 y 150 filas.",
+        "question": "¿Por qué guardar una prueba aparte de la validación?"
+      },
+      {
+        "node_id": "ml",
+        "title": "3. Comparar modelos",
+        "instruction": "Ajusta media, Ridge, ElasticNet, bosque aleatorio, boosting, SVR y KNN con el 80 % del entrenamiento y elige el de menor RMSE en el 20 % restante.",
+        "expected": "Tabla con RMSE de ajuste y de validación por modelo; gana un modelo no lineal.",
+        "question": "¿Cuáles tienen RMSE de ajuste mucho menor que el de validación?"
+      },
+      {
+        "node_id": "evaluar_ml",
+        "title": "4. Evaluar el elegido",
+        "instruction": "Evalúa el modelo elegido en la prueba.",
+        "expected": "RMSE de prueba cercano al ruido (0,1).",
+        "question": "¿Se parece al RMSE de validación?"
+      },
+      {
+        "node_id": "mco",
+        "title": "5. MCO",
+        "instruction": "Ajusta MCO de referencia.",
+        "expected": "Una recta.",
+        "question": "¿Qué parte de la variación no capta?"
+      },
+      {
+        "node_id": "evaluar_mco",
+        "title": "6. Evaluar MCO",
+        "instruction": "Evalúa MCO en la misma prueba.",
+        "expected": "RMSE mucho mayor.",
+        "question": "¿Cuánto mejora el modelo elegido?"
+      },
+      {
+        "node_id": "reporte",
+        "title": "7. Interpretar",
+        "instruction": "Concluye cuál modelo usar y por qué.",
+        "expected": "Conclusión con validación, prueba y sobreajuste.",
+        "question": "¿Qué ganarías y perderías frente a la red de DL01?"
+      }
+    ],
+    "missing_tools": [
+      "Búsqueda de hiperparámetros del bosque y del boosting",
+      "Importancia de variables"
+    ]
+  }
+}

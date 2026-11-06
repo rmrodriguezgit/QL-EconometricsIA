@@ -531,7 +531,9 @@ def run_tool(kind,inputs,params):
             from .gap_tools import GAP_TOOLS, run_gap_tool
             from .multivariate_tools import MULTIVARIATE_TOOLS, run_multivariate_tool
             from .deep_tools import DEEP_TOOLS, run_deep_tool
+            from .quant_tools import QUANT_TOOLS, run_quant_tool
             if kind in DEEP_TOOLS: result,outputs=run_deep_tool(kind,inputs,params)
+            elif kind in QUANT_TOOLS: result,outputs=run_quant_tool(kind,inputs,params)
             elif kind in MULTIVARIATE_TOOLS: result,outputs=run_multivariate_tool(kind,inputs,params)
             else: result,outputs=run_gap_tool(kind,inputs,params) if kind in GAP_TOOLS else calculate(kind,inputs,params)
         except EngineError: raise

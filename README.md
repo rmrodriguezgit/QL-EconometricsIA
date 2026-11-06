@@ -2,7 +2,7 @@
 
 **Describe tu análisis. El segundo cerebro construye el blueprint. Tú compruebas cada resultado.**
 
-[![Versión](https://img.shields.io/badge/versión-0.23.0-6cc9ac)](VERSION)
+[![Versión](https://img.shields.io/badge/versión-0.24.0-6cc9ac)](VERSION)
 [![Cerebro IA](https://img.shields.io/badge/cerebro-Qwen%20local%20%2B%20RAG-c49af8)](docs/CEREBRO.md)
 [![Escritorio](https://img.shields.io/badge/escritorio-macOS%20%7C%20Windows-79b4ef)](docs/ARRANQUE.md)
 [![Electron](https://img.shields.io/badge/Electron-45.2.1-79b4ef)](apps/desktop/package.json)
@@ -15,7 +15,7 @@
 
 Laboratorio educativo de econometría con programación visual mediante nodos, motor analítico Python y un **segundo cerebro de IA local** que convierte enunciados en flujos conectados y verificados. Objetivo de escritorio: macOS y Windows. [Repositorio](https://github.com/rmrodriguezgit/QL-EconometricsIA) · derivado de [Quantlabs-Econometrics](https://github.com/rmrodriguezgit/Quantlabs-Econometrics) con su historial completo.
 
-**Versión 0.23.0 · 2026-11-05 · Alpha local con escritorio Electron, estudio oscuro y segundo cerebro (Ollama/Qwen + reglas). Instaladores independientes y actualización automática pendientes.**
+**Versión 0.24.0 · 2026-11-05 · Alpha local con escritorio Electron, estudio oscuro y segundo cerebro (Ollama/Qwen + reglas). Instaladores independientes y actualización automática pendientes.**
 
 ## Segundo cerebro IA
 
@@ -66,6 +66,7 @@ Abre [el laboratorio local](http://127.0.0.1:1420) y pulsa **Ejecutar flujo**. C
 
 ## Ya funciona
 
+- **Biblioteca por áreas e integración de Quantlabs-Blueprints (0.24.0)**: la biblioteca de la izquierda abre con un submenú de 10 áreas (Datos, Preparar datos, Explorar y graficar, Estadística e inferencia, Regresión y econometría, Series de tiempo, Machine learning, Deep learning y RL, Finanzas cuantitativas, Diagnóstico y resultados); al elegir una aparecen sus herramientas por grupos, y la búsqueda cubre todas. Cada herramienta aparece una sola vez: 8 duplicadas se reemplazaron por la más completa (siguen funcionando en proyectos guardados, con botón «Cambiar a …»). Nuevas desde Blueprints: calidad de datos, cambiar frecuencia, seleccionar columnas, indicadores cuantitativos (RSI, MACD, Bollinger…), métricas de riesgo (Sharpe, Sortino, VaR/CVaR, beta), portafolio de Markowitz y modelos de machine learning (bosque, boosting, SVR, KNN…). Ejemplos Q01, Q02 y ML01. [Detalles](docs/HERRAMIENTAS.md#biblioteca-por-áreas-y-herramientas-de-quantlabs-blueprints-0240)
 - **Deep learning capa por capa y aprendizaje por refuerzo (0.23.0)**: nuevo grupo *Deep learning y RL* en la biblioteca. Construye una red multicapa como en Quantlabs-Blueprints: **Capa de entrada** (variables) → una o más **Capas intermedias** (densa con neuronas y activación ReLU, Leaky ReLU, ELU, tanh, sigmoide, Swish o lineal; o dropout) → **Capa de salida** (regresión o clasificación binaria) → **Entrenar red multicapa** (Adam, RMSprop o SGD, L2, mini-lotes y parada temprana), cuyo modelo acepta *Evaluar*. El **Agente de refuerzo** aprende con Q-learning o SARSA a estar corto, en efectivo o largo con costos por cambio de posición y se evalúa fuera de muestra frente a comprar y mantener. Ejemplos DL01, DL02, RL01 y RL02, sin conexión. [Detalles](docs/HERRAMIENTAS.md#deep-learning-capa-por-capa-y-aprendizaje-por-refuerzo-0230)
 - **Yahoo Finance con índice de comparación (0.22.0)**: nodo *Yahoo Finance · activos e índice* en Fuentes de datos. Escribe uno o más tickers («TICKER: alias»: `AAPL`, `WALMEX.MX`, `BTC-USD`, `MXN=X`…) y elige el índice para comparar (S&P 500, Nasdaq, Dow Jones, IPC de la BMV, Ibovespa, Euro Stoxx 50, Nikkei… o ninguno), el intervalo y si quieres precios, rendimientos, rendimientos logarítmicos o base 100. La salida incluye una tabla con rendimiento, volatilidad, caída máxima y beta, correlación y R² frente al índice. Ejemplos Y01 (Apple y Microsoft frente al S&P 500) e Y02 (emisoras mexicanas frente al IPC). Uso educativo, no asesoría financiera. [Detalles](docs/HERRAMIENTAS.md#yahoo-finance-con-índice-de-comparación-0220)
 - **FRED como fuente de datos (0.21.0–0.21.1)**: nodo *FRED · Reserva Federal de St. Louis* en Fuentes de datos. Elige series en un catálogo de 226 identificadores verificados, con buscador y filtro por tema (tasas, precios, actividad, empleo, dinero, vivienda, mercados, tipos de cambio, comercio, finanzas públicas, ciclo, estados de EE. UU. e internacional con México), o escribe cualquier ID como «ID: alias» (p. ej. `DGS3MO: tbill_3m`), fechas y frecuencia; se descargan del CSV público de FRED sin clave de API y se alinean por fecha. Incluye cinco ejemplos F01–F05 (recesiones con la curva de rendimientos, Phillips, Okun, cointegración de tasas y regla de Taylor). [Detalles](docs/HERRAMIENTAS.md#fred-como-fuente-de-datos-0210) · [Ejemplos](docs/EJEMPLOS.md#recorridos-aplicados-con-fred-f01f05-0210)

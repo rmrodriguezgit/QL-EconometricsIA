@@ -13,7 +13,7 @@ from .knowledge import EXCLUDED_TOOLS, fold
 
 SOURCES = {kind for kind, definition in NODE_CATALOG.items()
            if not definition['inputs'] and definition['outputs'].get('data') == 'Dataset'}
-SINGLE_COLUMNS = {'x', 'y', 'column', 'value', 'nominal', 'index', 'population', 'returns', 'signal', 'before', 'after', 'error', 'time', 'group', 'entity', 'first', 'second'}
+SINGLE_COLUMNS = {'x', 'y', 'column', 'value', 'price', 'nominal', 'index', 'population', 'returns', 'signal', 'before', 'after', 'error', 'time', 'group', 'entity', 'first', 'second'}
 MULTI_COLUMNS = {'columns', 'features', 'instruments', 'state'}
 TARGET_NAMES = ['y', 'consumo', 'clase', 'produccion', 'valor', 'ventas', 'retorno', 'despues', 'lwage', 'wage', 'precio']
 MAX_STEPS = 16  # una red multicapa ocupa entrada + capas + salida + entrenamiento
@@ -22,8 +22,8 @@ LINEAR = {'ols', 'multiple_ols', 'ecm', 'covariance'}
 MODEL_ACCEPTS = {
     'diagnostics': LINEAR | {'garch', 'egarch', 'stepwise'}, 'residual_normality': {'ols', 'multiple_ols', 'robust', 'covariance', 'stepwise'},
     'marginal_effects': {'logit', 'ols', 'multiple_ols', 'covariance', 'robust', 'wls', 'stepwise'},
-    'silhouette': {'kmeans'}, 'evaluate': {'ols', 'multiple_ols', 'robust', 'iv2sls', 'logit', 'ecm', 'covariance', 'wls', 'mlp', 'nn_train', 'arima', 'hmm', 'gmm', 'stepwise'},
-    'compare_models': {'ols', 'multiple_ols', 'robust', 'iv2sls', 'logit', 'ecm', 'covariance', 'wls', 'mlp', 'nn_train', 'arima', 'stepwise'},
+    'silhouette': {'kmeans'}, 'evaluate': {'ols', 'multiple_ols', 'robust', 'iv2sls', 'logit', 'ecm', 'covariance', 'wls', 'mlp', 'nn_train', 'ml_compare', 'arima', 'hmm', 'gmm', 'stepwise'},
+    'compare_models': {'ols', 'multiple_ols', 'robust', 'iv2sls', 'logit', 'ecm', 'covariance', 'wls', 'mlp', 'nn_train', 'ml_compare', 'arima', 'stepwise'},
     'covariance': LINEAR | {'stepwise'},
     'cross_validation': {'ols', 'multiple_ols', 'covariance', 'wls', 'robust', 'stepwise', 'sklearn_linear', 'hyperparameter_search'},
     'residual_analysis': {'ols', 'multiple_ols', 'covariance', 'wls', 'robust', 'stepwise', 'sklearn_linear', 'hyperparameter_search'},
@@ -69,13 +69,39 @@ def clean_parameters(kind, raw):
     return params, notes
 
 
+def migrate_steps(steps, prompt=''):
+    """Sustituye herramientas reemplazadas por las recomendadas (toolMigrations.json); mlp pasa a la red por capas."""
+    from ..migrations import MIGRATIONS, migrate_parameters
+    from .intents import network_steps
+    out = []
+    for step in steps:
+        kind = step.get('tool')
+        rule = MIGRATIONS.get(kind) if isinstance(kind, str) else None
+        if rule and rule.get('chain'):
+            params = step.get('parameters') if isinstance(step.get('parameters'), dict) else {}
+            chain = network_steps(fold(prompt))
+            for item in chain:
+                if item['tool'] == 'nn_input' and params.get('features'):
+                    item['parameters'] = {**item['parameters'], 'features': params['features']}
+                if item['tool'] == 'nn_output' and params.get('y'):
+                    item['parameters'] = {**item['parameters'], 'y': params['y']}
+            out.extend(chain)
+            continue
+        if rule:
+            new_kind, params = migrate_parameters(kind, step.get('parameters') if isinstance(step.get('parameters'), dict) else {})
+            step = {**step, 'tool': new_kind, 'parameters': params,
+                    'why': f"{step.get('why') or ''} ({NODE_CATALOG[kind]['label']} → {NODE_CATALOG[new_kind]['label']}, herramienta recomendada.)".strip()}
+        out.append(step)
+    return out
+
+
 def compile_plan(plan, prompt=''):
     """Devuelve (proyecto, informe). El informe incluye pasos descartados y huecos."""
     report = {'notes': [], 'dropped': [], 'gaps': []}
     used, nodes, explanations, by_step = set(), [], {}, {}
     produced = []  # (node_id, port, tipo) en orden de creación
     node_types = {}
-    steps = [step for step in plan.get('steps', []) if isinstance(step, dict)][:MAX_STEPS]
+    steps = migrate_steps([step for step in plan.get('steps', []) if isinstance(step, dict)], prompt)[:MAX_STEPS]
     for gap in plan.get('missing', []) or []:
         if isinstance(gap, dict) and gap.get('name'):
             report['gaps'].append(gap)

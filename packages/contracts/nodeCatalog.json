@@ -1,7 +1,7 @@
 {
   "simulate": {
-    "label": "Datos simulados",
-    "detail": "Genera ingreso y consumo con una semilla reproducible",
+    "label": "Simulador ingreso–consumo",
+    "detail": "Proceso generador editable: intercepto, pendiente y ruido",
     "category": "Fuentes de datos",
     "color": "green",
     "inputs": {},
@@ -57,7 +57,9 @@
     "explanation": "Consulta una serie anual y conserva código, fuente y procedencia. Requiere conexión.",
     "references": [
       "B01"
-    ]
+    ],
+    "superseded_by": "worldbank_multi",
+    "superseded_reason": "Banco Mundial · varios indicadores admite también un solo indicador y varios países."
   },
   "worldbank_multi": {
     "label": "Banco Mundial · varios indicadores",
@@ -230,7 +232,7 @@
   },
   "describe": {
     "label": "Descriptivos",
-    "detail": "Cuenta observaciones y faltantes, media, mediana y desviación muestral por colum",
+    "detail": "Observaciones, faltantes, media, desviación, mínimo, cuartiles, mediana y máximo por columna",
     "category": "Exploración",
     "color": "blue",
     "inputs": {
@@ -240,8 +242,10 @@
       "summary": "Summary",
       "result": "Result"
     },
-    "defaults": {},
-    "explanation": "Cuenta observaciones y faltantes, media, mediana y desviación muestral por columna.",
+    "defaults": {
+      "columns": ""
+    },
+    "explanation": "Resumen por columna numérica (todas si se deja vacío): observaciones, faltantes, media, desviación muestral, mínimo, Q1, mediana, Q3 y máximo.",
     "references": [
       "B18"
     ],
@@ -336,7 +340,9 @@
     "references": [
       "B01",
       "B28"
-    ]
+    ],
+    "superseded_by": null,
+    "legacy": true
   },
   "synthetic": {
     "label": "Generador de escenarios",
@@ -986,7 +992,9 @@
     "references": [
       "B22"
     ],
-    "scope": "univariada"
+    "scope": "univariada",
+    "superseded_by": "two_sample_test",
+    "superseded_reason": "La prueba entre dos variables incluye el método pareado, además de Welch, Student y Mann-Whitney."
   },
   "unit_root": {
     "label": "Raíz unitaria",
@@ -1290,7 +1298,9 @@
     "references": [
       "B09"
     ],
-    "scope": "multivariada"
+    "scope": "multivariada",
+    "superseded_by": "nn_train",
+    "superseded_reason": "La red multicapa capa por capa permite definir entrada, capas intermedias y salida."
   },
   "nn_input": {
     "label": "Capa de entrada",
@@ -1856,7 +1866,9 @@
         "cientifica": "Notación científica ×10ⁿ",
         "normal": "Números completos"
       }
-    }
+    },
+    "superseded_by": "series_plot",
+    "superseded_reason": "El gráfico de varias series dibuja una o más variables, con fechas, índice base 100 y formato de ejes."
   },
   "join_series": {
     "label": "Unir series por período",
@@ -2068,7 +2080,9 @@
     "references": [
       "B18"
     ],
-    "scope": "multivariada"
+    "scope": "multivariada",
+    "superseded_by": "correlation",
+    "superseded_reason": "Correlación ya entrega la matriz de covarianza muestral con las mismas filas."
   },
   "sample_size": {
     "label": "Tamaño de muestra",
@@ -2366,7 +2380,9 @@
         "elasticnet"
       ]
     },
-    "scope": "multivariada"
+    "scope": "multivariada",
+    "superseded_by": "hyperparameter_search",
+    "superseded_reason": "La optimización de hiperparámetros elige α por validación y además produce un modelo evaluable."
   },
   "cluster_selection": {
     "label": "Selección de k",
@@ -2781,7 +2797,9 @@
       "B17",
       "B20"
     ],
-    "scope": "ambas"
+    "scope": "ambas",
+    "superseded_by": "describe",
+    "superseded_reason": "Descriptivos incluye ahora cuartiles, faltantes y selección de columnas."
   },
   "two_sample_test": {
     "label": "Prueba de hipótesis entre dos variables",
@@ -2890,7 +2908,9 @@
       "B31",
       "B33"
     ],
-    "scope": "multivariada"
+    "scope": "multivariada",
+    "superseded_by": "multiple_ols",
+    "superseded_reason": "OLS múltiple da los mismos coeficientes con inferencia completa y es aceptado por validación cruzada y análisis de residuos."
   },
   "cross_validation": {
     "label": "Validación cruzada",
@@ -3026,5 +3046,307 @@
         "normal": "Números completos"
       }
     }
+  },
+  "data_quality": {
+    "label": "Calidad de datos",
+    "detail": "Detecta duplicados, infinitos, faltantes y atípicos; limpia solo si lo eliges",
+    "category": "Transformaciones",
+    "color": "orange",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "data": "Dataset",
+      "result": "Result"
+    },
+    "defaults": {
+      "duplicates": "informar",
+      "missing": "informar",
+      "ffill_limit": 3,
+      "outlier_z": 4
+    },
+    "choices": {
+      "duplicates": [
+        "informar",
+        "ultimo"
+      ],
+      "missing": [
+        "informar",
+        "eliminar",
+        "arrastrar"
+      ]
+    },
+    "choice_labels": {
+      "duplicates": {
+        "informar": "Solo informar periodos repetidos",
+        "ultimo": "Conservar la última fila de cada periodo"
+      },
+      "missing": {
+        "informar": "Solo informar faltantes",
+        "eliminar": "Eliminar filas con faltantes",
+        "arrastrar": "Arrastrar el último valor (huecos cortos) y eliminar el resto"
+      }
+    },
+    "explanation": "Revisa la tabla antes de modelar: periodos repetidos o desordenados, infinitos (pasan a faltantes), faltantes por columna, columnas constantes y atípicos |z| grandes. Ordena por periodo y limpia solo con la política elegida; los atípicos se cuentan, no se borran. Integrada desde Quantlabs-Blueprints.",
+    "references": [
+      "B16",
+      "B18"
+    ],
+    "scope": "ambas"
+  },
+  "resample": {
+    "label": "Cambiar frecuencia",
+    "detail": "Pasa una tabla con fechas a semanal, mensual, trimestral o anual",
+    "category": "Transformaciones",
+    "color": "orange",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "data": "Dataset",
+      "result": "Result"
+    },
+    "defaults": {
+      "frequency": "mensual",
+      "aggregation": "ultimo",
+      "incomplete": "excluir",
+      "columns": ""
+    },
+    "choices": {
+      "frequency": [
+        "semanal",
+        "mensual",
+        "trimestral",
+        "anual"
+      ],
+      "aggregation": [
+        "ultimo",
+        "media",
+        "suma",
+        "primero"
+      ],
+      "incomplete": [
+        "excluir",
+        "conservar"
+      ]
+    },
+    "choice_labels": {
+      "frequency": {
+        "semanal": "Semanal",
+        "mensual": "Mensual",
+        "trimestral": "Trimestral",
+        "anual": "Anual"
+      },
+      "aggregation": {
+        "ultimo": "Último valor (precios de cierre)",
+        "media": "Media del período",
+        "suma": "Suma del período (flujos)",
+        "primero": "Primer valor"
+      },
+      "incomplete": {
+        "excluir": "Excluir el último período si está incompleto",
+        "conservar": "Conservar el último período"
+      }
+    },
+    "explanation": "Agrupa por período las columnas numéricas (todas si se deja vacío) con la regla elegida. Las fechas resultantes son el inicio de cada período y forman un calendario regular, apto para rezagos, ARIMA o raíz unitaria. Integrada desde Quantlabs-Blueprints.",
+    "references": [
+      "B32",
+      "B16"
+    ],
+    "scope": "ambas"
+  },
+  "select_columns": {
+    "label": "Seleccionar columnas",
+    "detail": "Elige, ordena y renombra columnas («precio: cierre»)",
+    "category": "Transformaciones",
+    "color": "orange",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "data": "Dataset",
+      "result": "Result"
+    },
+    "defaults": {
+      "columns": "periodo"
+    },
+    "explanation": "Conserva solo las columnas escritas, en ese orden; «vieja: nueva» renombra. Útil para limpiar tablas anchas antes de unir o modelar. Integrada desde Quantlabs-Blueprints.",
+    "references": [
+      "B16"
+    ],
+    "scope": "ambas"
+  },
+  "quant_features": {
+    "label": "Indicadores cuantitativos",
+    "detail": "Rendimientos, volatilidad y Sharpe móviles, caída, medias, RSI, MACD y Bollinger de un precio",
+    "category": "Transformaciones",
+    "color": "orange",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "data": "Dataset",
+      "result": "Result"
+    },
+    "defaults": {
+      "price": "precio",
+      "window": 20,
+      "periods_per_year": 252,
+      "risk_free": 0.02
+    },
+    "explanation": "Añade a la tabla indicadores calculados solo con datos pasados de la columna de precios: rendimiento simple y logarítmico, volatilidad y Sharpe anualizados móviles, caída desde el máximo, medias móviles simple y exponencial, RSI(14), MACD(12,26,9) y bandas de Bollinger (±2 DE). Integrada desde Quantlabs-Blueprints.",
+    "references": [
+      "B27",
+      "B32"
+    ],
+    "scope": "univariada"
+  },
+  "risk_metrics": {
+    "label": "Métricas de riesgo y desempeño",
+    "detail": "Sharpe, Sortino, caída máxima, VaR/CVaR, beta y alfa de una o más series",
+    "category": "Diagnósticos",
+    "color": "blue",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "result": "Result"
+    },
+    "defaults": {
+      "columns": "",
+      "values": "porcentaje",
+      "benchmark": "",
+      "periods_per_year": 252,
+      "risk_free": 0,
+      "confidence": 0.95
+    },
+    "choices": {
+      "values": [
+        "porcentaje",
+        "decimal",
+        "log",
+        "precios"
+      ]
+    },
+    "choice_labels": {
+      "values": {
+        "porcentaje": "Rendimientos en % (1 = 1 %)",
+        "decimal": "Rendimientos en decimales (0.01 = 1 %)",
+        "log": "Rendimientos logarítmicos en %",
+        "precios": "Precios (se calculan rendimientos simples)"
+      }
+    },
+    "explanation": "Para cada serie: rendimiento total y anual compuesto, volatilidad, Sharpe, Sortino, caída máxima, Calmar, VaR y CVaR históricos, asimetría y curtosis; con una columna de referencia, beta, alfa, correlación y ratio de información. Integrada desde Quantlabs-Blueprints.",
+    "references": [
+      "B27",
+      "B26"
+    ],
+    "scope": "multivariada"
+  },
+  "portfolio": {
+    "label": "Portafolio de Markowitz",
+    "detail": "Pesos iguales, mínima varianza y máximo Sharpe con frontera eficiente y prueba fuera de muestra",
+    "category": "Modelos",
+    "color": "purple",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "data": "Dataset",
+      "result": "Result"
+    },
+    "defaults": {
+      "columns": "",
+      "values": "porcentaje",
+      "periods_per_year": 252,
+      "risk_free": 0,
+      "max_weight": 1,
+      "fraction": 0.7,
+      "covariance": "contraccion"
+    },
+    "choices": {
+      "values": [
+        "porcentaje",
+        "decimal",
+        "log",
+        "precios"
+      ],
+      "covariance": [
+        "contraccion",
+        "muestral"
+      ]
+    },
+    "choice_labels": {
+      "values": {
+        "porcentaje": "Rendimientos en % (1 = 1 %)",
+        "decimal": "Rendimientos en decimales (0.01 = 1 %)",
+        "log": "Rendimientos logarítmicos en %",
+        "precios": "Precios (se calculan rendimientos simples)"
+      },
+      "covariance": {
+        "contraccion": "Contracción de Ledoit-Wolf (más estable)",
+        "muestral": "Covarianza muestral"
+      }
+    },
+    "explanation": "Estima medias y covarianzas con el bloque inicial, calcula pesos (iguales, mínima varianza y máximo Sharpe; solo largos, con tope por activo) y la frontera eficiente, y evalúa cada portafolio sin reajustar en el bloque final. Integrada desde Quantlabs-Blueprints.",
+    "references": [
+      "B27",
+      "B11"
+    ],
+    "scope": "multivariada"
+  },
+  "ml_compare": {
+    "label": "Modelos de machine learning",
+    "detail": "Compara media, Ridge, ElasticNet, bosque aleatorio, boosting, SVR y KNN",
+    "category": "Modelos",
+    "color": "purple",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "model": "FittedModel",
+      "result": "Result"
+    },
+    "defaults": {
+      "features": "x",
+      "y": "y",
+      "algorithm": "comparar",
+      "validation": 0.2,
+      "estimators": 200,
+      "max_depth": 6,
+      "alpha": 1,
+      "neighbors": 5,
+      "seed": 42
+    },
+    "choices": {
+      "algorithm": [
+        "comparar",
+        "media",
+        "ridge",
+        "elasticnet",
+        "bosque",
+        "boosting",
+        "svr",
+        "knn"
+      ]
+    },
+    "choice_labels": {
+      "algorithm": {
+        "comparar": "Comparar todos y quedarse con el mejor",
+        "media": "Media (referencia)",
+        "ridge": "Ridge",
+        "elasticnet": "ElasticNet",
+        "bosque": "Bosque aleatorio",
+        "boosting": "Boosting por histogramas",
+        "svr": "Máquina de vectores de soporte (SVR)",
+        "knn": "K vecinos más cercanos"
+      }
+    },
+    "explanation": "Ajusta modelos clásicos de scikit-learn con X e y escalados en el bloque de ajuste y elige el de menor RMSE en el bloque final de validación (orden temporal). El modelo elegido se reajusta con todas las filas y puede evaluarse con «Evaluar predicciones». Integrada desde Quantlabs-Blueprints.",
+    "references": [
+      "B09",
+      "B13"
+    ],
+    "scope": "multivariada"
   }
 }

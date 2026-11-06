@@ -41,6 +41,20 @@ Cada proyecto incluye lesson: objetivo, referencias, pasos, instrucciones, resul
 
 El catálogo conserva todos los temas de cada módulo como guía curricular, pero estos recorridos no completan cada sección de los libros. Los métodos y herramientas todavía pendientes están enumerados en [HERRAMIENTAS.md](HERRAMIENTAS.md). La definición del catálogo se guarda en [catalog.json](../examples/catalog.json). Los archivos personales 0.3.0 con experiment siguen admitidos como compatibilidad; el catálogo nuevo no los utiliza.
 
+## Recorridos aplicados con FRED F01–F05 (0.21.0)
+
+Requieren conexión. Se descargan con el nodo `fred` y se abren desde **Ejemplos → F01…F05**. La suite los ejecuta sin red inyectando series sintéticas (`tests/test_fred_source.py`). Resultados de la ejecución real del 2026-11-05 (no son valores esperados fijos: FRED revisa sus series):
+
+| Ejemplo | Datos (FRED) | Herramientas | Resultado real |
+|---|---|---|---|
+| F01 · Curva de rendimientos → recesión | T10Y3M, USREC; mensual 1982–2024 | `lag` 12 → `logit`; `split` temporal → `logit` → `evaluate` | 504 meses; β(spread₋₁₂) = −1,02 (p < 0,001). Entrenamiento: −1,62; prueba (129 meses): exactitud 0,87 con umbral 0,5 |
+| F02 · Curva de Phillips | UNRATE, CPIAUCSL; anual 1960–2019 | `growth` → `difference` → 2 × `ols` HC3, `diagnostics` | Original: pendiente +0,26 (p = 0,25), R² = 0,02. Aceleracionista: −0,44 (p = 0,011), R² = 0,18; NAIRU implícita −β₀/β₁ ≈ 6,0 % |
+| F03 · Ley de Okun | GDPC1, UNRATE; trimestral 1948–2019 | `growth` → `difference` → `ols` HC3, `diagnostics`, `residual_analysis` | 287 trimestres; β₁ = −0,28 (p < 0,001), R² = 0,46; crecimiento que estabiliza el desempleo ≈ 0,79 % trimestral. Breusch-Godfrey p < 0,001 |
+| F04 · Estructura temporal | DGS3MO, DGS10; mensual 1982–2024 | `unit_root` en niveles y diferencias, `cointegration`, `ecm`, `diagnostics` | ADF niveles: p = 0,26 (3 meses) y 0,038 (10 años); diferencias p < 0,001. Engle-Granger p = 0,043, pendiente 0,90. ECM: α = −0,023 (p = 0,006) |
+| F05 · Regla de Taylor | FEDFUNDS, PCEPI, UNRATE; trimestral 1987–2007 | `growth` (4 períodos) → `multiple_ols` HC3, `diagnostics`, `residual_analysis` | 80 trimestres; β_inflación = 1,41, β_desempleo = −0,98 (ambos p < 0,001), R² = 0,48; Durbin-Watson 0,13 |
+
+Lecturas que cada guía pide justificar: en F01 la recesión de 2020 no la anticipa la curva; en F04 el ADF de la tasa a 10 años rechaza al 5 % por su tendencia (el contraste no incluye tendencia) y α implica una vida media de unos 30 meses; en F05 los residuos muy persistentes sugieren suavizamiento de tasas, que el recorrido deja como pendiente.
+
 ## Recorrido aplicado R01 · Indicadores de EE. UU. (0.14.0)
 
 Requiere conexión (Banco Mundial). 22 nodos, un paso guiado por nodo; se abre desde **29 ejemplos → R01**. La suite valida su estructura sin red y lo ejecuta sin red sustituyendo la fuente por una tabla equivalente; la ejecución real (1972–2020, 49 años) se verificó el 2026-11-04 con los 22 nodos correctos.

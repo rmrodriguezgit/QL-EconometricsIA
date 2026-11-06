@@ -772,6 +772,170 @@
         "Contrastes de hipótesis sobre variables en distintas unidades: conviene transformarlas (tasas, logaritmos) antes de comparar medias",
         "Validación con efectos de autocorrelación (errores HAC en validación)"
       ]
+    },
+    {
+      "id": "F01",
+      "title": "La curva de rendimientos anticipa recesiones",
+      "topics": "Series de FRED, diferencial de tasas, rezagos, logit, validación temporal",
+      "references": [
+        "B06",
+        "B32",
+        "B33"
+      ],
+      "phase": "P2",
+      "status": "executable",
+      "network": true,
+      "objective": "Estimar la probabilidad de recesión en EE. UU. a 12 meses con el diferencial entre el bono a 10 años y la letra a 3 meses (Estrella y Mishkin).",
+      "question": "¿Un diferencial negativo hoy eleva la probabilidad de recesión dentro de un año? ¿Qué recesión no anticipó y por qué?",
+      "acceptance": "El estudiante interpreta el signo del coeficiente logit, el rezago de 12 meses y el desempeño fuera de muestra",
+      "scope": "Recorrido aplicado con datos reales de FRED (requiere conexión). Usa herramientas reutilizables; no sustituye los módulos C01–C28.",
+      "tools": [
+        "evaluate",
+        "fred",
+        "lag",
+        "logit",
+        "report",
+        "series_plot",
+        "split"
+      ],
+      "steps": 8,
+      "format": "connected",
+      "missing_tools": [
+        "Efectos marginales y curva ROC del logit",
+        "Errores estándar robustos a autocorrelación para modelos binarios"
+      ]
+    },
+    {
+      "id": "F02",
+      "title": "Curva de Phillips en EE. UU.",
+      "topics": "Series de FRED, inflación, desempleo, curva de Phillips, expectativas, MCO",
+      "references": [
+        "B10",
+        "B23",
+        "B29"
+      ],
+      "phase": "P2",
+      "status": "executable",
+      "network": true,
+      "objective": "Comparar la curva de Phillips original (inflación frente a desempleo) con la versión aceleracionista (cambio de la inflación frente a desempleo) con datos anuales 1960–2019.",
+      "question": "¿La relación inflación–desempleo es estable? ¿Mejora al usar el cambio de la inflación?",
+      "acceptance": "El estudiante compara pendiente, R² y diagnósticos de las dos especificaciones y explica el papel de las expectativas",
+      "scope": "Recorrido aplicado con datos reales de FRED (requiere conexión). Usa herramientas reutilizables; no sustituye los módulos C01–C28.",
+      "tools": [
+        "diagnostics",
+        "difference",
+        "fred",
+        "growth",
+        "ols",
+        "report",
+        "scatter",
+        "series_plot"
+      ],
+      "steps": 9,
+      "format": "connected",
+      "missing_tools": [
+        "Estimación de la NAIRU variable en el tiempo (filtro de Kalman)",
+        "Expectativas de inflación medidas (encuestas)"
+      ]
+    },
+    {
+      "id": "F03",
+      "title": "Ley de Okun: crecimiento y desempleo",
+      "topics": "Series de FRED, frecuencia trimestral, crecimiento, diferencias, MCO, diagnósticos de residuos",
+      "references": [
+        "B23",
+        "B24",
+        "B29"
+      ],
+      "phase": "P2",
+      "status": "executable",
+      "network": true,
+      "objective": "Estimar el coeficiente de Okun: cuánto cambia la tasa de desempleo cuando el PIB real crece un punto más en el trimestre.",
+      "question": "¿Cuánto crecimiento trimestral hace falta para que el desempleo no suba? ¿Los residuos cumplen los supuestos?",
+      "acceptance": "El estudiante interpreta la pendiente, calcula el crecimiento que mantiene estable el desempleo y revisa los residuos",
+      "scope": "Recorrido aplicado con datos reales de FRED (requiere conexión). Usa herramientas reutilizables; no sustituye los módulos C01–C28.",
+      "tools": [
+        "diagnostics",
+        "difference",
+        "fred",
+        "growth",
+        "ols",
+        "report",
+        "residual_analysis",
+        "scatter",
+        "series_plot"
+      ],
+      "steps": 9,
+      "format": "connected",
+      "missing_tools": [
+        "Brecha del producto con filtro HP o producto potencial (GDPPOT)",
+        "Okun asimétrico en expansiones y recesiones"
+      ]
+    },
+    {
+      "id": "F04",
+      "title": "Estructura temporal de tasas: raíz unitaria, cointegración y ECM",
+      "topics": "Series de FRED, DGS3MO, DGS10, raíz unitaria, cointegración de Engle-Granger, modelo de corrección de errores",
+      "references": [
+        "B25",
+        "B32"
+      ],
+      "phase": "P2",
+      "status": "executable",
+      "network": true,
+      "objective": "Contrastar la hipótesis de expectativas: la letra del Tesoro a 3 meses y el bono a 10 años tienen raíz unitaria pero comparten una relación de largo plazo.",
+      "question": "¿Están cointegradas las tasas a 3 meses y 10 años? ¿Qué tan rápido corrige el bono a 10 años un desvío del equilibrio?",
+      "acceptance": "El estudiante encadena ADF en niveles y diferencias, Engle-Granger y ECM, e interpreta la velocidad de ajuste",
+      "scope": "Recorrido aplicado con datos reales de FRED (requiere conexión). Usa herramientas reutilizables; no sustituye los módulos C01–C28.",
+      "tools": [
+        "cointegration",
+        "diagnostics",
+        "difference",
+        "ecm",
+        "fred",
+        "report",
+        "series_plot",
+        "unit_root"
+      ],
+      "steps": 10,
+      "format": "connected",
+      "missing_tools": [
+        "Prueba de Johansen con varias tasas",
+        "Quiebres estructurales en la relación (2008, tasa cero)"
+      ]
+    },
+    {
+      "id": "F05",
+      "title": "Regla de Taylor, 1988–2007",
+      "topics": "Series de FRED, política monetaria, inflación interanual, MCO múltiple, plano 3D, diagnósticos",
+      "references": [
+        "B14",
+        "B30",
+        "B31"
+      ],
+      "phase": "P2",
+      "status": "executable",
+      "network": true,
+      "objective": "Estimar cómo respondió la tasa de fondos federales a la inflación y al desempleo durante la Gran Moderación.",
+      "question": "¿Cumplió la Reserva Federal el principio de Taylor (respuesta a la inflación mayor que 1)?",
+      "acceptance": "El estudiante interpreta los dos coeficientes, el principio de Taylor y los límites de los residuos autocorrelacionados",
+      "scope": "Recorrido aplicado con datos reales de FRED (requiere conexión). Usa herramientas reutilizables; no sustituye los módulos C01–C28.",
+      "tools": [
+        "diagnostics",
+        "fred",
+        "growth",
+        "multiple_ols",
+        "report",
+        "residual_analysis",
+        "series_plot"
+      ],
+      "steps": 7,
+      "format": "connected",
+      "missing_tools": [
+        "Suavizamiento de tasas con la tasa rezagada",
+        "Brecha del producto en lugar del desempleo",
+        "Datos en tiempo real (ALFRED)"
+      ]
     }
   ]
 }

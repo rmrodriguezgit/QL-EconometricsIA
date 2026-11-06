@@ -249,3 +249,15 @@ El nodo **OLS múltiple** (`multiple_ols`) añade dos vistas a su resultado, sin
 - Un panel por regresor: residuos de y frente a residuos de xⱼ, ambos tras regresar sobre los demás regresores con constante. La pendiente es exactamente βⱼ (teorema de Frisch–Waugh–Lovell); cada panel muestra β, EE, p y la correlación parcial, y los puntos alejados de la recta son los que más influyen en ese coeficiente.
 
 Pruebas: `tests/test_regression_views.py` (pendientes parciales = coeficientes de statsmodels con regresores correlacionados, filas del plano = valores ajustados, límite de puntos) y `apps/desktop/electron/regressionGeometry.test.ts` (residuo exacto al plano para cualquier par de ejes). Referencia: B13 (Wooldridge, partialling out).
+
+## FRED como fuente de datos (0.21.0)
+
+Registro actual: **90 tipos**. Módulo `engine/quantlabs/fred_source.py`; catálogo curado `packages/contracts/fredCatalog.json`; pruebas sin red en `tests/test_fred_source.py`.
+
+| Tipo | Puertos | Método | Verificación | Límite declarado |
+|---|---|---|---|---|
+| `fred` | — → Dataset | Descarga cada serie de `fredgraph.csv?id=ID&cosd=INICIO&coed=FIN` (sin clave), la nombra con su alias y une por fecha; convierte a semanal (viernes), mensual, trimestral o anual con media, último valor o suma | 33 IDs del catálogo comprobados contra FRED; parseo de `observation_date` y del antiguo `DATE` con «.» como faltante; remuestreo comparado con pandas; ejemplos F01–F05 ejecutados con datos reales el 2026-11-05 | Máx. 12 series y 60.000 filas; las unidades se toman del catálogo curado (otros IDs: consultar la ficha); sin revisiones históricas (ALFRED) ni API oficial |
+
+Parámetros: `series` («ID: alias» por línea; sin alias se usa el del catálogo o el ID en minúsculas), `start_date` y `end_date` (AAAA-MM-DD o año; vacía = hoy), `frequency` (`original`, `semanal`, `mensual`, `trimestral`, `anual`) y `aggregation` (`media`, `ultimo`, `suma`). Con `original` y series de distinta frecuencia las filas de una quedan vacías en las fechas de la otra; la procedencia lo advierte.
+
+Cambios en herramientas existentes: `time_order` acepta `periodo` con fechas ISO regulares, así que `lag`, `growth`, `difference`, `unit_root`, `cointegration`, `ecm`, `arima` y `backtest` funcionan con datos mensuales o trimestrales de FRED. Los datos diarios con huecos de fin de semana siguen rechazándose como calendario irregular, con la sugerencia de convertir la frecuencia. `growth` respeta `periods` (antes se ignoraba y siempre usaba 1). `series_plot` dibuja fechas ISO como año decimal y muestra en la tabla la primera y última fecha.

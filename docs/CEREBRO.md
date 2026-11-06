@@ -126,6 +126,10 @@ En 0.10.0 se implementaron así doce fichas (Chow, VAR, Johansen, SARIMA, WLS, r
 - La recuperación es léxica (BM25); no hay embeddings.
 - Un blueprint verificado es ejecutable, no una validación científica de la especificación.
 
+## FRED (0.21.0)
+
+`detect_fred` elige el nodo `fred` solo si el enunciado nombra FRED o la Reserva Federal de St. Louis, o escribe un identificador del catálogo curado (p. ej. `DGS10`, `UNRATE`). Las frases «curva de rendimientos», «bono a 10 años», «letra a 3 meses», «fondos federales», «desempleo», «inflación/IPC», «PIB real», «recesión», «tipo de cambio», «petróleo», «hipotecas» y «M2» se traducen a series y se retiran del texto antes de buscar herramientas. Años → `start_date`/`end_date`; «anual» o «trimestral» → `frequency` (mensual por defecto). FRED cuenta como red: la verificación del blueprint y la reparación la consultan solo con la red permitida. La reparación también corrige alias inválidos o repetidos de `series`.
+
 ## Banco Mundial con varios indicadores (0.13.0)
 
 Si el enunciado nombra dos o más indicadores reconocidos («contribuciones sociales, tasa de préstamo, crecimiento del PIB y gasto de consumo final total de Estados Unidos y México»), el cerebro usa `worldbank_multi` con alias de columna (`social_contri`, `lending_rate`, `gdp_growth`, `fin_cons`…) y todos los países mencionados. Cada frase de indicador se consume al reconocerla (así «consumo final» dentro de «gasto de consumo final total» no añade otro indicador) y esas frases no activan herramientas: «crecimiento del PIB» es un dato, no la transformación *Tasa de crecimiento*. «Pairplot», «matriz de dispersión» o «gráficos por pares» activan `pairplot`; «por país» lo colorea por `pais`.

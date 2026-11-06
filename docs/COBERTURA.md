@@ -87,6 +87,10 @@ C04: correlación Pearson y covarianza muestral en herramientas visibles y N01, 
 
 C07, C08, C09, C12, C14, C15, C16, C21, C22 y C25: doce herramientas nuevas (ver [HERRAMIENTAS.md](HERRAMIENTAS.md)) con pruebas en tests/test_gap_tools.py. Cubren parte de los pendientes de cada módulo; siguen abiertos rolling validation, VECM, GLS general, validación anidada, estabilidad de grupos, efectos marginales, panel y EGARCH, entre otros enumerados en examples/tool-gaps.json.
 
+### Evidencia adicional · 0.21.0
+
+Fuentes, C09, C10, C11, C12, C14, C15 y C16 (aplicado): FRED como fuente sin clave (`fred`) y cinco recorridos con datos reales (logit de recesión, Phillips, Okun, cointegración y ECM de tasas, regla de Taylor), con pruebas sin red en tests/test_fred_source.py. Siguen abiertos la API oficial con clave, las revisiones en tiempo real (ALFRED), Johansen con varias tasas, efectos marginales y ROC del logit y el suavizamiento en la regla de Taylor.
+
 ### Evidencia adicional · 0.14.0
 
 C10, C11, C13, C20, C21 y C22 (aplicado): describe/transpose, pruebas de dos variables, detección de colinealidad por valores propios, scikit-learn, validación cruzada, búsqueda de hiperparámetros y análisis de residuos para cualquier regresión, con el recorrido aplicado R01. Siguen abiertos: validación con dependencia (bloques, HAC), contrastes sobre variables transformadas a unidades comparables y modelos no lineales en la búsqueda.

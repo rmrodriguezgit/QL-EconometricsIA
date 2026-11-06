@@ -1,0 +1,245 @@
+{
+  "schema_version": "1.0.0",
+  "app_version": "0.20.0",
+  "title": "F01 · La curva de rendimientos anticipa recesiones",
+  "nodes": [
+    {
+      "id": "datos",
+      "type": "fred",
+      "node_version": "1.0.0",
+      "parameters": {
+        "series": "T10Y3M: spread\nUSREC: recesion",
+        "start_date": "1982-01-01",
+        "end_date": "2024-12-31",
+        "frequency": "mensual",
+        "aggregation": "media"
+      },
+      "position": {
+        "x": 0,
+        "y": 170
+      }
+    },
+    {
+      "id": "rezago",
+      "type": "lag",
+      "node_version": "1.0.0",
+      "parameters": {
+        "column": "spread",
+        "periods": 12
+      },
+      "position": {
+        "x": 320,
+        "y": 170
+      }
+    },
+    {
+      "id": "series",
+      "type": "series_plot",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "spread,recesion",
+        "time": "periodo",
+        "mode": "paneles",
+        "y_axis": "auto"
+      },
+      "position": {
+        "x": 320,
+        "y": 0
+      }
+    },
+    {
+      "id": "modelo",
+      "type": "logit",
+      "node_version": "1.0.0",
+      "parameters": {
+        "features": "lag_12_spread",
+        "y": "recesion",
+        "method": "logit"
+      },
+      "position": {
+        "x": 640,
+        "y": 0
+      }
+    },
+    {
+      "id": "particion",
+      "type": "split",
+      "node_version": "1.0.0",
+      "parameters": {
+        "fraction": 0.75,
+        "method": "temporal",
+        "seed": 42
+      },
+      "position": {
+        "x": 640,
+        "y": 340
+      }
+    },
+    {
+      "id": "modelo_train",
+      "type": "logit",
+      "node_version": "1.0.0",
+      "parameters": {
+        "features": "lag_12_spread",
+        "y": "recesion",
+        "method": "logit"
+      },
+      "position": {
+        "x": 960,
+        "y": 340
+      }
+    },
+    {
+      "id": "evaluar",
+      "type": "evaluate",
+      "node_version": "1.0.0",
+      "parameters": {},
+      "position": {
+        "x": 1280,
+        "y": 340
+      }
+    },
+    {
+      "id": "reporte",
+      "type": "report",
+      "node_version": "1.0.0",
+      "parameters": {
+        "note": "¿Un diferencial negativo hoy eleva la probabilidad de recesión dentro de un año? Usa el signo del coeficiente, su p-valor y el error fuera de muestra; señala qué recesión no anticipó el modelo."
+      },
+      "position": {
+        "x": 960,
+        "y": 0
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "datos-data-rezago-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "rezago",
+      "target_port": "data"
+    },
+    {
+      "id": "datos-data-series-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "series",
+      "target_port": "data"
+    },
+    {
+      "id": "rezago-data-modelo-data",
+      "source": "rezago",
+      "source_port": "data",
+      "target": "modelo",
+      "target_port": "data"
+    },
+    {
+      "id": "rezago-data-particion-data",
+      "source": "rezago",
+      "source_port": "data",
+      "target": "particion",
+      "target_port": "data"
+    },
+    {
+      "id": "particion-train-modelo_train-data",
+      "source": "particion",
+      "source_port": "train",
+      "target": "modelo_train",
+      "target_port": "data"
+    },
+    {
+      "id": "modelo_train-model-evaluar-model",
+      "source": "modelo_train",
+      "source_port": "model",
+      "target": "evaluar",
+      "target_port": "model"
+    },
+    {
+      "id": "particion-test-evaluar-data",
+      "source": "particion",
+      "source_port": "test",
+      "target": "evaluar",
+      "target_port": "data"
+    },
+    {
+      "id": "modelo-result-reporte-result",
+      "source": "modelo",
+      "source_port": "result",
+      "target": "reporte",
+      "target_port": "result"
+    }
+  ],
+  "lesson": {
+    "module": "F01",
+    "title": "La curva de rendimientos anticipa recesiones",
+    "objective": "Estimar la probabilidad de recesión en EE. UU. a 12 meses con el diferencial entre el bono a 10 años y la letra a 3 meses (Estrella y Mishkin).",
+    "references": [
+      "B06",
+      "B32",
+      "B33"
+    ],
+    "steps": [
+      {
+        "node_id": "datos",
+        "title": "1. Descargar de FRED",
+        "instruction": "Descarga T10Y3M (bono a 10 años menos letra a 3 meses, diaria) y USREC (indicador de recesión del NBER) y conviértelas a frecuencia mensual con la media.",
+        "expected": "Tabla mensual 1982–2024 con periodo, spread y recesion.",
+        "question": "¿Por qué hay que convertir la serie diaria antes de unirla con la mensual?"
+      },
+      {
+        "node_id": "series",
+        "title": "2. Graficar",
+        "instruction": "Dibuja ambas series en paneles. Busca las inversiones de la curva (spread < 0) antes de cada recesión.",
+        "expected": "Dos paneles; las recesiones aparecen como bloques de 1.",
+        "question": "¿Cuánto tiempo pasa entre la inversión y el inicio de la recesión?"
+      },
+      {
+        "node_id": "rezago",
+        "title": "3. Rezagar 12 meses",
+        "instruction": "Crea lag_12_spread: el diferencial de hace un año. Así el modelo solo usa información disponible antes del mes que predice.",
+        "expected": "Columna lag_12_spread con 12 faltantes al inicio.",
+        "question": "¿Qué pasaría si usaras el diferencial del mismo mes?"
+      },
+      {
+        "node_id": "modelo",
+        "title": "4. Logit de muestra completa",
+        "instruction": "Estima P(recesión) = Λ(β₀ + β₁·spread₋₁₂).",
+        "expected": "β₁ negativo: a menor diferencial, mayor probabilidad de recesión.",
+        "question": "¿Cómo se interpreta β₁ en términos de odds?"
+      },
+      {
+        "node_id": "particion",
+        "title": "5. Partición temporal",
+        "instruction": "Reserva el último 25 % de los meses para evaluar fuera de muestra, sin mezclar el orden temporal.",
+        "expected": "Entrenamiento hasta ~2014 y prueba después.",
+        "question": "¿Por qué no se usa una partición aleatoria en series de tiempo?"
+      },
+      {
+        "node_id": "modelo_train",
+        "title": "6. Logit de entrenamiento",
+        "instruction": "Reestima el mismo logit solo con la muestra de entrenamiento.",
+        "expected": "Coeficientes cercanos a los de muestra completa.",
+        "question": "¿Cambian mucho los coeficientes? ¿Qué indica eso sobre su estabilidad?"
+      },
+      {
+        "node_id": "evaluar",
+        "title": "7. Evaluar fuera de muestra",
+        "instruction": "Evalúa el logit de entrenamiento en la muestra de prueba.",
+        "expected": "Métricas de clasificación en el período de prueba (incluye 2020).",
+        "question": "La recesión de 2020 fue causada por la pandemia: ¿podía anticiparla la curva?"
+      },
+      {
+        "node_id": "reporte",
+        "title": "8. Interpretar",
+        "instruction": "Redacta la conclusión con el signo, la significancia y el desempeño fuera de muestra.",
+        "expected": "Una conclusión que distingue asociación predictiva de causalidad.",
+        "question": "¿Usarías este modelo como única señal de recesión?"
+      }
+    ],
+    "missing_tools": [
+      "Efectos marginales y curva ROC del logit",
+      "Errores estándar robustos a autocorrelación para modelos binarios"
+    ]
+  }
+}

@@ -1,0 +1,266 @@
+{
+  "schema_version": "1.0.0",
+  "app_version": "0.20.0",
+  "title": "F02 · Curva de Phillips en EE. UU.",
+  "nodes": [
+    {
+      "id": "datos",
+      "type": "fred",
+      "node_version": "1.0.0",
+      "parameters": {
+        "series": "UNRATE: desempleo\nCPIAUCSL: ipc",
+        "start_date": "1960-01-01",
+        "end_date": "2019-12-31",
+        "frequency": "anual",
+        "aggregation": "media"
+      },
+      "position": {
+        "x": 0,
+        "y": 170
+      }
+    },
+    {
+      "id": "inflacion",
+      "type": "growth",
+      "node_version": "1.0.0",
+      "parameters": {
+        "column": "ipc",
+        "output": "inflacion"
+      },
+      "position": {
+        "x": 320,
+        "y": 170
+      }
+    },
+    {
+      "id": "aceleracion",
+      "type": "difference",
+      "node_version": "1.0.0",
+      "parameters": {
+        "column": "inflacion",
+        "periods": 1
+      },
+      "position": {
+        "x": 640,
+        "y": 170
+      }
+    },
+    {
+      "id": "series",
+      "type": "series_plot",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "desempleo,inflacion",
+        "time": "periodo",
+        "mode": "original",
+        "y_axis": "auto"
+      },
+      "position": {
+        "x": 960,
+        "y": 0
+      }
+    },
+    {
+      "id": "dispersion",
+      "type": "scatter",
+      "node_version": "1.0.0",
+      "parameters": {
+        "x": "desempleo",
+        "y": "inflacion",
+        "y_axis": "auto",
+        "x_axis": "auto"
+      },
+      "position": {
+        "x": 960,
+        "y": 170
+      }
+    },
+    {
+      "id": "phillips",
+      "type": "ols",
+      "node_version": "1.0.0",
+      "parameters": {
+        "x": "desempleo",
+        "y": "inflacion",
+        "covariance": "HC3"
+      },
+      "position": {
+        "x": 960,
+        "y": 340
+      }
+    },
+    {
+      "id": "aceleracionista",
+      "type": "ols",
+      "node_version": "1.0.0",
+      "parameters": {
+        "x": "desempleo",
+        "y": "diff_1_inflacion",
+        "covariance": "HC3"
+      },
+      "position": {
+        "x": 1280,
+        "y": 170
+      }
+    },
+    {
+      "id": "diagnostico",
+      "type": "diagnostics",
+      "node_version": "1.0.0",
+      "parameters": {},
+      "position": {
+        "x": 1600,
+        "y": 170
+      }
+    },
+    {
+      "id": "reporte",
+      "type": "report",
+      "node_version": "1.0.0",
+      "parameters": {
+        "note": "¿La relación inflación–desempleo es estable? Compara la curva original con la aceleracionista (pendiente, R² y diagnósticos) y explica el papel de las expectativas."
+      },
+      "position": {
+        "x": 1920,
+        "y": 170
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "datos-data-inflacion-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "inflacion",
+      "target_port": "data"
+    },
+    {
+      "id": "inflacion-data-aceleracion-data",
+      "source": "inflacion",
+      "source_port": "data",
+      "target": "aceleracion",
+      "target_port": "data"
+    },
+    {
+      "id": "aceleracion-data-series-data",
+      "source": "aceleracion",
+      "source_port": "data",
+      "target": "series",
+      "target_port": "data"
+    },
+    {
+      "id": "aceleracion-data-dispersion-data",
+      "source": "aceleracion",
+      "source_port": "data",
+      "target": "dispersion",
+      "target_port": "data"
+    },
+    {
+      "id": "aceleracion-data-phillips-data",
+      "source": "aceleracion",
+      "source_port": "data",
+      "target": "phillips",
+      "target_port": "data"
+    },
+    {
+      "id": "aceleracion-data-aceleracionista-data",
+      "source": "aceleracion",
+      "source_port": "data",
+      "target": "aceleracionista",
+      "target_port": "data"
+    },
+    {
+      "id": "aceleracionista-model-diagnostico-model",
+      "source": "aceleracionista",
+      "source_port": "model",
+      "target": "diagnostico",
+      "target_port": "model"
+    },
+    {
+      "id": "diagnostico-result-reporte-result",
+      "source": "diagnostico",
+      "source_port": "result",
+      "target": "reporte",
+      "target_port": "result"
+    }
+  ],
+  "lesson": {
+    "module": "F02",
+    "title": "Curva de Phillips en EE. UU.",
+    "objective": "Comparar la curva de Phillips original (inflación frente a desempleo) con la versión aceleracionista (cambio de la inflación frente a desempleo) con datos anuales 1960–2019.",
+    "references": [
+      "B10",
+      "B23",
+      "B29"
+    ],
+    "steps": [
+      {
+        "node_id": "datos",
+        "title": "1. Descargar de FRED",
+        "instruction": "Descarga la tasa de desempleo (UNRATE) y el IPC (CPIAUCSL), ambas mensuales, y conviértelas a promedios anuales 1960–2019.",
+        "expected": "Tabla anual con periodo (año), desempleo e ipc.",
+        "question": "¿Por qué conviene promediar en vez de tomar diciembre?"
+      },
+      {
+        "node_id": "inflacion",
+        "title": "2. Inflación",
+        "instruction": "Calcula la inflación anual como la variación porcentual del IPC promedio.",
+        "expected": "Columna inflacion; el primer año queda vacío.",
+        "question": "¿Qué años tienen inflación de dos dígitos?"
+      },
+      {
+        "node_id": "aceleracion",
+        "title": "3. Cambio de la inflación",
+        "instruction": "Calcula Δinflación = inflaciónₜ − inflaciónₜ₋₁.",
+        "expected": "Columna diff_1_inflacion.",
+        "question": "¿Qué supuesto sobre las expectativas justifica usar Δinflación?"
+      },
+      {
+        "node_id": "series",
+        "title": "4. Graficar",
+        "instruction": "Dibuja desempleo e inflación en el mismo eje (ambos en %).",
+        "expected": "Dos líneas; los años setenta muestran inflación y desempleo altos a la vez.",
+        "question": "¿Qué episodio contradice la curva original?"
+      },
+      {
+        "node_id": "dispersion",
+        "title": "5. Dispersión",
+        "instruction": "Relaciona desempleo (x) e inflación (y).",
+        "expected": "Nube sin una pendiente clara en toda la muestra.",
+        "question": "¿Ves una relación estable o varias épocas distintas?"
+      },
+      {
+        "node_id": "phillips",
+        "title": "6. Curva original",
+        "instruction": "Estima inflación = β₀ + β₁·desempleo con errores HC3.",
+        "expected": "Pendiente débil o de signo inesperado y R² bajo.",
+        "question": "¿Por qué falla la curva original fuera de los años sesenta?"
+      },
+      {
+        "node_id": "aceleracionista",
+        "title": "7. Curva aceleracionista",
+        "instruction": "Estima Δinflación = β₀ + β₁·desempleo. −β₀/β₁ aproxima la NAIRU.",
+        "expected": "Pendiente negativa y significativa.",
+        "question": "Calcula −β₀/β₁: ¿qué tasa de desempleo estabiliza la inflación?"
+      },
+      {
+        "node_id": "diagnostico",
+        "title": "8. Diagnósticos",
+        "instruction": "Revisa los diagnósticos de los residuos de la curva aceleracionista.",
+        "expected": "Pruebas de autocorrelación, heterocedasticidad y normalidad.",
+        "question": "¿Qué supuesto del MCO es más dudoso con datos anuales?"
+      },
+      {
+        "node_id": "reporte",
+        "title": "9. Interpretar",
+        "instruction": "Compara las dos especificaciones y concluye.",
+        "expected": "Una conclusión que cita la pendiente, el R² y la NAIRU implícita.",
+        "question": "¿Es estable la NAIRU a lo largo de 60 años?"
+      }
+    ],
+    "missing_tools": [
+      "Estimación de la NAIRU variable en el tiempo (filtro de Kalman)",
+      "Expectativas de inflación medidas (encuestas)"
+    ]
+  }
+}

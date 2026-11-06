@@ -18,7 +18,7 @@ import pandas as pd
 import statsmodels.api as sm
 
 ROOT = Path(__file__).resolve().parents[2]
-VERSION = (ROOT / 'VERSION').read_text().strip() if (ROOT / 'VERSION').exists() else '0.20.0'
+VERSION = (ROOT / 'VERSION').read_text().strip() if (ROOT / 'VERSION').exists() else '0.21.0'
 SCHEMA = '1.0.0'
 
 class EngineError(ValueError):
@@ -478,9 +478,13 @@ def execute(project, target_node=None):
             if kind == 'experiment':
                 from .experiments import run_experiment
                 result = run_experiment(params)
-            elif kind in ['simulate', 'csv', 'worldbank', 'worldbank_multi', 'wooldridge']:
+            elif kind in ['simulate', 'csv', 'worldbank', 'worldbank_multi', 'wooldridge', 'fred']:
                 from .wooldridge_source import wooldridge_data
-                frame, source = {'simulate': simulate, 'csv': csv_data, 'worldbank': world_bank, 'worldbank_multi': world_bank_multi, 'wooldridge':wooldridge_data}[kind](params)
+                if kind == 'fred':
+                    from .fred_source import fred_data
+                    frame, source = fred_data(params)
+                else:
+                    frame, source = {'simulate': simulate, 'csv': csv_data, 'worldbank': world_bank, 'worldbank_multi': world_bank_multi, 'wooldridge':wooldridge_data}[kind](params)
                 result = frame_result(frame,'Datos de origen; revisa unidades y faltantes.')
                 source.update({'retrieved_at': datetime.now(timezone.utc).isoformat(), 'data_sha256': result['data_sha256'], 'n': len(frame)})
                 sources[key] = source

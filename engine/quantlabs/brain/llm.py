@@ -38,7 +38,7 @@ SYSTEM = """Eres el segundo cerebro de Quantlabs Econometrics, un laboratorio ed
 Tu tarea: convertir el enunciado del usuario en un BLUEPRINT (plan de nodos) usando EXCLUSIVAMENTE las herramientas listadas.
 Reglas:
 1. Cada paso usa un "tool" que exista en la lista. No inventes tipos ni parámetros.
-2. El primer paso es una fuente de datos (synthetic, simulate, worldbank, worldbank_multi, wooldridge o csv; worldbank_multi para dos o más indicadores con alias). Si el enunciado no da datos, usa synthetic con el escenario adecuado.
+2. El primer paso es una fuente de datos (synthetic, simulate, worldbank, worldbank_multi, wooldridge, fred o csv; worldbank_multi para dos o más indicadores con alias; fred para series de EE. UU. de la Reserva Federal de St. Louis: tasas del Tesoro, fondos federales, desempleo, IPC, PIB, recesiones). Si el enunciado no da datos, usa synthetic con el escenario adecuado.
 3. Las conexiones respetan tipos: una entrada Dataset recibe una salida Dataset, FittedModel recibe FittedModel, Result recibe Result.
    Usa "inputs" {puerto_entrada: id_paso_origen} solo si hay ambigüedad; si no, se conecta al último paso compatible.
 4. Orden pedagógico: datos → transformaciones → exploración → modelo → diagnóstico → report.
@@ -100,7 +100,7 @@ def build_messages(prompt, tools, examples):
             'logistic(x,clase) prices(periodo,nominal,indice,poblacion) positive(periodo,valor) normal(valor) pairs(antes,despues) '
             'cobb(capital,trabajo,produccion) ar1(periodo,y,walk) cointegrated(periodo,x,y) garch(periodo,retorno) '
             'factors(x1..x6) endogenous(z,x,y) polynomial(x,y) returns(periodo,retorno) regimes(periodo,valor) clusters(x1,x2) '
-            'nonlinear(x,y) inflation(r1..r5) sem(x1,x2,x3,y) seasonal(periodo,ventas). worldbank produce (periodo,valor); worldbank_multi produce (periodo[,pais], un alias por indicador).'
+            'nonlinear(x,y) inflation(r1..r5) sem(x1,x2,x3,y) seasonal(periodo,ventas). worldbank produce (periodo,valor); worldbank_multi produce (periodo[,pais], un alias por indicador); fred produce (periodo, un alias por serie «ID: alias»; periodo es año si frequency=anual o fecha AAAA-MM-DD).'
             '\n\nENUNCIADO DEL USUARIO:\n' + prompt.strip()[:4000])
     return [{'role': 'system', 'content': SYSTEM}, {'role': 'user', 'content': user}]
 

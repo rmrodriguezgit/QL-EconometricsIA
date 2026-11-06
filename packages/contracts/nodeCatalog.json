@@ -80,6 +80,56 @@
       "B01"
     ]
   },
+  "fred": {
+    "label": "FRED · Reserva Federal de St. Louis",
+    "detail": "Descarga series económicas de EE. UU. por identificador, sin clave de API",
+    "category": "Fuentes de datos",
+    "color": "green",
+    "inputs": {},
+    "outputs": {
+      "data": "Dataset"
+    },
+    "defaults": {
+      "series": "DGS3MO: tbill_3m\nDGS10: bono_10y",
+      "start_date": "2000-01-01",
+      "end_date": "",
+      "frequency": "mensual",
+      "aggregation": "media"
+    },
+    "explanation": "Descarga cada serie del CSV público de FRED (fredgraph.csv?id=…&cosd=…&coed=…) y la guarda en una columna con su alias. Las fechas son el inicio de cada período; convertir a mensual, trimestral o anual es explícito (media, último valor o suma). Con frecuencia anual, periodo es el año; si no, una fecha AAAA-MM-DD que las herramientas temporales aceptan si el calendario es regular. Requiere conexión.",
+    "references": [
+      "B01",
+      "B17"
+    ],
+    "choices": {
+      "frequency": [
+        "original",
+        "semanal",
+        "mensual",
+        "trimestral",
+        "anual"
+      ],
+      "aggregation": [
+        "media",
+        "ultimo",
+        "suma"
+      ]
+    },
+    "choice_labels": {
+      "frequency": {
+        "original": "Original (sin convertir)",
+        "semanal": "Semanal (viernes)",
+        "mensual": "Mensual",
+        "trimestral": "Trimestral",
+        "anual": "Anual"
+      },
+      "aggregation": {
+        "media": "Media del período",
+        "ultimo": "Último valor del período",
+        "suma": "Suma del período"
+      }
+    }
+  },
   "describe": {
     "label": "Descriptivos",
     "detail": "Cuenta observaciones y faltantes, media, mediana y desviación muestral por colum",

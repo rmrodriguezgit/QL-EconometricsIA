@@ -199,6 +199,50 @@ def wooldridge_names():
     return {item['id'].lower() for item in json.loads(path.read_text(encoding='utf-8'))['items']}
 
 
+FRED_PHRASES = [
+    (r'curva de rendimientos?|diferencial (de tasas|10 anos)|spread', 'T10Y3M'),
+    (r'(bono|tesoro|rendimiento)s? (del tesoro )?a 10 anos|bono a 10', 'DGS10'),
+    (r'(bono|tesoro|rendimiento)s? (del tesoro )?a 2 anos', 'DGS2'),
+    (r'(letra|bono|tesoro|rendimiento)s? (del tesoro )?a 3 meses|t-?bill', 'DGS3MO'),
+    (r'fondos federales|federal funds', 'FEDFUNDS'),
+    (r'desempleo|unemployment', 'UNRATE'),
+    (r'inflacion|precios al consumidor|\bipc\b|\bcpi\b', 'CPIAUCSL'),
+    (r'pib real|real gdp|producto real', 'GDPC1'),
+    (r'recesion', 'USREC'),
+    (r'produccion industrial', 'INDPRO'),
+    (r'tipo de cambio|peso por dolar|pesos por dolar', 'DEXMXUS'),
+    (r'petroleo|\bwti\b', 'DCOILWTICO'),
+    (r'hipotec', 'MORTGAGE30US'),
+    (r'oferta monetaria|\bm2\b', 'M2SL'),
+]
+
+
+@lru_cache(maxsize=1)
+def fred_catalog():
+    path = ROOT / 'packages/contracts/fredCatalog.json'
+    return {item['id']: item for item in json.loads(path.read_text(encoding='utf-8'))['items']} if path.exists() else {}
+
+
+def detect_fred(text, folded):
+    """FRED solo si se nombra (FRED, Reserva Federal de St. Louis) o se escribe un identificador del catálogo."""
+    known = fred_catalog()
+    ids = [code for code in known if len(code) >= 4 and re.search(r'\b' + re.escape(code) + r'\b', text)]
+    if not ids and not re.search(r'\bfred\b|reserva federal de (st\.? |san )?louis', folded):
+        return None
+    for pattern, code in FRED_PHRASES:
+        if code not in ids and re.search(pattern, folded):
+            ids.append(code)
+    ids = ids[:12] or ['DGS3MO', 'DGS10']
+    params = {'series': '\n'.join(f"{code}: {known.get(code, {}).get('alias', code.lower())}" for code in ids)}
+    years = [int(y) for y in re.findall(r'\b(1[89]\d\d|20[0-4]\d)\b', folded)]
+    if years:
+        params['start_date'] = f'{min(years)}-01-01'
+        if len(years) >= 2:
+            params['end_date'] = f'{max(years)}-12-31'
+    params['frequency'] = 'anual' if re.search(r'\banual', folded) else 'trimestral' if re.search(r'trimestr', folded) else 'mensual'
+    return 'fred', params, f"Series de FRED ({', '.join(ids)}), frecuencia {params['frequency']}."
+
+
 def detect_source(text):
     """Devuelve (tipo, parámetros, razón) para la fuente de datos."""
     folded = fold(text)
@@ -211,6 +255,9 @@ def detect_source(text):
             return 'wooldridge', {'dataset': name}, f'Se usa el conjunto {name} de Wooldridge.'
     if 'wooldridge' in folded:
         return 'wooldridge', {'dataset': 'wage1'}, 'Wooldridge sin conjunto explícito: se usa wage1.'
+    fred = detect_fred(text, folded)
+    if fred:
+        return fred
     country = None
     for name, code in sorted(countries().items(), key=lambda pair: -len(pair[0])):
         if len(name) > 3 and re.search(r'\b' + re.escape(name) + r'\b', folded):
@@ -288,10 +335,10 @@ def rules_plan(prompt, retrieved_tools=()):
     """Plan determinista con la misma estructura que devuelve el modelo de lenguaje."""
     source, source_params, source_reason = detect_source(prompt)
     text = prompt
-    if source in ('worldbank', 'worldbank_multi'):
+    if source in ('worldbank', 'worldbank_multi', 'fred'):
         # Los nombres de indicadores («crecimiento del PIB», «tasa de interés») describen datos, no herramientas.
         text = fold(prompt)
-        for pattern, _ in INDICATORS:
+        for pattern, _ in (FRED_PHRASES if source == 'fred' else INDICATORS):
             text = re.sub(pattern, ' ', text)
     kinds, gaps = detect_tools(text)
     if not kinds:

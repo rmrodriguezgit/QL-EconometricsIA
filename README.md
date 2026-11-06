@@ -2,7 +2,7 @@
 
 **Describe tu análisis. El segundo cerebro construye el blueprint. Tú compruebas cada resultado.**
 
-[![Versión](https://img.shields.io/badge/versión-0.20.0-6cc9ac)](VERSION)
+[![Versión](https://img.shields.io/badge/versión-0.21.0-6cc9ac)](VERSION)
 [![Cerebro IA](https://img.shields.io/badge/cerebro-Qwen%20local%20%2B%20RAG-c49af8)](docs/CEREBRO.md)
 [![Escritorio](https://img.shields.io/badge/escritorio-macOS%20%7C%20Windows-79b4ef)](docs/ARRANQUE.md)
 [![Electron](https://img.shields.io/badge/Electron-45.2.1-79b4ef)](apps/desktop/package.json)
@@ -15,7 +15,7 @@
 
 Laboratorio educativo de econometría con programación visual mediante nodos, motor analítico Python y un **segundo cerebro de IA local** que convierte enunciados en flujos conectados y verificados. Objetivo de escritorio: macOS y Windows. [Repositorio](https://github.com/rmrodriguezgit/QL-EconometricsIA) · derivado de [Quantlabs-Econometrics](https://github.com/rmrodriguezgit/Quantlabs-Econometrics) con su historial completo.
 
-**Versión 0.20.0 · 2026-11-05 · Alpha local con escritorio Electron, estudio oscuro y segundo cerebro (Ollama/Qwen + reglas). Instaladores independientes y actualización automática pendientes.**
+**Versión 0.21.0 · 2026-11-05 · Alpha local con escritorio Electron, estudio oscuro y segundo cerebro (Ollama/Qwen + reglas). Instaladores independientes y actualización automática pendientes.**
 
 ## Segundo cerebro IA
 
@@ -66,6 +66,7 @@ Abre [el laboratorio local](http://127.0.0.1:1420) y pulsa **Ejecutar flujo**. C
 
 ## Ya funciona
 
+- **FRED como fuente de datos (0.21.0)**: nodo *FRED · Reserva Federal de St. Louis* en Fuentes de datos. Escribe o elige series «ID: alias» (p. ej. `DGS3MO: tbill_3m`), fechas y frecuencia; se descargan del CSV público de FRED sin clave de API y se alinean por fecha. Incluye cinco ejemplos F01–F05 (recesiones con la curva de rendimientos, Phillips, Okun, cointegración de tasas y regla de Taylor). [Detalles](docs/HERRAMIENTAS.md#fred-como-fuente-de-datos-0210) · [Ejemplos](docs/EJEMPLOS.md#recorridos-aplicados-con-fred-f01f05-0210)
 - **Gráfico de ajuste OLS con residuos (0.20.0)**: el OLS simple dibuja la recta con su banda IC 95 %, cada residuo como segmento vertical (verde arriba, rosa abajo), los atípicos con |r| > 2 resaltados y un panel de residuos frente a x o ŷ con líneas ±2σ̂ e histograma con la normal N(0, σ̂²). Aparece en la tarjeta del nodo y en la pestaña Regresión sin necesitar un nodo de Dispersión. [Detalles](docs/HERRAMIENTAS.md#gráfico-de-ajuste-ols-con-residuos-0200)
 - **OLS múltiple en 3D (0.19.0)**: el resultado del OLS múltiple incluye un plano de regresión 3D que se gira con el ratón o las flechas (residuos como líneas verticales; con más de dos regresores eliges los ejes y los demás se fijan en su media) y gráficos de variable añadida, uno por regresor, cuya pendiente es exactamente el coeficiente (Frisch–Waugh–Lovell). [Detalles](docs/HERRAMIENTAS.md#ols-múltiple-plano-3d-y-variable-añadida-0190).
 - **Ejes en notación científica (0.18.0)**: los gráficos (serie temporal, dispersión, boxplot, histograma, normalidad, varias series, boxplots, residuos y pairplot) tienen «Formato del eje Y» (y «del eje X» cuando es numérico): *Automático*, *Notación científica ×10ⁿ* o *Números completos*. Las marcas muestran la mantisa y el nombre del eje el factor, p. ej. `fin_cons (×10¹³)`. Cambiarlo no obliga a recalcular. [Detalles](docs/HERRAMIENTAS.md#formato-de-ejes-0180).
@@ -114,7 +115,7 @@ El último comando valida documentación, pruebas y frontend, incorpora rutas pe
 |---|---|
 | [Segundo cerebro](docs/CEREBRO.md) | Enunciado → blueprint: RAG, Ollama/Qwen, compilador, verificación y fichas faltantes |
 | [Herramientas y pendientes](docs/HERRAMIENTAS.md) | Registro de puertos, uso por módulo y carencias identificadas |
-| [Catálogo de ejemplos](docs/EJEMPLOS.md) | Los 28 experimentos y sus archivos JSON |
+| [Catálogo de ejemplos](docs/EJEMPLOS.md) | Los 28 experimentos, los recorridos aplicados (R01, N01, F01–F05) y sus archivos JSON |
 | [Auditoría](docs/AUDITORIA.md) | Hallazgos, correcciones y pendientes verificables |
 | [Desarrollo](docs/DESARROLLO.md) | Ejecución, protocolo, pruebas y límites actuales |
 | [Arquitectura](docs/ARQUITECTURA.md) | Diseño de capas, IPC, DAG, datos y distribución |

@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.20.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.21.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -240,3 +240,13 @@ Sin dependencias nuevas: la vista 3D es una proyección ortográfica propia en S
 ## Gráfico de ajuste OLS 0.20.0
 
 Sin dependencias nuevas. El motor calcula con statsmodels 0.14 (ya instalado) los residuos estandarizados internos (`get_influence().hat_matrix_diag`) y la banda IC 95 % de la media (`get_prediction(...).summary_frame`), que respeta la covarianza elegida (clásica o HC3). La interfaz dibuja en SVG propio, como el resto de gráficos. Con más de 2.000 observaciones se envía una muestra fija (semilla 0) que siempre incluye los 20 residuos más extremos.
+
+## FRED como fuente 0.21.0
+
+Sin dependencias nuevas: la descarga usa `requests` 2.34.2 (ya instalado como dependencia de wbdata) y el remuestreo pandas 3.1.0. Decisiones:
+
+- **Sin clave de API**: se usa `https://fred.stlouisfed.org/graph/fredgraph.csv?id=…&cosd=…&coed=…`, el mismo CSV del botón de descarga de FRED. La API oficial (api.stlouisfed.org) exige clave y no se integra en esta versión.
+- **Una petición por serie**: con varios IDs de distinta frecuencia FRED responde un ZIP; por eso se descarga cada serie por separado en un `ThreadPoolExecutor` (≤ 6 hilos) y se unen por fecha.
+- **User-Agent**: con un User-Agent propio («QuantLabs-…») FRED retuvo la respuesta hasta agotar el tiempo (observado el 2026-11-05); con el de `requests` responde en < 1 s. Se usa el predeterminado. Tiempo límite (5 s, 40 s) y un reintento.
+- **Fechas**: se conservan las de FRED (inicio del período). Con frecuencia anual `periodo` es el año entero; si no, texto AAAA-MM-DD. `time_order` acepta fechas ISO regulares (mismo día del mes → índice año·12+mes; si no, días consecutivos).
+- **Caché** en memoria por proceso de 6 h (no en disco) para no repetir descargas al re-ejecutar.

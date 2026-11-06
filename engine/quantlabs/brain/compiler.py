@@ -221,8 +221,8 @@ def assign_columns(node, schema, prompt):
 
 def verify(project, prompt='', allow_network=False, rounds=4):
     """Ejecuta el flujo y repara columnas. Devuelve un resumen por nodo."""
-    if not allow_network and any(node['type'] in ('worldbank', 'worldbank_multi') for node in project['nodes']):
-        return {'executed': False, 'reason': 'El flujo consulta el Banco Mundial; actívalo para verificar con red.', 'nodes': {}}
+    if not allow_network and any(node['type'] in ('worldbank', 'worldbank_multi', 'fred') for node in project['nodes']):
+        return {'executed': False, 'reason': 'El flujo consulta el Banco Mundial o FRED; actívalo para verificar con red.', 'nodes': {}}
     if any(node['type'] == 'csv' and not node['parameters'].get('content') for node in project['nodes']):
         return {'executed': False, 'reason': 'Carga tu CSV en el nodo de datos y ejecuta el flujo.', 'nodes': {}}
     incoming = defaultdict(dict)

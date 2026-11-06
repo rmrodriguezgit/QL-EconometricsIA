@@ -193,16 +193,17 @@ class Repairer:
         if 'output' in params and isinstance(params['output'], str):
             name = safe_name(params['output'], NODE_CATALOG[node['type']]['defaults'].get('output', 'variable'))
             changed |= self.set(node, 'output', name, 'Nombre de salida con espacios, acentos o símbolos.')
-        if node['type'] == 'worldbank_multi' and isinstance(params.get('indicators'), str):
-            used, lines = set(), []
-            for item in re.split(r'[\n;,]+', params['indicators']):
+        key = {'worldbank_multi': 'indicators', 'fred': 'series'}.get(node['type'])
+        if key and isinstance(params.get(key), str):
+            used, lines = {'periodo', 'fecha', 'pais', 'iso3'}, []
+            for item in re.split(r'[\n;,]+', params[key]):
                 if not item.strip():
                     continue
                 code, _, alias = item.partition(':') if ':' in item else item.partition('=')
                 code = code.strip()
                 alias = unique(safe_name(alias.strip() or code.lower(), 'indicador').lower(), used)
-                lines.append(f'{code}: {alias}')
-            changed |= self.set(node, 'indicators', '\n'.join(lines), 'Alias de indicadores convertidos en nombres de columna válidos y distintos.')
+                lines.append(f'{code.upper() if key == "series" else code}: {alias}')
+            changed |= self.set(node, key, '\n'.join(lines), 'Alias convertidos en nombres de columna válidos y distintos.')
         return changed
 
     def fix_join(self, node, schemas):
@@ -291,6 +292,6 @@ def repair(params):
     for node in project['nodes']:
         if not isinstance(node.get('parameters'), dict):
             node['parameters'] = {}
-    if not params.get('allow_network', True) and any(node['type'] in ('worldbank', 'worldbank_multi') for node in project['nodes']):
-        raise EngineError('INVALID_PARAMETERS', 'El flujo consulta el Banco Mundial; permite la red para repararlo.')
+    if not params.get('allow_network', True) and any(node['type'] in ('worldbank', 'worldbank_multi', 'fred') for node in project['nodes']):
+        raise EngineError('INVALID_PARAMETERS', 'El flujo consulta el Banco Mundial o FRED; permite la red para repararlo.')
     return Repairer(project).run()

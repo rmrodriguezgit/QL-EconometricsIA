@@ -125,6 +125,7 @@
             "csv",
             "worldbank",
             "worldbank_multi",
+            "fred",
             "pairplot",
             "series_plot",
             "boxplots",

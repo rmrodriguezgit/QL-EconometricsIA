@@ -1,0 +1,266 @@
+{
+  "schema_version": "1.0.0",
+  "app_version": "0.20.0",
+  "title": "F03 · Ley de Okun: crecimiento y desempleo",
+  "nodes": [
+    {
+      "id": "datos",
+      "type": "fred",
+      "node_version": "1.0.0",
+      "parameters": {
+        "series": "GDPC1: pib_real\nUNRATE: desempleo",
+        "start_date": "1948-01-01",
+        "end_date": "2019-12-31",
+        "frequency": "trimestral",
+        "aggregation": "media"
+      },
+      "position": {
+        "x": 0,
+        "y": 170
+      }
+    },
+    {
+      "id": "crecimiento",
+      "type": "growth",
+      "node_version": "1.0.0",
+      "parameters": {
+        "column": "pib_real",
+        "output": "crec_pib"
+      },
+      "position": {
+        "x": 320,
+        "y": 170
+      }
+    },
+    {
+      "id": "cambio",
+      "type": "difference",
+      "node_version": "1.0.0",
+      "parameters": {
+        "column": "desempleo",
+        "periods": 1
+      },
+      "position": {
+        "x": 640,
+        "y": 170
+      }
+    },
+    {
+      "id": "series",
+      "type": "series_plot",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "crec_pib,diff_1_desempleo",
+        "time": "periodo",
+        "mode": "paneles",
+        "y_axis": "auto"
+      },
+      "position": {
+        "x": 960,
+        "y": 0
+      }
+    },
+    {
+      "id": "dispersion",
+      "type": "scatter",
+      "node_version": "1.0.0",
+      "parameters": {
+        "x": "crec_pib",
+        "y": "diff_1_desempleo",
+        "y_axis": "auto",
+        "x_axis": "auto"
+      },
+      "position": {
+        "x": 960,
+        "y": 340
+      }
+    },
+    {
+      "id": "okun",
+      "type": "ols",
+      "node_version": "1.0.0",
+      "parameters": {
+        "x": "crec_pib",
+        "y": "diff_1_desempleo",
+        "covariance": "HC3"
+      },
+      "position": {
+        "x": 960,
+        "y": 170
+      }
+    },
+    {
+      "id": "diagnostico",
+      "type": "diagnostics",
+      "node_version": "1.0.0",
+      "parameters": {},
+      "position": {
+        "x": 1280,
+        "y": 170
+      }
+    },
+    {
+      "id": "residuos",
+      "type": "residual_analysis",
+      "node_version": "1.0.0",
+      "parameters": {
+        "alpha": 0.05,
+        "y_axis": "auto",
+        "x_axis": "auto"
+      },
+      "position": {
+        "x": 1280,
+        "y": 340
+      }
+    },
+    {
+      "id": "reporte",
+      "type": "report",
+      "node_version": "1.0.0",
+      "parameters": {
+        "note": "¿Cuánto crecimiento trimestral hace falta para que el desempleo no suba? Usa −β₀/β₁, el R² y los diagnósticos de residuos."
+      },
+      "position": {
+        "x": 1600,
+        "y": 170
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "datos-data-crecimiento-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "crecimiento",
+      "target_port": "data"
+    },
+    {
+      "id": "crecimiento-data-cambio-data",
+      "source": "crecimiento",
+      "source_port": "data",
+      "target": "cambio",
+      "target_port": "data"
+    },
+    {
+      "id": "cambio-data-series-data",
+      "source": "cambio",
+      "source_port": "data",
+      "target": "series",
+      "target_port": "data"
+    },
+    {
+      "id": "cambio-data-dispersion-data",
+      "source": "cambio",
+      "source_port": "data",
+      "target": "dispersion",
+      "target_port": "data"
+    },
+    {
+      "id": "cambio-data-okun-data",
+      "source": "cambio",
+      "source_port": "data",
+      "target": "okun",
+      "target_port": "data"
+    },
+    {
+      "id": "okun-model-diagnostico-model",
+      "source": "okun",
+      "source_port": "model",
+      "target": "diagnostico",
+      "target_port": "model"
+    },
+    {
+      "id": "okun-model-residuos-model",
+      "source": "okun",
+      "source_port": "model",
+      "target": "residuos",
+      "target_port": "model"
+    },
+    {
+      "id": "diagnostico-result-reporte-result",
+      "source": "diagnostico",
+      "source_port": "result",
+      "target": "reporte",
+      "target_port": "result"
+    }
+  ],
+  "lesson": {
+    "module": "F03",
+    "title": "Ley de Okun: crecimiento y desempleo",
+    "objective": "Estimar el coeficiente de Okun: cuánto cambia la tasa de desempleo cuando el PIB real crece un punto más en el trimestre.",
+    "references": [
+      "B23",
+      "B24",
+      "B29"
+    ],
+    "steps": [
+      {
+        "node_id": "datos",
+        "title": "1. Descargar de FRED",
+        "instruction": "Descarga el PIB real (GDPC1, trimestral) y el desempleo (UNRATE, mensual) y pasa el desempleo a promedios trimestrales.",
+        "expected": "Tabla trimestral 1948–2019 con fechas AAAA-MM-DD.",
+        "question": "¿Qué fecha representa cada trimestre en FRED?"
+      },
+      {
+        "node_id": "crecimiento",
+        "title": "2. Crecimiento del PIB",
+        "instruction": "Calcula la variación porcentual trimestral del PIB real (no anualizada).",
+        "expected": "Columna crec_pib.",
+        "question": "¿Cómo pasarías esta tasa a anualizada?"
+      },
+      {
+        "node_id": "cambio",
+        "title": "3. Cambio del desempleo",
+        "instruction": "Calcula Δdesempleo en puntos porcentuales respecto al trimestre anterior.",
+        "expected": "Columna diff_1_desempleo.",
+        "question": "¿Por qué se usan cambios y no niveles?"
+      },
+      {
+        "node_id": "series",
+        "title": "4. Graficar",
+        "instruction": "Dibuja ambas series en paneles.",
+        "expected": "Movimientos opuestos en cada recesión.",
+        "question": "¿Qué trimestres tienen las caídas más fuertes?"
+      },
+      {
+        "node_id": "dispersion",
+        "title": "5. Dispersión",
+        "instruction": "Relaciona el crecimiento (x) con el cambio del desempleo (y).",
+        "expected": "Nube con pendiente negativa.",
+        "question": "¿Hay observaciones atípicas?"
+      },
+      {
+        "node_id": "okun",
+        "title": "6. Coeficiente de Okun",
+        "instruction": "Estima Δdesempleo = β₀ + β₁·crecimiento con errores HC3.",
+        "expected": "β₁ negativo y significativo.",
+        "question": "Calcula −β₀/β₁: ¿qué crecimiento trimestral mantiene estable el desempleo?"
+      },
+      {
+        "node_id": "diagnostico",
+        "title": "7. Diagnósticos",
+        "instruction": "Revisa autocorrelación, heterocedasticidad y normalidad de los residuos.",
+        "expected": "Tabla de pruebas.",
+        "question": "¿Qué prueba rechaza y qué implica para la inferencia?"
+      },
+      {
+        "node_id": "residuos",
+        "title": "8. Residuos",
+        "instruction": "Analiza los residuos frente a los valores ajustados y su distribución.",
+        "expected": "Gráficos de residuos.",
+        "question": "¿Los residuos grandes coinciden con recesiones?"
+      },
+      {
+        "node_id": "reporte",
+        "title": "9. Interpretar",
+        "instruction": "Concluye sobre la ley de Okun con evidencia de las salidas.",
+        "expected": "Una conclusión con β₁, −β₀/β₁ y los supuestos revisados.",
+        "question": "¿Es la ley de Okun una ley o una regularidad empírica?"
+      }
+    ],
+    "missing_tools": [
+      "Brecha del producto con filtro HP o producto potencial (GDPPOT)",
+      "Okun asimétrico en expansiones y recesiones"
+    ]
+  }
+}

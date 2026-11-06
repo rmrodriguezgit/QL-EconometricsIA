@@ -129,14 +129,25 @@ def synthetic(params):
     return frame
 
 
+def calendar_steps(values):
+    """Índice regular de fechas ISO: meses (año·12+mes) si comparten día del mes; si no, días. None si no son fechas."""
+    text=values.astype(str)
+    if not text.str.fullmatch(r'\d{4}-\d{2}-\d{2}').all():return None
+    dates=pd.to_datetime(text,format='%Y-%m-%d',errors='coerce')
+    if dates.isna().any():return None
+    if (dates.dt.day==dates.dt.day.iloc[0]).all():return (dates.dt.year*12+dates.dt.month).to_numpy(dtype=float)
+    return dates.map(lambda item:float(item.toordinal())).to_numpy(dtype=float)
+
+
 def time_order(frame):
     if 'periodo' in frame:
         if frame['periodo'].duplicated().any() or not frame['periodo'].is_monotonic_increasing:
             raise EngineError('INVALID_PARAMETERS','Se requieren períodos únicos y ordenados. Separa los países de un panel y revisa la frecuencia antes de transformar.')
     if 'periodo' in frame and len(frame)>2:
-        if not pd.api.types.is_numeric_dtype(frame['periodo']):raise EngineError('IRREGULAR_PERIOD','En esta versión, periodo debe ser numérico y regular.')
-        spacing=np.diff(frame['periodo'].to_numpy(dtype=float))
-        if not np.allclose(spacing,spacing[0]):raise EngineError('IRREGULAR_PERIOD','Hay períodos ausentes o frecuencia irregular. Regulariza el calendario explícitamente antes de usar esta herramienta temporal.')
+        steps=frame['periodo'].to_numpy(dtype=float) if pd.api.types.is_numeric_dtype(frame['periodo']) else calendar_steps(frame['periodo'])
+        if steps is None:raise EngineError('IRREGULAR_PERIOD','periodo debe ser numérico o fechas ISO AAAA-MM-DD regulares.')
+        spacing=np.diff(steps)
+        if not np.allclose(spacing,spacing[0]):raise EngineError('IRREGULAR_PERIOD','Hay períodos ausentes o frecuencia irregular. Regulariza el calendario explícitamente antes de usar esta herramienta temporal (en FRED, elige frecuencia mensual, trimestral o anual).')
     return frame
 
 
@@ -190,8 +201,8 @@ def calculate(kind,inputs,params):
             time_order(data);name=columns(data,params.get('column','valor' if kind=='growth' else 'y'))[0]
             periods=number(params,'periods',1,1,100,True)
             if kind=='growth':
-                if (data[name].shift(1).dropna()==0).any(): raise EngineError('INVALID_PARAMETERS','El período base no puede ser cero.')
-                data[params.get('output','crecimiento')]=data[name].pct_change(fill_method=None)*100
+                if (data[name].shift(periods).dropna()==0).any(): raise EngineError('INVALID_PARAMETERS','El período base no puede ser cero.')
+                data[params.get('output','crecimiento')]=data[name].pct_change(periods=periods,fill_method=None)*100
             elif kind=='lag':data[f'lag_{periods}_{name}']=data[name].shift(periods)
             else:data[f'diff_{periods}_{name}']=data[name].diff(periods)
         elif kind=='polynomial':

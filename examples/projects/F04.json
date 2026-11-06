@@ -1,0 +1,287 @@
+{
+  "schema_version": "1.0.0",
+  "app_version": "0.20.0",
+  "title": "F04 · Estructura temporal de tasas: raíz unitaria, cointegración y ECM",
+  "nodes": [
+    {
+      "id": "datos",
+      "type": "fred",
+      "node_version": "1.0.0",
+      "parameters": {
+        "series": "DGS3MO: tbill_3m\nDGS10: bono_10y",
+        "start_date": "1982-01-01",
+        "end_date": "2024-12-31",
+        "frequency": "mensual",
+        "aggregation": "media"
+      },
+      "position": {
+        "x": 0,
+        "y": 170
+      }
+    },
+    {
+      "id": "series",
+      "type": "series_plot",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "tbill_3m,bono_10y",
+        "time": "periodo",
+        "mode": "original",
+        "y_axis": "auto"
+      },
+      "position": {
+        "x": 320,
+        "y": 0
+      }
+    },
+    {
+      "id": "raiz",
+      "type": "unit_root",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "tbill_3m,bono_10y"
+      },
+      "position": {
+        "x": 320,
+        "y": 170
+      }
+    },
+    {
+      "id": "dif_corto",
+      "type": "difference",
+      "node_version": "1.0.0",
+      "parameters": {
+        "column": "tbill_3m",
+        "periods": 1
+      },
+      "position": {
+        "x": 320,
+        "y": 340
+      }
+    },
+    {
+      "id": "dif_largo",
+      "type": "difference",
+      "node_version": "1.0.0",
+      "parameters": {
+        "column": "bono_10y",
+        "periods": 1
+      },
+      "position": {
+        "x": 640,
+        "y": 340
+      }
+    },
+    {
+      "id": "raiz_dif",
+      "type": "unit_root",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "diff_1_tbill_3m,diff_1_bono_10y"
+      },
+      "position": {
+        "x": 960,
+        "y": 340
+      }
+    },
+    {
+      "id": "cointegracion",
+      "type": "cointegration",
+      "node_version": "1.0.0",
+      "parameters": {
+        "x": "tbill_3m",
+        "y": "bono_10y"
+      },
+      "position": {
+        "x": 640,
+        "y": 170
+      }
+    },
+    {
+      "id": "ecm",
+      "type": "ecm",
+      "node_version": "1.0.0",
+      "parameters": {
+        "x": "tbill_3m",
+        "y": "bono_10y",
+        "error": "equilibrio"
+      },
+      "position": {
+        "x": 960,
+        "y": 170
+      }
+    },
+    {
+      "id": "diagnostico",
+      "type": "diagnostics",
+      "node_version": "1.0.0",
+      "parameters": {},
+      "position": {
+        "x": 1280,
+        "y": 170
+      }
+    },
+    {
+      "id": "reporte",
+      "type": "report",
+      "node_version": "1.0.0",
+      "parameters": {
+        "note": "¿Están cointegradas las tasas a 3 meses y 10 años? Usa ADF en niveles y diferencias, el p-valor de Engle-Granger y el coeficiente del error previo del ECM."
+      },
+      "position": {
+        "x": 1280,
+        "y": 0
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "datos-data-series-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "series",
+      "target_port": "data"
+    },
+    {
+      "id": "datos-data-raiz-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "raiz",
+      "target_port": "data"
+    },
+    {
+      "id": "datos-data-dif_corto-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "dif_corto",
+      "target_port": "data"
+    },
+    {
+      "id": "dif_corto-data-dif_largo-data",
+      "source": "dif_corto",
+      "source_port": "data",
+      "target": "dif_largo",
+      "target_port": "data"
+    },
+    {
+      "id": "dif_largo-data-raiz_dif-data",
+      "source": "dif_largo",
+      "source_port": "data",
+      "target": "raiz_dif",
+      "target_port": "data"
+    },
+    {
+      "id": "datos-data-cointegracion-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "cointegracion",
+      "target_port": "data"
+    },
+    {
+      "id": "cointegracion-data-ecm-data",
+      "source": "cointegracion",
+      "source_port": "data",
+      "target": "ecm",
+      "target_port": "data"
+    },
+    {
+      "id": "ecm-model-diagnostico-model",
+      "source": "ecm",
+      "source_port": "model",
+      "target": "diagnostico",
+      "target_port": "model"
+    },
+    {
+      "id": "ecm-result-reporte-result",
+      "source": "ecm",
+      "source_port": "result",
+      "target": "reporte",
+      "target_port": "result"
+    }
+  ],
+  "lesson": {
+    "module": "F04",
+    "title": "Estructura temporal de tasas: raíz unitaria, cointegración y ECM",
+    "objective": "Contrastar la hipótesis de expectativas: la letra del Tesoro a 3 meses y el bono a 10 años tienen raíz unitaria pero comparten una relación de largo plazo.",
+    "references": [
+      "B25",
+      "B32"
+    ],
+    "steps": [
+      {
+        "node_id": "datos",
+        "title": "1. Descargar de FRED",
+        "instruction": "Descarga DGS3MO y DGS10 (diarias) desde fredgraph.csv?id=…&cosd=…&coed=… y promédialas por mes, 1982–2024.",
+        "expected": "Tabla mensual con periodo, tbill_3m y bono_10y.",
+        "question": "¿Qué se pierde al promediar los datos diarios?"
+      },
+      {
+        "node_id": "series",
+        "title": "2. Graficar",
+        "instruction": "Dibuja ambas tasas en el mismo eje (ambas en % anual).",
+        "expected": "Tendencia descendente común y diferencial variable.",
+        "question": "¿Cuándo estuvo invertida la curva?"
+      },
+      {
+        "node_id": "raiz",
+        "title": "3. ADF en niveles",
+        "instruction": "Contrasta raíz unitaria en cada tasa.",
+        "expected": "Resultado mixto: la tasa corta no rechaza la raíz unitaria y la larga la rechaza solo al 5 % por su tendencia descendente.",
+        "question": "El ADF con constante no incluye tendencia: ¿cómo afecta eso a la tasa a 10 años? ¿No rechazar prueba que hay raíz unitaria?"
+      },
+      {
+        "node_id": "dif_corto",
+        "title": "4. Diferenciar la tasa corta",
+        "instruction": "Calcula Δtbill_3m.",
+        "expected": "Columna diff_1_tbill_3m.",
+        "question": "¿Qué representa el cambio mensual de la tasa?"
+      },
+      {
+        "node_id": "dif_largo",
+        "title": "5. Diferenciar la tasa larga",
+        "instruction": "Calcula Δbono_10y.",
+        "expected": "Columna diff_1_bono_10y.",
+        "question": "¿Por qué se diferencia antes de volver a contrastar?"
+      },
+      {
+        "node_id": "raiz_dif",
+        "title": "6. ADF en diferencias",
+        "instruction": "Contrasta raíz unitaria en las diferencias.",
+        "expected": "p-valores muy bajos: las series son I(1).",
+        "question": "Con niveles I(1) y diferencias I(0), ¿qué orden de integración tienen?"
+      },
+      {
+        "node_id": "cointegracion",
+        "title": "7. Engle-Granger",
+        "instruction": "Estima bono_10y = α + β·tbill_3m y contrasta raíz unitaria en el residuo (equilibrio).",
+        "expected": "Pendiente de largo plazo y p-valor de Engle-Granger.",
+        "question": "¿La hipótesis de expectativas predice β = 1? ¿Qué obtuviste?"
+      },
+      {
+        "node_id": "ecm",
+        "title": "8. Corrección de errores",
+        "instruction": "Estima Δbono_10y = γ₀ + γ₁·Δtbill_3m + α·equilibrio₋₁.",
+        "expected": "α negativo: los desvíos del equilibrio se corrigen.",
+        "question": "Con α, ¿cuántos meses tarda en cerrarse la mitad de un desvío?"
+      },
+      {
+        "node_id": "diagnostico",
+        "title": "9. Diagnósticos",
+        "instruction": "Revisa los residuos del ECM.",
+        "expected": "Pruebas de autocorrelación, heterocedasticidad y normalidad.",
+        "question": "¿Hace falta añadir rezagos de las diferencias?"
+      },
+      {
+        "node_id": "reporte",
+        "title": "10. Interpretar",
+        "instruction": "Concluye con la evidencia de cointegración y la velocidad de ajuste.",
+        "expected": "Una conclusión que cita ADF, Engle-Granger y α.",
+        "question": "¿Qué cambia con la tasa cero de 2009–2015?"
+      }
+    ],
+    "missing_tools": [
+      "Prueba de Johansen con varias tasas",
+      "Quiebres estructurales en la relación (2008, tasa cero)"
+    ]
+  }
+}

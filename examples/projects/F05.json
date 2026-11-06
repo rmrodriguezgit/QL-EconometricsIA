@@ -1,0 +1,212 @@
+{
+  "schema_version": "1.0.0",
+  "app_version": "0.20.0",
+  "title": "F05 · Regla de Taylor, 1988–2007",
+  "nodes": [
+    {
+      "id": "datos",
+      "type": "fred",
+      "node_version": "1.0.0",
+      "parameters": {
+        "series": "FEDFUNDS: fondos_fed\nPCEPI: deflactor_pce\nUNRATE: desempleo",
+        "start_date": "1987-01-01",
+        "end_date": "2007-12-31",
+        "frequency": "trimestral",
+        "aggregation": "media"
+      },
+      "position": {
+        "x": 0,
+        "y": 170
+      }
+    },
+    {
+      "id": "inflacion",
+      "type": "growth",
+      "node_version": "1.0.0",
+      "parameters": {
+        "column": "deflactor_pce",
+        "output": "inflacion",
+        "periods": 4
+      },
+      "position": {
+        "x": 320,
+        "y": 170
+      }
+    },
+    {
+      "id": "series",
+      "type": "series_plot",
+      "node_version": "1.0.0",
+      "parameters": {
+        "columns": "fondos_fed,inflacion,desempleo",
+        "time": "periodo",
+        "mode": "original",
+        "y_axis": "auto"
+      },
+      "position": {
+        "x": 640,
+        "y": 0
+      }
+    },
+    {
+      "id": "taylor",
+      "type": "multiple_ols",
+      "node_version": "1.0.0",
+      "parameters": {
+        "features": "inflacion,desempleo",
+        "y": "fondos_fed",
+        "covariance": "HC3"
+      },
+      "position": {
+        "x": 640,
+        "y": 170
+      }
+    },
+    {
+      "id": "diagnostico",
+      "type": "diagnostics",
+      "node_version": "1.0.0",
+      "parameters": {},
+      "position": {
+        "x": 960,
+        "y": 170
+      }
+    },
+    {
+      "id": "residuos",
+      "type": "residual_analysis",
+      "node_version": "1.0.0",
+      "parameters": {
+        "alpha": 0.05,
+        "y_axis": "auto",
+        "x_axis": "auto"
+      },
+      "position": {
+        "x": 960,
+        "y": 340
+      }
+    },
+    {
+      "id": "reporte",
+      "type": "report",
+      "node_version": "1.0.0",
+      "parameters": {
+        "note": "¿Cumplió la Reserva Federal el principio de Taylor? Interpreta el coeficiente de la inflación (¿mayor que 1?), el del desempleo y los diagnósticos."
+      },
+      "position": {
+        "x": 1280,
+        "y": 170
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "datos-data-inflacion-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "inflacion",
+      "target_port": "data"
+    },
+    {
+      "id": "inflacion-data-series-data",
+      "source": "inflacion",
+      "source_port": "data",
+      "target": "series",
+      "target_port": "data"
+    },
+    {
+      "id": "inflacion-data-taylor-data",
+      "source": "inflacion",
+      "source_port": "data",
+      "target": "taylor",
+      "target_port": "data"
+    },
+    {
+      "id": "taylor-model-diagnostico-model",
+      "source": "taylor",
+      "source_port": "model",
+      "target": "diagnostico",
+      "target_port": "model"
+    },
+    {
+      "id": "taylor-model-residuos-model",
+      "source": "taylor",
+      "source_port": "model",
+      "target": "residuos",
+      "target_port": "model"
+    },
+    {
+      "id": "diagnostico-result-reporte-result",
+      "source": "diagnostico",
+      "source_port": "result",
+      "target": "reporte",
+      "target_port": "result"
+    }
+  ],
+  "lesson": {
+    "module": "F05",
+    "title": "Regla de Taylor, 1988–2007",
+    "objective": "Estimar cómo respondió la tasa de fondos federales a la inflación y al desempleo durante la Gran Moderación.",
+    "references": [
+      "B14",
+      "B30",
+      "B31"
+    ],
+    "steps": [
+      {
+        "node_id": "datos",
+        "title": "1. Descargar de FRED",
+        "instruction": "Descarga FEDFUNDS, PCEPI y UNRATE (mensuales) y pásalas a promedios trimestrales, 1987–2007.",
+        "expected": "Tabla trimestral con fondos_fed, deflactor_pce y desempleo.",
+        "question": "¿Por qué se detiene la muestra en 2007?"
+      },
+      {
+        "node_id": "inflacion",
+        "title": "2. Inflación interanual",
+        "instruction": "Calcula la variación porcentual del deflactor PCE respecto al mismo trimestre del año anterior (4 períodos).",
+        "expected": "Columna inflacion desde 1988.",
+        "question": "¿Por qué usar 4 períodos y no 1 con datos trimestrales?"
+      },
+      {
+        "node_id": "series",
+        "title": "3. Graficar",
+        "instruction": "Dibuja la tasa de fondos federales, la inflación y el desempleo (todas en %).",
+        "expected": "La tasa sube con la inflación y baja con el desempleo.",
+        "question": "¿Qué episodios de recortes de tasas ves?"
+      },
+      {
+        "node_id": "taylor",
+        "title": "4. Regla de Taylor",
+        "instruction": "Estima fondos_fed = β₀ + β₁·inflación + β₂·desempleo con errores HC3. Gira el plano 3D en la salida.",
+        "expected": "β₁ > 0 y β₂ < 0.",
+        "question": "¿Es β₁ mayor que 1? ¿Qué significa para la tasa real?"
+      },
+      {
+        "node_id": "diagnostico",
+        "title": "5. Diagnósticos",
+        "instruction": "Revisa autocorrelación y heterocedasticidad.",
+        "expected": "Durbin-Watson muy bajo: residuos persistentes.",
+        "question": "¿Qué sugiere la persistencia sobre el suavizamiento de tasas?"
+      },
+      {
+        "node_id": "residuos",
+        "title": "6. Residuos",
+        "instruction": "Analiza los residuos de la regla.",
+        "expected": "Rachas largas de residuos del mismo signo.",
+        "question": "¿En qué años la Fed estuvo por debajo de la regla?"
+      },
+      {
+        "node_id": "reporte",
+        "title": "7. Interpretar",
+        "instruction": "Concluye sobre el principio de Taylor con las salidas.",
+        "expected": "Una conclusión con β₁, β₂ y los límites de la inferencia.",
+        "question": "¿Qué añadirías para modelar el suavizamiento?"
+      }
+    ],
+    "missing_tools": [
+      "Suavizamiento de tasas con la tasa rezagada",
+      "Brecha del producto en lugar del desempleo",
+      "Datos en tiempo real (ALFRED)"
+    ]
+  }
+}

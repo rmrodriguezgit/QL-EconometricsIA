@@ -275,3 +275,12 @@ La aplicación y sus instaladores están pendientes de implementación. Los camb
 - Se muestra en la tarjeta del nodo OLS y en la pestaña Regresión; ya no requiere un nodo de Dispersión conectado.
 - Motor: `fit_plot` en el resultado de `ols` (residuos estandarizados internos y banda con la covarianza elegida; muestra fija de 2.000 puntos con los extremos).
 - Pruebas: `tests/test_ols_fit_plot.py` y `electron/olsFitGeometry.test.ts`. Verificado en la interfaz con el ejemplo ingreso–consumo.
+
+## 0.21.0 - 2026-11-05
+
+- **Nueva fuente FRED** (`fred`, Reserva Federal de St. Louis): descarga series por identificador desde el CSV público `fredgraph.csv?id=ID&cosd=INICIO&coed=FIN`, sin clave de API. Varias series «ID: alias» en paralelo (máx. 12), frecuencia original/semanal/mensual/trimestral/anual con agregación explícita (media, último valor o suma), caché de 6 h por proceso y procedencia con título, unidades, frecuencia nativa y URL de cada serie.
+- Catálogo curado `packages/contracts/fredCatalog.json` (33 series: tasas del Tesoro, fondos federales, IPC, PCE, PIB, desempleo, recesiones NBER, tipos de cambio, petróleo, VIX…), todas comprobadas contra FRED; el editor del inspector las sugiere y acepta cualquier otro ID.
+- Las herramientas temporales (`lag`, `growth`, `difference`, raíz unitaria, cointegración, ECM, ARIMA…) aceptan `periodo` con fechas ISO regulares (mensuales, trimestrales o diarias consecutivas). `growth` respeta `periods` (p. ej. 12 para variación interanual mensual). `series_plot` dibuja fechas ISO.
+- **Cinco ejemplos econométricos con FRED** (requieren conexión): F01 curva de rendimientos → recesión (logit), F02 curva de Phillips, F03 ley de Okun, F04 estructura temporal con DGS3MO/DGS10 (ADF, Engle-Granger, ECM) y F05 regla de Taylor (MCO múltiple con plano 3D). Ejecutados con datos reales el 2026-11-05.
+- Cerebro IA: detecta FRED («FRED», «Reserva Federal de St. Louis» o un ID del catálogo) y traduce frases como «desempleo», «inflación», «bono a 10 años» o «fondos federales» a series; FRED cuenta como red en la verificación y en la reparación, que también corrige sus alias.
+- Pruebas: `tests/test_fred_source.py` (parseo, remuestreo, 404, fechas ISO, `growth` con períodos y los cinco ejemplos sin red con series inyectadas).

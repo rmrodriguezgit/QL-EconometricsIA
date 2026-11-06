@@ -43,6 +43,19 @@ def default_columns(frame, params, key='columns', limit=8):
 
 # ----------------------------------------------------------------- b. varias series
 
+def time_axis(values):
+    """Eje numérico del tiempo: años tal cual; fechas ISO AAAA-MM-DD como año decimal (etiquetas = fechas)."""
+    numeric = pd.to_numeric(values, errors='coerce')
+    if numeric.notna().all():
+        return [float(v) for v in numeric], None
+    text = values.astype(str)
+    dates = pd.to_datetime(text, format='%Y-%m-%d', errors='coerce')
+    if dates.isna().any():
+        raise EngineError('INVALID_PARAMETERS', 'La columna de tiempo debe tener años o fechas ISO AAAA-MM-DD.')
+    days = np.where(dates.dt.is_leap_year, 366.0, 365.0)
+    return [float(v) for v in dates.dt.year + (dates.dt.dayofyear - 1) / days], list(text)
+
+
 def series_plot(frame, params):
     names = default_columns(frame, params)
     time = str(params.get('time', 'periodo') or 'periodo')
@@ -52,6 +65,7 @@ def series_plot(frame, params):
     data = frame[[time, *names]].dropna(subset=[time]).sort_values(time)
     if 'pais' in frame.columns and frame['pais'].nunique() > 1:
         raise EngineError('INVALID_PARAMETERS', 'La tabla tiene varios países; filtra uno antes de graficar las series en el tiempo.')
+    axis, labels = time_axis(data[time])
     lines = []
     for name in names:
         values = pd.to_numeric(data[name], errors='coerce')
@@ -60,16 +74,22 @@ def series_plot(frame, params):
             if base.empty or base.iloc[0] == 0:
                 raise EngineError('INVALID_PARAMETERS', f'{name} no tiene un primer valor distinto de cero para el índice base 100.')
             values = values / base.iloc[0] * 100
-        lines.append({'name': name, 'points': [[float(t), None if pd.isna(v) else float(v)] for t, v in zip(data[time], values)],
+        lines.append({'name': name, 'points': [[t, None if pd.isna(v) else float(v)] for t, v in zip(axis, values)],
                       'n': int(values.notna().sum())})
     note = {'paneles': 'Un panel por variable con su propia escala: permite ver la forma de cada serie aunque las unidades difieran.',
             'indice': 'Cada serie como índice (primer año observado = 100): compara crecimientos relativos, no niveles.',
             'original': 'Todas las series en el mismo eje: solo es legible si comparten unidades y magnitud.'}[mode]
     result = report(note + ' Los huecos son años sin dato; no se interpolan.', variables=len(names), periodos=len(data))
     result['series_plot'] = {'time': time, 'mode': mode, 'lines': lines}
-    result['tables'] = [table('Observaciones por serie', ['Variable', 'n', 'Primer año', 'Último año'],
-                              [[line['name'], line['n'], *(lambda pts: [pts[0][0], pts[-1][0]] if pts else [None, None])(
-                                  [p for p in line['points'] if p[1] is not None])] for line in lines])]
+    def bounds(line):
+        observed = [i for i, p in enumerate(line['points']) if p[1] is not None]
+        return [labels[observed[0]], labels[observed[-1]]] if observed else [None, None]
+    dated = labels is not None and any(isinstance(item, str) for item in labels)
+    if labels is None:
+        labels = [p[0] for p in lines[0]['points']] if lines else []
+    result['series_plot']['dates'] = dated
+    result['tables'] = [table('Observaciones por serie', ['Variable', 'n', 'Primera fecha' if dated else 'Primer año', 'Última fecha' if dated else 'Último año'],
+                              [[line['name'], line['n'], *bounds(line)] for line in lines])]
     return result, {'result': result, 'plot': result}
 
 

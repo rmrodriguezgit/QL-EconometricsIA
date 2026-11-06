@@ -5,7 +5,7 @@
 - ``select_columns`` Elegir, ordenar y renombrar columnas.
 - ``quant_features`` Indicadores de un precio: rendimientos, volatilidad y Sharpe móviles, caída, medias, RSI, MACD y Bollinger.
 - ``risk_metrics``   Desempeño y riesgo de series de rendimientos: Sharpe, Sortino, caída máxima, VaR/CVaR, beta y alfa.
-- ``portfolio``      Portafolio de Markowitz: pesos iguales, mínima varianza y máximo Sharpe, con frontera eficiente y prueba fuera de muestra.
+- ``portfolio``      Portafolio de Markowitz: pesos iguales, mínima varianza, máximo Sharpe y máximo Sortino, con frontera eficiente, riesgo y prueba fuera de muestra.
 - ``ml_compare``     Modelos clásicos de aprendizaje automático (media, Ridge, ElasticNet, bosque aleatorio, boosting, SVR, KNN) con selección por validación temporal.
 
 Todas trabajan sobre filas ordenadas, sin mirar el futuro, y documentan en el resultado qué hicieron.
@@ -336,21 +336,36 @@ def project_weights(w, cap):
     return w
 
 
-def optimize(mean, cov, rf, cap, objective):
+def downside_deviation(returns, w, rf_period, annual):
+    """Desviación a la baja anualizada respecto de la tasa libre de riesgo por período (denominador del Sortino)."""
+    excess = returns @ w - rf_period
+    return float(np.sqrt(np.mean(np.minimum(excess, 0) ** 2) * annual))
+
+
+def optimize(mean, cov, rf, cap, objective, returns=None, rf_period=0, annual=252, starts=()):
+    """Pesos solo largos que suman 1 con tope por activo. Varios puntos de partida: se conserva el mejor objetivo."""
     from scipy.optimize import minimize
     n = len(mean)
-    start = np.full(n, 1 / n)
-    bounds = [(0, cap)] * n
-    constraint = [{'type': 'eq', 'fun': lambda w: w.sum() - 1}]
     if objective == 'minima_varianza':
         fun = lambda w: w @ cov @ w
-    else:
+    elif objective == 'maximo_sharpe':
         fun = lambda w: -(w @ mean - rf) / np.sqrt(max(w @ cov @ w, 1e-18))
-    res = minimize(fun, start, method='SLSQP', bounds=bounds, constraints=constraint, options={'maxiter': 500, 'ftol': 1e-12})
-    return project_weights(res.x if res.success else start, cap)
+    else:  # maximo_sortino
+        fun = lambda w: -(w @ mean - rf) / max(downside_deviation(returns, w, rf_period, annual), 1e-9)
+    best, best_value = None, np.inf
+    for start in [np.full(n, 1 / n), *starts]:
+        start = project_weights(np.asarray(start, dtype=float), cap)
+        res = minimize(fun, start, method='SLSQP', bounds=[(0, cap)] * n, constraints=[{'type': 'eq', 'fun': lambda w: w.sum() - 1}],
+                       options={'maxiter': 500, 'ftol': 1e-12})
+        candidate = project_weights(res.x if np.all(np.isfinite(res.x)) else start, cap)
+        value = fun(candidate)
+        if value < best_value:
+            best, best_value = candidate, value
+    return best
 
 
 def portfolio(frame, params):
+    from scipy.optimize import linprog, minimize
     columns = names(frame, params.get('columns', ''), 'las columnas de los activos')
     if len(columns) < 2:
         fail('Un portafolio necesita al menos dos activos.')
@@ -363,42 +378,110 @@ def portfolio(frame, params):
     returns = to_returns(frame, columns, kind).dropna()
     if len(returns) < 20:
         fail('Se necesitan al menos 20 períodos completos.', 'INSUFFICIENT_SAMPLE')
+    n = len(columns)
     cut = int(len(returns) * fraction)
     train, test = returns.iloc[:cut], returns.iloc[cut:]
+    R = train.to_numpy()
+    rf_period = (1 + rf) ** (1 / annual) - 1
     mean = train.mean().to_numpy() * annual
     if covariance == 'contraccion':
         from sklearn.covariance import LedoitWolf
-        cov = LedoitWolf().fit(train.to_numpy()).covariance_ * annual
+        cov = LedoitWolf().fit(R).covariance_ * annual
     else:
         cov = train.cov(ddof=1).to_numpy() * annual
-    weights = {'Pesos iguales': np.full(len(columns), 1 / len(columns)),
-               'Mínima varianza': optimize(mean, cov, rf, cap, 'minima_varianza'),
-               'Máximo Sharpe': optimize(mean, cov, rf, cap, 'maximo_sharpe')}
-    rows, perf_rows, series, outputs = [], [], [], pd.DataFrame(index=test.index)
+
+    def stats(w):
+        ret, vol = float(w @ mean), float(np.sqrt(max(w @ cov @ w, 0)))
+        down = downside_deviation(R, w, rf_period, annual)
+        return {'ret': ret, 'vol': vol, 'down': down, 'sharpe': (ret - rf) / vol if vol > 0 else np.nan,
+                'sortino': (ret - rf) / down if down > 0 else np.nan}
+
+    # Frontera de mínima varianza: rama eficiente (desde la mínima varianza hasta el máximo rendimiento alcanzable) y rama ineficiente.
+    bounds = [(0, cap)] * n
+    reach = [linprog(sign * mean, A_eq=np.ones((1, n)), b_eq=[1], bounds=bounds, method='highs') for sign in (1, -1)]
+    low_ret, high_ret = (float(r.x @ mean) if r.success else float(f(mean)) for r, f in zip(reach, (np.min, np.max)))
+    gmv = optimize(mean, cov, rf, cap, 'minima_varianza')
+    gmv_ret = float(gmv @ mean)
+
+    def frontier_at(targets):
+        points, start = [], gmv
+        for target in targets:
+            res = minimize(lambda w: w @ cov @ w, start, method='SLSQP', bounds=bounds,
+                           constraints=[{'type': 'eq', 'fun': lambda w: w.sum() - 1}, {'type': 'eq', 'fun': lambda w, t=target: w @ mean - t}],
+                           options={'maxiter': 300, 'ftol': 1e-12})
+            if res.success:
+                w = project_weights(res.x, cap)
+                points.append((w, stats(w)))
+                start = w
+        return points
+
+    span = high_ret - gmv_ret
+    efficient = [(gmv, stats(gmv))] + frontier_at(np.linspace(gmv_ret, high_ret - 1e-9 * max(abs(span), 1), 31)[1:]) if span > 1e-12 else [(gmv, stats(gmv))]
+    lower = frontier_at(np.linspace(gmv_ret, low_ret + 1e-9, 13)[1:]) if gmv_ret - low_ret > 1e-12 else []
+    # Nube de portafolios aleatorios (semilla fija): muestra la región factible coloreada por Sharpe o Sortino.
+    rng = np.random.default_rng(7)
+    cloud_w = np.array([project_weights(w, cap) for w in rng.dirichlet(np.ones(n), 600)])
+    best_sharpe = max(efficient, key=lambda p: -np.inf if not np.isfinite(p[1]['sharpe']) else p[1]['sharpe'])[0]
+    cloud_stats = [stats(w) for w in cloud_w]
+    best_cloud_sortino = cloud_w[int(np.nanargmax([s['sortino'] if np.isfinite(s['sortino']) else -np.inf for s in cloud_stats]))]
+
+    weights = {'Pesos iguales': np.full(n, 1 / n),
+               'Mínima varianza': gmv,
+               'Máximo Sharpe': optimize(mean, cov, rf, cap, 'maximo_sharpe', starts=[best_sharpe]),
+               'Máximo Sortino': optimize(mean, cov, rf, cap, 'maximo_sortino', R, rf_period, annual, starts=[best_sharpe, best_cloud_sortino])}
+    level = '95 %'
+    weight_rows, expected_rows, risk_rows, perf_rows, series, outputs, markers = [], [], [], [], [], pd.DataFrame(index=test.index), []
     for label, w in weights.items():
-        exp_ret, exp_vol = float(w @ mean), float(np.sqrt(w @ cov @ w))
-        rows.append([label, *[x * 100 for x in w], exp_ret * 100, exp_vol * 100, (exp_ret - rf) / exp_vol if exp_vol > 0 else None])
+        s = stats(w)
+        hist = performance(pd.Series(R @ w, index=train.index), annual, rf, .95)
+        weight_rows.append([label, *[x * 100 for x in w], 1 / float(np.sum(w ** 2)), float(w.max()) * 100])
+        expected_rows.append([label, s['ret'] * 100, s['vol'] * 100, s['vol'] ** 2, s['down'] * 100, s['sharpe'], s['sortino'],
+                              hist['var'] * 100, hist['cvar'] * 100, hist['drawdown'] * 100])
+        total_var = float(w @ cov @ w)
+        risk_rows.append([label, *[float(w[i] * (cov @ w)[i] / total_var * 100) if total_var > 0 else None for i in range(n)]])
         path = test.to_numpy() @ w
         m = performance(pd.Series(path, index=test.index), annual, rf, .95)
-        perf_rows.append([label, m['total'] * 100, m['cagr'] * 100, m['vol'] * 100, m['sharpe'], m['drawdown'] * 100])
+        perf_rows.append([label, m['total'] * 100, m['cagr'] * 100, m['vol'] * 100, m['sharpe'], m['sortino'], m['drawdown'] * 100, m['var'] * 100, m['cvar'] * 100])
         series.append({'label': f'Capital {label} (prueba)', 'points': [[i, float(v)] for i, v in enumerate(m['equity'])][-1500:]})
         outputs[label.lower().replace(' ', '_').replace('í', 'i').replace('á', 'a')] = path * 100
-    # Frontera eficiente (entrenamiento): mínima varianza para cada rendimiento objetivo entre el mínimo y el máximo alcanzable.
-    from scipy.optimize import minimize
-    frontier = []
-    for target in np.linspace(float(weights['Mínima varianza'] @ mean), float(mean.max() if cap >= 1 else np.sort(mean)[::-1][:max(1, int(np.ceil(1 / cap)))].mean()), 25):
-        res = minimize(lambda w: w @ cov @ w, np.full(len(columns), 1 / len(columns)), method='SLSQP', bounds=[(0, cap)] * len(columns),
-                       constraints=[{'type': 'eq', 'fun': lambda w: w.sum() - 1}, {'type': 'eq', 'fun': lambda w, t=target: w @ mean - t}], options={'maxiter': 300})
-        if res.success:
-            frontier.append([float(np.sqrt(res.x @ cov @ res.x)) * 100, float(target) * 100])
-    result = report(f'Markowitz con {len(columns)} activos: pesos estimados con el {fraction:.0%} inicial ({len(train)} períodos, covarianza {covariance}) '
-                    f'y evaluados sin reajustar en los {len(test)} siguientes. Solo posiciones largas, tope {cap:.0%} por activo.',
-                    activos=len(columns), periodos_estimacion=len(train), periodos_prueba=len(test))
-    result['tables'] = [table('Pesos y valores esperados (estimación)', ['Portafolio', *[f'{c} (%)' for c in columns], 'Rendimiento esperado (%)', 'Volatilidad esperada (%)', 'Sharpe esperado'], rows),
-                        table('Desempeño fuera de muestra', ['Portafolio', 'Rendimiento total (%)', 'Rendimiento anual (%)', 'Volatilidad anual (%)', 'Sharpe', 'Caída máxima (%)'], perf_rows),
-                        table('Frontera eficiente (estimación)', ['Volatilidad (%)', 'Rendimiento esperado (%)'], frontier)]
-    result['series'] = series + [{'label': 'Frontera eficiente: rendimiento (%) por punto', 'points': [[i, p[1]] for i, p in enumerate(frontier)]}]
-    result['limitations'] = ['Las medias estimadas son muy ruidosas: el máximo Sharpe suele decepcionar fuera de muestra.', 'Sin costos de transacción ni rebalanceo; uso educativo, no asesoría financiera.']
+        markers.append({'name': label, 'ret': s['ret'] * 100, 'vol': s['vol'] * 100, 'down': s['down'] * 100, 'sharpe': s['sharpe'], 'sortino': s['sortino'],
+                        'weights': [float(x) * 100 for x in w]})
+    asset_rows, assets = [], []
+    for i, c in enumerate(columns):
+        s = stats(np.eye(n)[i])
+        asset_rows.append([c, s['ret'] * 100, s['vol'] * 100, s['down'] * 100, s['sharpe'], s['sortino']])
+        assets.append({'name': c, 'ret': s['ret'] * 100, 'vol': s['vol'] * 100, 'down': s['down'] * 100})
+    frontier_rows = [[p['vol'] * 100, p['ret'] * 100, p['sharpe'], p['sortino'], *[x * 100 for x in w]] for w, p in efficient]
+    clean = lambda v: float(v) if np.isfinite(v) else None
+    point = lambda w, p: {'vol': p['vol'] * 100, 'ret': p['ret'] * 100, 'down': p['down'] * 100, 'sharpe': clean(p['sharpe']), 'sortino': clean(p['sortino']),
+                          'weights': [float(x) * 100 for x in w]}
+
+    tangency, sortino_best, gmv_stats = (stats(weights[k]) for k in ('Máximo Sharpe', 'Máximo Sortino', 'Mínima varianza'))
+    result = report(f'Markowitz con {n} activos: medias y covarianza ({covariance}) estimadas con el {fraction:.0%} inicial ({len(train)} períodos) '
+                    f'y cada portafolio evaluado sin reajustar en los {len(test)} siguientes. Solo posiciones largas, tope {cap:.0%} por activo, '
+                    f'tasa libre de riesgo {rf:.2%} anual. Valores anualizados con {annual} períodos por año. Uso educativo, no asesoría financiera.',
+                    activos=n, periodos_estimacion=len(train), periodos_prueba=len(test))
+    result['metrics'] += [{'label': 'Volatilidad mínima (%)', 'value': gmv_stats['vol'] * 100},
+                          {'label': 'Rendimiento con máximo Sharpe (%)', 'value': tangency['ret'] * 100},
+                          {'label': 'Sharpe máximo', 'value': clean(tangency['sharpe'])},
+                          {'label': 'Sortino máximo', 'value': clean(sortino_best['sortino'])}]
+    result['tables'] = [
+        table('Pesos de cada portafolio (%)', ['Portafolio', *columns, 'Activos efectivos', 'Peso máximo (%)'], weight_rows),
+        table('Rendimiento, volatilidad y riesgo esperados (estimación)', ['Portafolio', 'Rendimiento anual (%)', 'Volatilidad anual (%)', 'Varianza anual',
+              'Desviación a la baja (%)', 'Sharpe', 'Sortino', f'VaR {level} (%)', f'CVaR {level} (%)', 'Caída máxima (%)'], expected_rows),
+        table('Desempeño fuera de muestra (prueba)', ['Portafolio', 'Rendimiento total (%)', 'Rendimiento anual compuesto (%)', 'Volatilidad anual (%)', 'Sharpe', 'Sortino',
+              'Caída máxima (%)', f'VaR {level} (%)', f'CVaR {level} (%)'], perf_rows),
+        table('Contribución de cada activo al riesgo (% de la varianza)', ['Portafolio', *columns], risk_rows),
+        table('Activos individuales (estimación)', ['Activo', 'Rendimiento anual (%)', 'Volatilidad anual (%)', 'Desviación a la baja (%)', 'Sharpe', 'Sortino'], asset_rows),
+        table('Frontera eficiente (estimación)', ['Volatilidad (%)', 'Rendimiento esperado (%)', 'Sharpe', 'Sortino', *[f'{c} (%)' for c in columns]], frontier_rows)]
+    result['series'] = series
+    result['portfolio_plot'] = {
+        'columns': columns, 'risk_free': rf * 100, 'assets': assets, 'portfolios': [{**m, 'sharpe': clean(m['sharpe']), 'sortino': clean(m['sortino'])} for m in markers],
+        'frontier': [point(w, p) for w, p in efficient], 'lower': [point(w, p) for w, p in lower][::-1],
+        'cloud': [[s['vol'] * 100, s['ret'] * 100, s['down'] * 100, clean(s['sharpe']), clean(s['sortino'])] for s in cloud_stats]}
+    result['limitations'] = ['Las medias estimadas son muy ruidosas: el máximo Sharpe y el máximo Sortino suelen decepcionar fuera de muestra.',
+                             'Volatilidad y Sharpe esperados usan la covarianza elegida; Sortino, VaR, CVaR y caída máxima de estimación usan los rendimientos históricos del bloque inicial.',
+                             'Sin costos de transacción ni rebalanceo; uso educativo, no asesoría financiera.']
     data = outputs.reset_index(drop=True)
     if 'periodo' in frame.columns:
         data.insert(0, 'periodo', frame.loc[test.index, 'periodo'].to_numpy())

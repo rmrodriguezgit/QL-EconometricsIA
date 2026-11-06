@@ -116,17 +116,49 @@ class PortfolioTests(unittest.TestCase):
         self.frame = pd.DataFrame({'a': rng.normal(.8, 4, n), 'b': rng.normal(.4, 1.5, n), 'c': rng.normal(.6, 3, n)})
 
     def test_weights_valid_and_min_variance_is_lowest(self):
-        result, out = portfolio(self.frame, {'columns': 'a,b,c', 'values': 'porcentaje', 'periods_per_year': 12, 'max_weight': .7, 'fraction': .7})
-        rows = {row[0]: row for row in result['tables'][0]['rows']}
-        for label, row in rows.items():
-            weights = np.array(row[1:4]) / 100
+        result, out = portfolio(self.frame, {'columns': 'a,b,c', 'values': 'porcentaje', 'periods_per_year': 12, 'max_weight': .7, 'fraction': .7, 'risk_free': .02})
+        tables = {t['title']: t for t in result['tables']}
+        weights = {row[0]: row for row in tables['Pesos de cada portafolio (%)']['rows']}
+        self.assertEqual(list(weights), ['Pesos iguales', 'Mínima varianza', 'Máximo Sharpe', 'Máximo Sortino'])
+        for label, row in weights.items():
+            w = np.array(row[1:4]) / 100
             with self.subTest(label=label):
-                self.assertAlmostEqual(weights.sum(), 1, places=6)
-                self.assertTrue((weights >= -1e-9).all() and (weights <= .7 + 1e-6).all())
-        self.assertLessEqual(rows['Mínima varianza'][5], min(rows['Pesos iguales'][5], rows['Máximo Sharpe'][5]) + 1e-6)
-        self.assertGreaterEqual(rows['Máximo Sharpe'][6], rows['Pesos iguales'][6] - 1e-6)
-        self.assertEqual(out['data'].columns.tolist(), ['pesos_iguales', 'minima_varianza', 'maximo_sharpe'])
+                self.assertAlmostEqual(w.sum(), 1, places=6)
+                self.assertTrue((w >= -1e-9).all() and (w <= .7 + 1e-6).all())
+                self.assertAlmostEqual(row[4], 1 / np.sum(w ** 2), places=6)
+        expected = {row[0]: row for row in tables['Rendimiento, volatilidad y riesgo esperados (estimación)']['rows']}
+        vol, sharpe, sortino = ({label: row[k] for label, row in expected.items()} for k in (2, 5, 6))
+        self.assertLessEqual(vol['Mínima varianza'], min(vol.values()) + 1e-6)
+        self.assertGreaterEqual(sharpe['Máximo Sharpe'], max(sharpe.values()) - 1e-6)
+        self.assertGreaterEqual(sortino['Máximo Sortino'], max(sortino.values()) - 1e-6)
+        # La frontera no tiene puntos con menos volatilidad que la mínima varianza ni más Sharpe que el máximo.
+        frontier = tables['Frontera eficiente (estimación)']['rows']
+        self.assertGreaterEqual(min(r[0] for r in frontier), vol['Mínima varianza'] - 1e-4)
+        self.assertLessEqual(max(r[2] for r in frontier), sharpe['Máximo Sharpe'] + 1e-6)
+        self.assertTrue(all(b[1] >= a[1] - 1e-9 for a, b in zip(frontier, frontier[1:])))
+        for row in tables['Contribución de cada activo al riesgo (% de la varianza)']['rows']:
+            self.assertAlmostEqual(sum(row[1:]), 100, places=6)
+        self.assertEqual(out['data'].columns.tolist(), ['pesos_iguales', 'minima_varianza', 'maximo_sharpe', 'maximo_sortino'])
         self.assertEqual(len(out['data']), 400 - 280)
+        plot = result['portfolio_plot']
+        self.assertEqual((plot['columns'], len(plot['portfolios']), len(plot['cloud'])), (['a', 'b', 'c'], 4, 600))
+        self.assertTrue(len(plot['frontier']) > 10 and plot['lower'])
+
+    def test_equal_weights_metrics_match_manual_calculation(self):
+        result, _ = portfolio(self.frame, {'columns': 'a,b,c', 'covariance': 'muestral', 'periods_per_year': 12, 'risk_free': .02, 'fraction': .7})
+        train = self.frame.iloc[:280] / 100
+        path = train.mean(axis=1).to_numpy()
+        ret = path.mean() * 12
+        vol = np.sqrt(np.full(3, 1 / 3) @ train.cov(ddof=1).to_numpy() @ np.full(3, 1 / 3) * 12)
+        rf_period = 1.02 ** (1 / 12) - 1
+        down = np.sqrt(np.mean(np.minimum(path - rf_period, 0) ** 2) * 12)
+        row = next(r for r in result['tables'][1]['rows'] if r[0] == 'Pesos iguales')
+        self.assertAlmostEqual(row[1], ret * 100, places=8)
+        self.assertAlmostEqual(row[2], vol * 100, places=8)
+        self.assertAlmostEqual(row[4], down * 100, places=8)
+        self.assertAlmostEqual(row[5], (ret - .02) / vol, places=8)
+        self.assertAlmostEqual(row[6], (ret - .02) / down, places=8)
+        self.assertAlmostEqual(row[7], -np.quantile(path, .05) * 100, places=8)
 
     def test_two_asset_minimum_variance_matches_formula(self):
         result, _ = portfolio(self.frame, {'columns': 'a,b', 'values': 'porcentaje', 'covariance': 'muestral', 'fraction': .9})

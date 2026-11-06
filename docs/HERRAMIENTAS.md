@@ -299,5 +299,5 @@ Registro: **103 tipos** (94 ofrecidos en la biblioteca, 8 reemplazados y 1 hered
 | `select_columns` | Preparar datos | Elegir, ordenar y renombrar columnas |
 | `quant_features` | Finanzas cuantitativas | Rendimientos, volatilidad y Sharpe móviles, caída, SMA, EMA, RSI(14), MACD(12,26,9), Bollinger |
 | `risk_metrics` | Finanzas cuantitativas | Sharpe, Sortino, caída máxima, Calmar, VaR/CVaR históricos, beta, alfa, ratio de información |
-| `portfolio` | Finanzas cuantitativas | Markowitz: pesos iguales, mínima varianza y máximo Sharpe; frontera eficiente; prueba fuera de muestra |
+| `portfolio` | Finanzas cuantitativas | Markowitz: pesos iguales, mínima varianza, máximo Sharpe y máximo Sortino; rendimiento, volatilidad, desviación a la baja, VaR, CVaR, caída máxima y contribución al riesgo; gráficos de frontera eficiente, Sharpe, Sortino, mínima varianza y pesos; prueba fuera de muestra |
 | `ml_compare` | Machine learning | Compara 7 modelos de scikit-learn por validación temporal; el elegido es evaluable |

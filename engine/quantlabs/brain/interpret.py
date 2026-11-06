@@ -265,6 +265,8 @@ def rules(node_type, result, parameters=None):
                 cautions.append(f'{row[0]} tiene {num(row[2])} faltantes; los modelos los excluyen por fila.')
         steps.append('Conecta Descriptivos o un gráfico para explorar las variables antes de modelar.')
     else:
+        if node_type == 'portfolio':
+            _portfolio_rules(result, params, summary, findings, cautions, steps)
         _analysis_rules(d, metrics, alpha, summary, findings, cautions, steps, params)
 
     if not summary and d['text']:
@@ -276,6 +278,58 @@ def rules(node_type, result, parameters=None):
     cautions += [t for t in d['limitations'] if t not in cautions]
     return {'summary': ' '.join(summary) or f'Resultado de {d["label"]}.', 'findings': _unique(findings)[:12],
             'cautions': _unique(cautions)[:8], 'next_steps': _unique(steps)[:4]}, d
+
+
+def _portfolio_rules(result, params, summary, findings, cautions, steps):
+    """Markowitz: compara lo esperado con lo obtenido fuera de muestra, la concentración y el reparto del riesgo."""
+    tables = {t.get('title'): t for t in result.get('tables') or []}
+    weights = tables.get('Pesos de cada portafolio (%)')
+    expected = tables.get('Rendimiento, volatilidad y riesgo esperados (estimación)')
+    test = tables.get('Desempeño fuera de muestra (prueba)')
+    risk = tables.get('Contribución de cada activo al riesgo (% de la varianza)')
+    if not (weights and expected and test):
+        return
+    columns = weights['columns'][1:-2]
+    exp = {r[0]: r for r in expected['rows']}
+    out = {r[0]: r for r in test['rows']}
+    tangent, gmv = exp.get('Máximo Sharpe'), exp.get('Mínima varianza')
+    if tangent and gmv:
+        summary.append(f'Con los datos de estimación, el portafolio de máximo Sharpe espera {num(tangent[1], 4)} % anual con {num(tangent[2], 4)} % de volatilidad '
+                       f'(Sharpe {num(tangent[5], 3)}); el de mínima varianza baja la volatilidad a {num(gmv[2], 4)} % con {num(gmv[1], 4)} % de rendimiento esperado.')
+    ranked = sorted((r for r in test['rows'] if finite(r[4])), key=lambda r: -r[4])
+    if ranked:
+        best = ranked[0]
+        summary.append(f'Fuera de muestra el mejor Sharpe lo obtuvo {best[0]} ({num(best[4], 3)}), '
+                       + ('el mismo que se esperaba ganador.' if best[0] == 'Máximo Sharpe' else 'no el de máximo Sharpe estimado: las medias estimadas no se repitieron.'))
+    for name, row in out.items():
+        e = exp.get(name)
+        if e and finite(e[5]) and finite(row[4]):
+            findings.append(f'{name}: Sharpe esperado {num(e[5], 3)} frente a {num(row[4], 3)} en la prueba; Sortino {num(e[6], 3)} frente a {num(row[5], 3)}; '
+                            f'caída máxima en la prueba {num(row[6], 3)} %.')
+    cap = params.get('max_weight', 1)
+    for row in weights['rows']:
+        name, w = row[0], row[1:1 + len(columns)]
+        effective = row[-2]
+        if name == 'Pesos iguales' or not finite(effective):
+            continue
+        zero = [c for c, v in zip(columns, w) if finite(v) and v < 0.5]
+        text = f'{name}: equivale a {num(effective, 3)} activos efectivos'
+        if zero:
+            text += f'; deja fuera {", ".join(map(str, zero))}'
+        findings.append(text + '.')
+        if finite(cap) and cap < 1 and any(finite(v) and v >= cap * 100 - 0.01 for v in w):
+            cautions.append(f'En {name} algún activo llega al tope de {pct(cap)} %: la restricción está activa y determina los pesos.')
+    if risk:
+        for row in risk['rows']:
+            share = [(c, v) for c, v in zip(columns, row[1:]) if finite(v)]
+            if share:
+                c, v = max(share, key=lambda x: x[1])
+                if v > 60:
+                    findings.append(f'En {row[0]}, {c} aporta el {num(v, 3)} % de la varianza: el riesgo está concentrado en un activo.')
+    if tangent and out.get('Máximo Sharpe') and finite(tangent[5]) and finite(out['Máximo Sharpe'][4]) and out['Máximo Sharpe'][4] < tangent[5] / 2:
+        cautions.append('El Sharpe obtenido fuera de muestra es menos de la mitad del esperado: síntoma típico del error de estimación de las medias.')
+    steps += ['Cambia la fracción de estimación o la covarianza (contracción frente a muestral) y observa si los pesos se mantienen estables.',
+              'Pasa la salida de rendimientos a Medidas de riesgo para comparar VaR, CVaR y caídas de cada portafolio en la prueba.']
 
 
 def _unique(items):

@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.25.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.26.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -285,3 +285,7 @@ Sin dependencias nuevas: las herramientas de Blueprints se reescribieron sobre p
 ## Explicación de resultados 0.25.0
 
 Sin dependencias nuevas. `brain.interpret` reutiliza el cliente de Ollama del cerebro (solo URL local; mismo modelo preferido, `think: false`, salida JSON con esquema y degradación a modo json/texto). Decisión: el modelo recibe un resumen agregado (métricas, tablas de hasta 12 filas × 8 columnas, avisos y estadísticos por columna), nunca las filas; la interfaz envía como máximo 5.000 filas para calcular esos estadísticos en el motor. La lectura por reglas acompaña siempre a la del modelo y prevalece en las decisiones de contraste (rechazar o no H₀). Tiempo observado con qwen3.5:4b en este equipo: 13–21 s por explicación.
+
+## Portafolio de Markowitz ampliado 0.26.0
+
+Sin dependencias nuevas. La frontera usa `scipy.optimize.linprog` (método HiGHS) para el rendimiento mínimo y máximo alcanzable con tope por activo y SLSQP para cada punto; el máximo Sortino se optimiza con SLSQP desde pesos iguales, el mejor punto de la frontera por Sharpe y el mejor portafolio aleatorio por Sortino, y se conserva el mejor. Decisión: volatilidad y Sharpe esperados usan la covarianza elegida (contracción o muestral); Sortino, VaR, CVaR y caída máxima de estimación usan los rendimientos históricos del bloque de estimación, porque dependen de la forma de la distribución y no solo de la covarianza. La nube de 600 portafolios usa semilla fija (7) para que el gráfico sea reproducible.

@@ -68,6 +68,17 @@ class RulesTests(InterpretCase):
         strict, _ = rules('multiple_ols', result, {**node['parameters'], 'alpha': 0.0000001})
         self.assertTrue(any('α = 1e-07' in f for f in strict['findings']))
 
+    def test_portfolio_compares_expected_and_out_of_sample(self):
+        project, run = run_example('Q01')
+        node, result = node_result(project, run, 'portfolio')
+        reading, _ = rules('portfolio', result, node['parameters'])
+        test = {r[0]: r for r in next(t for t in result['tables'] if t['title'].startswith('Desempeño fuera'))['rows']}
+        best = max(test.values(), key=lambda r: r[4])[0]
+        self.assertIn(f'el mejor Sharpe lo obtuvo {best}', reading['summary'])
+        self.assertTrue(any(f.startswith('Máximo Sortino: Sharpe esperado') for f in reading['findings']))
+        self.assertTrue(any('activos efectivos' in f for f in reading['findings']))
+        self.assertTrue(reading['next_steps'])
+
     def test_every_offline_example_has_a_reading(self):
         items = dispatch_files('examples.list', {})['items']
         online = {'worldbank', 'worldbank_multi', 'fred', 'yfinance'}

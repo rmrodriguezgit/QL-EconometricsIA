@@ -3245,7 +3245,7 @@
   },
   "portfolio": {
     "label": "Portafolio de Markowitz",
-    "detail": "Pesos iguales, mínima varianza y máximo Sharpe con frontera eficiente y prueba fuera de muestra",
+    "detail": "Pesos iguales, mínima varianza, máximo Sharpe y máximo Sortino con frontera eficiente, riesgo y prueba fuera de muestra",
     "category": "Modelos",
     "color": "purple",
     "inputs": {
@@ -3288,7 +3288,7 @@
         "muestral": "Covarianza muestral"
       }
     },
-    "explanation": "Estima medias y covarianzas con el bloque inicial, calcula pesos (iguales, mínima varianza y máximo Sharpe; solo largos, con tope por activo) y la frontera eficiente, y evalúa cada portafolio sin reajustar en el bloque final. Integrada desde Quantlabs-Blueprints.",
+    "explanation": "Estima medias y covarianzas con el bloque inicial, calcula pesos (iguales, mínima varianza, máximo Sharpe y máximo Sortino; solo largos, con tope por activo), sus métricas de rendimiento, volatilidad y riesgo (desviación a la baja, VaR, CVaR, caída máxima, contribución al riesgo) y la frontera eficiente con gráficos de Sharpe, Sortino y mínima varianza; después evalúa cada portafolio sin reajustar en el bloque final. Integrada desde Quantlabs-Blueprints.",
     "references": [
       "B27",
       "B11"

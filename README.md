@@ -15,7 +15,7 @@
 
 Laboratorio educativo de econometría con programación visual mediante nodos, motor analítico Python y un **segundo cerebro de IA local** que convierte enunciados en flujos conectados y verificados. Objetivo de escritorio: macOS y Windows. [Repositorio](https://github.com/rmrodriguezgit/QL-EconometricsIA) · derivado de [Quantlabs-Econometrics](https://github.com/rmrodriguezgit/Quantlabs-Econometrics) con su historial completo.
 
-**Versión 0.25.0 · 2026-11-06 · Alpha local con escritorio Electron, estudio oscuro y segundo cerebro (Ollama/Qwen + reglas). Instaladores independientes y actualización automática pendientes.**
+**Versión 0.26.0 · 2026-11-06 · Alpha local con escritorio Electron, estudio oscuro y segundo cerebro (Ollama/Qwen + reglas). Instaladores independientes y actualización automática pendientes.**
 
 ## Segundo cerebro IA
 
@@ -28,6 +28,8 @@ Pulsa **Cerebro IA** en la barra del lienzo y escribe lo que quieres analizar, p
 5. **Registra** lo que falta como ficha de herramienta pendiente, sin simularlo ni generar código.
 
 En cada salida de **Resultados**, **Explicar este resultado** pide al agente la interpretación bajo demanda: resumen, qué dicen las cifras, cautelas y siguiente paso. La redacta Qwen local a partir de las métricas (no de las filas) junto con una lectura por reglas que siempre puedes consultar; las cifras que el modelo no toma del resultado se marcan como no verificadas. Sin Ollama se muestra la lectura por reglas.
+
+El nodo **Portafolio de Markowitz** entrega los pesos de cuatro portafolios (pesos iguales, mínima varianza, máximo Sharpe y máximo Sortino), sus métricas de rendimiento, volatilidad y riesgo (desviación a la baja, VaR, CVaR, caída máxima y contribución de cada activo al riesgo) estimadas y fuera de muestra, y los gráficos de frontera eficiente, Sharpe, Sortino, mínima varianza y composición de pesos.
 
 ```sh
 ollama pull qwen3.5:4b                         # opcional: sin modelo se usan reglas

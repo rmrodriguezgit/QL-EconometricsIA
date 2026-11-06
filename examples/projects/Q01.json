@@ -70,7 +70,7 @@
       "type": "risk_metrics",
       "node_version": "1.0.0",
       "parameters": {
-        "columns": "pesos_iguales,minima_varianza,maximo_sharpe",
+        "columns": "pesos_iguales,minima_varianza,maximo_sharpe,maximo_sortino",
         "values": "porcentaje",
         "benchmark": "",
         "periods_per_year": 12,
@@ -165,8 +165,8 @@
       {
         "node_id": "portafolio",
         "title": "4. Markowitz",
-        "instruction": "Estima pesos con el 70 % inicial: iguales, mínima varianza y máximo Sharpe (tope 60 % por activo, covarianza de Ledoit-Wolf). Revisa la frontera eficiente.",
-        "expected": "Tabla de pesos, frontera y desempeño en el 30 % final.",
+        "instruction": "Estima pesos con el 70 % inicial: iguales, mínima varianza, máximo Sharpe y máximo Sortino (tope 60 % por activo, covarianza de Ledoit-Wolf). Revisa la frontera eficiente, los planos de Sharpe y Sortino y el portafolio de mínima varianza.",
+        "expected": "Pesos de los cuatro portafolios, rendimiento, volatilidad y riesgo esperados, gráficos de frontera, Sharpe, Sortino y mínima varianza, y desempeño en el 30 % final.",
         "question": "¿Qué activo domina la mínima varianza?"
       },
       {

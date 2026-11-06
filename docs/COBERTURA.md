@@ -87,6 +87,10 @@ C04: correlación Pearson y covarianza muestral en herramientas visibles y N01, 
 
 C07, C08, C09, C12, C14, C15, C16, C21, C22 y C25: doce herramientas nuevas (ver [HERRAMIENTAS.md](HERRAMIENTAS.md)) con pruebas en tests/test_gap_tools.py. Cubren parte de los pendientes de cada módulo; siguen abiertos rolling validation, VECM, GLS general, validación anidada, estabilidad de grupos, efectos marginales, panel y EGARCH, entre otros enumerados en examples/tool-gaps.json.
 
+### Evidencia adicional · 0.26.0
+
+Finanzas cuantitativas (Q01): el portafolio de Markowitz añade máximo Sortino, métricas de riesgo por portafolio (desviación a la baja, VaR, CVaR, caída máxima, contribución al riesgo) y gráficos de frontera, Sharpe, Sortino y mínima varianza, con pruebas en tests/test_quant_tools.py. Siguen pendientes posiciones cortas, costos de transacción, rebalanceo periódico, Black-Litterman y paridad de riesgo.
+
 ### Evidencia adicional · 0.25.0
 
 Transversal (interpretación): cada salida puede explicarse bajo demanda con una lectura por reglas de contrastes, coeficientes y ajuste, y con una redacción de Qwen local cotejada contra las cifras del resultado (tests/test_interpret.py). No cierra ningún tema curricular: la interpretación de contrastes que aún no tienen herramienta (p. ej. Chow con quiebre desconocido, pruebas de causalidad de Granger) sigue pendiente con ellos, y la calidad de la redacción del modelo no se evalúa de forma sistemática.

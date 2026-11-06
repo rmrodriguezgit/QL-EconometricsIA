@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.24.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.25.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -281,3 +281,7 @@ Sin dependencias nuevas. La red multicapa y el agente de refuerzo están escrito
 ## Biblioteca por áreas e integración de Blueprints 0.24.0
 
 Sin dependencias nuevas: las herramientas de Blueprints se reescribieron sobre pandas, scipy (SLSQP para Markowitz) y scikit-learn (Ledoit-Wolf, modelos de ML) ya instalados; no se usa PyTorch. Las herramientas reemplazadas no se borran del catálogo para no romper proyectos guardados.
+
+## Explicación de resultados 0.25.0
+
+Sin dependencias nuevas. `brain.interpret` reutiliza el cliente de Ollama del cerebro (solo URL local; mismo modelo preferido, `think: false`, salida JSON con esquema y degradación a modo json/texto). Decisión: el modelo recibe un resumen agregado (métricas, tablas de hasta 12 filas × 8 columnas, avisos y estadísticos por columna), nunca las filas; la interfaz envía como máximo 5.000 filas para calcular esos estadísticos en el motor. La lectura por reglas acompaña siempre a la del modelo y prevalece en las decisiones de contraste (rechazar o no H₀). Tiempo observado con qwen3.5:4b en este equipo: 13–21 s por explicación.

@@ -12,6 +12,7 @@ El segundo cerebro convierte una petición en lenguaje natural («estima el cons
 | Sin código generado | El modelo solo elige tipos de nodo del catálogo y parámetros declarados en `defaults`. No hay `eval`, `exec` ni nodos dinámicos. |
 | Verificable | Todo blueprint pasa por `validate_project`; si los datos son locales se ejecuta y se reparan columnas con las vistas previas reales. |
 | Honesto con los huecos | Lo que el catálogo no cubre se registra como **ficha de herramienta faltante**, nunca se simula con otro nodo. |
+| Explicaciones acotadas | `brain.interpret` envía al modelo local solo un resumen agregado del resultado (métricas y tablas recortadas), nunca filas de datos; coteja sus cifras con el resultado. |
 | Degradación elegante | Sin Ollama, sin modelo o con respuesta inválida, el planificador determinista produce un plan válido. |
 
 ## Arquitectura
@@ -63,6 +64,15 @@ Cuando un nodo falla, pulsa **Reparar con Cerebro IA** en el aviso de error, **Q
 
 Tú eliges **Aplicar cambios** o **Aplicar y ejecutar**; **Deshacer** revierte la aplicación. La reparación usa reglas deterministas, no Qwen, para que cada corrección sea reproducible y comprobada por ejecución.
 
+### Explicar un resultado (0.25.0)
+
+Cada salida de la pestaña **Resultados** tiene **Explicar este resultado**. `brain/interpret.py` hace dos lecturas:
+
+1. **Reglas** (siempre): p-valores frente a α del nodo (0.05 por defecto) en Breusch-Pagan, White, Breusch-Godfrey, Engle-Granger, ADF y pruebas del nodo; signo y significancia de coeficientes; R² y R² ajustado; VIF > 10; Durbin-Watson; CFI/RMSEA; silueta; menor RMSE en comparaciones; agente RL frente a comprar y mantener; diferencia de R² entre ajuste y validación en redes; asimetría y dispersión en descriptivos; correlación en dispersión. Añade límites y advertencias del cálculo (sin avisos de deprecación de librerías) y remedios para lo que detecta.
+2. **Qwen local** (motor `auto` u `ollama`): recibe la ficha de la herramienta, parámetros escalares, métricas, tablas de hasta 12 × 8, avisos y la lectura por reglas; devuelve `summary`, `findings`, `cautions` y `next_steps`. Las cifras de su texto que no coinciden (al redondeo o como porcentaje) con las del resumen se devuelven en `unverified` y la interfaz las señala. Si el modelo no responde o no da JSON válido, `auto` entrega la lectura por reglas con `fallback_reason`.
+
+Qwen 4B puede equivocarse en matices (p. ej. llamar «evidencia de raíz unitaria» a no rechazarla); por eso **Ver reglas** muestra siempre la lectura determinista.
+
 Las pestañas **Herramientas faltantes** y **Memoria** muestran las fichas pendientes (con estado pendiente/planificada/descartada) y el historial reutilizable.
 
 ### Línea de órdenes
@@ -88,8 +98,9 @@ Ejecuta con `PYTHONPATH=engine` si no usas los arrancadores. `blueprint.json` se
 | `brain.feedback` | `id`, `value` (`up`/`down`/`null`) | Valoración guardada |
 | `brain.gaps` | `status` opcional | Fichas ordenadas por número de solicitudes |
 | `brain.gaps.update` | `id`, `status` | Ficha actualizada |
+| `brain.interpret` | `node_type`, `result` (salida del nodo), `parameters`, `engine` (`auto`/`ollama`/`rules`) | `summary`, `findings`, `cautions`, `next_steps`, `engine`, `model`, `fallback_reason`, `unverified`, `base` (lectura por reglas cuando redacta Qwen), `seconds` |
 
-`brain.plan` y `brain.repair` disponen de 180 s en Electron y en el puente de desarrollo; el resto de métodos conserva 60 s.
+`brain.plan`, `brain.repair` y `brain.interpret` disponen de 180 s en Electron y en el puente de desarrollo; el resto de métodos conserva 60 s.
 
 ## Instalar el modelo local
 
@@ -124,6 +135,7 @@ En 0.10.0 se implementaron así doce fichas (Chow, VAR, Johansen, SARIMA, WLS, r
 - Qwen 4B puede elegir parámetros subóptimos; el compilador los corrige solo cuando hay evidencia (opciones inválidas o columnas inexistentes). Revisa siempre la guía.
 - La verificación no consulta el Banco Mundial salvo que se active; CSV propio exige cargar el archivo.
 - La recuperación es léxica (BM25); no hay embeddings.
+- La explicación con Qwen depende del modelo local y tarda segundos; no sustituye la lectura por reglas ni la revisión del estudiante.
 - Un blueprint verificado es ejecutable, no una validación científica de la especificación.
 
 ## Yahoo Finance (0.22.0)

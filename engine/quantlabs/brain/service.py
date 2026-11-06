@@ -116,6 +116,9 @@ def dispatch(method, params):
     if method == 'brain.gaps':
         status_filter = params.get('status')
         return {'items': store.list_gaps(status_filter if status_filter in store.STATUSES else None)}
+    if method == 'brain.interpret':
+        from .interpret import interpret
+        return interpret(params)
     if method == 'brain.gaps.update':
         return store.update_gap(params.get('id'), params.get('status'))
     raise EngineError('INVALID_PARAMETERS', 'Método del cerebro desconocido.')

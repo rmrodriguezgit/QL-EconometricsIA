@@ -1,9 +1,9 @@
 const { spawn } = require('node:child_process');
 const { resolve } = require('node:path');
 const { existsSync } = require('node:fs');
-const methods = new Set(['engine.health','system.audit','nodes.list','project.validate','worldbank.indicators','projects.list','projects.read','projects.save','projects.delete','projects.restore','examples.list','examples.read','run.start','brain.status','brain.plan','brain.repair','brain.history','brain.feedback','brain.gaps','brain.gaps.update']);
+const methods = new Set(['engine.health','system.audit','nodes.list','project.validate','worldbank.indicators','projects.list','projects.read','projects.save','projects.delete','projects.restore','examples.list','examples.read','run.start','brain.status','brain.plan','brain.repair','brain.history','brain.feedback','brain.gaps','brain.gaps.update','brain.interpret']);
 // El cerebro con Qwen local puede tardar más que un cálculo; el resto conserva 60 s.
-const timeoutFor = method => method === 'brain.plan' || method === 'brain.repair' ? 180_000 : 60_000;
+const timeoutFor = method => method === 'brain.plan' || method === 'brain.repair' || method === 'brain.interpret' ? 180_000 : 60_000;
 const os = require('node:os');
 const MAX_OUTPUT = 12_000_000;
 const RECYCLE_AFTER = 200;     // se reemplaza el proceso tras N solicitudes para acotar memoria

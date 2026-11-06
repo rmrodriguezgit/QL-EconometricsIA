@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.19.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.20.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -236,3 +236,7 @@ Sin dependencias nuevas (Intl.NumberFormat y superíndices Unicode). Decisión: 
 ## OLS múltiple en 3D 0.19.0
 
 Sin dependencias nuevas: la vista 3D es una proyección ortográfica propia en SVG (rotación yaw/pitch, orden de pintado por profundidad) en lugar de three.js o Plotly, para no añadir varios MB al escritorio y mantener el estilo y la accesibilidad (teclado, `aria-label`) de los demás gráficos. El motor envía las filas, coeficientes y medias; la interfaz recalcula el corte al cambiar de ejes sin volver a ejecutar.
+
+## Gráfico de ajuste OLS 0.20.0
+
+Sin dependencias nuevas. El motor calcula con statsmodels 0.14 (ya instalado) los residuos estandarizados internos (`get_influence().hat_matrix_diag`) y la banda IC 95 % de la media (`get_prediction(...).summary_frame`), que respeta la covarianza elegida (clásica o HC3). La interfaz dibuja en SVG propio, como el resto de gráficos. Con más de 2.000 observaciones se envía una muestra fija (semilla 0) que siempre incluye los 20 residuos más extremos.

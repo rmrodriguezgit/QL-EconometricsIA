@@ -268,3 +268,10 @@ La aplicación y sus instaladores están pendientes de implementación. Los camb
 - **Gráficos de variable añadida** (regresión parcial), uno por regresor, con pendiente igual al coeficiente (Frisch–Waugh–Lovell), EE, p y r parcial.
 - Pruebas: `tests/test_regression_views.py` frente a statsmodels y `electron/regressionGeometry.test.ts`.
 - Verificado en la interfaz: modelo con 2 regresores (plano, giro por arrastre, residuos, paneles con pendientes iguales a la tabla de coeficientes) y con 3 regresores (selector de ejes y nota del corte).
+
+## 0.20.0 - 2026-11-05
+
+- **Gráfico de ajuste OLS con residuos**: el OLS simple dibuja la recta con banda IC 95 %, los residuos como segmentos verticales (verde/rosa), los atípicos |r| > 2 resaltados, un panel de residuos frente a x o ŷ con ±2σ̂ y un histograma marginal con la normal N(0, σ̂²). Tooltip por punto, capas conmutables y formato de ejes ×10ⁿ.
+- Se muestra en la tarjeta del nodo OLS y en la pestaña Regresión; ya no requiere un nodo de Dispersión conectado.
+- Motor: `fit_plot` en el resultado de `ols` (residuos estandarizados internos y banda con la covarianza elegida; muestra fija de 2.000 puntos con los extremos).
+- Pruebas: `tests/test_ols_fit_plot.py` y `electron/olsFitGeometry.test.ts`. Verificado en la interfaz con el ejemplo ingreso–consumo.

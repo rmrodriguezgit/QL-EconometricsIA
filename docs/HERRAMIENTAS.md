@@ -222,6 +222,19 @@ Parámetros de presentación `y_axis` y `x_axis` con tres opciones:
 
 En las vistas con varios paneles (varias series, pairplot) cada variable calcula su propio exponente. Son parámetros solo de presentación: el motor los ignora y cambiarlos conserva los resultados calculados. Implementación: `apps/desktop/src/axisFormat.ts`; pruebas en `apps/desktop/electron/axisFormat.test.ts`.
 
+## Gráfico de ajuste OLS con residuos (0.20.0)
+
+El nodo **Regresión OLS** (`ols`) añade a su resultado `fit_plot` (componente `OlsFitPlot`), visible en su tarjeta de salida y en la pestaña **Regresión**. Ya no hace falta conectar un nodo de Dispersión para ver la recta.
+
+- **Panel superior**: puntos, recta OLS, banda IC 95 % de la media condicional (con la covarianza elegida: con HC3 la banda se ensancha si hay heterocedasticidad) y cada residuo e = y − ŷ como segmento vertical hasta la recta, verde si e > 0 y rosa si e < 0.
+- **Panel inferior**: residuos frente a x (o frente a ŷ con el botón *Residuos vs ŷ*), línea en 0 y líneas ±2σ̂. Al margen, histograma de los residuos con la curva normal N(0, σ̂²).
+- **Atípicos**: los puntos con residuo estandarizado interno |r| = |e| / (σ̂·√(1−hᵢᵢ)) > 2 tienen borde naranja; el contador aparece en la cabecera junto a la ecuación ŷ = b₀ + b₁·x, R², σ̂ y n.
+- Al pasar el ratón por un punto se resalta en ambos paneles y se muestran x, y, ŷ, e y r.
+- Botones *Residuos* y *Banda IC 95 %* para ocultar capas. El formato de ejes (×10ⁿ) del nodo se respeta.
+- Límite: más de 2.000 observaciones → muestra fija (semilla 0) que conserva los 20 residuos más extremos; la nota del gráfico lo indica.
+
+Pruebas: `tests/test_ols_fit_plot.py` (residuos, residuos estandarizados y banda frente a statsmodels; banda HC3 más ancha con heterocedasticidad; muestreo con extremos) y `apps/desktop/electron/olsFitGeometry.test.ts` (marcas de eje e histograma). Verificado en la interfaz con el ejemplo ingreso–consumo (120 observaciones, 6 con |r| > 2).
+
 ## OLS múltiple: plano 3D y variable añadida (0.19.0)
 
 El nodo **OLS múltiple** (`multiple_ols`) añade dos vistas a su resultado, sin parámetros nuevos:

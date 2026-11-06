@@ -18,7 +18,7 @@ import pandas as pd
 import statsmodels.api as sm
 
 ROOT = Path(__file__).resolve().parents[2]
-VERSION = (ROOT / 'VERSION').read_text().strip() if (ROOT / 'VERSION').exists() else '0.19.0'
+VERSION = (ROOT / 'VERSION').read_text().strip() if (ROOT / 'VERSION').exists() else '0.20.0'
 SCHEMA = '1.0.0'
 
 class EngineError(ValueError):
@@ -388,6 +388,35 @@ def scatter(frame, parameters):
             'n': len(values), 'dropped': len(frame) - len(values)}
 
 
+MAX_FIT_POINTS = 2000
+
+
+def fit_plot(values, x, y, fitted):
+    """Puntos (x, y, ŷ, residuo, residuo estandarizado) y banda del IC 95 % de la media para el gráfico de ajuste."""
+    sigma = float(np.sqrt(fitted.scale))
+    try:
+        leverage = fitted.get_influence().hat_matrix_diag
+    except Exception:
+        leverage = np.zeros(len(values))
+    studentized = fitted.resid.to_numpy() / (sigma * np.sqrt(np.clip(1 - leverage, 1e-12, None))) if sigma > 0 else np.zeros(len(values))
+    rows = np.column_stack([values[x].to_numpy(float), values[y].to_numpy(float), fitted.fittedvalues.to_numpy(float),
+                            fitted.resid.to_numpy(float), studentized])
+    shown = len(rows)
+    if shown > MAX_FIT_POINTS:
+        keep = np.sort(np.random.default_rng(0).choice(len(rows), MAX_FIT_POINTS, replace=False))
+        # Los residuos extremos siempre se dibujan: son los que el gráfico debe mostrar.
+        extremes = np.argsort(-np.abs(studentized))[:20]
+        rows = rows[np.union1d(keep, extremes)]
+        shown = len(rows)
+    grid = np.linspace(values[x].min(), values[x].max(), 48)
+    prediction = fitted.get_prediction(sm.add_constant(pd.DataFrame({x: grid}), has_constant='add')).summary_frame(alpha=.05)
+    band = np.column_stack([grid, prediction['mean'], prediction['mean_ci_lower'], prediction['mean_ci_upper']])
+    return finite_json({'x': x, 'y': y, 'points': rows.tolist(), 'band': band.tolist(), 'sigma': sigma,
+                        'sampled': len(values) > MAX_FIT_POINTS, 'n': len(values), 'shown': int(shown),
+                        'outliers': int((np.abs(studentized) > 2).sum()),
+                        'note': 'Residuo = y − ŷ (segmento vertical hasta la recta). Estandarizado internamente: e / (σ̂·√(1−h)); |r| > 2 se marca como atípico. La banda es el IC 95 % de la media condicional con la covarianza elegida.'})
+
+
 def ols(frame, parameters, with_model=False):
     x, y = parameters.get('x', 'ingreso'), parameters.get('y', 'consumo')
     cov = parameters.get('covariance', 'HC3')
@@ -410,6 +439,7 @@ def ols(frame, parameters, with_model=False):
             'r_squared_adj': fitted.rsquared_adj, 'aic': fitted.aic, 'bic': fitted.bic,
             'covariance': cov, 'coefficients': coefficients,
             'residuals': fitted.resid.tolist(), 'fitted': fitted.fittedvalues.tolist(),
+            'fit_plot': fit_plot(values, x, y, fitted),
             'note': 'Asociación estimada; no identifica un efecto causal. HC3 modifica la inferencia, no los coeficientes OLS.'})
     return (result, fitted) if with_model else result
 

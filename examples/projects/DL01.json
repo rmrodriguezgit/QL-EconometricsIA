@@ -1,0 +1,364 @@
+{
+  "schema_version": "1.0.0",
+  "app_version": "0.23.0",
+  "title": "DL01 · Red multicapa capa por capa frente a MCO",
+  "nodes": [
+    {
+      "id": "datos",
+      "type": "synthetic",
+      "node_version": "1.0.0",
+      "parameters": {
+        "scenario": "nonlinear",
+        "n": 600,
+        "seed": 42
+      },
+      "position": {
+        "x": 0,
+        "y": 340
+      }
+    },
+    {
+      "id": "particion",
+      "type": "split",
+      "node_version": "1.0.0",
+      "parameters": {
+        "fraction": 0.75,
+        "method": "aleatorio",
+        "seed": 42
+      },
+      "position": {
+        "x": 320,
+        "y": 340
+      }
+    },
+    {
+      "id": "entrada",
+      "type": "nn_input",
+      "node_version": "1.0.0",
+      "parameters": {
+        "features": "x",
+        "standardize": "si"
+      },
+      "position": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "id": "capa_1",
+      "type": "nn_layer",
+      "node_version": "1.0.0",
+      "parameters": {
+        "layer_type": "densa",
+        "units": 32,
+        "activation": "relu",
+        "rate": 0.2
+      },
+      "position": {
+        "x": 320,
+        "y": 0
+      }
+    },
+    {
+      "id": "dropout",
+      "type": "nn_layer",
+      "node_version": "1.0.0",
+      "parameters": {
+        "layer_type": "dropout",
+        "units": 16,
+        "activation": "relu",
+        "rate": 0.1
+      },
+      "position": {
+        "x": 640,
+        "y": 0
+      }
+    },
+    {
+      "id": "capa_2",
+      "type": "nn_layer",
+      "node_version": "1.0.0",
+      "parameters": {
+        "layer_type": "densa",
+        "units": 16,
+        "activation": "tanh",
+        "rate": 0.2
+      },
+      "position": {
+        "x": 960,
+        "y": 0
+      }
+    },
+    {
+      "id": "salida",
+      "type": "nn_output",
+      "node_version": "1.0.0",
+      "parameters": {
+        "y": "y",
+        "task": "regresion"
+      },
+      "position": {
+        "x": 1280,
+        "y": 0
+      }
+    },
+    {
+      "id": "entrenar",
+      "type": "nn_train",
+      "node_version": "1.0.0",
+      "parameters": {
+        "epochs": 400,
+        "batch_size": 32,
+        "learning_rate": 0.01,
+        "optimizer": "adam",
+        "l2": 0.0001,
+        "validation": 0.2,
+        "patience": 30,
+        "seed": 42
+      },
+      "position": {
+        "x": 1600,
+        "y": 170
+      }
+    },
+    {
+      "id": "evaluar_red",
+      "type": "evaluate",
+      "node_version": "1.0.0",
+      "parameters": {},
+      "position": {
+        "x": 1920,
+        "y": 170
+      }
+    },
+    {
+      "id": "mco",
+      "type": "multiple_ols",
+      "node_version": "1.0.0",
+      "parameters": {
+        "features": "x",
+        "y": "y",
+        "covariance": "nonrobust"
+      },
+      "position": {
+        "x": 1600,
+        "y": 510
+      }
+    },
+    {
+      "id": "evaluar_mco",
+      "type": "evaluate",
+      "node_version": "1.0.0",
+      "parameters": {},
+      "position": {
+        "x": 1920,
+        "y": 510
+      }
+    },
+    {
+      "id": "reporte",
+      "type": "report",
+      "node_version": "1.0.0",
+      "parameters": {
+        "note": "¿Cuánto mejora la red a MCO en la muestra de prueba? Usa el RMSE de ambas evaluaciones, la curva de pérdida y la arquitectura."
+      },
+      "position": {
+        "x": 2240,
+        "y": 170
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "datos-data-particion-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "particion",
+      "target_port": "data"
+    },
+    {
+      "id": "entrada-network-capa_1-network",
+      "source": "entrada",
+      "source_port": "network",
+      "target": "capa_1",
+      "target_port": "network"
+    },
+    {
+      "id": "capa_1-network-dropout-network",
+      "source": "capa_1",
+      "source_port": "network",
+      "target": "dropout",
+      "target_port": "network"
+    },
+    {
+      "id": "dropout-network-capa_2-network",
+      "source": "dropout",
+      "source_port": "network",
+      "target": "capa_2",
+      "target_port": "network"
+    },
+    {
+      "id": "capa_2-network-salida-network",
+      "source": "capa_2",
+      "source_port": "network",
+      "target": "salida",
+      "target_port": "network"
+    },
+    {
+      "id": "salida-network-entrenar-network",
+      "source": "salida",
+      "source_port": "network",
+      "target": "entrenar",
+      "target_port": "network"
+    },
+    {
+      "id": "particion-train-entrenar-data",
+      "source": "particion",
+      "source_port": "train",
+      "target": "entrenar",
+      "target_port": "data"
+    },
+    {
+      "id": "entrenar-model-evaluar_red-model",
+      "source": "entrenar",
+      "source_port": "model",
+      "target": "evaluar_red",
+      "target_port": "model"
+    },
+    {
+      "id": "particion-test-evaluar_red-data",
+      "source": "particion",
+      "source_port": "test",
+      "target": "evaluar_red",
+      "target_port": "data"
+    },
+    {
+      "id": "particion-train-mco-data",
+      "source": "particion",
+      "source_port": "train",
+      "target": "mco",
+      "target_port": "data"
+    },
+    {
+      "id": "mco-model-evaluar_mco-model",
+      "source": "mco",
+      "source_port": "model",
+      "target": "evaluar_mco",
+      "target_port": "model"
+    },
+    {
+      "id": "particion-test-evaluar_mco-data",
+      "source": "particion",
+      "source_port": "test",
+      "target": "evaluar_mco",
+      "target_port": "data"
+    },
+    {
+      "id": "evaluar_red-result-reporte-result",
+      "source": "evaluar_red",
+      "source_port": "result",
+      "target": "reporte",
+      "target_port": "result"
+    }
+  ],
+  "lesson": {
+    "module": "DL01",
+    "title": "Red multicapa capa por capa frente a MCO",
+    "objective": "Construir una red multicapa definiendo la capa de entrada, dos capas densas con un dropout intermedio y la capa de salida, y compararla con MCO fuera de muestra en una relación no lineal.",
+    "references": [
+      "B09",
+      "B13"
+    ],
+    "steps": [
+      {
+        "node_id": "datos",
+        "title": "1. Datos no lineales",
+        "instruction": "Genera y = sen(x) + ruido con x entre −3 y 3.",
+        "expected": "600 filas con x e y.",
+        "question": "¿Una recta puede capturar esta relación?"
+      },
+      {
+        "node_id": "particion",
+        "title": "2. Entrenamiento y prueba",
+        "instruction": "Separa 75 % para entrenar y 25 % para probar.",
+        "expected": "450 filas de entrenamiento y 150 de prueba.",
+        "question": "¿Por qué la prueba no se usa al entrenar?"
+      },
+      {
+        "node_id": "entrada",
+        "title": "3. Capa de entrada",
+        "instruction": "Define la capa de entrada: una neurona por variable (x), estandarizada con la media y DE del bloque de ajuste.",
+        "expected": "Arquitectura con 1 variable de entrada.",
+        "question": "¿Por qué conviene estandarizar las entradas?"
+      },
+      {
+        "node_id": "capa_1",
+        "title": "4. Capa oculta 1",
+        "instruction": "Añade una capa densa de 32 neuronas ReLU: calcula max(0, W·x + b).",
+        "expected": "64 parámetros (32 pesos + 32 sesgos).",
+        "question": "¿Qué aporta la no linealidad de ReLU?"
+      },
+      {
+        "node_id": "dropout",
+        "title": "5. Dropout",
+        "instruction": "Añade un dropout de 10 %: al entrenar apaga al azar neuronas de la capa anterior.",
+        "expected": "Capa sin parámetros.",
+        "question": "¿Por qué el dropout reduce el sobreajuste?"
+      },
+      {
+        "node_id": "capa_2",
+        "title": "6. Capa oculta 2",
+        "instruction": "Añade una capa densa de 16 neuronas tanh.",
+        "expected": "32·16 + 16 = 528 parámetros.",
+        "question": "¿Qué cambia si usas ReLU en lugar de tanh?"
+      },
+      {
+        "node_id": "salida",
+        "title": "7. Capa de salida",
+        "instruction": "Cierra la red con una neurona lineal para y (regresión, error cuadrático).",
+        "expected": "Red completa con 609 parámetros.",
+        "question": "¿Qué activación usarías para una probabilidad?"
+      },
+      {
+        "node_id": "entrenar",
+        "title": "8. Entrenar",
+        "instruction": "Entrena con Adam, mini-lotes de 32, L2 y parada temprana sobre el 20 % final del entrenamiento.",
+        "expected": "Curvas de pérdida de ajuste y validación; se conservan los pesos de la mejor época.",
+        "question": "¿En qué época deja de mejorar la validación?"
+      },
+      {
+        "node_id": "evaluar_red",
+        "title": "9. Evaluar la red",
+        "instruction": "Evalúa la red en la muestra de prueba.",
+        "expected": "RMSE cercano al ruido (0,1).",
+        "question": "¿Se parece el RMSE de prueba al de validación?"
+      },
+      {
+        "node_id": "mco",
+        "title": "10. MCO de referencia",
+        "instruction": "Ajusta MCO con la misma muestra de entrenamiento.",
+        "expected": "Una recta: no capta la curvatura.",
+        "question": "¿Qué pendiente obtiene MCO?"
+      },
+      {
+        "node_id": "evaluar_mco",
+        "title": "11. Evaluar MCO",
+        "instruction": "Evalúa MCO en la misma prueba.",
+        "expected": "RMSE mucho mayor que el de la red.",
+        "question": "¿Cuánto mayor es su error?"
+      },
+      {
+        "node_id": "reporte",
+        "title": "12. Interpretar",
+        "instruction": "Compara ambos modelos con la evidencia de las salidas.",
+        "expected": "Conclusión con RMSE, arquitectura y curva de pérdida.",
+        "question": "¿Cuándo preferirías MCO aunque la red prediga mejor?"
+      }
+    ],
+    "missing_tools": [
+      "Capas convolucionales y recurrentes (CNN, LSTM)",
+      "Normalización por lotes",
+      "Búsqueda automática de arquitectura"
+    ]
+  }
+}

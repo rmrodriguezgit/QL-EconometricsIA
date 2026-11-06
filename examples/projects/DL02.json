@@ -1,0 +1,334 @@
+{
+  "schema_version": "1.0.0",
+  "app_version": "0.23.0",
+  "title": "DL02 · Red multicapa para clasificación frente a logit",
+  "nodes": [
+    {
+      "id": "datos",
+      "type": "synthetic",
+      "node_version": "1.0.0",
+      "parameters": {
+        "scenario": "logistic",
+        "n": 800,
+        "seed": 42
+      },
+      "position": {
+        "x": 0,
+        "y": 340
+      }
+    },
+    {
+      "id": "particion",
+      "type": "split",
+      "node_version": "1.0.0",
+      "parameters": {
+        "fraction": 0.75,
+        "method": "aleatorio",
+        "seed": 42
+      },
+      "position": {
+        "x": 320,
+        "y": 340
+      }
+    },
+    {
+      "id": "entrada",
+      "type": "nn_input",
+      "node_version": "1.0.0",
+      "parameters": {
+        "features": "x",
+        "standardize": "si"
+      },
+      "position": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "id": "capa_1",
+      "type": "nn_layer",
+      "node_version": "1.0.0",
+      "parameters": {
+        "layer_type": "densa",
+        "units": 8,
+        "activation": "relu",
+        "rate": 0.2
+      },
+      "position": {
+        "x": 320,
+        "y": 0
+      }
+    },
+    {
+      "id": "capa_2",
+      "type": "nn_layer",
+      "node_version": "1.0.0",
+      "parameters": {
+        "layer_type": "densa",
+        "units": 4,
+        "activation": "relu",
+        "rate": 0.2
+      },
+      "position": {
+        "x": 640,
+        "y": 0
+      }
+    },
+    {
+      "id": "salida",
+      "type": "nn_output",
+      "node_version": "1.0.0",
+      "parameters": {
+        "y": "clase",
+        "task": "clasificacion"
+      },
+      "position": {
+        "x": 960,
+        "y": 0
+      }
+    },
+    {
+      "id": "entrenar",
+      "type": "nn_train",
+      "node_version": "1.0.0",
+      "parameters": {
+        "epochs": 300,
+        "batch_size": 32,
+        "learning_rate": 0.01,
+        "optimizer": "adam",
+        "l2": 0.0001,
+        "validation": 0.2,
+        "patience": 30,
+        "seed": 42
+      },
+      "position": {
+        "x": 1280,
+        "y": 170
+      }
+    },
+    {
+      "id": "evaluar_red",
+      "type": "evaluate",
+      "node_version": "1.0.0",
+      "parameters": {},
+      "position": {
+        "x": 1600,
+        "y": 170
+      }
+    },
+    {
+      "id": "logit",
+      "type": "logit",
+      "node_version": "1.0.0",
+      "parameters": {
+        "features": "x",
+        "y": "clase",
+        "method": "logit"
+      },
+      "position": {
+        "x": 1280,
+        "y": 510
+      }
+    },
+    {
+      "id": "evaluar_logit",
+      "type": "evaluate",
+      "node_version": "1.0.0",
+      "parameters": {},
+      "position": {
+        "x": 1600,
+        "y": 510
+      }
+    },
+    {
+      "id": "reporte",
+      "type": "report",
+      "node_version": "1.0.0",
+      "parameters": {
+        "note": "Si el proceso generador es un logit, ¿gana algo la red? Compara la exactitud y el RMSE (error de Brier) de prueba de ambos modelos."
+      },
+      "position": {
+        "x": 1920,
+        "y": 170
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "datos-data-particion-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "particion",
+      "target_port": "data"
+    },
+    {
+      "id": "entrada-network-capa_1-network",
+      "source": "entrada",
+      "source_port": "network",
+      "target": "capa_1",
+      "target_port": "network"
+    },
+    {
+      "id": "capa_1-network-capa_2-network",
+      "source": "capa_1",
+      "source_port": "network",
+      "target": "capa_2",
+      "target_port": "network"
+    },
+    {
+      "id": "capa_2-network-salida-network",
+      "source": "capa_2",
+      "source_port": "network",
+      "target": "salida",
+      "target_port": "network"
+    },
+    {
+      "id": "salida-network-entrenar-network",
+      "source": "salida",
+      "source_port": "network",
+      "target": "entrenar",
+      "target_port": "network"
+    },
+    {
+      "id": "particion-train-entrenar-data",
+      "source": "particion",
+      "source_port": "train",
+      "target": "entrenar",
+      "target_port": "data"
+    },
+    {
+      "id": "entrenar-model-evaluar_red-model",
+      "source": "entrenar",
+      "source_port": "model",
+      "target": "evaluar_red",
+      "target_port": "model"
+    },
+    {
+      "id": "particion-test-evaluar_red-data",
+      "source": "particion",
+      "source_port": "test",
+      "target": "evaluar_red",
+      "target_port": "data"
+    },
+    {
+      "id": "particion-train-logit-data",
+      "source": "particion",
+      "source_port": "train",
+      "target": "logit",
+      "target_port": "data"
+    },
+    {
+      "id": "logit-model-evaluar_logit-model",
+      "source": "logit",
+      "source_port": "model",
+      "target": "evaluar_logit",
+      "target_port": "model"
+    },
+    {
+      "id": "particion-test-evaluar_logit-data",
+      "source": "particion",
+      "source_port": "test",
+      "target": "evaluar_logit",
+      "target_port": "data"
+    },
+    {
+      "id": "evaluar_red-result-reporte-result",
+      "source": "evaluar_red",
+      "source_port": "result",
+      "target": "reporte",
+      "target_port": "result"
+    }
+  ],
+  "lesson": {
+    "module": "DL02",
+    "title": "Red multicapa para clasificación frente a logit",
+    "objective": "Definir una red multicapa con salida sigmoide para una clase binaria y compararla con un logit cuando el verdadero modelo es logístico.",
+    "references": [
+      "B06",
+      "B09"
+    ],
+    "steps": [
+      {
+        "node_id": "datos",
+        "title": "1. Datos binarios",
+        "instruction": "Genera una clase 0/1 con P(clase = 1) = Λ(−0,4 + 1,2·x).",
+        "expected": "800 filas con x y clase.",
+        "question": "¿Qué forma tiene la probabilidad verdadera?"
+      },
+      {
+        "node_id": "particion",
+        "title": "2. Entrenamiento y prueba",
+        "instruction": "Separa 75 % y 25 %.",
+        "expected": "600 y 200 filas.",
+        "question": "¿Están equilibradas las clases?"
+      },
+      {
+        "node_id": "entrada",
+        "title": "3. Capa de entrada",
+        "instruction": "Una neurona por variable (x), estandarizada.",
+        "expected": "Arquitectura con 1 entrada.",
+        "question": "¿Qué pasaría sin estandarizar?"
+      },
+      {
+        "node_id": "capa_1",
+        "title": "4. Capa oculta 1",
+        "instruction": "Densa de 8 neuronas ReLU.",
+        "expected": "16 parámetros.",
+        "question": "¿Hace falta tanta capacidad para un logit?"
+      },
+      {
+        "node_id": "capa_2",
+        "title": "5. Capa oculta 2",
+        "instruction": "Densa de 4 neuronas ReLU.",
+        "expected": "36 parámetros.",
+        "question": "¿Qué riesgo trae añadir capas?"
+      },
+      {
+        "node_id": "salida",
+        "title": "6. Capa de salida",
+        "instruction": "Una neurona sigmoide para la clase; pérdida de entropía cruzada.",
+        "expected": "Salida entre 0 y 1.",
+        "question": "¿Por qué sigmoide y no lineal?"
+      },
+      {
+        "node_id": "entrenar",
+        "title": "7. Entrenar",
+        "instruction": "Adam con parada temprana.",
+        "expected": "Exactitud de ajuste y validación.",
+        "question": "¿Se separan las curvas de pérdida?"
+      },
+      {
+        "node_id": "evaluar_red",
+        "title": "8. Evaluar la red",
+        "instruction": "Evalúa la probabilidad predicha en la prueba.",
+        "expected": "RMSE (error de Brier) de prueba.",
+        "question": "¿Qué significa un RMSE de una probabilidad?"
+      },
+      {
+        "node_id": "logit",
+        "title": "9. Logit",
+        "instruction": "Ajusta el logit con la misma muestra.",
+        "expected": "Coeficientes cercanos a −0,4 y 1,2.",
+        "question": "¿Recupera los parámetros verdaderos?"
+      },
+      {
+        "node_id": "evaluar_logit",
+        "title": "10. Evaluar el logit",
+        "instruction": "Evalúa el logit en la misma prueba.",
+        "expected": "Exactitud y error parecidos a los de la red.",
+        "question": "¿Cuál es más interpretable?"
+      },
+      {
+        "node_id": "reporte",
+        "title": "11. Interpretar",
+        "instruction": "Concluye cuál modelo usar y por qué.",
+        "expected": "Conclusión que compara desempeño e interpretabilidad.",
+        "question": "¿Cuándo sí valdría la pena la red?"
+      }
+    ],
+    "missing_tools": [
+      "Clasificación multiclase (softmax)",
+      "Curva ROC y AUC"
+    ]
+  }
+}

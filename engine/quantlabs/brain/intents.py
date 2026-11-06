@@ -76,6 +76,8 @@ INTENTS = [
     (r'k-?means|conglomerad|(?<!errores )(?<!estandar )(?<!por )cluster(?!ed| robust| por)|(?<!errores )(?<!estandar )agrupa(?!dos? por)', 'kmeans', 3, None),
     (r'numero de (grupos|clusters)|codo|elegir k', 'cluster_selection', 3,
      {'name': 'Selección del número de grupos', 'module': 'C25', 'inputs': {'data': 'Dataset'}, 'outputs': {'result': 'Result'}}),
+    (r'aprendizaje por refuerzo|reinforcement learning|q-?learning|\bsarsa\b|\brl\b|agente de trading', 'rl_agent', 3, None),
+    (r'deep learning|aprendizaje profundo|red(es)? (neuronal(es)? )?(profunda|multicapa)|capas? (ocultas?|intermedias?)|capa de entrada', 'nn_train', 3, None),
     (r'red(es)? neuronal|\bmlp\b|perceptron', 'mlp', 3, None),
     (r'componentes principales|\bpca\b|\bacp\b|reduccion de (la )?dimension', 'pca', 3, None),
     (r'correlacion severa|multicolinealidad|colinealidad|valores propios|eigen', 'eigen_correlation', 4, None),
@@ -115,7 +117,7 @@ SCENARIO_FOR = {
     'pca': 'factors', 'factor_analysis': 'factors', 'sem': 'sem', 'iv2sls': 'endogenous', 'polynomial': 'polynomial',
     'robust': 'outliers', 'quantile': 'hetero', 'diagnostics': 'hetero', 'covariance': 'hetero', 'wls': 'hetero',
     'paired_test': 'pairs', 'hmm': 'regimes', 'gmm': 'regimes', 'deflate': 'prices', 'per_capita': 'prices',
-    'log': 'cobb', 'compound': 'inflation', 'monte_carlo': 'inflation', 'signal': 'returns', 'mlp': 'nonlinear',
+    'log': 'cobb', 'compound': 'inflation', 'monte_carlo': 'inflation', 'signal': 'returns', 'mlp': 'nonlinear', 'nn_train': 'nonlinear', 'rl_agent': 'returns',
     'mean_ci': 'normal', 'histogram': 'normal', 'normality': 'normal', 'growth': 'positive', 'time_plot': 'positive',
     'regularized': 'multiple', 'chow': 'regression', 'prediction_interval': 'regression', 'multiple_testing': 'factors',
     'seasonal_decompose': 'seasonal', 'sarima': 'seasonal', 'dummies': 'multiple', 'boxplot': 'outliers',
@@ -394,6 +396,9 @@ def detect_tools(text):
             continue
         if kind == 'arima' and 'sarima' in seen and 'sarima' in NODE_CATALOG:
             continue
+        # La red multicapa capa por capa sustituye a la red neuronal simple.
+        if kind == 'mlp' and 'nn_train' in seen:
+            continue
         # Las versiones de varias variables sustituyen a la de una sola.
         if (kind == 'boxplot' and 'boxplots' in seen) or (kind == 'describe' and 'describe_table' in seen):
             continue
@@ -420,6 +425,25 @@ def scenario_for(kinds):
         if kind in SCENARIO_FOR:
             return SCENARIO_FOR[kind]
     return 'regression'
+
+
+def network_steps(folded):
+    """Red multicapa como cadena capa de entrada → capas intermedias → capa de salida → entrenamiento.
+    Neuronas de «capas de 64 y 32» o «64-32-16»; si no se indican, dos capas densas ReLU de 32 y 16."""
+    found = re.search(r'(\d{1,3}(?:\s*(?:-|,|y|x)\s*\d{1,3})+)', folded)
+    units = [int(n) for n in re.findall(r'\d{1,3}', found.group(1))] if found and re.search(r'capa|neurona|red|-', folded) else []
+    units = [n for n in units if 1 <= n <= 512][:6] or [32, 16]
+    activation = 'tanh' if 'tanh' in folded else 'sigmoide' if 'sigmoide' in folded else 'relu'
+    task = 'clasificacion' if re.search(r'clasific|binari|probabilidad de', folded) else 'regresion'
+    steps = [{'id': 'entrada', 'tool': 'nn_input', 'parameters': {}, 'why': NODE_CATALOG['nn_input']['explanation']}]
+    for i, n in enumerate(units, 1):
+        steps.append({'id': f'capa_{i}', 'tool': 'nn_layer', 'parameters': {'layer_type': 'densa', 'units': n, 'activation': activation},
+                      'why': f'Capa intermedia {i}: {n} neuronas con activación {activation}.'})
+    if re.search(r'dropout', folded):
+        steps.append({'id': 'dropout', 'tool': 'nn_layer', 'parameters': {'layer_type': 'dropout', 'rate': .2}, 'why': 'Dropout de 20 % para regularizar.'})
+    steps.append({'id': 'salida', 'tool': 'nn_output', 'parameters': {'task': task}, 'why': NODE_CATALOG['nn_output']['explanation']})
+    steps.append({'id': 'entrenar', 'tool': 'nn_train', 'parameters': {}, 'why': NODE_CATALOG['nn_train']['explanation']})
+    return steps
 
 
 def rules_plan(prompt, retrieved_tools=()):
@@ -450,6 +474,9 @@ def rules_plan(prompt, retrieved_tools=()):
     if source == 'yfinance' and re.search(r'\bbeta\b|\bcapm\b|frente al? (indice|mercado)', fold(prompt)) and 'ols' not in kinds and 'multiple_ols' not in kinds:
         kinds.append('ols')  # beta = pendiente del rendimiento del activo sobre el del índice
     for kind in kinds:
+        if kind == 'nn_train':
+            steps.extend(network_steps(fold(prompt)))
+            continue
         params = hints(kind, fold(prompt))
         if source == 'yfinance' and kind in ('ols', 'scatter'):
             from ..yfinance_source import INDICES, suggest_alias

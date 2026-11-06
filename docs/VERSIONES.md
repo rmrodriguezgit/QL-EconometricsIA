@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.22.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.23.0**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -269,3 +269,11 @@ Decisiones:
 - **Cierres ajustados** (`auto_adjust=True`). Las fechas se alinean con `dropna(how='any')`: bolsas con feriados distintos pierden esas fechas, y la procedencia lo informa.
 - La tabla de comparación usa siempre rendimientos simples de la muestra alineada, sin importar los valores entregados. La beta es cov/var con n−1; coincide con la pendiente del MCO del activo sobre el índice en la misma muestra.
 - Caché en memoria de 1 h por proceso.
+
+## Deep learning y RL 0.23.0
+
+Sin dependencias nuevas. La red multicapa y el agente de refuerzo están escritos en numpy 2.5.4 en lugar de PyTorch (no instalado; añadiría cientos de MB al motor). Decisiones:
+
+- **Diseño por capas** tomado de Quantlabs-Blueprints (`Network Input → Network Layer → … → Network Output → entrenador`), con un puerto `Network` que transporta la especificación (JSON) y no pesos; los pesos solo existen en el `FittedModel` del entrenador.
+- **Verificación**: los gradientes de la retropropagación se comparan con diferencias finitas en las pruebas (tolerancia relativa 1e-4). La validación es la última fracción de filas para no mezclar el orden temporal.
+- **Fuera de alcance** por ahora: capas convolucionales, recurrentes (LSTM/GRU), normalización por lotes, softmax multiclase y DQN con redes; el agente de refuerzo es tabular.

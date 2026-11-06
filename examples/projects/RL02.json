@@ -1,0 +1,109 @@
+{
+  "schema_version": "1.0.0",
+  "app_version": "0.23.0",
+  "title": "RL02 · Aprendizaje por refuerzo sin nada que aprender",
+  "nodes": [
+    {
+      "id": "datos",
+      "type": "synthetic",
+      "node_version": "1.0.0",
+      "parameters": {
+        "scenario": "returns",
+        "n": 1000,
+        "seed": 42
+      },
+      "position": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "id": "agente",
+      "type": "rl_agent",
+      "node_version": "1.0.0",
+      "parameters": {
+        "returns": "retorno",
+        "state": "retorno",
+        "unit": "decimal",
+        "method": "q_learning",
+        "bins": 3,
+        "episodes": 200,
+        "alpha": 0.1,
+        "gamma": 0.9,
+        "epsilon": 0.05,
+        "cost_bps": 5,
+        "fraction": 0.7,
+        "periods_per_year": 252,
+        "seed": 42
+      },
+      "position": {
+        "x": 320,
+        "y": 0
+      }
+    },
+    {
+      "id": "reporte",
+      "type": "report",
+      "node_version": "1.0.0",
+      "parameters": {
+        "note": "¿Por qué el agente se queda en efectivo si la media de los rendimientos es positiva? Usa los valores Q, el rendimiento de comprar y mantener y el efecto de los costos."
+      },
+      "position": {
+        "x": 640,
+        "y": 0
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "datos-data-agente-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "agente",
+      "target_port": "data"
+    },
+    {
+      "id": "agente-result-reporte-result",
+      "source": "agente",
+      "source_port": "result",
+      "target": "reporte",
+      "target_port": "result"
+    }
+  ],
+  "lesson": {
+    "module": "RL02",
+    "title": "Aprendizaje por refuerzo sin nada que aprender",
+    "objective": "Entrenar el mismo agente sobre rendimientos de ruido puro y ver qué política aprende cuando no hay predictibilidad.",
+    "references": [
+      "B27",
+      "B24"
+    ],
+    "steps": [
+      {
+        "node_id": "datos",
+        "title": "1. Ruido",
+        "instruction": "Genera rendimientos diarios independientes (media 0,03 %, DE 1,2 %).",
+        "expected": "1000 rendimientos sin autocorrelación.",
+        "question": "¿Debería haber algo que aprender del rendimiento de hoy?"
+      },
+      {
+        "node_id": "agente",
+        "title": "2. Agente en el ruido",
+        "instruction": "Mismo agente Q-learning con 5 pb por cambio.",
+        "expected": "El agente aprende a quedarse en efectivo: ninguna acción tiene valor Q mayor que no operar. Deja pasar la deriva positiva que sí captura comprar y mantener.",
+        "question": "¿Por qué no aprende a quedarse largo? Prueba con costo 0 y más episodios."
+      },
+      {
+        "node_id": "reporte",
+        "title": "3. Interpretar",
+        "instruction": "Concluye sobre predictibilidad y aprendizaje por refuerzo.",
+        "expected": "Conclusión que distingue «no hay señal» de «el agente falló».",
+        "question": "¿Cómo distinguirías una señal real de suerte en el entrenamiento?"
+      }
+    ],
+    "missing_tools": [
+      "Pruebas de significancia del rendimiento de una estrategia",
+      "Validación con varias semillas"
+    ]
+  }
+}

@@ -4,7 +4,7 @@ import type {Project,Run} from './model';
 type Tool={label:string;inputs:Record<string,string>;outputs:Record<string,string>;detail?:string};
 export function nextTools(registry:Record<string,Tool>,sourceKind:string,port:string){
  const type=registry[sourceKind]?.outputs[port];if(!type)return [];
- const priority=type==='Dataset'?['describe','histogram','scatter','ols','multiple_ols','split','log']:type==='FittedModel'?['diagnostics','evaluate','covariance','compare_models']:type==='Transformer'?['apply_scaler']:['report'];
+ const priority=type==='Dataset'?['describe','histogram','scatter','ols','multiple_ols','split','log']:type==='FittedModel'?['diagnostics','evaluate','covariance','compare_models']:type==='Transformer'?['apply_scaler']:type==='Network'?['nn_layer','nn_output','nn_train']:['report'];
  return Object.entries(registry).flatMap(([kind,tool])=>{const input=Object.entries(tool.inputs).find(([,value])=>value===type);if(!input||(kind==='report'&&sourceKind==='report'))return [];return [{kind,label:tool.label,input:input[0],type,detail:tool.detail??'',remaining:Object.keys(tool.inputs).filter(key=>key!==input[0])}];}).sort((a,b)=>{const rank=(kind:string)=>priority.includes(kind)?priority.indexOf(kind):999;return rank(a.kind)-rank(b.kind)||a.label.localeCompare(b.label,'es');});
 }
 export function nodeSignature(project:Project,id:string){

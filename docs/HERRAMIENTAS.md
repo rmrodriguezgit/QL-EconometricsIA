@@ -273,3 +273,17 @@ Catálogo (0.21.1): 226 identificadores verificados el 2026-11-05 en 13 temas, c
 Parámetros: `series` («ID: alias» por línea; sin alias se usa el del catálogo o el ID en minúsculas), `start_date` y `end_date` (AAAA-MM-DD o año; vacía = hoy), `frequency` (`original`, `semanal`, `mensual`, `trimestral`, `anual`) y `aggregation` (`media`, `ultimo`, `suma`). Con `original` y series de distinta frecuencia las filas de una quedan vacías en las fechas de la otra; la procedencia lo advierte.
 
 Cambios en herramientas existentes: `time_order` acepta `periodo` con fechas ISO regulares, así que `lag`, `growth`, `difference`, `unit_root`, `cointegration`, `ecm`, `arima` y `backtest` funcionan con datos mensuales o trimestrales de FRED. Los datos diarios con huecos de fin de semana siguen rechazándose como calendario irregular, con la sugerencia de convertir la frecuencia. `growth` respeta `periods` (antes se ignoraba y siempre usaba 1). `series_plot` dibuja fechas ISO como año decimal y muestra en la tabla la primera y última fecha.
+
+## Deep learning capa por capa y aprendizaje por refuerzo (0.23.0)
+
+Registro actual: **96 tipos**. Módulo `engine/quantlabs/deep_tools.py`; pruebas en `tests/test_deep_tools.py`.
+
+| Tipo | Puertos | Método | Verificación | Límite declarado |
+|---|---|---|---|---|
+| `nn_input` | — → Network, Result | Capa de entrada: variables (columnas) y estandarización con media y DE del bloque de ajuste | Arquitectura y conteo de parámetros | Hasta 100 variables numéricas |
+| `nn_layer` | Network → Network, Result | Capa intermedia densa (1–512 neuronas; ReLU, Leaky ReLU, ELU, tanh, sigmoide, Swish o lineal) o dropout (0–0,9) | Cadena inválida rechazada; no modifica la red de origen | Hasta 12 capas; sin convolución, recurrencia ni normalización por lotes |
+| `nn_output` | Network → Network, Result | Capa de salida: respuesta y tarea (regresión lineal + MSE; clasificación sigmoide + entropía cruzada) | Respuesta distinta de las entradas | Solo una salida; clasificación binaria |
+| `nn_train` | Network + Dataset → FittedModel, Result | Retropropagación con Adam, RMSprop o SGD con momento, L2, dropout invertido, mini-lotes y parada temprana en la fracción final | Gradientes = diferencias finitas; R² > 0,9 en sen(x); mismas métricas con la misma semilla | Sin GPU; tamaño de la red limitado por el tiempo de CPU |
+| `rl_agent` | Dataset → Result, Dataset | Q-learning o SARSA tabular: estado = cuantiles de las variables de estado; acciones corto/efectivo/largo; recompensa = posición × rendimiento siguiente − costo | Con rendimientos alternos aprende «corto tras alza»; costos altos reducen los cambios | Tabular (≤ 5000 estados); un activo; sin DQN |
+
+Resultados de los ejemplos (ejecución del 2026-11-05, semilla 42): en DL01 la red 32-dropout-16 logra un RMSE de prueba de 0,106 frente a 0,374 de MCO (ruido verdadero 0,1; 93 épocas, mejor 63, 609 parámetros). En DL02, con un proceso logístico, red y logit empatan (RMSE de prueba 0,444 y 0,445). En RL01 el agente aprende corto en el tercil bajo y largo en el alto; en RL02, con ruido puro y 5 pb por cambio, se queda en efectivo en todos los estados.

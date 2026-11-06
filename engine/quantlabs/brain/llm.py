@@ -41,6 +41,7 @@ Reglas:
 2. El primer paso es una fuente de datos (synthetic, simulate, worldbank, worldbank_multi, wooldridge, fred, yfinance o csv; yfinance para precios o rendimientos de acciones, ETF, cripto o divisas de Yahoo Finance con un índice de comparación (index, p. ej. ^GSPC o ^MXX); worldbank_multi para dos o más indicadores con alias; fred para series de EE. UU. de la Reserva Federal de St. Louis: tasas del Tesoro, fondos federales, desempleo, IPC, PIB, recesiones). Si el enunciado no da datos, usa synthetic con el escenario adecuado.
 3. Las conexiones respetan tipos: una entrada Dataset recibe una salida Dataset, FittedModel recibe FittedModel, Result recibe Result.
    Usa "inputs" {puerto_entrada: id_paso_origen} solo si hay ambigüedad; si no, se conecta al último paso compatible.
+   Red multicapa (deep learning): nn_input (features) → uno o más nn_layer (layer_type densa con units y activation, o dropout) → nn_output (y, task) → nn_train, que recibe network y data; evaluate acepta su modelo. Aprendizaje por refuerzo: rl_agent (returns, state) sobre una tabla de rendimientos.
 4. Orden pedagógico: datos → transformaciones → exploración → modelo → diagnóstico → report.
 5. "parameters" solo con claves de la ficha de esa herramienta; usa nombres de columnas que produzca la fuente elegida.
 6. Si el enunciado pide un análisis que ninguna herramienta cubre, NO lo simules: descríbelo en "missing" con name, purpose, inputs y outputs tipados.

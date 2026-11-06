@@ -1002,6 +1002,127 @@
         "Efecto del tipo de cambio en emisoras con ingresos en dólares",
         "Calidad de datos: en Yahoo Finance AMXB.MX repite su precio en 6 meses (rendimiento 0; 2015-02, 2020-04 y cuatro meses de 2023). Revisa esas filas antes de interpretar su beta"
       ]
+    },
+    {
+      "id": "DL01",
+      "title": "Red multicapa capa por capa frente a MCO",
+      "topics": "Deep learning, capa de entrada, capas ocultas, activaciones, dropout, capa de salida, retropropagación, parada temprana, sobreajuste",
+      "references": [
+        "B09",
+        "B13"
+      ],
+      "phase": "P2",
+      "status": "executable",
+      "network": false,
+      "objective": "Construir una red multicapa definiendo la capa de entrada, dos capas densas con un dropout intermedio y la capa de salida, y compararla con MCO fuera de muestra en una relación no lineal.",
+      "question": "¿Cuánto mejora la red a MCO en la muestra de prueba? ¿Qué pasa al quitar capas, cambiar la activación o subir el dropout?",
+      "acceptance": "El estudiante explica cada capa, lee la curva de pérdida y compara el RMSE de prueba de la red y de MCO",
+      "scope": "Recorrido aplicado con datos sintéticos y herramientas reutilizables (sin conexión). No sustituye los módulos C01–C28.",
+      "tools": [
+        "evaluate",
+        "multiple_ols",
+        "nn_input",
+        "nn_layer",
+        "nn_output",
+        "nn_train",
+        "report",
+        "split",
+        "synthetic"
+      ],
+      "steps": 12,
+      "format": "connected",
+      "missing_tools": [
+        "Capas convolucionales y recurrentes (CNN, LSTM)",
+        "Normalización por lotes",
+        "Búsqueda automática de arquitectura"
+      ]
+    },
+    {
+      "id": "DL02",
+      "title": "Red multicapa para clasificación frente a logit",
+      "topics": "Deep learning, clasificación binaria, sigmoide, entropía cruzada, logit",
+      "references": [
+        "B06",
+        "B09"
+      ],
+      "phase": "P2",
+      "status": "executable",
+      "network": false,
+      "objective": "Definir una red multicapa con salida sigmoide para una clase binaria y compararla con un logit cuando el verdadero modelo es logístico.",
+      "question": "Si el proceso generador es un logit, ¿gana algo la red? ¿Qué indica sobre la complejidad necesaria?",
+      "acceptance": "El estudiante compara exactitud y error de prueba y justifica cuándo una red no aporta frente a un modelo más simple",
+      "scope": "Recorrido aplicado con datos sintéticos y herramientas reutilizables (sin conexión). No sustituye los módulos C01–C28.",
+      "tools": [
+        "evaluate",
+        "logit",
+        "nn_input",
+        "nn_layer",
+        "nn_output",
+        "nn_train",
+        "report",
+        "split",
+        "synthetic"
+      ],
+      "steps": 11,
+      "format": "connected",
+      "missing_tools": [
+        "Clasificación multiclase (softmax)",
+        "Curva ROC y AUC"
+      ]
+    },
+    {
+      "id": "RL01",
+      "title": "Aprendizaje por refuerzo: un agente que opera un activo",
+      "topics": "Aprendizaje por refuerzo, Q-learning, SARSA, estados, acciones, recompensa, costos de transacción, política",
+      "references": [
+        "B27",
+        "B24"
+      ],
+      "phase": "P2",
+      "status": "executable",
+      "network": false,
+      "objective": "Entrenar agentes con acciones corto/efectivo/largo sobre una serie con regímenes persistentes y comparar Q-learning, SARSA y el efecto de costos altos fuera de muestra frente a comprar y mantener.",
+      "question": "¿Qué política aprende el agente y por qué funciona aquí? ¿Cómo cambian las decisiones con costos de 200 pb?",
+      "acceptance": "El estudiante lee la política (valores Q), compara entrenamiento y prueba y explica el papel de los costos",
+      "scope": "Recorrido aplicado con datos sintéticos y herramientas reutilizables (sin conexión). No sustituye los módulos C01–C28.",
+      "tools": [
+        "report",
+        "rl_agent",
+        "synthetic"
+      ],
+      "steps": 5,
+      "format": "connected",
+      "missing_tools": [
+        "Agentes con redes (DQN) y estados continuos",
+        "Múltiples activos y tamaño de posición continuo"
+      ]
+    },
+    {
+      "id": "RL02",
+      "title": "Aprendizaje por refuerzo sin nada que aprender",
+      "topics": "Aprendizaje por refuerzo, Q-learning, ruido, costos, comprar y mantener",
+      "references": [
+        "B27",
+        "B24"
+      ],
+      "phase": "P2",
+      "status": "executable",
+      "network": false,
+      "objective": "Entrenar el mismo agente sobre rendimientos de ruido puro y ver qué política aprende cuando no hay predictibilidad.",
+      "question": "¿Por qué el agente se queda en efectivo si la media de los rendimientos es positiva? ¿Qué cambia sin costos?",
+      "acceptance": "El estudiante explica la política de efectivo con los valores Q y la compara con comprar y mantener",
+      "scope": "Recorrido aplicado con datos sintéticos y herramientas reutilizables (sin conexión). No sustituye los módulos C01–C28.",
+      "tools": [
+        "report",
+        "rl_agent",
+        "synthetic"
+      ],
+      "steps": 3,
+      "format": "connected",
+      "missing_tools": [
+        "Pruebas de significancia del rendimiento de una estrategia",
+        "Validación con varias semillas"
+      ]
     }
   ]
 }

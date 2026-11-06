@@ -14,16 +14,16 @@ from .knowledge import EXCLUDED_TOOLS, fold
 SOURCES = {kind for kind, definition in NODE_CATALOG.items()
            if not definition['inputs'] and definition['outputs'].get('data') == 'Dataset'}
 SINGLE_COLUMNS = {'x', 'y', 'column', 'value', 'nominal', 'index', 'population', 'returns', 'signal', 'before', 'after', 'error', 'time', 'group', 'entity', 'first', 'second'}
-MULTI_COLUMNS = {'columns', 'features', 'instruments'}
+MULTI_COLUMNS = {'columns', 'features', 'instruments', 'state'}
 TARGET_NAMES = ['y', 'consumo', 'clase', 'produccion', 'valor', 'ventas', 'retorno', 'despues', 'lwage', 'wage', 'precio']
-MAX_STEPS = 12
+MAX_STEPS = 16  # una red multicapa ocupa entrada + capas + salida + entrenamiento
 LINEAR = {'ols', 'multiple_ols', 'ecm', 'covariance'}
 # Qué nodos productores de FittedModel acepta cada consumidor (según tools.py y normality_tools.py).
 MODEL_ACCEPTS = {
     'diagnostics': LINEAR | {'garch', 'egarch', 'stepwise'}, 'residual_normality': {'ols', 'multiple_ols', 'robust', 'covariance', 'stepwise'},
     'marginal_effects': {'logit', 'ols', 'multiple_ols', 'covariance', 'robust', 'wls', 'stepwise'},
-    'silhouette': {'kmeans'}, 'evaluate': {'ols', 'multiple_ols', 'robust', 'iv2sls', 'logit', 'ecm', 'covariance', 'wls', 'mlp', 'arima', 'hmm', 'gmm', 'stepwise'},
-    'compare_models': {'ols', 'multiple_ols', 'robust', 'iv2sls', 'logit', 'ecm', 'covariance', 'wls', 'mlp', 'arima', 'stepwise'},
+    'silhouette': {'kmeans'}, 'evaluate': {'ols', 'multiple_ols', 'robust', 'iv2sls', 'logit', 'ecm', 'covariance', 'wls', 'mlp', 'nn_train', 'arima', 'hmm', 'gmm', 'stepwise'},
+    'compare_models': {'ols', 'multiple_ols', 'robust', 'iv2sls', 'logit', 'ecm', 'covariance', 'wls', 'mlp', 'nn_train', 'arima', 'stepwise'},
     'covariance': LINEAR | {'stepwise'},
     'cross_validation': {'ols', 'multiple_ols', 'covariance', 'wls', 'robust', 'stepwise', 'sklearn_linear', 'hyperparameter_search'},
     'residual_analysis': {'ols', 'multiple_ols', 'covariance', 'wls', 'robust', 'stepwise', 'sklearn_linear', 'hyperparameter_search'},

@@ -530,7 +530,9 @@ def run_tool(kind,inputs,params):
         try:
             from .gap_tools import GAP_TOOLS, run_gap_tool
             from .multivariate_tools import MULTIVARIATE_TOOLS, run_multivariate_tool
-            if kind in MULTIVARIATE_TOOLS: result,outputs=run_multivariate_tool(kind,inputs,params)
+            from .deep_tools import DEEP_TOOLS, run_deep_tool
+            if kind in DEEP_TOOLS: result,outputs=run_deep_tool(kind,inputs,params)
+            elif kind in MULTIVARIATE_TOOLS: result,outputs=run_multivariate_tool(kind,inputs,params)
             else: result,outputs=run_gap_tool(kind,inputs,params) if kind in GAP_TOOLS else calculate(kind,inputs,params)
         except EngineError: raise
         except (ValueError,np.linalg.LinAlgError) as error:

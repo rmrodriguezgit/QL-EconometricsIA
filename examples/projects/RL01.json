@@ -1,0 +1,185 @@
+{
+  "schema_version": "1.0.0",
+  "app_version": "0.23.0",
+  "title": "RL01 · Aprendizaje por refuerzo: un agente que opera un activo",
+  "nodes": [
+    {
+      "id": "datos",
+      "type": "synthetic",
+      "node_version": "1.0.0",
+      "parameters": {
+        "scenario": "regimes",
+        "n": 1000,
+        "seed": 42
+      },
+      "position": {
+        "x": 0,
+        "y": 170
+      }
+    },
+    {
+      "id": "agente",
+      "type": "rl_agent",
+      "node_version": "1.0.0",
+      "parameters": {
+        "returns": "valor",
+        "state": "valor",
+        "unit": "porcentaje",
+        "method": "q_learning",
+        "bins": 3,
+        "episodes": 200,
+        "alpha": 0.1,
+        "gamma": 0.9,
+        "epsilon": 0.05,
+        "cost_bps": 5,
+        "fraction": 0.7,
+        "periods_per_year": 252,
+        "seed": 42
+      },
+      "position": {
+        "x": 320,
+        "y": 0
+      }
+    },
+    {
+      "id": "agente_sarsa",
+      "type": "rl_agent",
+      "node_version": "1.0.0",
+      "parameters": {
+        "returns": "valor",
+        "state": "valor",
+        "unit": "porcentaje",
+        "method": "sarsa",
+        "bins": 3,
+        "episodes": 200,
+        "alpha": 0.1,
+        "gamma": 0.9,
+        "epsilon": 0.05,
+        "cost_bps": 5,
+        "fraction": 0.7,
+        "periods_per_year": 252,
+        "seed": 42
+      },
+      "position": {
+        "x": 320,
+        "y": 170
+      }
+    },
+    {
+      "id": "agente_costoso",
+      "type": "rl_agent",
+      "node_version": "1.0.0",
+      "parameters": {
+        "returns": "valor",
+        "state": "valor",
+        "unit": "porcentaje",
+        "method": "q_learning",
+        "bins": 3,
+        "episodes": 200,
+        "alpha": 0.1,
+        "gamma": 0.9,
+        "epsilon": 0.05,
+        "cost_bps": 200,
+        "fraction": 0.7,
+        "periods_per_year": 252,
+        "seed": 42
+      },
+      "position": {
+        "x": 320,
+        "y": 340
+      }
+    },
+    {
+      "id": "reporte",
+      "type": "report",
+      "node_version": "1.0.0",
+      "parameters": {
+        "note": "¿Qué política aprende el agente y por qué funciona en esta serie? Compara Q-learning, SARSA y el agente con costos de 200 pb usando la política (valores Q), el rendimiento de prueba frente a comprar y mantener y los cambios de posición."
+      },
+      "position": {
+        "x": 640,
+        "y": 0
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "datos-data-agente-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "agente",
+      "target_port": "data"
+    },
+    {
+      "id": "datos-data-agente_sarsa-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "agente_sarsa",
+      "target_port": "data"
+    },
+    {
+      "id": "datos-data-agente_costoso-data",
+      "source": "datos",
+      "source_port": "data",
+      "target": "agente_costoso",
+      "target_port": "data"
+    },
+    {
+      "id": "agente-result-reporte-result",
+      "source": "agente",
+      "source_port": "result",
+      "target": "reporte",
+      "target_port": "result"
+    }
+  ],
+  "lesson": {
+    "module": "RL01",
+    "title": "Aprendizaje por refuerzo: un agente que opera un activo",
+    "objective": "Entrenar agentes con acciones corto/efectivo/largo sobre una serie con regímenes persistentes y comparar Q-learning, SARSA y el efecto de costos altos fuera de muestra frente a comprar y mantener.",
+    "references": [
+      "B27",
+      "B24"
+    ],
+    "steps": [
+      {
+        "node_id": "datos",
+        "title": "1. Serie con regímenes",
+        "instruction": "Genera una serie con dos regímenes persistentes (media −2 o +2, cambian con probabilidad 4 %). Se trata como rendimiento en %: es exagerada a propósito para que haya algo que aprender.",
+        "expected": "1000 filas con valor y estado_real.",
+        "question": "¿Qué tan persistente es cada régimen?"
+      },
+      {
+        "node_id": "agente",
+        "title": "2. Agente Q-learning",
+        "instruction": "Estado = tramo (terciles) del valor de hoy; acción = corto, efectivo o largo; recompensa = posición × rendimiento de mañana − 5 pb por cambio. Entrena 200 episodios con ε decreciente en el 70 % inicial y evalúa la política codiciosa en el 30 % final.",
+        "expected": "Política: corto en el tramo bajo, largo en el alto; gana con claridad a comprar y mantener en la prueba.",
+        "question": "¿Coincide la política con lo que harías tú? ¿Por qué el tramo del medio es el más dudoso?"
+      },
+      {
+        "node_id": "agente_sarsa",
+        "title": "3. Agente SARSA",
+        "instruction": "Mismo problema con SARSA, que aprende el valor de la política que explora en lugar del de la mejor acción.",
+        "expected": "En esta serie aprende la misma política que Q-learning.",
+        "question": "¿En qué se diferencia el objetivo de Q-learning y el de SARSA?"
+      },
+      {
+        "node_id": "agente_costoso",
+        "title": "4. Costos altos",
+        "instruction": "Repite con 200 pb por cambio de posición.",
+        "expected": "La misma política y los mismos cambios de posición (los regímenes de ±2 % pesan más que el costo), pero un rendimiento neto mucho menor.",
+        "question": "¿A partir de qué costo dejaría de convenir cambiar de posición? Sube cost_bps hasta que la política cambie."
+      },
+      {
+        "node_id": "reporte",
+        "title": "5. Interpretar",
+        "instruction": "Compara los tres agentes con la evidencia de las tablas y curvas de capital.",
+        "expected": "Conclusión sobre política, algoritmo y costos.",
+        "question": "¿Qué pedirías antes de usar un agente así con datos reales?"
+      }
+    ],
+    "missing_tools": [
+      "Agentes con redes (DQN) y estados continuos",
+      "Múltiples activos y tamaño de posición continuo"
+    ]
+  }
+}

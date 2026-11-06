@@ -41,6 +41,19 @@ Cada proyecto incluye lesson: objetivo, referencias, pasos, instrucciones, resul
 
 El catálogo conserva todos los temas de cada módulo como guía curricular, pero estos recorridos no completan cada sección de los libros. Los métodos y herramientas todavía pendientes están enumerados en [HERRAMIENTAS.md](HERRAMIENTAS.md). La definición del catálogo se guarda en [catalog.json](../examples/catalog.json). Los archivos personales 0.3.0 con experiment siguen admitidos como compatibilidad; el catálogo nuevo no los utiliza.
 
+## Deep learning y RL: DL01, DL02, RL01, RL02 (0.23.0)
+
+Sin conexión (datos sintéticos, semilla 42); la suite los ejecuta completos.
+
+| Ejemplo | Flujo | Resultado (2026-11-05) |
+|---|---|---|
+| DL01 · Red multicapa frente a MCO | `synthetic` (sen x) → `split` → `nn_input` → `nn_layer` densa 32 ReLU → dropout 10 % → densa 16 tanh → `nn_output` → `nn_train` → `evaluate`; `multiple_ols` → `evaluate` | RMSE de prueba 0,106 (red) frente a 0,374 (MCO) |
+| DL02 · Clasificación frente a logit | `synthetic` (logístico) → red 8-4 ReLU con salida sigmoide; `logit` | RMSE de prueba 0,444 (red) y 0,445 (logit); exactitud del logit 0,705: la red no aporta si el modelo verdadero es logit |
+| RL01 · Agente con regímenes | `synthetic` (regímenes) → Q-learning, SARSA y Q-learning con 200 pb | Los tres aprenden corto en el tercil bajo y largo en el alto; con 200 pb la política no cambia pero el rendimiento neto cae |
+| RL02 · Agente sobre ruido | `synthetic` (rendimientos i.i.d.) → Q-learning | Se queda en efectivo en todos los estados; comprar y mantener gana 27 % en la prueba |
+
+La serie de regímenes de RL01 es exagerada a propósito (±2 % por período): sus rendimientos no son realistas y sirven solo para ver qué aprende el agente cuando sí hay señal.
+
 ## Recorridos aplicados con Yahoo Finance Y01–Y02 (0.22.0)
 
 Requieren conexión; uso educativo, no asesoría financiera. Cada uno descarga los rendimientos mensuales 2015–2024 (nodo `datos`), los grafica en paneles, calcula la correlación y estima el modelo de mercado activo = α + β·índice + ε con errores HC3 para cada activo, con diagnósticos y residuos del primero. La suite los ejecuta sin red con precios inyectados (`tests/test_yfinance_source.py`). Resultados de la ejecución real del 2026-11-05 (119 meses comunes, ninguna fecha descartada; Yahoo ajusta precios históricos al pagarse dividendos, así que pueden variar):

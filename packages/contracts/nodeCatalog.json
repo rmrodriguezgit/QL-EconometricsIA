@@ -1292,6 +1292,225 @@
     ],
     "scope": "multivariada"
   },
+  "nn_input": {
+    "label": "Capa de entrada",
+    "detail": "Define las variables que entran a la red multicapa",
+    "category": "Deep learning y RL",
+    "color": "purple",
+    "inputs": {},
+    "outputs": {
+      "network": "Network",
+      "result": "Result"
+    },
+    "defaults": {
+      "features": "x",
+      "standardize": "si"
+    },
+    "choices": {
+      "standardize": [
+        "si",
+        "no"
+      ]
+    },
+    "choice_labels": {
+      "standardize": {
+        "si": "Estandarizar con media y DE del bloque de ajuste",
+        "no": "Usar valores originales"
+      }
+    },
+    "explanation": "Primera capa de una red multicapa: una neurona por variable de entrada. Conecta su salida network a una capa intermedia; la red se construye capa por capa y se entrena al final.",
+    "references": [
+      "B09"
+    ],
+    "scope": "ambas"
+  },
+  "nn_layer": {
+    "label": "Capa intermedia",
+    "detail": "Añade una capa densa (neuronas y activación) o dropout",
+    "category": "Deep learning y RL",
+    "color": "purple",
+    "inputs": {
+      "network": "Network"
+    },
+    "outputs": {
+      "network": "Network",
+      "result": "Result"
+    },
+    "defaults": {
+      "layer_type": "densa",
+      "units": 16,
+      "activation": "relu",
+      "rate": 0.2
+    },
+    "choices": {
+      "layer_type": [
+        "densa",
+        "dropout"
+      ],
+      "activation": [
+        "relu",
+        "leaky_relu",
+        "elu",
+        "tanh",
+        "sigmoide",
+        "swish",
+        "lineal"
+      ]
+    },
+    "choice_labels": {
+      "layer_type": {
+        "densa": "Densa (totalmente conectada)",
+        "dropout": "Dropout (regularización)"
+      },
+      "activation": {
+        "relu": "ReLU",
+        "leaky_relu": "Leaky ReLU",
+        "elu": "ELU",
+        "tanh": "Tangente hiperbólica",
+        "sigmoide": "Sigmoide",
+        "swish": "Swish (SiLU)",
+        "lineal": "Lineal (identidad)"
+      }
+    },
+    "explanation": "Capa oculta: una densa calcula activación(W·x + b) con el número de neuronas elegido; un dropout apaga al azar una fracción de neuronas al entrenar. Encadena varias capas (hasta 12) entre la entrada y la salida.",
+    "references": [
+      "B09"
+    ],
+    "scope": "ambas"
+  },
+  "nn_output": {
+    "label": "Capa de salida",
+    "detail": "Cierra la red con la respuesta y el tipo de tarea",
+    "category": "Deep learning y RL",
+    "color": "purple",
+    "inputs": {
+      "network": "Network"
+    },
+    "outputs": {
+      "network": "Network",
+      "result": "Result"
+    },
+    "defaults": {
+      "y": "y",
+      "task": "regresion"
+    },
+    "choices": {
+      "task": [
+        "regresion",
+        "clasificacion"
+      ]
+    },
+    "choice_labels": {
+      "task": {
+        "regresion": "Regresión (neurona lineal, error cuadrático)",
+        "clasificacion": "Clasificación binaria (sigmoide, entropía cruzada)"
+      }
+    },
+    "explanation": "Última capa: una neurona para la respuesta. En regresión es lineal y se minimiza el error cuadrático medio; en clasificación binaria es sigmoide y se minimiza la entropía cruzada.",
+    "references": [
+      "B09",
+      "B06"
+    ],
+    "scope": "ambas"
+  },
+  "nn_train": {
+    "label": "Entrenar red multicapa",
+    "detail": "Entrena la red definida capa por capa con retropropagación",
+    "category": "Deep learning y RL",
+    "color": "purple",
+    "inputs": {
+      "network": "Network",
+      "data": "Dataset"
+    },
+    "outputs": {
+      "model": "FittedModel",
+      "result": "Result"
+    },
+    "defaults": {
+      "epochs": 300,
+      "batch_size": 32,
+      "learning_rate": 0.01,
+      "optimizer": "adam",
+      "l2": 0.0001,
+      "validation": 0.2,
+      "patience": 30,
+      "seed": 42
+    },
+    "choices": {
+      "optimizer": [
+        "adam",
+        "rmsprop",
+        "sgd"
+      ]
+    },
+    "choice_labels": {
+      "optimizer": {
+        "adam": "Adam",
+        "rmsprop": "RMSprop",
+        "sgd": "SGD con momento"
+      }
+    },
+    "explanation": "Retropropagación por mini-lotes con Adam, RMSprop o SGD y penalización L2. La última fracción de filas es validación: se detiene si no mejora (paciencia) y conserva los pesos de la mejor época. El modelo resultante se evalúa con «Evaluar» en datos de prueba.",
+    "references": [
+      "B09",
+      "B13"
+    ],
+    "scope": "ambas"
+  },
+  "rl_agent": {
+    "label": "Agente de refuerzo (Q-learning)",
+    "detail": "Aprende a operar un activo: corto, efectivo o largo",
+    "category": "Deep learning y RL",
+    "color": "purple",
+    "inputs": {
+      "data": "Dataset"
+    },
+    "outputs": {
+      "result": "Result",
+      "data": "Dataset"
+    },
+    "defaults": {
+      "returns": "retorno",
+      "state": "retorno",
+      "unit": "decimal",
+      "method": "q_learning",
+      "bins": 3,
+      "episodes": 200,
+      "alpha": 0.1,
+      "gamma": 0.9,
+      "epsilon": 0.05,
+      "cost_bps": 5,
+      "fraction": 0.7,
+      "periods_per_year": 252,
+      "seed": 42
+    },
+    "choices": {
+      "unit": [
+        "decimal",
+        "porcentaje"
+      ],
+      "method": [
+        "q_learning",
+        "sarsa"
+      ]
+    },
+    "choice_labels": {
+      "unit": {
+        "decimal": "Rendimientos en decimales (0.01 = 1 %)",
+        "porcentaje": "Rendimientos en % (1 = 1 %)"
+      },
+      "method": {
+        "q_learning": "Q-learning (fuera de política)",
+        "sarsa": "SARSA (en política)"
+      }
+    },
+    "explanation": "Aprendizaje por refuerzo tabular: el estado son los tramos (cuantiles) de las variables de estado, la acción es corto/efectivo/largo y la recompensa es posición × rendimiento siguiente menos el costo por cambiar de posición. Entrena con exploración ε decreciente en el bloque inicial y evalúa la política codiciosa fuera de muestra frente a comprar y mantener.",
+    "references": [
+      "B27",
+      "B24"
+    ],
+    "scope": "univariada"
+  },
   "diagnostics": {
     "label": "Diagnóstico del modelo",
     "detail": "Examina el modelo conectado: heterocedasticidad, autocorrelación e influencia; G",

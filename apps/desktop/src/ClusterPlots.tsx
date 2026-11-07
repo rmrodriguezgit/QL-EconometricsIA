@@ -1,4 +1,5 @@
 // Gráficos del modelo k-means: mapa de grupos con envolventes y centroides, silueta, elección de k y perfil de centroides.
+import { numberFormat } from './numberFormat';
 import type { ReactNode } from 'react';
 
 type Group = { group: number; n: number; share: number; sse: number; silhouette: number | null; negative: number; values: number[] };
@@ -11,7 +12,7 @@ export type ClusterPlotData = {
 
 const COLORS = ['#6cc9ac', '#79b4ef', '#ffd166', '#f4a3a9', '#b295ee', '#8adde4', '#f6a96b', '#c6d3e4', '#9be37a', '#e39bd6'];
 const color = (g: number) => COLORS[g % COLORS.length];
-const num = (v: number | null | undefined, digits = 2) => v === null || v === undefined || !Number.isFinite(v) ? '—' : new Intl.NumberFormat('es-MX', { maximumFractionDigits: digits }).format(v);
+const num = (v: number | null | undefined, digits = 2) => v === null || v === undefined || !Number.isFinite(v) ? '—' : numberFormat({ maximumFractionDigits: digits }).format(v);
 const W = 470, H = 320, L = 58, R = 16, T = 18, B = 46;
 
 function ticks(lo: number, hi: number, count = 5) { return Array.from({ length: count }, (_, i) => lo + (hi - lo) * i / (count - 1)); }

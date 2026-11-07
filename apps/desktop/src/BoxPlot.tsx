@@ -1,6 +1,7 @@
 export type BoxData={replacement?:{operator:string;threshold:number;mean:number;matched:number;observed:number};column:string;title:string;y_label:string;color:string;n:number;missing:number;q1:number;median:number;q3:number;iqr:number;lower_fence:number;upper_fence:number;whisker_low:number;whisker_high:number;minimum:number;maximum:number;outliers:number[];note:string};
+import { numberFormat } from './numberFormat';
 import {axisScale,useAxis} from './axisFormat';
-const format=(v:number)=>new Intl.NumberFormat('es-MX',{maximumSignificantDigits:6}).format(v);
+const format=(v:number)=>numberFormat({maximumSignificantDigits:6}).format(v);
 export default function BoxPlot({data}:{data:BoxData}){
  const pad=(data.maximum-data.minimum||Math.abs(data.median)||1)*.1,low=data.minimum-pad,high=data.maximum+pad,y=(value:number)=>280-(value-low)/(high-low)*230;
  const sy=axisScale([low,high],useAxis().y,format);

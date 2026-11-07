@@ -1,9 +1,10 @@
+import { numberFormat } from './numberFormat';
 import {Sigma} from 'lucide-react';
 import {catalog,type Project,type ProjectNode,type Run} from './model';
 import {regressionData,isRegression} from './regressions';
 import Scatter from './ScatterPlot';
 import OlsFitPlot,{type FitPlotData} from './OlsFitPlot';
-const format=(value:unknown,digits=3)=>typeof value==='number'?new Intl.NumberFormat('es-MX',{maximumFractionDigits:digits}).format(value):'—';
+const format=(value:unknown,digits=3)=>typeof value==='number'?numberFormat({maximumFractionDigits:digits}).format(value):'—';
 export default function RegressionPanel({project,node,run,onChoose,onEquation}:{project:Project;node?:ProjectNode;run:Run|null;onChoose:(id:string)=>void;onEquation:()=>void}){
  const models=project.nodes.filter(isRegression);const state=node&&run?.nodes[node.id];const data=regressionData(node,state);
  const simple=node?.type==='ols';

@@ -368,3 +368,11 @@ La aplicación y sus instaladores están pendientes de implementación. Los camb
 - Parámetros visibles con etiquetas: variable (selector de columnas; si queda vacía o en `retorno` y no existe, se usa la primera numérica y se avisa), ventana del pasado (hasta 250), tipo de posición (largo/fuera 1·0 o largo/corto 1·−1), umbral de la media pasada y nombre de la columna de señal.
 - La salida añade la media pasada (`<salida>_media_pasada`) y un resumen en Resultados: % de períodos en cada posición, cambios de posición y gráfico de la media pasada y la posición. El backtest acepta señales −1/0/1.
 - El mensaje de calendario irregular sugiere también el intervalo semanal o mensual de Yahoo Finance o «Cambiar frecuencia».
+
+## 0.27.2 - 2026-11-06
+
+- Las cifras de mil millones o más (|x| ≥ 10⁹) se escriben en notación científica con cuatro cifras significativas (`2.546 × 10¹³`) en tablas de datos, descriptivos, matrices de covarianza, reportes, coeficientes, ecuaciones y etiquetas de los gráficos. Afecta sobre todo a los indicadores del Banco Mundial en dólares o moneda local (PIB, consumo final, contribuciones sociales, comercio, población), que antes ocupaban 13 o más dígitos.
+- Formato común en `apps/desktop/src/numberFormat.ts`; las cifras menores conservan el formato propio de cada vista. Los valores muy pequeños de los reportes (< 10⁻⁴) usan la misma escritura (`1.23 × 10⁻⁵`).
+- Los ejes en modo «normal» siguen mostrando números completos; en modo automático conservan el factor ×10ⁿ del eje desde 10⁴.
+- La columna `periodo` con años enteros se muestra sin separador de miles en la vista previa de datos (`1972`, no `1,972`).
+- Solo cambia la presentación: los datos, las exportaciones y los cálculos del motor conservan los valores completos.

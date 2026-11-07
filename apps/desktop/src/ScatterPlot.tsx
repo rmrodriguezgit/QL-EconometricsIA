@@ -1,5 +1,6 @@
+import { numberFormat } from './numberFormat';
 import { axisScale, useAxis } from './axisFormat';
-const format = (v: unknown, digits = 3) => typeof v === 'number' ? new Intl.NumberFormat('es-MX', { maximumFractionDigits: digits }).format(v) : '—';
+const format = (v: unknown, digits = 3) => typeof v === 'number' ? numberFormat({ maximumFractionDigits: digits }).format(v) : '—';
 export default function Scatter({ result, model }: { result: Record<string, unknown>; model?: Record<string, unknown> }) {
   const points = result.points as [number, number][];
   const xs = points.map(p => p[0]), ys = points.map(p => p[1]);

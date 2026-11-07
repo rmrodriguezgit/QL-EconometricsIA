@@ -1,7 +1,8 @@
 type Bin={lower:number;upper:number;count:number};
 type Histogram={column:string;n:number;missing:number;bins:Bin[]};
+import { numberFormat } from './numberFormat';
 import {axisScale,scientificValue,useAxis} from './axisFormat';
-const format=(value:number)=>new Intl.NumberFormat('es-MX',{maximumSignificantDigits:5}).format(value);
+const format=(value:number)=>numberFormat({maximumSignificantDigits:5}).format(value);
 export default function HistogramPlot({data}:{data:Histogram}){
  if(!data.bins.length)return null;
  const min=data.bins[0].lower,max=data.bins.at(-1)!.upper,peak=Math.max(1,...data.bins.map(bin=>bin.count));

@@ -1,3 +1,4 @@
+import { numberFormat } from './numberFormat';
 import { useMemo, useState } from 'react';
 import { axisScale, useAxis } from './axisFormat';
 import { niceTicks, residualHistogram } from './olsFitGeometry';
@@ -5,7 +6,7 @@ import { niceTicks, residualHistogram } from './olsFitGeometry';
 export type FitPlotData = { x: string; y: string; points: [number, number, number, number, number][]; band: [number, number, number, number][]; sigma: number; sampled: boolean; n: number; shown: number; outliers: number; note: string };
 type Coefficient = { term: string; estimate: number };
 
-const format = (v: number, digits = 3) => Number.isFinite(v) ? new Intl.NumberFormat('es-MX', { maximumFractionDigits: digits }).format(v) : '—';
+const format = (v: number, digits = 3) => Number.isFinite(v) ? numberFormat({ maximumFractionDigits: digits }).format(v) : '—';
 const W = 660, LEFT = 66, RIGHT = 92, TOP = 14, FIT_H = 250, GAP = 34, RES_H = 130, BOTTOM = 40;
 const PLOT_W = W - LEFT - RIGHT, RES_TOP = TOP + FIT_H + GAP, H = RES_TOP + RES_H + BOTTOM;
 

@@ -1,10 +1,11 @@
+import { numberFormat } from './numberFormat';
 import { useEffect, useRef } from 'react';
 import { X, Sigma, CircleCheck } from 'lucide-react';
 import type { ProjectNode, NodeResult } from './model';
 import {regressionData,fittedEquation} from './regressions';
 
 function number(value: number) {
-  return new Intl.NumberFormat('es-MX', { maximumFractionDigits: 6 }).format(value);
+  return numberFormat({ maximumFractionDigits: 6 }).format(value);
 }
 
 function SimpleModelEquation({ node, result, onClose }: { node?: ProjectNode; result?: NodeResult; onClose: () => void }) {

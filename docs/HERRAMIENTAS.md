@@ -211,6 +211,8 @@ Parámetros de presentación `y_axis` y `x_axis` con tres opciones:
 | `cientifica` | Siempre ×10ⁿ, con n = orden de magnitud del mayor valor absoluto (sin factor si n = 0). Las marcas muestran la mantisa (`1.57`) y el factor aparece en el nombre del eje (`fin_cons (US$) (×10¹³)`). |
 | `normal` | Números completos (`15,866,800,000,000`). |
 
+Fuera de los ejes (0.27.2): tablas de datos, descriptivos, covarianzas, reportes, coeficientes, ecuaciones y etiquetas escriben en notación científica toda cifra con |x| ≥ 10⁹ (`1.587 × 10¹³`, cuatro cifras significativas; `numberFormat.ts`). Por debajo de mil millones cada vista mantiene su formato. Es solo presentación: exportaciones y cálculos usan el valor completo.
+
 | Nodo | Eje Y | Eje X |
 |---|---|---|
 | Serie temporal (`time_plot`), Boxplot (`boxplot`), Varias series (`series_plot`), Boxplots (`boxplots`) | ✓ | — (tiempo o categorías) |

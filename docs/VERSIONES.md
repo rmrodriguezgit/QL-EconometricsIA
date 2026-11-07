@@ -1,6 +1,6 @@
 # Versiones, entorno y decisiones
 
-Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.27.1**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
+Registro inicial: 2026-11-01, zona America/Mexico_City. Versión canónica del proyecto: archivo `VERSION` = **0.27.2**. Alpha local con dependencias frontend/Python instaladas y lockfiles. Electron local ejecutado en macOS; instaladores y Tauri compilado siguen pendientes. Las versiones objetivo son decisiones de diseño y no se presentan como las últimas disponibles.
 
 ## Entorno observado
 
@@ -301,3 +301,7 @@ Sin dependencias nuevas (scikit-learn: `silhouette_samples`, `calinski_harabasz_
 ## Señal de momentum con calendario bursátil 0.27.1
 
 Sin dependencias nuevas (`numpy.busday_count`). Decisión: la regla de 0.21 que rechaza datos diarios con huecos de fin de semana se mantiene para las herramientas de series de tiempo (rezagos, diferencias, raíz unitaria, ARIMA, cointegración), donde «un período» debe tener la misma duración; la señal de momentum y el backtest operan por sesión de mercado, así que aceptan días hábiles con feriados sueltos (`time_order(frame, trading=True)`).
+
+## Notación científica para cifras grandes 0.27.2
+
+Sin dependencias nuevas (`Intl.NumberFormat`). Decisión: el umbral es 10⁹ (mil millones), pedido para las series del Banco Mundial en moneda corriente; por debajo se mantiene el formato de cada vista para no cambiar porcentajes, tasas ni conteos. La mantisa usa hasta tres decimales (cuatro cifras significativas). Es solo presentación en la interfaz: el motor, las exportaciones y la interpretación (que ya abreviaba desde 10⁶ con `3g`) no cambian. Los ejes en modo «normal» escriben el número completo porque ese modo lo pide explícitamente.

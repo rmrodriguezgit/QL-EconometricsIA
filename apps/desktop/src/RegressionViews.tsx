@@ -1,10 +1,11 @@
 // Vistas del OLS múltiple: plano de regresión 3D giratorio y gráficos de variable añadida (Frisch–Waugh–Lovell).
+import { numberFormat } from './numberFormat';
 import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent, type KeyboardEvent } from 'react';
 import { axisScale, useAxis } from './axisFormat';
 import { planeGeometry, type Plane3DData, type PartialData } from './regressionGeometry';
 export type { Plane3DData, PartialData } from './regressionGeometry';
 
-const plain = (value: number) => new Intl.NumberFormat('es-MX', { maximumSignificantDigits: 3 }).format(value);
+const plain = (value: number) => numberFormat({ maximumSignificantDigits: 3 }).format(value);
 const pFormat = (p: number) => p < 1e-4 ? '< 0.0001' : p.toFixed(4);
 const VIEWS = { inicial: { yaw: -0.65, pitch: 0.42 }, x1: { yaw: 0, pitch: 0 }, x2: { yaw: -Math.PI / 2, pitch: 0 }, arriba: { yaw: 0, pitch: 1.5 } };
 

@@ -1,6 +1,7 @@
 export type TemporalPlot={color?:string;title:string;time:string;value:string;time_mode:string;x_label:string;y_label:string;n:number;missing:number;missing_time:number;gaps:number;points:{x:number;y:number|null;label:string}[];note:string};
+import { numberFormat } from './numberFormat';
 import {axisScale,useAxis} from './axisFormat';
-const format=(value:number)=>new Intl.NumberFormat('es-MX',{maximumFractionDigits:2}).format(value);
+const format=(value:number)=>numberFormat({maximumFractionDigits:2}).format(value);
 export default function TimePlot({data}:{data:TemporalPlot}){
  const observed=data.points.filter(point=>point.y!==null);if(!observed.length)return null;
  const xs=data.points.map(point=>point.x),ys=observed.map(point=>point.y!);const xmin=Math.min(...xs),xmax=Math.max(...xs),lo=Math.min(...ys),hi=Math.max(...ys),pad=(hi-lo||Math.abs(hi)||1)*.08,ymin=lo-pad,ymax=hi+pad;

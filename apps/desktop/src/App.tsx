@@ -1,3 +1,4 @@
+import { numberFormat } from './numberFormat';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ReactFlow, Background, Controls, Handle, Position, addEdge, applyNodeChanges, applyEdgeChanges, useUpdateNodeInternals, type Node, type NodeProps, type Connection, type ReactFlowInstance } from '@xyflow/react';
 import { ArrowRightLeft, ArrowDownToLine, ArrowUpFromLine, FolderOpen, Play, Plus, Search, FlaskConical, Database, ChartScatter, ChartNoAxesCombined, Sigma, BookOpen, ChevronRight, CircleCheck, RotateCcw, Undo2, Brain, Trash2, Unplug, Network, CircleAlert, Braces, LoaderCircle, Eye, EyeOff, X, Maximize2, Minimize2, Minus, Scan, Wrench } from 'lucide-react';
@@ -34,7 +35,7 @@ import { catalog, download, extraInputCount, nodeInputs, parseProject, rpc, star
 
 const stageLabels: Record<string,string> = { 'Transformaciones': 'TRANSFORMACIÓN', 'Exploración': 'EXPLORACIÓN', 'Modelos': 'ESTIMACIÓN', 'Diagnósticos': 'DIAGNÓSTICO', 'Salidas': 'SALIDA', 'Experimentos': 'EXPERIMENTO', 'Deep learning y RL': 'RED / RL' };
 const icons = Object.fromEntries(Object.entries(catalog).map(([kind,item])=>[kind,item.category==='Fuentes de datos'?Database:item.category==='Modelos'?ChartNoAxesCombined:item.category==='Exploración'?ChartScatter:item.category==='Experimentos'?BookOpen:Sigma])) as Record<Kind,typeof BookOpen>;
-const format = (v: unknown, digits = 3) => typeof v === 'number' ? new Intl.NumberFormat('es-MX', { maximumFractionDigits: digits }).format(v) : '—';
+const format = (v: unknown, digits = 3) => typeof v === 'number' ? numberFormat({ maximumFractionDigits: digits }).format(v) : '—';
 type CanvasNode = Node<{ kind: Kind; state?: NodeResult; index: number;visible:boolean;onVisibility:(id:string)=>void;onSuggest:(id:string,port:string,x:number,y:number)=>void;inputs:Record<string,string>;extra:number;onInputs:(id:string,delta:number)=>void }, 'econometric'>;
 
 function EconometricNode({ id, data, selected }: NodeProps<CanvasNode>) {

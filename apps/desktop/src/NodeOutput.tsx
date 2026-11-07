@@ -1,3 +1,4 @@
+import { numberFormat } from './numberFormat';
 import TimePlot,{type TemporalPlot} from './TimePlot';
 import BoxPlot,{type BoxData} from './BoxPlot';
 import NormalityPlots from './NormalityPlots';
@@ -10,10 +11,10 @@ import ClusterPlots,{type ClusterPlotData} from './ClusterPlots';
 import {RegressionPlane3D,AddedVariablePlots,type Plane3DData,type PartialData} from './RegressionViews';
 import Scatter from './ScatterPlot';
 import OlsFitPlot,{type FitPlotData} from './OlsFitPlot';
-const format=(value:unknown)=>typeof value==='number'?new Intl.NumberFormat('es-MX',{maximumFractionDigits:5}).format(value):value===null?'—':String(value);
+const format=(value:unknown)=>typeof value==='number'?numberFormat({maximumFractionDigits:5}).format(value):value===null?'—':String(value);
 function DataPreview({data,title,wooldridge}:{data:Record<string,unknown>;title:string;wooldridge?:boolean}) {
  const cols=data.columns as string[];const rows=(data.preview as Record<string,unknown>[])??[];
- return <section className="step-data-preview"><h3>{title} · {format(data.n)} filas</h3><div className="table-wrap"><table><thead><tr>{cols.map(col=><th key={col}>{col}</th>)}</tr></thead><tbody>{rows.map((row,i)=><tr key={i}>{cols.map(col=><td key={col}>{wooldridge&&typeof row[col]==='number'&&String((data.column_types as Record<string,string>|undefined)?.[col]).startsWith('float')?new Intl.NumberFormat('es-MX',{minimumFractionDigits:6,maximumFractionDigits:6}).format(row[col]):format(row[col])}</td>)}</tr>)}</tbody></table></div><p className="result-footnote">Vista de las primeras {rows.length} filas. Las salidas mantienen su huella de datos en Trazabilidad.</p></section>;
+ return <section className="step-data-preview"><h3>{title} · {format(data.n)} filas</h3><div className="table-wrap"><table><thead><tr>{cols.map(col=><th key={col}>{col}</th>)}</tr></thead><tbody>{rows.map((row,i)=><tr key={i}>{cols.map(col=><td key={col}>{wooldridge&&typeof row[col]==='number'&&String((data.column_types as Record<string,string>|undefined)?.[col]).startsWith('float')?numberFormat({minimumFractionDigits:6,maximumFractionDigits:6}).format(row[col]):col==='periodo'&&Number.isInteger(row[col])?String(row[col]):format(row[col])}</td>)}</tr>)}</tbody></table></div><p className="result-footnote">Vista de las primeras {rows.length} filas. Las salidas mantienen su huella de datos en Trazabilidad.</p></section>;
 }
 export default function NodeOutput({result,model}:{result:Record<string,unknown>;model?:Record<string,unknown>}) {
  const previews=result.output_previews as Record<string,Record<string,unknown>>|undefined;

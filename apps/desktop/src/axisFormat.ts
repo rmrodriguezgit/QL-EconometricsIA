@@ -1,5 +1,6 @@
 // Formato de ejes común a las visualizaciones: números completos o notación científica con factor ×10ⁿ.
 import { createContext, useContext } from 'react';
+import { fullNumber, SCIENTIFIC_FROM } from './numberFormat.ts';
 
 export type AxisMode = 'auto' | 'cientifica' | 'normal';
 export const AXIS_KEYS = ['y_axis', 'x_axis'] as const;
@@ -31,7 +32,8 @@ export function axisScale(values: number[], mode: AxisMode = 'auto', fallback: (
   const largest = finite.length ? Math.max(...finite.map(Math.abs)) : 0;
   const exponent = largest > 0 ? Math.floor(Math.log10(largest)) : 0;
   const scientific = exponent !== 0 && (mode === 'cientifica' || (mode === 'auto' && (exponent >= 4 || exponent <= -3)));
-  if (!scientific) return { tick: fallback, factor: '', exponent: 0, label: name => name };
+  // «normal» pide números completos aunque el formato propio del gráfico abrevie las cifras de miles de millones.
+  if (!scientific) return { tick: mode === 'normal' ? value => Math.abs(value) >= SCIENTIFIC_FROM ? fullNumber(value) : fallback(value) : fallback, factor: '', exponent: 0, label: name => name };
   const scale = 10 ** exponent;
   const factor = `×10${superscript(exponent)}`;
   // Decimales según el rango visible, para que marcas cercanas no se vean iguales.

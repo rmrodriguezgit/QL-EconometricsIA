@@ -1,4 +1,5 @@
 // Gráficos del portafolio de Markowitz: frontera eficiente, planos de Sharpe y Sortino, mínima varianza y pesos.
+import { numberFormat } from './numberFormat';
 import type { ReactNode } from 'react';
 
 type Point = { vol: number; ret: number; down: number; sharpe: number | null; sortino: number | null; weights: number[] };
@@ -14,7 +15,7 @@ export type PortfolioPlotData = {
 const ASSET_COLORS = ['#6cc9ac', '#79b4ef', '#ffd166', '#f4a3a9', '#b295ee', '#8adde4', '#f6a96b', '#c6d3e4', '#9be37a', '#e39bd6'];
 const PORTFOLIO_COLORS: Record<string, string> = { 'Pesos iguales': '#c6d3e4', 'Mínima varianza': '#79b4ef', 'Máximo Sharpe': '#ffd166', 'Máximo Sortino': '#f4a3a9' };
 const color = (name: string) => PORTFOLIO_COLORS[name] ?? '#c6d3e4';
-const num = (value: number | null | undefined, digits = 2) => value === null || value === undefined || !Number.isFinite(value) ? '—' : new Intl.NumberFormat('es-MX', { maximumFractionDigits: digits }).format(value);
+const num = (value: number | null | undefined, digits = 2) => value === null || value === undefined || !Number.isFinite(value) ? '—' : numberFormat({ maximumFractionDigits: digits }).format(value);
 
 const W = 470, H = 300, L = 56, R = 14, T = 14, B = 44;
 function nice(lo: number, hi: number) {

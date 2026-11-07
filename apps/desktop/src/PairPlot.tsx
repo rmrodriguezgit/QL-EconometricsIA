@@ -6,8 +6,9 @@ export type PairPlotData = {
   correlation: (number | null)[][];
 };
 const palette = ['#6cc9ac', '#79b4ef', '#ffd166', '#f4a3a9', '#b295ee', '#8adde4', '#f6a96b', '#c6d3e4'];
+import { numberFormat } from './numberFormat';
 import { axisScale, scientificValue, useAxis } from './axisFormat';
-const plain = (value: number) => new Intl.NumberFormat('es-MX', { maximumSignificantDigits: 3 }).format(value);
+const plain = (value: number) => numberFormat({ maximumSignificantDigits: 3 }).format(value);
 const format = (value: number) => scientificValue(value, 'auto', plain);
 
 export default function PairPlot({ data }: { data: PairPlotData }) {
